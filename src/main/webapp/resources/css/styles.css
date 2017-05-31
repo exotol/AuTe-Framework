@@ -1,0 +1,24 @@
+﻿textarea {
+    width: 100%;
+    /*border: 0;*/
+}
+
+.steps-table>tbody>tr>td {
+    padding: 0 !important;
+    font-size: 11px;
+    border-width: 1px !important;
+}
+
+a[target='_blank']::after {
+    content: ' \29C9';
+    font-size: smaller;
+}
+
+#steps-form textarea, #steps-form input[type=text] {
+    font-size: 12px;
+    padding: 1px;
+}
+
+.delete-form {
+    float: right;
+}
