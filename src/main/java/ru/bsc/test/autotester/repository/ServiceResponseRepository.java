@@ -13,10 +13,9 @@ import java.util.List;
  */
 @Repository
 public interface ServiceResponseRepository extends JpaRepository<ServiceResponse, Long> {
-    List<ServiceResponse> findAllBySessionUidAndIsCalledOrderById(String sessionUid, Long isCalled);
 
     @Transactional
-    Long deleteByServiceName(String serviceName);
+    Long deleteByServiceNameAndProjectCode(String item, String projectCode);
 
     List<ServiceResponse> findAllBySessionUidAndServiceNameInAndIsCalledOrderById(String sessionUid, List<String> expectedServicesName, Long isCalled);
 }

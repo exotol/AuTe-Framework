@@ -20,11 +20,12 @@ public class ServiceResponse implements Serializable {
     public ServiceResponse() {
     }
 
-    public ServiceResponse(String sessionUid, String serviceName, String response, Long sort) {
+    public ServiceResponse(String sessionUid, String serviceName, String response, Long sort, String projectCode) {
         this.sessionUid = sessionUid;
         this.serviceName = serviceName;
         this.response = response;
         this.sort = sort;
+        this.projectCode = projectCode;
     }
 
     @Id
@@ -51,6 +52,8 @@ public class ServiceResponse implements Serializable {
     @Column(name = "IS_CALLED")
     private Long isCalled = 0L;
 
+    @Column(name = "PROJECT_CODE")
+    private String projectCode;
 
 
     public Long getId() {
@@ -94,5 +97,11 @@ public class ServiceResponse implements Serializable {
     }
     public void setIsCalled(Long isCalled) {
         this.isCalled = isCalled;
+    }
+    public String getProjectCode() {
+        return projectCode;
+    }
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

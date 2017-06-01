@@ -17,14 +17,15 @@ import java.util.Properties;
 public class MockManager {
 
     public static void main(String[] args) throws Exception {
-        MockManager.getResponse("RESTMockService2", "request content", "-");
+        MockManager.getResponse("GM", "RESTMockService2", "request content", "-");
     }
 
-    public static String getResponse(String serviceName, String requestContent, String sessionUid) throws Exception {
+    public static String getResponse(String projectCode, String serviceName, String requestContent, String sessionUid) throws SQLException, IOException, ClassNotFoundException {
         try (Connection connection = getConnection()) {
-            try (PreparedStatement psResponse = connection.prepareCall("SELECT * FROM (SELECT * FROM AT_SERVICE_RESPONSE WHERE SERVICE_NAME = ? AND SESSION_UID = ? AND IS_CALLED = 0 ORDER BY SORT) WHERE rownum = 1")) {
+            try (PreparedStatement psResponse = connection.prepareCall("SELECT * FROM (SELECT * FROM AT_SERVICE_RESPONSE WHERE SERVICE_NAME = ? AND SESSION_UID = ? AND PROJECT_CODE = ? AND IS_CALLED = 0 ORDER BY SORT) WHERE rownum = 1")) {
                 psResponse.setString(1, serviceName);
                 psResponse.setString(2, sessionUid);
+                psResponse.setString(3, projectCode);
                 ResultSet resultSet = psResponse.executeQuery();
                 if (resultSet.next()) {
 
@@ -36,7 +37,7 @@ public class MockManager {
 
                     return resultSet.getString("RESPONSE");
                 } else {
-                    throw new Exception("Response not found.");
+                    return "";
                 }
             }
         }

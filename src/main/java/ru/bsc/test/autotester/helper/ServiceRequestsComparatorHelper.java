@@ -43,7 +43,7 @@ public class ServiceRequestsComparatorHelper {
                 .build();
 
         if (diff.hasDifferences()) {
-            throw new Exception(diff.toString() + "\n ====== Expected ===== \n" + expectedRequest + "\n ====== Actual ===== \n" + actualRequest);
+            throw new Exception("Service request error (request differences):\n" + diff.toString() + "\n ====== Expected ===== \n" + expectedRequest + "\n ====== Actual ===== \n" + actualRequest);
         }
     }
 

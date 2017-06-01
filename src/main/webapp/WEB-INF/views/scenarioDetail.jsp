@@ -104,7 +104,7 @@
         </form>
 
         <div style="clear: both;"></div>
-        <h5>Expected service requests</h5>
+        <h4>Expected service requests</h4>
 
         <form method="post" id="expected-service-requests-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-expected-service-requests" onsubmit="return false;">
             <table class="table table-condensed">
@@ -131,7 +131,7 @@
                             <input class="form-control" name="expectedRequest[${status.index}][ignoredTags]" value="${expectedRequest.ignoredTags}"/>
                         </td>
                         <td>
-                            <button class="btn" data-delete-expected-request="${expectedRequest.id}">Delete</button>
+                            <a class="btn" data-delete-expected-request="${expectedRequest.id}">Delete</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -139,7 +139,7 @@
             <button class="btn" id="save-expected-service-requests">Save</button> <span id="save-expected-service-requests-state"></span>
         </form>
 
-        <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-expected-request" onsubmit="return confirm('Add step?')">
+        <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-expected-request" onsubmit="return confirm('Add expected request?')">
             <input type="hidden" name="stepId" value="${stepDetail.id}"/>
             <input class="form-control" type="text" name="serviceName" placeholder="New service name"/>
             <input class="btn" type="submit" value="Add expected request">

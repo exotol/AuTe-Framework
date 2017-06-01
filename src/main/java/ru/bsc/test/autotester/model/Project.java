@@ -36,6 +36,9 @@ public class Project implements Serializable {
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
 
+    @Column(name = "PROJECT_CODE")
+    private String projectCode;
+
     public Long getId() {
         return id;
     }
@@ -65,5 +68,13 @@ public class Project implements Serializable {
     }
     public void setAfterScenarioId(Long afterScenarioId) {
         this.afterScenarioId = afterScenarioId;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 }

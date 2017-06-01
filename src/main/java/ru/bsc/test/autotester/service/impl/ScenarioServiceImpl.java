@@ -153,10 +153,12 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     private void executeTestStep(HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
-        setResponses(sessionUid, step.getResponses());
+        setResponses(project, sessionUid, step.getResponses());
 
         // Подстановка сохраненных параметров в строку запроса
         String requestUrl = insertSavedValues(step.getRelativeUrl(), savedValues);
+        stepResult.setRequestUrl(requestUrl);
+
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
                 project.getServiceUrl() + requestUrl,
@@ -164,9 +166,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 step.getRequestHeaders(),
                 sessionUid);
         saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
-
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
-        stepResult.setRequestUrl(requestUrl);
         stepResult.setActual(responseData.getContent());
         stepResult.setExpected(expectedResponse);
 
@@ -195,18 +195,14 @@ public class ScenarioServiceImpl implements ScenarioService {
         return string == null || string.isEmpty();
     }
 
-    private void setResponses(String sessionUid, String responses) {
+    private void setResponses(Project project, String sessionUid, String responses) {
         Long sort = 0L;
-
         List<ServiceNameResponsePair> responsesList = parseServiceResponsesString(responses);
-
-        // TODO удалить все существующие ответы сервисов, с учетом привязки к проекту
-        /*Set<String> servicesToDelete = */
         responsesList.stream().map(ServiceNameResponsePair::getServiceName).collect(Collectors.toSet())
-                .forEach(serviceResponseRepository::deleteByServiceName);
+                .forEach(item -> serviceResponseRepository.deleteByServiceNameAndProjectCode(item, project.getProjectCode()));
 
         for (ServiceNameResponsePair pair: responsesList) {
-            serviceResponseRepository.save(new ServiceResponse(sessionUid, pair.getServiceName(), pair.getResponse(), sort++));
+            serviceResponseRepository.save(new ServiceResponse(sessionUid, pair.getServiceName(), pair.getResponse(), sort++, project.getProjectCode()));
         }
     }
 

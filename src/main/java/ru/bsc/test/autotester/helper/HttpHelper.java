@@ -74,7 +74,7 @@ public class HttpHelper {
         httpRequest.addHeader("CorrelationId", sessionUid);
         setHeaders(httpRequest, headers);
         CloseableHttpResponse response = httpClient.execute(httpRequest, context);
-        String theString = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+        String theString = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
         return new ResponseHelper(response.getStatusLine().getStatusCode(), theString);
     }
 
