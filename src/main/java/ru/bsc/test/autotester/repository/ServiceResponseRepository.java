@@ -17,4 +17,6 @@ public interface ServiceResponseRepository extends JpaRepository<ServiceResponse
 
     @Transactional
     Long deleteByServiceName(String serviceName);
+
+    List<ServiceResponse> findAllBySessionUidAndServiceNameInAndIsCalledOrderById(String sessionUid, List<String> expectedServicesName, Long isCalled);
 }

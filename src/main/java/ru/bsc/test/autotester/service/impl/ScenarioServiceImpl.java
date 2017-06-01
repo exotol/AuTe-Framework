@@ -34,11 +34,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -212,7 +210,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         }
     }
 
-    public class ServiceNameResponsePair {
+    private class ServiceNameResponsePair {
         private String serviceName;
         private String response;
 
@@ -221,11 +219,11 @@ public class ScenarioServiceImpl implements ScenarioService {
             this.response = response;
         }
 
-        public String getServiceName() {
+        String getServiceName() {
             return serviceName;
         }
 
-        public String getResponse() {
+        String getResponse() {
             return response;
         }
     }

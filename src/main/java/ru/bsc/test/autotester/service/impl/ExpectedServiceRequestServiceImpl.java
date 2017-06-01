@@ -28,6 +28,21 @@ public class ExpectedServiceRequestServiceImpl implements ExpectedServiceRequest
     }
 
     @Override
+    public List<ExpectedServiceRequest> save(List<ExpectedServiceRequest> expectedServiceRequestList) {
+        return expectedServiceRequestRepository.save(expectedServiceRequestList);
+    }
+
+    @Override
+    public ExpectedServiceRequest findOne(Long expectedServiceRequestId) {
+        return expectedServiceRequestRepository.findOne(expectedServiceRequestId);
+    }
+
+    @Override
+    public void delete(ExpectedServiceRequest request) {
+        expectedServiceRequestRepository.delete(request);
+    }
+
+    @Override
     public List<ExpectedServiceRequest> findAllByStepIdOrderBySort(Long id) {
         return expectedServiceRequestRepository.findAllByStepIdOrderBySort(id);
     }

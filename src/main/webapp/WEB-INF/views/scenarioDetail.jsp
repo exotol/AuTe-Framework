@@ -97,6 +97,7 @@
             </c:if>
         </form>
     </c:if>
+
     <c:if test="${not empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/delete-step" onsubmit="return confirm('Delete step?')">
             <input class="btn" type="submit" value="Delete step">
@@ -105,12 +106,44 @@
         <div style="clear: both;"></div>
         <h5>Expected service requests</h5>
 
-        <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.autotester.model.ExpectedServiceRequest>"--%>
-        <c:forEach items="${expectedRequestsList}" var="expectedRequest">
-            <hr/>
-            ${expectedRequest.serviceName}
-            <pre><code><c:out value="${expectedRequest.expectedServiceRequest}"/></code></pre>
-        </c:forEach>
+        <form method="post" id="expected-service-requests-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-expected-service-requests" onsubmit="return false;">
+            <table class="table table-condensed">
+                <tr>
+                    <th style="width: 1%;">Sort</th>
+                    <th>Service name</th>
+                    <th>Expected request</th>
+                    <th>Ignored tags</th>
+                    <th style="width: 1%;"></th>
+                </tr>
+                <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.autotester.model.ExpectedServiceRequest>"--%>
+                <c:forEach items="${expectedRequestsList}" var="expectedRequest" varStatus="status">
+                    <tr>
+                        <td>
+                            <input type="hidden" name="expectedRequest[${status.index}][id]" value="${expectedRequest.id}"/>
+                            <input type="hidden" name="expectedRequest[${status.index}][stepId]" value="${expectedRequest.stepId}"/>
+                            <input class="form-control" style="width: inherit;" size="3" name="expectedRequest[${status.index}][sort]" value="${expectedRequest.sort}"/>
+                        </td>
+                        <td><input class="form-control" name="expectedRequest[${status.index}][serviceName]" value="${expectedRequest.serviceName}"/></td>
+                        <td>
+                            <textarea rows="6" class="form-control" name="expectedRequest[${status.index}][expectedServiceRequest]">${expectedRequest.expectedServiceRequest}</textarea>
+                        </td>
+                        <td>
+                            <input class="form-control" name="expectedRequest[${status.index}][ignoredTags]" value="${expectedRequest.ignoredTags}"/>
+                        </td>
+                        <td>
+                            <button class="btn" data-delete-expected-request="${expectedRequest.id}">Delete</button>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <button class="btn" id="save-expected-service-requests">Save</button> <span id="save-expected-service-requests-state"></span>
+        </form>
+
+        <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-expected-request" onsubmit="return confirm('Add step?')">
+            <input type="hidden" name="stepId" value="${stepDetail.id}"/>
+            <input class="form-control" type="text" name="serviceName" placeholder="New service name"/>
+            <input class="btn" type="submit" value="Add expected request">
+        </form>
         <!-- TODO вывод списка ожидаемых вызовов сервисов + редактирование -->
     </c:if>
 </t:wrapper>

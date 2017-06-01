@@ -68,6 +68,15 @@ public class StepController {
         return "redirect:/step/" + stepId;
     }
 
+    @RequestMapping(value = "{stepId}/save-expected-service-requests", method = RequestMethod.POST)
+    public String saveExpectedServiceRequests(
+            @PathVariable long stepId,
+            @RequestParam Step step
+    ) {
+        stepService.save(step);
+        return "redirect:/step/" + stepId;
+    }
+
     @RequestMapping(value = "add-step", method = RequestMethod.POST)
     public String addStep(
             @RequestParam long scenarioId
@@ -93,5 +102,21 @@ public class StepController {
             return "redirect:/scenario/" + step.getScenarioId();
         }
         return "redirect:/";
+    }
+
+    @RequestMapping(value = "add-expected-request", method = RequestMethod.POST)
+    public String addExpectedRequest(
+            @RequestParam long stepId,
+            @RequestParam String serviceName
+    ) {
+        List<ExpectedServiceRequest> expectedServiceRequestList = expectedServiceRequestService.findAllByStepIdOrderBySort(stepId);
+        Long maxSort = expectedServiceRequestList.stream().max(Comparator.comparing(ExpectedServiceRequest::getSort)).map(ExpectedServiceRequest::getSort).orElse(0L);
+
+        ExpectedServiceRequest expectedServiceRequest = new ExpectedServiceRequest();
+        expectedServiceRequest.setStepId(stepId);
+        expectedServiceRequest.setServiceName(serviceName);
+        expectedServiceRequest.setSort(maxSort + 50);
+        expectedServiceRequest = expectedServiceRequestService.save(expectedServiceRequest);
+        return "redirect:/step/" + expectedServiceRequest.getStepId();
     }
 }

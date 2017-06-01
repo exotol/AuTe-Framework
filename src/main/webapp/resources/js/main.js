@@ -5,8 +5,8 @@
             json = {},
             push_counters = {},
             patterns = {
-                "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
-                "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+                "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)])*$/,
+                "key":      /[a-zA-Z0-9_]+|(?=\[])/g,
                 "push":     /^$/,
                 "fixed":    /^\d+$/,
                 "named":    /^[a-zA-Z0-9_]+$/
@@ -65,29 +65,47 @@
     };
 })(jQuery);
 
+function restSaveForm(formSelector, stateSelector, url) {
+    $(stateSelector).html('Saving...').css('color', 'orange');
+    var json = $(formSelector).serializeObject();
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: contextPath + url,
+        data: JSON.stringify(json[Object.keys(json)[0]]),
+        dataType: 'json',
+        success: function (data) {
+            console.log('result:', data);
+            $(stateSelector).html('Saved').css('color', 'darkgreen');
+            setTimeout(function () {
+                $(stateSelector).html('');
+            }, 3000);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr, ajaxOptions, thrownError);
+            $(stateSelector).html('Error!').css('color', 'red');
+        }
+    });
+}
+
 $(function () {
     $.ajaxSetup({traditional: true});
 
     $('#save-steps').click(function () {
-        $('#saving-state').html('Saving...').css('color', 'orange');
-        var json = $('#steps-form').serializeObject();
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            url: contextPath + '/rest/step/save',
-            data: JSON.stringify(json.step),
-            dataType: 'json',
-            success: function (data) {
-                console.log('result:', data);
-                $('#saving-state').html('Saved').css('color', 'darkgreen');
-                setTimeout(function () {
-                    $('#saving-state').html('');
-                }, 3000);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.log(xhr, ajaxOptions, thrownError);
-                $('#saving-state').html('Error!').css('color', 'red');
-            }
-        });
+        restSaveForm('#steps-form', '#saving-state', '/rest/step/save');
+    });
+
+    $('#save-expected-service-requests').click(function () {
+        restSaveForm('#expected-service-requests-form', '#save-expected-service-requests-state', '/rest/step/save-expected-service-requests');
+    });
+
+    $('[data-delete-expected-request]').click(function () {
+        var expectedRequestId = $(this).attr('data-delete-expected-request');
+        if (confirm('Delete record?')) {
+            $.post(contextPath + '/rest/step/delete-expected-request', { expectedRequestId: expectedRequestId }, function (data) {
+                console.log('delete expected request data:', data);
+                window.ttt = this;
+            });
+        }
     });
 });

@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by sdoroshin on 30.05.2017.
+ * Created by rmalyshev date: 30.11.12
  *
  */
 class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {

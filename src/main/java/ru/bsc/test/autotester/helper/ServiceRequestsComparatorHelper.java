@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 30.05.2017.
@@ -49,14 +50,19 @@ public class ServiceRequestsComparatorHelper {
     public void assertTestCaseWSRequests(String sessionUid, Step step) throws Exception {
         // Список ожидаемых запросов к сервисам
         List<ExpectedServiceRequest> expectedRequestList = expectedServiceRequestService.findAllByStepIdOrderBySort(step.getId());
+        if (expectedRequestList.isEmpty()) {
+            // TODO проверить прохождение тестов, у которых не настроены ожидаемые вызовы сервисов
+            return;
+        }
+        List<String> expectedServicesName = expectedRequestList.stream().map(ExpectedServiceRequest::getServiceName).collect(Collectors.toList());
 
         // Список актуальных запросов к сервисам
-        List<ServiceResponse> actualRequestList = serviceResponseRepository.findAllBySessionUidAndIsCalledOrderById(sessionUid, 1L);
+        List<ServiceResponse> actualRequestList = serviceResponseRepository.findAllBySessionUidAndServiceNameInAndIsCalledOrderById(sessionUid, expectedServicesName, 1L);
 
         // compare request size
         if (expectedRequestList.size() != actualRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
-            throw new Exception("Invalid number of requests: expected: " + expectedRequestList.size() + ", actual: " + actualRequestList.size());
+            throw new Exception("Invalid number of service requests: expected: " + expectedRequestList.size() + ", actual: " + actualRequestList.size());
         }
 
         int actualIndex = 0;

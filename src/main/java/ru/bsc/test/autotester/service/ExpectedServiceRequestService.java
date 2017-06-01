@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.autotester.model.ExpectedServiceRequest;
+import ru.bsc.test.autotester.model.Step;
 
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
  */
 public interface ExpectedServiceRequestService {
     List<ExpectedServiceRequest> findAllByStepIdOrderBySort(Long id);
+    List<ExpectedServiceRequest> save(List<ExpectedServiceRequest> expectedServiceRequestList);
     ExpectedServiceRequest save(ExpectedServiceRequest expectedServiceRequest);
-
-
+    ExpectedServiceRequest findOne(Long expectedServiceRequestId);
+    void delete(ExpectedServiceRequest request);
 }
