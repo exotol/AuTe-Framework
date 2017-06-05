@@ -77,6 +77,7 @@
             </c:forEach>
         </table>
         <input type="submit" class="btn" value="Execute selected scenarios"/>
+        <input type="submit" style="float: right;" class="btn" value="Download selected scenarios as .xlsx" formaction="${pageContext.request.contextPath}/project/${project.id}/export-to-excel"/>
     </form>
 
     <c:if test="${empty executeResult}">

@@ -1,5 +1,8 @@
 package ru.bsc.test.autotester.controller;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +20,8 @@ import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -72,13 +75,19 @@ public class ProjectController {
             @RequestParam String name,
             @RequestParam String serviceUrl,
             @RequestParam Long beforeScenarioId,
-            @RequestParam Long afterScenarioId
+            @RequestParam Long afterScenarioId,
+            @RequestParam String dbUrl,
+            @RequestParam String dbUser,
+            @RequestParam String dbPassword
     ) {
         Project project = projectService.findOne(projectId);
         project.setName(name);
         project.setServiceUrl(serviceUrl);
         project.setBeforeScenarioId(beforeScenarioId);
         project.setAfterScenarioId(afterScenarioId);
+        project.setDbUrl(dbUrl);
+        project.setDbUser(dbUser);
+        project.setDbPassword(dbPassword);
 
         projectService.save(project);
 
@@ -111,18 +120,62 @@ public class ProjectController {
     @RequestMapping(value = "{projectId}/execute-scenarios", method = RequestMethod.POST)
     public ModelAndView execute(
             @PathVariable long projectId,
-            @RequestParam("scenarios[]") long[] scenarios
+            @RequestParam("scenarios[]") Long[] scenarios
     ) {
-        List<Scenario> scenarioResultList = new LinkedList<>();
-        for (long scenarioId: scenarios) {
-            scenarioResultList.add(scenarioService.executeScenario(scenarioId));
-        }
+        List<Scenario> scenarioResultList = scenarioService.executeScenarioList(scenarios);
+
         ModelAndView model = new ModelAndView("projectDetail");
         model.addObject("executeResult", 1);
         model.addObject("scenarios", scenarioResultList);
         model.addObject("project", projectService.findOne(projectId));
         model.addObject("scenarioGroups", scenarioGroupService.findAllByProjectId(projectId));
         return model;
+    }
+
+    @RequestMapping(value = "{projectId}/export-to-excel", method = RequestMethod.POST)
+    public void exportToExcel(
+            @PathVariable long projectId,
+            @RequestParam("scenarios[]") long[] scenarios,
+            HttpServletResponse response
+    ) throws IOException {
+        String fileName = null;
+
+
+        XSSFWorkbook book = new XSSFWorkbook();
+        XSSFSheet sheet = book.createSheet();
+        int rowIndex = 0;
+        Row row = sheet.createRow(rowIndex++);
+        row.createCell(0).setCellValue("SERVICE_RELATIVE_PATH");
+        row.createCell(1).setCellValue("REQUEST");
+        row.createCell(2).setCellValue("MOCK_RESPONSES_FOR_REQUEST");
+        row.createCell(3).setCellValue("EXPECTED_RESPONSE_FROM_PORTAL");
+        row.createCell(4).setCellValue("SAVING_VALUES");
+
+        for (long scenarioId: scenarios) {
+
+            Scenario scenario = scenarioService.findOne(scenarioId);
+            if (scenario != null) {
+                if (fileName == null) {
+                    fileName = scenario.getName();
+                }
+
+                sheet.createRow(rowIndex++).createCell(0).setCellValue("# " + scenario.getName());
+
+                for (Step step : stepService.findAllByScenarioId(scenario.getId())) {
+                    row = sheet.createRow(rowIndex++);
+                    row.createCell(0).setCellValue(step.getRelativeUrl());
+                    row.createCell(1).setCellValue(step.getRequest());
+                    row.createCell(2).setCellValue(step.getResponses());
+                    row.createCell(3).setCellValue(step.getExpectedResponse());
+                    row.createCell(4).setCellValue(step.getSavingValues());
+                }
+            }
+        }
+
+
+        response.addHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        book.write(response.getOutputStream());
     }
 
     @RequestMapping(value = "{projectId}/import-from-excel", method = RequestMethod.POST)

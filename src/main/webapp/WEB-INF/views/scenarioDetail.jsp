@@ -84,6 +84,19 @@
                     <td><textarea class="form-control" rows="7" name="step[${status.index}][savingValues]">${step.savingValues}</textarea></td>
                     <td><textarea class="form-control" rows="7" name="step[${status.index}][responses]">${step.responses}</textarea></td>
                 </tr>
+                <tr>
+                    <td style="border-top: 0;"></td>
+                    <td style="border-top: 0;" colspan="6">
+                        <div class="form-group" style="width: 20%; float: left;">
+                            <label for="exampleInputName2">Variable</label>
+                            <input name="step[${status.index}][sqlSavedParameter]" type="text" class="form-control" id="exampleInputName2" placeholder="Variable name (saving values)" value="${step.sqlSavedParameter}">
+                        </div>
+                        <div class="form-group" style="width: 80%; float: right;">
+                            <label for="exampleInputEmail2">Sql</label>
+                            <input name="step[${status.index}][sql]" type="text" class="form-control" id="exampleInputEmail2" placeholder="Sql query" value="${step.sql}">
+                        </div>
+                    </td>
+                </tr>
             </c:forEach>
         </table>
         <button class="btn" id="save-steps">Save</button> <span id="saving-state"></span>

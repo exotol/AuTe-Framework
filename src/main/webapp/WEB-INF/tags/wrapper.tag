@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Auto Tester</title>
-    <link type="text/css" rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/css/styles.css">
     <link type="text/css" rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/css/bootstrap-theme.min.css">
+    <link type="text/css" rel="stylesheet" media="all" href="${pageContext.request.contextPath}/resources/css/styles.css">
 
     <script>
         window.contextPath = '${pageContext.request.contextPath}';

@@ -39,6 +39,13 @@ public class Project implements Serializable {
     @Column(name = "PROJECT_CODE")
     private String projectCode;
 
+    @Column(name = "DB_URL")
+    private String dbUrl;
+    @Column(name = "DB_USER")
+    private String dbUser;
+    @Column(name = "DB_PASSWORD")
+    private String dbPassword;
+
     public Long getId() {
         return id;
     }
@@ -76,5 +83,30 @@ public class Project implements Serializable {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
+    }
+
+    public String getDbUser() {
+        return dbUser;
+    }
+
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
     }
 }

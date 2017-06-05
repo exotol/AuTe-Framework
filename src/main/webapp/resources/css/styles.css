@@ -4,9 +4,9 @@
 }
 
 .steps-table>tbody>tr>td {
-    padding: 0 !important;
+    padding: 0;
     font-size: 11px;
-    border-width: 1px !important;
+    border-width: 1px;
 }
 
 a[target='_blank']::after {
@@ -21,4 +21,8 @@ a[target='_blank']::after {
 
 .delete-form {
     float: right;
+}
+
+label {
+    margin-bottom: 0;
 }

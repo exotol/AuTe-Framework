@@ -85,12 +85,6 @@ public class ScenarioController {
         return "redirect:/scenario/" + scenarioId + "/settings";
     }
 
-    @RequestMapping("{scenarioId}/start")
-    public String start(@PathVariable long scenarioId) {
-        scenarioService.executeScenario(scenarioId);
-        return "redirect:/scenario/" + scenarioId;
-    }
-
     @RequestMapping(value = "{scenarioId}/delete-step", method = RequestMethod.POST)
     public String deleteStep(
             @PathVariable long scenarioId,

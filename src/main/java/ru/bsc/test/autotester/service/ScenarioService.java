@@ -13,7 +13,8 @@ public interface ScenarioService {
     List<Scenario> findAllByProjectId(Long projectId);
     List<Scenario> findAllByProjectIdAndScenarioGroupId(Long projectId, Long scenarioGroupId);
 
-    Scenario executeScenario(Long scenarioId);
+    List<Scenario> executeScenarioList(Long[] scenarios);
+
     Scenario save(Scenario scenario);
     Scenario findOne(long scenarioId);
     void delete(Scenario scenario);

@@ -41,6 +41,9 @@
                     </select>
                 </td>
             </tr>
+            <tr><td>Database URL:</td><td><input class="form-control" type="text" name="dbUrl" value="<c:out value="${project.dbUrl}"/>"/></td></tr>
+            <tr><td>Database user:</td><td><input class="form-control" type="text" name="dbUser" value="<c:out value="${project.dbUser}"/>"/></td></tr>
+            <tr><td>Database password</td><td><input class="form-control" type="password" name="dbPassword" value="<c:out value="${project.dbPassword}"/>"/></td></tr>
         </table>
         <input class="btn" type="submit" value="Save">
     </form>
@@ -49,7 +52,7 @@
     <h4>Import from excel</h4>
     <form method="post" action="${pageContext.request.contextPath}/project/${project.id}/import-from-excel" enctype="multipart/form-data">
         <input type="file" name="excelFile"/><br/>
-        <select class="form-control" name="scenarioGroup">
+        <select class="form-control" style="width: inherit;" name="scenarioGroup">
             <option value="">-</option>
             <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
             <c:forEach items="${scenarioGroups}" var="group">
@@ -59,5 +62,16 @@
         <input class="btn" type="submit" value="Import">
     </form>
 
+    <hr />
+    <h4>SoapUI script</h4>
+    <h5>Скрипт для проверки вызовов сервисов</h5>
+    <pre style="display: inline-block;">import ru.bsc.test.MockManager;
+def sessionUid = mockRequest.getRequest().getHeader("CorrelationId");
+return MockManager.getResponse("${project.projectCode}", mockOperation.wsdlOperationName, mockRequest.requestContent, sessionUid?.trim() ? sessionUid : '-');</pre>
+    <h5>Скрипт для получения значений xml-тегов из запроса</h5>
+    <pre style="display: inline-block;">import com.eviware.soapui.support.XmlHolder
+XmlHolder holder = new XmlHolder( mockRequest.requestContent )
+holder.declareNamespace('ns3',"http://www.mygemini.com/schemas/mygemini")
+return holder.getNodeValue("//ns3:GetPortfolioRequest/portfolioRequest/accountNumber");</pre>
 
 </t:wrapper>

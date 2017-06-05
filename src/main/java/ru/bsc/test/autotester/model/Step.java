@@ -59,6 +59,12 @@ public class Step implements Serializable {
     @Column(name = "EXPECTED_STATUS_CODE")
     private Integer expectedStatusCode;
 
+    @Column(name = "SQL")
+    private String sql;
+
+    @Column(name = "SQL_SAVED_PARAMETER")
+    private String sqlSavedParameter;
+
     public Step() {
     }
 
@@ -151,5 +157,17 @@ public class Step implements Serializable {
     }
     public void setExpectedStatusCode(Integer expectedStatusCode) {
         this.expectedStatusCode = expectedStatusCode;
+    }
+    public String getSql() {
+        return sql;
+    }
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+    public String getSqlSavedParameter() {
+        return sqlSavedParameter;
+    }
+    public void setSqlSavedParameter(String sqlSavedParameter) {
+        this.sqlSavedParameter = sqlSavedParameter;
     }
 }

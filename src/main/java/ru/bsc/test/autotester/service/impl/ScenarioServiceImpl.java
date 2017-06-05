@@ -5,6 +5,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.autotester.helper.HttpHelper;
+import ru.bsc.test.autotester.helper.NamedParameterStatement;
 import ru.bsc.test.autotester.helper.ResponseHelper;
 import ru.bsc.test.autotester.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.autotester.model.ExpectedServiceRequest;
@@ -28,6 +29,10 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -74,7 +79,15 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public Scenario executeScenario(Long scenarioId) {
+    public List<Scenario> executeScenarioList(Long[] scenarios) {
+        List<Scenario> scenarioResultList = new LinkedList<>();
+        for (long scenarioId: scenarios) {
+            scenarioResultList.add(executeScenario(scenarioId));
+        }
+        return scenarioResultList;
+    }
+
+    private Scenario executeScenario(Long scenarioId) {
         Scenario scenario = scenarioRepository.findOne(scenarioId);
         Project project = projectRepository.findOne(scenario.getProjectId());
 
@@ -84,37 +97,60 @@ public class ScenarioServiceImpl implements ScenarioService {
         // TODO Сделать этот кейс опциональным. Пока хедеры не прокидываются тестируемым порталом, уникальный ID теста не передается.
         sessionUid = "-";
 
-        // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-        Long beforeScenarioId = scenario.getBeforeScenarioId() == null ? project.getBeforeScenarioId() : (scenario.getBeforeScenarioId() < 0 ? null : scenario.getBeforeScenarioId());
-        if (beforeScenarioId != null) {
-            Scenario beforeScenario = scenarioRepository.findOne(beforeScenarioId);
-            executeSteps(beforeScenario, project, httpHelper, savedValues, sessionUid);
-            scenario.getStepResults().addAll(beforeScenario.getStepResults());
+
+        // TODO Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
+        Connection connection = null;
+        if (project.getDbUrl() != null) {
+            try {
+                connection = DriverManager.getConnection(project.getDbUrl(), project.getDbUser(), project.getDbPassword());
+                connection.setAutoCommit(false);
+            } catch (SQLException e) {
+                connection = null;
+            }
         }
 
-        Scenario scenarioResult = executeSteps(scenario, project, httpHelper, savedValues, sessionUid);
+        try {
+            // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
+            Long beforeScenarioId = scenario.getBeforeScenarioId() == null ? project.getBeforeScenarioId() : (scenario.getBeforeScenarioId() < 0 ? null : scenario.getBeforeScenarioId());
+            if (beforeScenarioId != null) {
+                Scenario beforeScenario = scenarioRepository.findOne(beforeScenarioId);
+                executeSteps(connection, beforeScenario, project, httpHelper, savedValues, sessionUid);
+                scenario.getStepResults().addAll(beforeScenario.getStepResults());
+            }
 
-        // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-        Long afterScenarioId = scenario.getAfterScenarioId() == null ? project.getAfterScenarioId() : (scenario.getAfterScenarioId() < 0 ? null : scenario.getAfterScenarioId());
-        if (afterScenarioId != null) {
-            Scenario afterScenario = scenarioRepository.findOne(afterScenarioId);
-            executeSteps(afterScenario, project, httpHelper, savedValues, sessionUid);
-            scenario.getStepResults().addAll(afterScenario.getStepResults());
+            Scenario scenarioResult = executeSteps(connection, scenario, project, httpHelper, savedValues, sessionUid);
+
+            // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
+            Long afterScenarioId = scenario.getAfterScenarioId() == null ? project.getAfterScenarioId() : (scenario.getAfterScenarioId() < 0 ? null : scenario.getAfterScenarioId());
+            if (afterScenarioId != null) {
+                Scenario afterScenario = scenarioRepository.findOne(afterScenarioId);
+                executeSteps(connection, afterScenario, project, httpHelper, savedValues, sessionUid);
+                scenario.getStepResults().addAll(afterScenario.getStepResults());
+            }
+            httpHelper.closeHttpConnection();
+
+            return scenarioResult;
+
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-        httpHelper.closeHttpConnection();
-
-        return scenarioResult;
     }
 
-    private Scenario executeSteps(Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String sessionUid) {
+    private Scenario executeSteps(Connection connection, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String sessionUid) {
         if (scenario != null) {
             int failures = 0;
             for (Step step : stepService.findAllByScenarioId(scenario.getId())) {
                 StepResult stepResult = new StepResult(step);
                 scenario.getStepResults().add(stepResult);
                 try {
-                    executeTestStep(httpHelper, savedValues, sessionUid, project, step, stepResult);
+                    executeTestStep(connection, httpHelper, savedValues, sessionUid, project, step, stepResult);
 
                     // TODO После выполнения шага необходимо проверить запросы к веб-сервисам
                     serviceRequestsComparatorHelper.assertTestCaseWSRequests(sessionUid, step);
@@ -152,8 +188,23 @@ public class ScenarioServiceImpl implements ScenarioService {
         scenarioRepository.delete(scenario);
     }
 
-    private void executeTestStep(HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(Connection connection, HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
         setResponses(project, sessionUid, step.getResponses());
+
+        if (step.getSql() != null && connection != null) {
+            try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
+                // Вставить в запрос параметры из savedValues, если они есть.
+                for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
+                    statement.setString(savedValue.getKey(), savedValue.getValue());
+                }
+                try (ResultSet rs = statement.executeQuery()) {
+                    // TODO Предусмотреть возможность сохранения не одного, а нескольких значений из запроса.
+                    if (rs.next()) {
+                        savedValues.put(step.getSqlSavedParameter(), rs.getString(1));
+                    }
+                }
+            }
+        }
 
         // Подстановка сохраненных параметров в строку запроса
         String requestUrl = insertSavedValues(step.getRelativeUrl(), savedValues);
