@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.autotester.model.Scenario;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

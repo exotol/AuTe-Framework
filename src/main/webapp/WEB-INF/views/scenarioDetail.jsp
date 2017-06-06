@@ -88,7 +88,7 @@
                     <td style="border-top: 0;"></td>
                     <td style="border-top: 0;" colspan="6">
                         <div class="form-group" style="width: 20%; float: left;">
-                            <label for="exampleInputName2">Variable</label>
+                            <label for="exampleInputName2">Variables <a href="#" onclick="alert('Example\nVariables: varA,varB,varC\nSql: select fieldA, fieldB, fieldC from table where id = :savedValueId or name = :parameterName ')">(?)</a></label>
                             <input name="step[${status.index}][sqlSavedParameter]" type="text" class="form-control" id="exampleInputName2" placeholder="Variable name (saving values)" value="${step.sqlSavedParameter}">
                         </div>
                         <div class="form-group" style="width: 80%; float: right;">

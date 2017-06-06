@@ -67,7 +67,7 @@
     <h5>Скрипт для проверки вызовов сервисов</h5>
     <pre style="display: inline-block;">import ru.bsc.test.MockManager;
 def sessionUid = mockRequest.getRequest().getHeader("CorrelationId");
-return MockManager.getResponse("${project.projectCode}", mockOperation.wsdlOperationName, mockRequest.requestContent, sessionUid?.trim() ? sessionUid : '-');</pre>
+return MockManager.getResponse("<b style="text-decoration: underline;">${project.projectCode}</b>", mockOperation.wsdlOperationName, mockRequest.requestContent, sessionUid?.trim() ? sessionUid : '-');</pre>
     <h5>Скрипт для получения значений xml-тегов из запроса</h5>
     <pre style="display: inline-block;">import com.eviware.soapui.support.XmlHolder
 XmlHolder holder = new XmlHolder( mockRequest.requestContent )

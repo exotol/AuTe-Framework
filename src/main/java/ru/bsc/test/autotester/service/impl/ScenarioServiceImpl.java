@@ -22,6 +22,9 @@ import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 import ru.bsc.test.autotester.validation.IgnoringComparator;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -191,7 +194,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private void executeTestStep(Connection connection, HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
         setResponses(project, sessionUid, step.getResponses());
 
-        if (step.getSql() != null && connection != null) {
+        if (step.getSql() != null && step.getSqlSavedParameter() != null && connection != null) {
             try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
                 // Вставить в запрос параметры из savedValues, если они есть.
                 for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
@@ -199,8 +202,20 @@ public class ScenarioServiceImpl implements ScenarioService {
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     // TODO Предусмотреть возможность сохранения не одного, а нескольких значений из запроса.
+                    int columnCount = rs.getMetaData().getColumnCount();
                     if (rs.next()) {
-                        savedValues.put(step.getSqlSavedParameter(), rs.getString(1));
+                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
+                        int i = 1;
+                        for (String parameterName: sqlSavedParameterList) {
+                            if (parameterName.trim().isEmpty()) {
+                                continue;
+                            }
+                            if (i > columnCount) {
+                                break;
+                            }
+                            savedValues.put(parameterName.trim(), rs.getString(i));
+                            i++;
+                        }
                     }
                 }
             }
@@ -218,6 +233,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 sessionUid);
         saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
+        expectedResponse = evaluateExpressions(expectedResponse);
         stepResult.setActual(responseData.getContent());
         stepResult.setExpected(expectedResponse);
 
@@ -352,7 +368,22 @@ public class ScenarioServiceImpl implements ScenarioService {
         if (template != null) {
             for (Map.Entry<String, String> value : savedValues.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, value.getValue());
+                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue()));
+            }
+        }
+        return template;
+    }
+
+    private String evaluateExpressions(String template) throws ScriptException {
+        if (template != null) {
+            Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
+            Matcher m = p.matcher(template);
+            while (m.find()) {
+                System.out.println(m.group(1));
+                ScriptEngineManager manager = new ScriptEngineManager();
+                ScriptEngine engine = manager.getEngineByName("js");
+                Object result = engine.eval(m.group(1));
+                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
             }
         }
         return template;
