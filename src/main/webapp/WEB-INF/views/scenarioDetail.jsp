@@ -48,9 +48,12 @@
                 </th>
                 <th>Request headers</th>
                 <th>Expected response</th>
-                <th>Expected<br/>status<br/>code</th>
-                <th>Saving values</th>
-                <th>Responses</th>
+                <th>
+                    Expected status code<br/>
+                    Json XPath<br/>
+                    Saving values<br/>
+                    Responses
+                </th>
             </tr>
             <c:forEach items="${steps}" var="step" varStatus="status">
                 <tr>
@@ -76,19 +79,29 @@
                         </select>
                         <input type="text" class="form-control" style="float: right; width: 85%; display: inline;" name="step[${status.index}][relativeUrl]" value="${step.relativeUrl}" aria-describedby="basic-addon3">
 
-                        <textarea class="form-control" rows="5" name="step[${status.index}][request]">${step.request}</textarea>
+                        <textarea class="form-control" rows="10" name="step[${status.index}][request]">${step.request}</textarea>
                     </td>
-                    <td width="10%"><textarea class="form-control" rows="7" name="step[${status.index}][requestHeaders]">${step.requestHeaders}</textarea></td>
-                    <td width="30%"><textarea class="form-control" rows="7" name="step[${status.index}][expectedResponse]">${step.expectedResponse}</textarea></td>
-                    <td><input type="text" class="form-control" name="step[${status.index}][expectedStatusCode]" size="3" value="${step.expectedStatusCode}"></td>
-                    <td><textarea class="form-control" rows="7" name="step[${status.index}][savingValues]">${step.savingValues}</textarea></td>
-                    <td><textarea class="form-control" rows="7" name="step[${status.index}][responses]">${step.responses}</textarea></td>
+                    <td width="10%"><textarea class="form-control" rows="12" name="step[${status.index}][requestHeaders]">${step.requestHeaders}</textarea></td>
+                    <td width="30%"><textarea class="form-control" rows="12" name="step[${status.index}][expectedResponse]">${step.expectedResponse}</textarea></td>
+                    <td>
+                        <label for="expectedStatusCode${status.index}">Expected status code <a href="#" onclick="alert('Example:\n404\n200\n500\nempty value - ignore status code'); return false;">(?)</a></label>
+                        <input type="text" class="form-control" id="expectedStatusCode${status.index}" name="step[${status.index}][expectedStatusCode]" size="3" value="${step.expectedStatusCode}">
+
+                        <label for="jsonXPath${status.index}">Saving values (Json XPath) <a href="#" onclick="alert('Example:\nparameterNameA = $.accountPortfolio[0].accountInfo.accountNumber\nparameterNameB = $.account.accountInfo[2].accountId\n\n $ - all response content'); return false;">(?)</a></label>
+                        <textarea class="form-control" id="jsonXPath${status.index}" rows="2" name="step[${status.index}][jsonXPath]">${step.jsonXPath}</textarea>
+
+                        <label for="savingValues${status.index}">Saving values <a href="#" onclick="alert('Example:\nparameterNameA, parameterNameB'); return false;">(?)</a></label>
+                        <textarea class="form-control" id="savingValues${status.index}" rows="2" name="step[${status.index}][savingValues]">${step.savingValues}</textarea>
+
+                        <label for="responses${status.index}">Responses (SoapUI mock) <a href="#" onclick="alert('Example:\nServiceName: ResponseNameA\nServiceName: ResponseNameB\n\nServiceName - service name from SoapUI'); return false;">(?)</a></label>
+                        <textarea class="form-control" id="responses${status.index}" rows="2" name="step[${status.index}][responses]">${step.responses}</textarea>
+                    </td>
                 </tr>
                 <tr>
                     <td style="border-top: 0;"></td>
-                    <td style="border-top: 0;" colspan="6">
+                    <td style="border-top: 0;" colspan="5">
                         <div class="form-group" style="width: 20%; float: left;">
-                            <label for="exampleInputName2">Variables <a href="#" onclick="alert('Example\nVariables: varA,varB,varC\nSql: select fieldA, fieldB, fieldC from table where id = :savedValueId or name = :parameterName ')">(?)</a></label>
+                            <label for="exampleInputName2">Variables <a href="#" onclick="alert('Example\nVariables: varA,varB,varC\nSql: select fieldA, fieldB, fieldC from table where id = :savedValueId or name = :parameterName '); return false;">(?)</a></label>
                             <input name="step[${status.index}][sqlSavedParameter]" type="text" class="form-control" id="exampleInputName2" placeholder="Variable name (saving values)" value="${step.sqlSavedParameter}">
                         </div>
                         <div class="form-group" style="width: 80%; float: right;">

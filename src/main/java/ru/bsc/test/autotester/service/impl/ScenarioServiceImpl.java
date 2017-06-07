@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
+import com.jayway.jsonpath.JsonPath;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,57 +195,40 @@ public class ScenarioServiceImpl implements ScenarioService {
     private void executeTestStep(Connection connection, HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
         setResponses(project, sessionUid, step.getResponses());
 
-        if (step.getSql() != null && step.getSqlSavedParameter() != null && connection != null) {
-            try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
-                // Вставить в запрос параметры из savedValues, если они есть.
-                for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
-                    statement.setString(savedValue.getKey(), savedValue.getValue());
-                }
-                try (ResultSet rs = statement.executeQuery()) {
-                    // TODO Предусмотреть возможность сохранения не одного, а нескольких значений из запроса.
-                    int columnCount = rs.getMetaData().getColumnCount();
-                    if (rs.next()) {
-                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
-                        int i = 1;
-                        for (String parameterName: sqlSavedParameterList) {
-                            if (parameterName.trim().isEmpty()) {
-                                continue;
-                            }
-                            if (i > columnCount) {
-                                break;
-                            }
-                            savedValues.put(parameterName.trim(), rs.getString(i));
-                            i++;
-                        }
-                    }
-                }
-            }
-        }
+        // 1. Выполнить запрос БД и сохранить полученные значения
+        executeSql(connection, step, savedValues);
 
-        // Подстановка сохраненных параметров в строку запроса
+        // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = insertSavedValues(step.getRelativeUrl(), savedValues);
         stepResult.setRequestUrl(requestUrl);
 
+        // 3. Выполнить запрос
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
                 project.getServiceUrl() + requestUrl,
                 insertSavedValues(step.getRequest(), savedValues),
                 step.getRequestHeaders(),
                 sessionUid);
+
+        // 4. Сохранить полученные значения
         saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
+        saveValuesByJsonXPath(step, responseData, savedValues);
+
+        // 5. Подставить сохраненые значения в ожидаемый результат
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
+        // 5.1. Расчитать выражения <f></f>
         expectedResponse = evaluateExpressions(expectedResponse);
         stepResult.setActual(responseData.getContent());
         stepResult.setExpected(expectedResponse);
 
-        // Check status code
+        // 6. Проверить код статуса ответа
         if (step.getExpectedStatusCode() != null) {
             if (step.getExpectedStatusCode() != responseData.getStatusCode()) {
                 throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
             }
         }
 
-        // Compare json response with expected response
+        // 7. Сравнить JSON ответ с ожидаемым
         if (!emptyString(step.getExpectedResponse()) || !emptyString(responseData.getContent())) {
             try {
                 JSONAssert.assertEquals(
@@ -254,6 +238,23 @@ public class ScenarioServiceImpl implements ScenarioService {
                 );
             } catch (Error assertionError) {
                 throw new Exception(assertionError);
+            }
+        }
+    }
+
+    private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
+        if (responseData.getContent() != null && !responseData.getContent().isEmpty()) {
+            if (step.getJsonXPath() != null && !step.getJsonXPath().isEmpty()) {
+
+                String lines[] = step.getJsonXPath().split("\\r?\\n");
+                for (String line: lines) {
+                    String[] lineParts = line.split("=");
+                    String parameterName = lineParts[0].trim();
+                    String jsonXPath = lineParts[1];
+
+                    // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
+                    savedValues.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
+                }
             }
         }
     }
@@ -358,6 +359,35 @@ public class ScenarioServiceImpl implements ScenarioService {
                     if (m.matches()) {
                         String savedValue = response.split(String.format("%s\":", value.trim()), 2)[1].trim().split(",|}", 2)[0];
                         savedValues.put(value.trim(), savedValue);
+                    }
+                }
+            }
+        }
+    }
+
+    private void executeSql(Connection connection, Step step, Map<String, String> savedValues) throws SQLException {
+        if (step.getSql() != null && step.getSqlSavedParameter() != null && connection != null) {
+            try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
+                // Вставить в запрос параметры из savedValues, если они есть.
+                for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
+                    statement.setString(savedValue.getKey(), savedValue.getValue());
+                }
+                try (ResultSet rs = statement.executeQuery()) {
+                    // TODO Предусмотреть возможность сохранения не одного, а нескольких значений из запроса.
+                    int columnCount = rs.getMetaData().getColumnCount();
+                    if (rs.next()) {
+                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
+                        int i = 1;
+                        for (String parameterName: sqlSavedParameterList) {
+                            if (parameterName.trim().isEmpty()) {
+                                continue;
+                            }
+                            if (i > columnCount) {
+                                break;
+                            }
+                            savedValues.put(parameterName.trim(), rs.getString(i));
+                            i++;
+                        }
                     }
                 }
             }

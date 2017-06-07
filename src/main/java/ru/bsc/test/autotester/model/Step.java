@@ -65,6 +65,9 @@ public class Step implements Serializable {
     @Column(name = "SQL_SAVED_PARAMETER")
     private String sqlSavedParameter;
 
+    @Column(name = "JSON_XPATH")
+    private String jsonXPath;
+
     public Step() {
     }
 
@@ -169,5 +172,11 @@ public class Step implements Serializable {
     }
     public void setSqlSavedParameter(String sqlSavedParameter) {
         this.sqlSavedParameter = sqlSavedParameter;
+    }
+    public String getJsonXPath() {
+        return jsonXPath;
+    }
+    public void setJsonXPath(String jsonXPath) {
+        this.jsonXPath = jsonXPath;
     }
 }
