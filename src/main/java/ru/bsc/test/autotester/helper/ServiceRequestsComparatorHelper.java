@@ -9,7 +9,6 @@ import ru.bsc.test.autotester.model.ExpectedServiceRequest;
 import ru.bsc.test.autotester.model.ServiceResponse;
 import ru.bsc.test.autotester.model.Step;
 import ru.bsc.test.autotester.repository.ServiceResponseRepository;
-import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,12 +23,10 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceRequestsComparatorHelper {
 
-    private final ExpectedServiceRequestService expectedServiceRequestService;
     private final ServiceResponseRepository serviceResponseRepository;
 
     @Autowired
-    public ServiceRequestsComparatorHelper(ExpectedServiceRequestService expectedServiceRequestService, ServiceResponseRepository serviceResponseRepository) {
-        this.expectedServiceRequestService = expectedServiceRequestService;
+    public ServiceRequestsComparatorHelper(ServiceResponseRepository serviceResponseRepository) {
         this.serviceResponseRepository = serviceResponseRepository;
     }
 
@@ -49,7 +46,7 @@ public class ServiceRequestsComparatorHelper {
 
     public void assertTestCaseWSRequests(String sessionUid, Step step) throws Exception {
         // Список ожидаемых запросов к сервисам
-        List<ExpectedServiceRequest> expectedRequestList = expectedServiceRequestService.findAllByStepIdOrderBySort(step.getId());
+        List<ExpectedServiceRequest> expectedRequestList = step.getExpectedServiceRequests();
         if (expectedRequestList.isEmpty()) {
             // TODO проверить прохождение тестов, у которых не настроены ожидаемые вызовы сервисов
             return;

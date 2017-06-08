@@ -9,7 +9,6 @@ import java.util.List;
  *
  */
 public interface ScenarioService {
-    List<Scenario> findAllByProjectId(Long projectId);
     List<Scenario> findAllByProjectIdAndScenarioGroupId(Long projectId, Long scenarioGroupId);
 
     List<Scenario> executeScenarioList(Long[] scenarios);

@@ -2,12 +2,18 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -23,8 +29,13 @@ public class Step implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "SCENARIO_ID")
-    private Long scenarioId;
+    @ManyToOne(targetEntity = Scenario.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "SCENARIO_ID")
+    private Scenario scenario;
+
+    @OneToMany(mappedBy = "step", fetch = FetchType.LAZY)
+    @OrderBy("SORT ASC")
+    private List<ExpectedServiceRequest> expectedServiceRequests;
 
     @Column(name = "SORT")
     private Long sort;
@@ -88,12 +99,6 @@ public class Step implements Serializable {
     }
     public void setId(Long id) {
         this.id = id;
-    }
-    public Long getScenarioId() {
-        return scenarioId;
-    }
-    public void setScenarioId(Long scenarioId) {
-        this.scenarioId = scenarioId;
     }
     public Long getSort() {
         return sort;
@@ -178,5 +183,21 @@ public class Step implements Serializable {
     }
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
+    }
+
+    public Scenario getScenario() {
+        return scenario;
+    }
+
+    public void setScenario(Scenario scenario) {
+        this.scenario = scenario;
+    }
+
+    public List<ExpectedServiceRequest> getExpectedServiceRequests() {
+        return expectedServiceRequests;
+    }
+
+    public void setExpectedServiceRequests(List<ExpectedServiceRequest> expectedServiceRequests) {
+        this.expectedServiceRequests = expectedServiceRequests;
     }
 }

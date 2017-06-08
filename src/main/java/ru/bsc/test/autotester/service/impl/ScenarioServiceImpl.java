@@ -15,12 +15,10 @@ import ru.bsc.test.autotester.model.Scenario;
 import ru.bsc.test.autotester.model.ServiceResponse;
 import ru.bsc.test.autotester.model.Step;
 import ru.bsc.test.autotester.model.StepResult;
-import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.repository.ServiceResponseRepository;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
-import ru.bsc.test.autotester.service.StepService;
 import ru.bsc.test.autotester.validation.IgnoringComparator;
 
 import javax.script.ScriptEngine;
@@ -30,6 +28,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -56,25 +56,16 @@ import java.util.stream.Collectors;
 public class ScenarioServiceImpl implements ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
-    private final StepService stepService;
     private final ServiceResponseRepository serviceResponseRepository;
-    private final ProjectRepository projectRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, StepService stepService, ServiceResponseRepository serviceResponseRepository, ProjectRepository projectRepository, ExpectedServiceRequestService expectedServiceRequestService, ServiceRequestsComparatorHelper serviceRequestsComparatorHelper) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService, ServiceRequestsComparatorHelper serviceRequestsComparatorHelper) {
         this.scenarioRepository = scenarioRepository;
-        this.stepService = stepService;
         this.serviceResponseRepository = serviceResponseRepository;
-        this.projectRepository = projectRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.serviceRequestsComparatorHelper = serviceRequestsComparatorHelper;
-    }
-
-    @Override
-    public List<Scenario> findAllByProjectId(Long projectId) {
-        return scenarioRepository.findAllByProjectIdOrderByScenarioGroupIdDescNameAsc(projectId);
     }
 
     @Override
@@ -93,7 +84,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     private Scenario executeScenario(Long scenarioId) {
         Scenario scenario = scenarioRepository.findOne(scenarioId);
-        Project project = projectRepository.findOne(scenario.getProjectId());
+        Project project = scenario.getProject();
 
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
@@ -150,13 +141,13 @@ public class ScenarioServiceImpl implements ScenarioService {
     private Scenario executeSteps(Connection connection, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String sessionUid) {
         if (scenario != null) {
             int failures = 0;
-            for (Step step : stepService.findAllByScenarioId(scenario.getId())) {
+            for (Step step: scenario.getSteps()) {
                 StepResult stepResult = new StepResult(step);
                 scenario.getStepResults().add(stepResult);
                 try {
                     executeTestStep(connection, httpHelper, savedValues, sessionUid, project, step, stepResult);
 
-                    // TODO После выполнения шага необходимо проверить запросы к веб-сервисам
+                    // После выполнения шага необходимо проверить запросы к веб-сервисам
                     serviceRequestsComparatorHelper.assertTestCaseWSRequests(sessionUid, step);
 
                     stepResult.setResult("OK");
@@ -193,13 +184,15 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     private void executeTestStep(Connection connection, HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
+
+        // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setResponses(project, sessionUid, step.getResponses());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, savedValues);
 
         // 2. Подстановка сохраненных параметров в строку запроса
-        String requestUrl = insertSavedValues(step.getRelativeUrl(), savedValues);
+        String requestUrl = insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
         stepResult.setRequestUrl(requestUrl);
 
         // 3. Выполнить запрос
@@ -312,14 +305,10 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void parseExpectedServiceRequestsJmba(String expectedRequestsBaseDir, Scenario scenario) {
         // Костыли для импорта запросов к сервису из конкретного проекта (jbma)
-
-        List<Step> stepList = stepService.findAllByScenarioId(scenario.getId());
-        for (Step step: stepList) {
+        for (Step step: scenario.getSteps()) {
             Long i = 0L;
             String testCaseDir = step.getTmpServiceRequestsDirectory();
             if (testCaseDir != null && !testCaseDir.isEmpty()) {
-
-
 
                 List<ServiceNameResponsePair> servicePairs = parseServiceResponsesString(step.getResponses());
                 for (ServiceNameResponsePair pair : servicePairs) {
@@ -330,7 +319,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                             if (!serviceRequestFile.isDirectory()) {
                                 try {
                                     expectedServiceRequestService.save(new ExpectedServiceRequest(
-                                            step.getId(),
+                                            step,
                                             pair.getServiceName(),
                                             new String(Files.readAllBytes(Paths.get(serviceRequestFile.getPath())), StandardCharsets.UTF_8),
                                             50 * i++
@@ -399,6 +388,16 @@ public class ScenarioServiceImpl implements ScenarioService {
             for (Map.Entry<String, String> value : savedValues.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
                 template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue()));
+            }
+        }
+        return template;
+    }
+
+    private String insertSavedValuesToURL(String template, Map<String, String> savedValues) throws UnsupportedEncodingException {
+        if (template != null) {
+            for (Map.Entry<String, String> value : savedValues.entrySet()) {
+                String key = String.format("%%%s%%", value.getKey());
+                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue(), "UTF-8")));
             }
         }
         return template;

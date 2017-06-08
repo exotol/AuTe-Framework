@@ -2,9 +2,12 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -20,8 +23,8 @@ public class ExpectedServiceRequest implements Serializable {
     public ExpectedServiceRequest() {
     }
 
-    public ExpectedServiceRequest(Long stepId, String serviceName, String expectedServiceRequest, Long sort) {
-        this.stepId = stepId;
+    public ExpectedServiceRequest(Step step, String serviceName, String expectedServiceRequest, Long sort) {
+        this.step = step;
         this.serviceName = serviceName;
         this.expectedServiceRequest = expectedServiceRequest;
         this.sort = sort;
@@ -33,8 +36,9 @@ public class ExpectedServiceRequest implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "STEP_ID")
-    private Long stepId;
+    @ManyToOne(targetEntity = Step.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "STEP_ID")
+    private Step step;
 
     @Column(name = "SERVICE_NAME")
     private String serviceName;
@@ -54,11 +58,11 @@ public class ExpectedServiceRequest implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getStepId() {
-        return stepId;
+    public Step getStep() {
+        return step;
     }
-    public void setStepId(Long stepId) {
-        this.stepId = stepId;
+    public void setStep(Step step) {
+        this.step = step;
     }
     public String getServiceName() {
         return serviceName;

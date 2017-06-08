@@ -64,9 +64,9 @@
                                 <div style="display: none;">
                                     <a href="${pageContext.request.contextPath}/step/${stepResult.step.id}" style="font-size: smaller;" target="_blank">Edit step</a>
                                     <h5>Actual</h5>
-                                    <textarea rows="5" readonly style="width: 90%;">${stepResult.actual}</textarea>
+                                    <textarea rows="5" readonly style="width: 90%;"><c:out value="${stepResult.actual}"/></textarea>
                                     <h5>Expected</h5>
-                                    <textarea rows="5" readonly style="width: 90%;">${stepResult.expected}</textarea>
+                                    <textarea rows="5" readonly style="width: 90%;"><c:out value="${stepResult.expected}"/></textarea>
                                     <pre><c:out value="${stepResult.details}"/></pre>
                                 </div>
                                 <hr style="margin-top: 8px; margin-bottom: 4px;"/>

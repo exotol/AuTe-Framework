@@ -23,11 +23,6 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public List<Step> findAllByScenarioId(Long scenarioId) {
-        return stepRepository.findAllByScenarioIdOrderBySortAsc(scenarioId);
-    }
-
-    @Override
     public List<Step> saveSteps(List<Step> steps) {
         return stepRepository.save(steps);
     }

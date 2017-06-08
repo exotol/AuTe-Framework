@@ -29,13 +29,13 @@ public class RestTestController {
     }
 
     @RequestMapping(value = "step/save", method = RequestMethod.POST)
-    public List<Step> saveSteps(@RequestBody List<Step> step) {
-        return stepService.saveSteps(step);
+    public void saveSteps(@RequestBody List<Step> step) {
+        stepService.saveSteps(step);
     }
 
     @RequestMapping(value = "step/save-expected-service-requests", method = RequestMethod.POST)
-    public List<ExpectedServiceRequest> saveExpectedServiceRequests(@RequestBody List<ExpectedServiceRequest> expectedRequest) {
-        return expectedServiceRequestService.save(expectedRequest);
+    public void saveExpectedServiceRequests(@RequestBody List<ExpectedServiceRequest> expectedRequest) {
+        expectedServiceRequestService.save(expectedRequest);
     }
 
     @RequestMapping(value = "step/delete-expected-request", method = RequestMethod.POST)
@@ -45,7 +45,7 @@ public class RestTestController {
         ExpectedServiceRequest request = expectedServiceRequestService.findOne(expectedServiceRequestId);
         if (request != null) {
             expectedServiceRequestService.delete(request);
-            return "redirect:/step/" + request.getStepId();
+            return "redirect:/step/" + request.getStep().getId();
         }
         return "redirect:/";
     }

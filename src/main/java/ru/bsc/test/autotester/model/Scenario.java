@@ -2,9 +2,14 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -30,11 +35,16 @@ public class Scenario implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "PROJECT_ID")
-    private Long projectId;
+    @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
 
     @Column(name = "SCENARIO_GROUP_ID")
     private Long scenarioGroupId;
+
+    @ManyToOne(targetEntity = ScenarioGroup.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "SCENARIO_GROUP_ID", insertable = false, updatable = false)
+    private ScenarioGroup scenarioGroup;
 
     @Transient
     private List<StepResult> stepResults = null;
@@ -51,6 +61,10 @@ public class Scenario implements Serializable {
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
 
+    @OneToMany(mappedBy = "scenario", fetch = FetchType.LAZY)
+    @OrderBy("SORT ASC")
+    private List<Step> steps;
+
     public Long getId() {
         return id;
     }
@@ -65,13 +79,15 @@ public class Scenario implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public Long getProjectId() {
-        return projectId;
+
+    public Project getProject() {
+        return project;
     }
-    @SuppressWarnings("unused")
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+
+    public void setProject(Project project) {
+        this.project = project;
     }
+
     public Long getScenarioGroupId() {
         return scenarioGroupId;
     }
@@ -107,5 +123,20 @@ public class Scenario implements Serializable {
     }
     public void setAfterScenarioId(Long afterScenarioId) {
         this.afterScenarioId = afterScenarioId;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
+    public ScenarioGroup getScenarioGroup() {
+        return scenarioGroup;
+    }
+
+    public void setScenarioGroup(ScenarioGroup scenarioGroup) {
+        this.scenarioGroup = scenarioGroup;
     }
 }

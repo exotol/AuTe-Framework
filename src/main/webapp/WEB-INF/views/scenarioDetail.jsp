@@ -41,7 +41,7 @@
     <form method="post" id="steps-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/save" onsubmit="return false;">
         <table class="table table-condensed steps-table">
             <tr>
-                <th>Sort</th>
+                <th style="width: 1%;">Sort</th>
                 <th>
                     URL<br/>Request body<br/>
                     <small style="font-weight: initial; font-size: smaller; color: gray;">${project.serviceUrl}</small>
@@ -58,13 +58,13 @@
             <c:forEach items="${steps}" var="step" varStatus="status">
                 <tr>
                     <td>
-                        <input type="text" class="form-control" name="step[${status.index}][sort]" size="3" value="${step.sort}">
+                        <input type="text" style="width: inherit;" class="form-control" name="step[${status.index}][sort]" size="3" value="${step.sort}">
                         <c:if test="${empty stepDetail}">
                             <span><a href="${pageContext.request.contextPath}/step/${step.id}" target="_blank">Edit</a></span>
                         </c:if>
                         <input type="hidden" name="step[${status.index}][id]" value="${step.id}"/>
 
-                        <input type="hidden" name="step[${status.index}][scenarioId]" value="${step.scenarioId}"/>
+                        <input type="hidden" name="step[${status.index}][scenario][id]" value="${step.scenario.id}"/>
                         <input type="hidden" name="step[${status.index}][dbParams]" value="${step.dbParams}"/>
                         <input type="hidden" name="step[${status.index}][tmpServiceRequestsDirectory]" value="${step.tmpServiceRequestsDirectory}"/>
                     </td>
@@ -82,7 +82,7 @@
                         <textarea class="form-control" rows="10" name="step[${status.index}][request]">${step.request}</textarea>
                     </td>
                     <td width="10%"><textarea class="form-control" rows="12" name="step[${status.index}][requestHeaders]">${step.requestHeaders}</textarea></td>
-                    <td width="30%"><textarea class="form-control" rows="12" name="step[${status.index}][expectedResponse]">${step.expectedResponse}</textarea></td>
+                    <td width="30%"><textarea class="form-control" rows="12" name="step[${status.index}][expectedResponse]"><c:out value="${step.expectedResponse}"/></textarea></td>
                     <td>
                         <label for="expectedStatusCode${status.index}">Expected status code <a href="#" onclick="alert('Example:\n404\n200\n500\nempty value - ignore status code'); return false;">(?)</a></label>
                         <input type="text" class="form-control" id="expectedStatusCode${status.index}" name="step[${status.index}][expectedStatusCode]" size="3" value="${step.expectedStatusCode}">
@@ -146,7 +146,7 @@
                     <tr>
                         <td>
                             <input type="hidden" name="expectedRequest[${status.index}][id]" value="${expectedRequest.id}"/>
-                            <input type="hidden" name="expectedRequest[${status.index}][stepId]" value="${expectedRequest.stepId}"/>
+                            <input type="hidden" name="expectedRequest[${status.index}][step][id]" value="${expectedRequest.step.id}"/>
                             <input class="form-control" style="width: inherit;" size="3" name="expectedRequest[${status.index}][sort]" value="${expectedRequest.sort}"/>
                         </td>
                         <td><input class="form-control" name="expectedRequest[${status.index}][serviceName]" value="${expectedRequest.serviceName}"/></td>

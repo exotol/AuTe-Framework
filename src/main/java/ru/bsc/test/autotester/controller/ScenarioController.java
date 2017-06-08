@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ru.bsc.test.autotester.model.Project;
 import ru.bsc.test.autotester.model.Scenario;
-import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -23,37 +21,32 @@ public class ScenarioController {
 
     private StepService stepService;
     private ScenarioService scenarioService;
-    private ProjectService projectService;
 
     @Autowired
-    public ScenarioController(StepService stepService, ScenarioService scenarioService, ProjectService projectService) {
+    public ScenarioController(StepService stepService, ScenarioService scenarioService) {
         this.stepService = stepService;
         this.scenarioService = scenarioService;
-        this.projectService = projectService;
     }
 
     @RequestMapping("{scenarioId}")
     public ModelAndView steps(@PathVariable long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
-        Project project = projectService.findOne(scenario.getProjectId());
-
         ModelAndView model = new ModelAndView("scenarioDetail");
         model.addObject("scenario", scenario);
-        model.addObject("project", project);
+        model.addObject("project", scenario.getProject());
 
-        model.addObject("steps", stepService.findAllByScenarioId(scenarioId));
+        model.addObject("steps", scenario.getSteps());
         return model;
     }
 
     @RequestMapping(value = "{scenarioId}/settings", method = RequestMethod.GET)
     public ModelAndView scenarioSettings(@PathVariable long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
-        Project project = projectService.findOne(scenario.getProjectId());
 
         ModelAndView model = new ModelAndView("scenarioSettings");
         model.addObject("scenario", scenario);
-        model.addObject("project", project);
-        model.addObject("projectScenarios", scenarioService.findAllByProjectId(project.getId()));
+        model.addObject("project", scenario.getProject());
+        model.addObject("projectScenarios", scenario.getProject().getScenarios());
         return model;
     }
 
@@ -101,7 +94,7 @@ public class ScenarioController {
         Scenario scenario = scenarioService.findOne(scenarioId);
         if (scenario != null) {
             scenarioService.delete(scenario);
-            return "redirect:/project/" + scenario.getProjectId();
+            return "redirect:/project/" + scenario.getProject().getId();
         } else {
             return "redirect:/";
         }

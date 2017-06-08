@@ -2,15 +2,15 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -29,11 +29,9 @@ public class ScenarioGroup implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "PROJECT_ID")
-    private Long projectId;
-
-    @Transient
-    private List<StepResult> stepResults = null;
+    @ManyToOne(targetEntity = Project.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
 
     public Long getId() {
         return id;
@@ -53,19 +51,11 @@ public class ScenarioGroup implements Serializable {
         this.name = name;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    @SuppressWarnings("unused")
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public List<StepResult> getStepResults() {
-        if (stepResults == null) {
-            stepResults = new LinkedList<>();
-        }
-        return stepResults;
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

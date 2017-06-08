@@ -41,9 +41,4 @@ public class ExpectedServiceRequestServiceImpl implements ExpectedServiceRequest
     public void delete(ExpectedServiceRequest request) {
         expectedServiceRequestRepository.delete(request);
     }
-
-    @Override
-    public List<ExpectedServiceRequest> findAllByStepIdOrderBySort(Long id) {
-        return expectedServiceRequestRepository.findAllByStepIdOrderBySort(id);
-    }
 }

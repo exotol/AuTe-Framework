@@ -9,7 +9,6 @@ import java.util.List;
  *
  */
 public interface StepService {
-    List<Step> findAllByScenarioId(Long scenarioId);
     List<Step> saveSteps(List<Step> steps);
     void deleteStep(Long stepId);
     Step findOne(Long stepId);

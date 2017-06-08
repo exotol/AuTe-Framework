@@ -73,7 +73,6 @@ function restSaveForm(formSelector, stateSelector, url) {
         contentType: 'application/json',
         url: contextPath + url,
         data: JSON.stringify(json[Object.keys(json)[0]]),
-        dataType: 'json',
         success: function (data) {
             console.log('result:', data);
             $(stateSelector).html('Saved').css('color', 'darkgreen');

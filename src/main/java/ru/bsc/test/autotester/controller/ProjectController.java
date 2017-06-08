@@ -16,7 +16,6 @@ import ru.bsc.test.autotester.model.Scenario;
 import ru.bsc.test.autotester.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
-import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -35,14 +34,12 @@ public class ProjectController {
     private ScenarioService scenarioService;
     private StepService stepService;
     private ProjectService projectService;
-    private ScenarioGroupService scenarioGroupService;
 
     @Autowired
-    public ProjectController(ScenarioService scenarioService, StepService stepService, ProjectService projectService, ScenarioGroupService scenarioGroupService) {
+    public ProjectController(ScenarioService scenarioService, StepService stepService, ProjectService projectService) {
         this.scenarioService = scenarioService;
         this.stepService = stepService;
         this.projectService = projectService;
-        this.scenarioGroupService = scenarioGroupService;
     }
 
     @RequestMapping("{projectId}")
@@ -50,10 +47,11 @@ public class ProjectController {
             @PathVariable long projectId,
             @RequestParam(required = false) Long scenarioGroupId
     ) {
+        Project project = projectService.findOne(projectId);
         ModelAndView model = new ModelAndView("projectDetail");
-        model.addObject("scenarios", scenarioGroupId == null ? scenarioService.findAllByProjectId(projectId) : scenarioService.findAllByProjectIdAndScenarioGroupId(projectId, scenarioGroupId));
-        model.addObject("project", projectService.findOne(projectId));
-        model.addObject("scenarioGroups", scenarioGroupService.findAllByProjectId(projectId));
+        model.addObject("scenarios", scenarioGroupId == null ? project.getScenarios() : scenarioService.findAllByProjectIdAndScenarioGroupId(projectId, scenarioGroupId));
+        model.addObject("project", project);
+        model.addObject("scenarioGroups", project.getScenarioGroups());
         model.addObject("scenarioGroupId", scenarioGroupId == null ? 0 : scenarioGroupId);
         return model;
     }
@@ -62,10 +60,11 @@ public class ProjectController {
     public ModelAndView settings(
             @PathVariable long projectId
     ) {
+        Project project = projectService.findOne(projectId);
         ModelAndView model = new ModelAndView("projectSettings");
-        model.addObject("project", projectService.findOne(projectId));
-        model.addObject("scenarioGroups", scenarioGroupService.findAllByProjectId(projectId));
-        model.addObject("projectScenarios", scenarioService.findAllByProjectId(projectId));
+        model.addObject("project", project);
+        model.addObject("scenarioGroups", project.getScenarioGroups());
+        model.addObject("projectScenarios", project.getScenarios());
         return model;
     }
 
@@ -108,8 +107,7 @@ public class ProjectController {
     ) {
         Project project = projectService.findOne(projectId);
 
-        List<Scenario> projectScenarios = scenarioService.findAllByProjectId(project.getId());
-        for (Scenario scenario: projectScenarios) {
+        for (Scenario scenario: project.getScenarios()) {
             scenarioService.parseExpectedServiceRequestsJmba(expectedRequestsBaseDir, scenario);
         }
 
@@ -122,13 +120,14 @@ public class ProjectController {
             @PathVariable long projectId,
             @RequestParam("scenarios[]") Long[] scenarios
     ) {
+        Project project = projectService.findOne(projectId);
         List<Scenario> scenarioResultList = scenarioService.executeScenarioList(scenarios);
 
         ModelAndView model = new ModelAndView("projectDetail");
         model.addObject("executeResult", 1);
         model.addObject("scenarios", scenarioResultList);
-        model.addObject("project", projectService.findOne(projectId));
-        model.addObject("scenarioGroups", scenarioGroupService.findAllByProjectId(projectId));
+        model.addObject("project", project);
+        model.addObject("scenarioGroups", project.getScenarioGroups());
         return model;
     }
 
@@ -161,7 +160,7 @@ public class ProjectController {
 
                 sheet.createRow(rowIndex++).createCell(0).setCellValue("# " + scenario.getName());
 
-                for (Step step : stepService.findAllByScenarioId(scenario.getId())) {
+                for (Step step : scenario.getSteps()) {
                     row = sheet.createRow(rowIndex++);
                     row.createCell(0).setCellValue(step.getRelativeUrl());
                     row.createCell(1).setCellValue(step.getRequest());
@@ -184,20 +183,21 @@ public class ProjectController {
             @RequestParam Long scenarioGroup,
             @RequestParam("excelFile") MultipartFile excelFile
     ) throws IOException {
+        Project project = projectService.findOne(projectId);
         ExcelTestScenarioParser excelTestScenarioParser = new ExcelTestScenarioParser(excelFile.getInputStream());
         List<List<Step>> scenarioList = excelTestScenarioParser.parse();
 
         int scenarioIndex = 1;
         for (List<Step> scenario: scenarioList) {
             Scenario scenarioModel = new Scenario();
-            scenarioModel.setProjectId(projectId);
+            scenarioModel.setProject(project);
             scenarioModel.setScenarioGroupId(scenarioGroup);
             scenarioModel.setName(excelFile.getOriginalFilename() + " " + scenarioIndex++);
             scenarioModel = scenarioService.save(scenarioModel);
 
             Long i = 0L;
             for (Step step: scenario) {
-                step.setScenarioId(scenarioModel.getId());
+                step.setScenario(scenarioModel);
                 step.setSort(50 * ++i);
             }
             stepService.saveSteps(scenario);
@@ -212,9 +212,10 @@ public class ProjectController {
             @PathVariable long projectId,
             @RequestParam Long scenarioGroupId
     ) throws IOException {
+        Project project = projectService.findOne(projectId);
         Scenario scenario = new Scenario();
         scenario.setName(name);
-        scenario.setProjectId(projectId);
+        scenario.setProject(project);
         scenario.setScenarioGroupId(scenarioGroupId);
         scenario = scenarioService.save(scenario);
         return "redirect:/scenario/" + scenario.getId();

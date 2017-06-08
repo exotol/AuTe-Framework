@@ -58,6 +58,7 @@ public class SpringRootConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
+        factory.getJpaPropertyMap().put("hibernate.enable_lazy_load_no_trans", true);
         factory.setPackagesToScan("ru.bsc.test.autotester");
         factory.setDataSource(dataSource());
         return factory;
