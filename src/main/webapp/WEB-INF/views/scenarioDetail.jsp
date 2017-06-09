@@ -79,10 +79,24 @@
                         </select>
                         <input type="text" class="form-control" style="float: right; width: 85%; display: inline;" name="step[${status.index}][relativeUrl]" value="${step.relativeUrl}" aria-describedby="basic-addon3">
 
-                        <textarea class="form-control" rows="10" name="step[${status.index}][request]">${step.request}</textarea>
+                        <!-- ${step.requestBodyType} -->
+                        <select class="form-control" name="step[${status.index}][requestBodyType]" style="width: initial; display: inline; font-size: small; height: inherit;">
+                            <option value="0" ${step.requestBodyType eq 'FORM' ? '':'selected'}>JSON request body</option>
+                            <option value="1" ${step.requestBodyType eq 'FORM' ? 'selected':''}>FORM-data request body</option>
+                        </select>
+                        <a href="#" onclick="alert('JSON request body example:\n{id: 1, attributeA: \'valueA\', attributeB: \'valueB\'}' + '\n\nFORM-data request body example:\n id=1\n attributeA=valueA\n attributeB=valueB'); return false;">(?)</a>
+
+                        <textarea style="height: 143px;" class="form-control" rows="9" name="step[${status.index}][request]">${step.request}</textarea>
                     </td>
                     <td width="10%"><textarea class="form-control" rows="12" name="step[${status.index}][requestHeaders]">${step.requestHeaders}</textarea></td>
-                    <td width="30%"><textarea class="form-control" rows="12" name="step[${status.index}][expectedResponse]"><c:out value="${step.expectedResponse}"/></textarea></td>
+                    <td width="30%">
+                        <!-- ${step.requestBodyType} -->
+                        <select class="form-control" name="step[${status.index}][expectedResponseIgnore]" style="width: initial; display: inline; font-size: small; height: inherit;">
+                            <option value="false" ${step.expectedResponseIgnore ? '':'selected'}>-</option>
+                            <option value="true" ${step.expectedResponseIgnore ? 'selected':''}>IGNORE response</option>
+                        </select>
+                        <textarea class="form-control" rows="10" name="step[${status.index}][expectedResponse]"><c:out value="${step.expectedResponse}"/></textarea>
+                    </td>
                     <td>
                         <label for="expectedStatusCode${status.index}">Expected status code <a href="#" onclick="alert('Example:\n404\n200\n500\nempty value - ignore status code'); return false;">(?)</a></label>
                         <input type="text" class="form-control" id="expectedStatusCode${status.index}" name="step[${status.index}][expectedStatusCode]" size="3" value="${step.expectedStatusCode}">

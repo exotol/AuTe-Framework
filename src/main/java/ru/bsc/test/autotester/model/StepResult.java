@@ -11,6 +11,7 @@ public class StepResult {
     private String expected;
     private String actual;
     private String requestUrl;
+    private String requestBody;
 
     public StepResult(Step step) {
         this.step = step;
@@ -62,5 +63,13 @@ public class StepResult {
 
     public String getRequestUrl() {
         return requestUrl;
+    }
+
+    public String getRequestBody() {
+        return requestBody;
+    }
+
+    public void setRequestBody(String requestBody) {
+        this.requestBody = requestBody;
     }
 }

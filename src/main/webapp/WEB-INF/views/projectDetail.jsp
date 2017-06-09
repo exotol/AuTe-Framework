@@ -63,10 +63,22 @@
                                 <a href="#" onclick="$(this).next().toggle(); return false;">Details</a>
                                 <div style="display: none;">
                                     <a href="${pageContext.request.contextPath}/step/${stepResult.step.id}" style="font-size: smaller;" target="_blank">Edit step</a>
-                                    <h5>Actual</h5>
-                                    <textarea rows="5" readonly style="width: 90%;"><c:out value="${stepResult.actual}"/></textarea>
-                                    <h5>Expected</h5>
-                                    <textarea rows="5" readonly style="width: 90%;"><c:out value="${stepResult.expected}"/></textarea>
+                                    <h4 style="font-weight: bold;">Request body</h4>
+                                    <textarea rows="5" readonly style="width: 97.5%;"><c:out value="${stepResult.requestBody}"/></textarea>
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <th>Actual</th>
+                                            <th>Expected</th>
+                                        </tr>
+                                        <tr>
+                                            <td width="50%">
+                                                <textarea rows="10" readonly style="width: 95%;"><c:out value="${stepResult.actual}"/></textarea>
+                                            </td>
+                                            <td>
+                                                <textarea rows="10" readonly style="width: 95%;"><c:out value="${stepResult.expected}"/></textarea>
+                                            </td>
+                                        </tr>
+                                    </table>
                                     <pre><c:out value="${stepResult.details}"/></pre>
                                 </div>
                                 <hr style="margin-top: 8px; margin-bottom: 4px;"/>

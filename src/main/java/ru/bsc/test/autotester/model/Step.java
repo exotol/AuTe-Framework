@@ -23,6 +23,10 @@ import java.util.List;
 @Table(name = "AT_STEP")
 public class Step implements Serializable {
 
+    public enum RequestBodyType {
+        JSON, FORM
+    }
+
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
@@ -55,6 +59,9 @@ public class Step implements Serializable {
     @Column(name = "EXPECTED_RESPONSE")
     private String expectedResponse;
 
+    @Column(name = "EXPECTED_RESPONSE_IGNORE")
+    private Boolean expectedResponseIgnore;
+
     @Column(name = "SAVING_VALUES")
     private String savingValues;
 
@@ -78,6 +85,9 @@ public class Step implements Serializable {
 
     @Column(name = "JSON_XPATH")
     private String jsonXPath;
+
+    @Column(name = "REQUEST_BODY_TYPE")
+    private RequestBodyType requestBodyType;
 
     public Step() {
     }
@@ -184,20 +194,28 @@ public class Step implements Serializable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-
     public Scenario getScenario() {
         return scenario;
     }
-
     public void setScenario(Scenario scenario) {
         this.scenario = scenario;
     }
-
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         return expectedServiceRequests;
     }
-
     public void setExpectedServiceRequests(List<ExpectedServiceRequest> expectedServiceRequests) {
         this.expectedServiceRequests = expectedServiceRequests;
+    }
+    public RequestBodyType getRequestBodyType() {
+        return requestBodyType;
+    }
+    public void setRequestBodyType(RequestBodyType requestBodyType) {
+        this.requestBodyType = requestBodyType;
+    }
+    public boolean isExpectedResponseIgnore() {
+        return expectedResponseIgnore == null ? false : expectedResponseIgnore;
+    }
+    public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
+        this.expectedResponseIgnore = expectedResponseIgnore;
     }
 }

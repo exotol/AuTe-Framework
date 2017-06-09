@@ -93,7 +93,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         sessionUid = "-";
 
 
-        // TODO Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
+        // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Connection connection = null;
         if (project.getDbUrl() != null) {
             try {
@@ -156,7 +156,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                     e.printStackTrace(new PrintWriter(sw));
 
                     stepResult.setResult("Fail");
-                    stepResult.setDetails(sw.toString());
+                    stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                     failures++;
                 }
             }
@@ -195,13 +195,23 @@ public class ScenarioServiceImpl implements ScenarioService {
         String requestUrl = insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
         stepResult.setRequestUrl(requestUrl);
 
+        // 2.1 Подстановка сохраненных параметров в тело запроса
+        String requestBody = insertSavedValues(step.getRequest(), savedValues);
+        stepResult.setRequestBody(requestBody);
+
         // 3. Выполнить запрос
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
                 project.getServiceUrl() + requestUrl,
-                insertSavedValues(step.getRequest(), savedValues),
+                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ?
+                        null : requestBody,
+                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ?
+                        parseFormData(requestBody) : null,
                 step.getRequestHeaders(),
                 sessionUid);
+
+        stepResult.setActual(responseData.getContent());
+        stepResult.setExpected(step.getExpectedResponse());
 
         // 4. Сохранить полученные значения
         saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
@@ -211,7 +221,6 @@ public class ScenarioServiceImpl implements ScenarioService {
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
         // 5.1. Расчитать выражения <f></f>
         expectedResponse = evaluateExpressions(expectedResponse);
-        stepResult.setActual(responseData.getContent());
         stepResult.setExpected(expectedResponse);
 
         // 6. Проверить код статуса ответа
@@ -222,17 +231,31 @@ public class ScenarioServiceImpl implements ScenarioService {
         }
 
         // 7. Сравнить JSON ответ с ожидаемым
-        if (!emptyString(step.getExpectedResponse()) || !emptyString(responseData.getContent())) {
-            try {
-                JSONAssert.assertEquals(
-                        expectedResponse,
-                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                        new IgnoringComparator(JSONCompareMode.LENIENT)
-                );
-            } catch (Error assertionError) {
-                throw new Exception(assertionError);
+        if (!step.isExpectedResponseIgnore()) {
+            if (!emptyString(expectedResponse) || !emptyString(responseData.getContent())) {
+                // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
+                if (!responseData.getContent().equals(expectedResponse)) {
+                    try {
+                        JSONAssert.assertEquals(
+                                expectedResponse,
+                                responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                                new IgnoringComparator(JSONCompareMode.LENIENT)
+                        );
+                    } catch (Error assertionError) {
+                        throw new Exception(assertionError);
+                    }
+                }
             }
         }
+    }
+
+    private Map<String, String> parseFormData(String formDataString) {
+        Map<String, String> formDataMap = new HashMap<>();
+        for (String line: formDataString.split("\\r?\\n")) {
+            String[] lineParts = line.split("=", 2);
+            formDataMap.put(lineParts[0].trim(), lineParts[1].trim());
+        }
+        return formDataMap;
     }
 
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
@@ -241,7 +264,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
                 String lines[] = step.getJsonXPath().split("\\r?\\n");
                 for (String line: lines) {
-                    String[] lineParts = line.split("=");
+                    String[] lineParts = line.split("=", 2);
                     String parameterName = lineParts[0].trim();
                     String jsonXPath = lineParts[1];
 

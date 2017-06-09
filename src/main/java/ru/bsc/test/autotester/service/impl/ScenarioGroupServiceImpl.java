@@ -6,8 +6,6 @@ import ru.bsc.test.autotester.model.ScenarioGroup;
 import ru.bsc.test.autotester.repository.ScenarioGroupRepository;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
 
-import java.util.List;
-
 /**
  * Created by sdoroshin on 21.03.2017.
  *
@@ -20,11 +18,6 @@ public class ScenarioGroupServiceImpl implements ScenarioGroupService {
     @Autowired
     public ScenarioGroupServiceImpl(ScenarioGroupRepository scenarioGroupRepository) {
         this.scenarioGroupRepository = scenarioGroupRepository;
-    }
-
-    @Override
-    public List<ScenarioGroup> findAllByProjectId(Long projectId) {
-        return scenarioGroupRepository.findAllByProjectIdOrderByName(projectId);
     }
 
     @Override

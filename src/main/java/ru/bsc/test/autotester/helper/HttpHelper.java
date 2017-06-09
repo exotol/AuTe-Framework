@@ -1,9 +1,13 @@
 package ru.bsc.test.autotester.helper;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -19,13 +23,17 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 22/05/17.
@@ -45,7 +53,7 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequest, String headers, String sessionUid) throws IOException, URISyntaxException {
+    public ResponseHelper request(String method, String url, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String sessionUid) throws IOException, URISyntaxException {
         URI uri = new URIBuilder(url).build();
 
         HttpRequestBase httpRequest;
@@ -68,7 +76,20 @@ public class HttpHelper {
                 break;
         }
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
-            ((HttpEntityEnclosingRequestBase)httpRequest).setEntity(new StringEntity(jsonRequest == null ? "" : jsonRequest, ContentType.APPLICATION_JSON));
+            HttpEntity httpEntity = null;
+            if (jsonRequestBody != null) {
+                httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
+            } else if (formDataPostParameters != null) {
+                List<NameValuePair> pairList = formDataPostParameters.entrySet()
+                        .stream()
+                        .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+                        .collect(Collectors.toList());
+                httpEntity = new UrlEncodedFormEntity(pairList, Consts.UTF_8);
+            }
+
+            if (httpEntity != null) {
+                ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
+            }
         }
 
         httpRequest.addHeader("CorrelationId", sessionUid);
