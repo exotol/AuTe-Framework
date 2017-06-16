@@ -95,7 +95,7 @@
                             <option value="false" ${step.expectedResponseIgnore ? '':'selected'}>-</option>
                             <option value="true" ${step.expectedResponseIgnore ? 'selected':''}>IGNORE response</option>
                         </select>
-                        <textarea class="form-control" rows="10" name="step[${status.index}][expectedResponse]"><c:out value="${step.expectedResponse}"/></textarea>
+                        <textarea class="form-control" rows="10" style="height: 177px;" name="step[${status.index}][expectedResponse]"><c:out value="${step.expectedResponse}"/></textarea>
                     </td>
                     <td>
                         <label for="expectedStatusCode${status.index}">Expected status code <a href="#" onclick="alert('Example:\n404\n200\n500\nempty value - ignore status code'); return false;">(?)</a></label>

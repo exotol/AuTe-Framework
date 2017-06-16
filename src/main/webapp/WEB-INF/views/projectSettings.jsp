@@ -52,6 +52,13 @@
     <h4>Import from excel</h4>
     <form method="post" action="${pageContext.request.contextPath}/project/${project.id}/import-from-excel" enctype="multipart/form-data">
         <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
+        <input type="file" name="excelFile"/><br/>
         <select class="form-control" style="width: inherit;" name="scenarioGroup">
             <option value="">-</option>
             <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>

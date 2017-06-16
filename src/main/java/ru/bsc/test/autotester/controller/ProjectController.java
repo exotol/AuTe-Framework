@@ -181,26 +181,30 @@ public class ProjectController {
     public String importScenarioFromExcel(
             @PathVariable long projectId,
             @RequestParam Long scenarioGroup,
-            @RequestParam("excelFile") MultipartFile excelFile
+            @RequestParam("excelFile") MultipartFile[] excelFile
     ) throws IOException {
         Project project = projectService.findOne(projectId);
-        ExcelTestScenarioParser excelTestScenarioParser = new ExcelTestScenarioParser(excelFile.getInputStream());
-        List<List<Step>> scenarioList = excelTestScenarioParser.parse();
+        for (MultipartFile multipartFile: excelFile) {
+            if (!multipartFile.isEmpty()) {
+                ExcelTestScenarioParser excelTestScenarioParser = new ExcelTestScenarioParser(multipartFile.getInputStream());
+                List<List<Step>> scenarioList = excelTestScenarioParser.parse();
 
-        int scenarioIndex = 1;
-        for (List<Step> scenario: scenarioList) {
-            Scenario scenarioModel = new Scenario();
-            scenarioModel.setProject(project);
-            scenarioModel.setScenarioGroupId(scenarioGroup);
-            scenarioModel.setName(excelFile.getOriginalFilename() + " " + scenarioIndex++);
-            scenarioModel = scenarioService.save(scenarioModel);
+                int scenarioIndex = 1;
+                for (List<Step> scenario : scenarioList) {
+                    Scenario scenarioModel = new Scenario();
+                    scenarioModel.setProject(project);
+                    scenarioModel.setScenarioGroupId(scenarioGroup);
+                    scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
+                    scenarioModel = scenarioService.save(scenarioModel);
 
-            Long i = 0L;
-            for (Step step: scenario) {
-                step.setScenario(scenarioModel);
-                step.setSort(50 * ++i);
+                    Long i = 0L;
+                    for (Step step : scenario) {
+                        step.setScenario(scenarioModel);
+                        step.setSort(50 * ++i);
+                    }
+                    stepService.saveSteps(scenario);
+                }
             }
-            stepService.saveSteps(scenario);
         }
 
         return "redirect:/project/" + projectId;
