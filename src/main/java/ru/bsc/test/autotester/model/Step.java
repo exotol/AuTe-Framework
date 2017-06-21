@@ -2,12 +2,10 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -33,11 +31,11 @@ public class Step implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @ManyToOne(targetEntity = Scenario.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "SCENARIO_ID")
-    private Scenario scenario;
+    @Column(name = "SCENARIO_ID")
+    private Long scenarioId;
 
-    @OneToMany(mappedBy = "step", fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinColumn(name="STEP_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
 
@@ -194,12 +192,15 @@ public class Step implements Serializable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-    public Scenario getScenario() {
-        return scenario;
+
+    public Long getScenarioId() {
+        return scenarioId;
     }
-    public void setScenario(Scenario scenario) {
-        this.scenario = scenario;
+
+    public void setScenarioId(Long scenarioId) {
+        this.scenarioId = scenarioId;
     }
+
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         return expectedServiceRequests;
     }

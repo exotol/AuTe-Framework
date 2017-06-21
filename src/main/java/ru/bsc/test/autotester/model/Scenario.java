@@ -2,12 +2,10 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -35,16 +33,11 @@ public class Scenario implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "PROJECT_ID")
-    private Project project;
+    private Long projectId;
 
     @Column(name = "SCENARIO_GROUP_ID")
     private Long scenarioGroupId;
-
-    @ManyToOne(targetEntity = ScenarioGroup.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "SCENARIO_GROUP_ID", insertable = false, updatable = false)
-    private ScenarioGroup scenarioGroup;
 
     @Transient
     private List<StepResult> stepResults = null;
@@ -61,7 +54,8 @@ public class Scenario implements Serializable {
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
 
-    @OneToMany(mappedBy = "scenario", fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinColumn(name="SCENARIO_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<Step> steps;
 
@@ -79,15 +73,6 @@ public class Scenario implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
     public Long getScenarioGroupId() {
         return scenarioGroupId;
     }
@@ -124,19 +109,19 @@ public class Scenario implements Serializable {
     public void setAfterScenarioId(Long afterScenarioId) {
         this.afterScenarioId = afterScenarioId;
     }
-
     public List<Step> getSteps() {
         return steps;
     }
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
-
-    public ScenarioGroup getScenarioGroup() {
-        return scenarioGroup;
+    public Long getProjectId() {
+        return projectId;
     }
-
-    public void setScenarioGroup(ScenarioGroup scenarioGroup) {
-        this.scenarioGroup = scenarioGroup;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+    public void setStepResults(List<StepResult> stepResults) {
+        this.stepResults = stepResults;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ScenarioService {
     List<Scenario> findAllByProjectIdAndScenarioGroupId(Long projectId, Long scenarioGroupId);
 
-    List<Scenario> executeScenarioList(Long[] scenarios);
+    List<Scenario> executeScenarioList(List<Long> scenarioList);
 
     Scenario save(Scenario scenario);
     Scenario findOne(long scenarioId);

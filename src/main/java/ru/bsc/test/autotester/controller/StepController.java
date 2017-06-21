@@ -11,6 +11,7 @@ import ru.bsc.test.autotester.model.ExpectedServiceRequest;
 import ru.bsc.test.autotester.model.Scenario;
 import ru.bsc.test.autotester.model.Step;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
+import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -27,25 +28,27 @@ public class StepController {
 
     private StepService stepService;
     private ScenarioService scenarioService;
+    private final ProjectService projectService;
     private ExpectedServiceRequestService expectedServiceRequestService;
 
     @Autowired
-    public StepController(StepService stepService, ScenarioService scenarioService, ExpectedServiceRequestService expectedServiceRequestService) {
+    public StepController(StepService stepService, ScenarioService scenarioService, ProjectService projectService, ExpectedServiceRequestService expectedServiceRequestService) {
         this.stepService = stepService;
         this.scenarioService = scenarioService;
+        this.projectService = projectService;
         this.expectedServiceRequestService = expectedServiceRequestService;
     }
 
     @RequestMapping("{stepId}")
     public ModelAndView steps(@PathVariable long stepId) {
         Step step = stepService.findOne(stepId);
-        Scenario scenario = step.getScenario();
+        Scenario scenario = scenarioService.findOne(step.getScenarioId());
 
         ModelAndView model = new ModelAndView("scenarioDetail");
         model.addObject("steps", Collections.singletonList(step));
         model.addObject("stepDetail", step);
         model.addObject("scenario", scenario);
-        model.addObject("project", scenario.getProject());
+        model.addObject("project", projectService.findOne(scenario.getProjectId()));
 
         model.addObject("expectedRequestsList", step.getExpectedServiceRequests());
 
@@ -78,7 +81,7 @@ public class StepController {
         if (scenario != null) {
             Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step step = new Step();
-            step.setScenario(scenario);
+            step.setScenarioId(scenario.getId());
             step.setSort(maxSortStep + 50);
             step = stepService.save(step);
             return "redirect:/step/" + step.getId();
@@ -93,7 +96,7 @@ public class StepController {
         Step step = stepService.findOne(stepId);
         if (step != null) {
             stepService.deleteStep(step.getId());
-            return "redirect:/scenario/" + step.getScenario().getId();
+            return "redirect:/scenario/" + step.getScenarioId();
         }
         return "redirect:/";
     }
@@ -108,7 +111,7 @@ public class StepController {
             Long maxSort = step.getExpectedServiceRequests().stream().max(Comparator.comparing(ExpectedServiceRequest::getSort)).map(ExpectedServiceRequest::getSort).orElse(0L);
 
             ExpectedServiceRequest expectedServiceRequest = new ExpectedServiceRequest();
-            expectedServiceRequest.setStep(step);
+            expectedServiceRequest.setStepId(step.getId());
             expectedServiceRequest.setServiceName(serviceName);
             expectedServiceRequest.setSort(maxSort + 50);
             expectedServiceRequestService.save(expectedServiceRequest);

@@ -45,7 +45,8 @@ public class RestTestController {
         ExpectedServiceRequest request = expectedServiceRequestService.findOne(expectedServiceRequestId);
         if (request != null) {
             expectedServiceRequestService.delete(request);
-            return "redirect:/step/" + request.getStep().getId();
+            return "redirect:/step/" + request.getStepId();
+
         }
         return "redirect:/";
     }

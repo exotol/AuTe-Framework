@@ -2,12 +2,10 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -29,9 +27,8 @@ public class ScenarioGroup implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToOne(targetEntity = Project.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID")
-    private Project project;
+    private Long projectId;
 
     public Long getId() {
         return id;
@@ -51,11 +48,11 @@ public class ScenarioGroup implements Serializable {
         this.name = name;
     }
 
-    public Project getProject() {
-        return project;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

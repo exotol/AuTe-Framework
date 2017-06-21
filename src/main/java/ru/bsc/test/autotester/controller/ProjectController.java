@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.autotester.model.Project;
 import ru.bsc.test.autotester.model.Scenario;
 import ru.bsc.test.autotester.model.Step;
@@ -192,14 +194,14 @@ public class ProjectController {
                 int scenarioIndex = 1;
                 for (List<Step> scenario : scenarioList) {
                     Scenario scenarioModel = new Scenario();
-                    scenarioModel.setProject(project);
+                    scenarioModel.setProjectId(project.getId());
                     scenarioModel.setScenarioGroupId(scenarioGroup);
                     scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
                     scenarioModel = scenarioService.save(scenarioModel);
 
                     Long i = 0L;
                     for (Step step : scenario) {
-                        step.setScenario(scenarioModel);
+                        step.setScenarioId(scenarioModel.getId());
                         step.setSort(50 * ++i);
                     }
                     stepService.saveSteps(scenario);
@@ -219,9 +221,21 @@ public class ProjectController {
         Project project = projectService.findOne(projectId);
         Scenario scenario = new Scenario();
         scenario.setName(name);
-        scenario.setProject(project);
+        scenario.setProjectId(project.getId());
         scenario.setScenarioGroupId(scenarioGroupId);
         scenario = scenarioService.save(scenario);
         return "redirect:/scenario/" + scenario.getId();
+    }
+
+    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String getYaml(
+            @PathVariable long projectId
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+
+        Yaml projectYaml = new Yaml();
+        String ret = projectYaml.dump(project);
+        return ret;
     }
 }

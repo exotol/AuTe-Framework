@@ -2,10 +2,10 @@ package ru.bsc.test.autotester.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -50,11 +50,13 @@ public class Project implements Serializable {
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     private List<Scenario> scenarios;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @OneToMany
+    @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     @OrderBy("NAME ASC")
     private List<ScenarioGroup> scenarioGroups;
 

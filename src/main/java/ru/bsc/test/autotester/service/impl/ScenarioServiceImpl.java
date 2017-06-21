@@ -15,6 +15,7 @@ import ru.bsc.test.autotester.model.Scenario;
 import ru.bsc.test.autotester.model.ServiceResponse;
 import ru.bsc.test.autotester.model.Step;
 import ru.bsc.test.autotester.model.StepResult;
+import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.repository.ServiceResponseRepository;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
@@ -56,13 +57,15 @@ import java.util.stream.Collectors;
 public class ScenarioServiceImpl implements ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
+    private final ProjectRepository projectRepository;
     private final ServiceResponseRepository serviceResponseRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService, ServiceRequestsComparatorHelper serviceRequestsComparatorHelper) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ProjectRepository projectRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService, ServiceRequestsComparatorHelper serviceRequestsComparatorHelper) {
         this.scenarioRepository = scenarioRepository;
+        this.projectRepository = projectRepository;
         this.serviceResponseRepository = serviceResponseRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.serviceRequestsComparatorHelper = serviceRequestsComparatorHelper;
@@ -74,17 +77,17 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public List<Scenario> executeScenarioList(Long[] scenarios) {
+    public List<Scenario> executeScenarioList(List<Long> scenarioList) {
         List<Scenario> scenarioResultList = new LinkedList<>();
-        for (long scenarioId: scenarios) {
-            scenarioResultList.add(executeScenario(scenarioId));
+        List<Scenario> scenarioExecuteList = scenarioRepository.findAll(scenarioList);
+        for (Scenario scenario: scenarioExecuteList) {
+            scenarioResultList.add(executeScenario(scenario));
         }
         return scenarioResultList;
     }
 
-    private Scenario executeScenario(Long scenarioId) {
-        Scenario scenario = scenarioRepository.findOne(scenarioId);
-        Project project = scenario.getProject();
+    private Scenario executeScenario(Scenario scenario) {
+        Project project = projectRepository.findOne(scenario.getProjectId());
 
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
@@ -342,7 +345,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                             if (!serviceRequestFile.isDirectory()) {
                                 try {
                                     expectedServiceRequestService.save(new ExpectedServiceRequest(
-                                            step,
+                                            step.getId(),
                                             pair.getServiceName(),
                                             new String(Files.readAllBytes(Paths.get(serviceRequestFile.getPath())), StandardCharsets.UTF_8),
                                             50 * i++
