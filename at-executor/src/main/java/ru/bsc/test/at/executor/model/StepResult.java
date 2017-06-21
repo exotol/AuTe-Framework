@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.model;
+package ru.bsc.test.at.executor.model;
 
 /**
  * Created by sdoroshin on 12.05.2017.

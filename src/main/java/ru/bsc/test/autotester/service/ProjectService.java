@@ -1,6 +1,6 @@
 package ru.bsc.test.autotester.service;
 
-import ru.bsc.test.autotester.model.Project;
+import ru.bsc.test.at.executor.model.Project;
 
 import java.util.List;
 

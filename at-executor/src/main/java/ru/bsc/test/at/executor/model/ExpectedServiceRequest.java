@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.model;
+package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,14 +1,11 @@
-package ru.bsc.test.autotester.helper;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package ru.bsc.test.at.executor.helper;
 
 import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.*;
-import ru.bsc.test.autotester.model.ExpectedServiceRequest;
-import ru.bsc.test.autotester.model.ServiceResponse;
-import ru.bsc.test.autotester.model.Step;
-import ru.bsc.test.autotester.repository.ServiceResponseRepository;
+import org.xmlunit.diff.Diff;
+import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.ServiceResponse;
+import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.ServiceResponseRepository;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,12 +17,11 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 30.05.2017.
  *
  */
-@Service
+@SuppressWarnings("Duplicates")
 public class ServiceRequestsComparatorHelper {
 
     private final ServiceResponseRepository serviceResponseRepository;
 
-    @Autowired
     public ServiceRequestsComparatorHelper(ServiceResponseRepository serviceResponseRepository) {
         this.serviceResponseRepository = serviceResponseRepository;
     }
@@ -48,7 +44,6 @@ public class ServiceRequestsComparatorHelper {
         // Список ожидаемых запросов к сервисам
         List<ExpectedServiceRequest> expectedRequestList = step.getExpectedServiceRequests();
         if (expectedRequestList.isEmpty()) {
-            // TODO проверить прохождение тестов, у которых не настроены ожидаемые вызовы сервисов
             return;
         }
         List<String> expectedServicesName = expectedRequestList.stream().map(ExpectedServiceRequest::getServiceName).collect(Collectors.toList());

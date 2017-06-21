@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.helper;
+package ru.bsc.test.at.executor.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Consts;
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 22/05/17.
  *
  */
+@SuppressWarnings("Duplicates")
 public class HttpHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
