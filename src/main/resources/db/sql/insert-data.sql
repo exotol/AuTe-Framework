@@ -1,0 +1,1 @@
+insert into AT_PROJECT (ID, NAME, SERVICE_URL) VALUES (1, 'TEMP PROJECT', 'http://localhost:8888/');

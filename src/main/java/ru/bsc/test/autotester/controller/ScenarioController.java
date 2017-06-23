@@ -123,12 +123,8 @@ public class ScenarioController {
     @RequestMapping(value = "{scenarioId}/import-from-yaml", method = RequestMethod.POST)
     @ResponseBody
     public String importFromYaml(
-            @RequestParam MultipartFile yamlFile,
-            HttpServletRequest request
+            @RequestParam MultipartFile yamlFile
     ) throws IOException {
-
-        request.getSession().setAttribute("myVariable", "value1");
-
         if (!yamlFile.isEmpty()) {
             Object object = new Yaml().load(yamlFile.getInputStream());
             return object.toString();
