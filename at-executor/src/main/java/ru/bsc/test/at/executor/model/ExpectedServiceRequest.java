@@ -34,7 +34,7 @@ public class ExpectedServiceRequest implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @JoinColumn(name = "STEP_ID")
+    @Column(name = "STEP_ID")
     private Long stepId;
 
     @Column(name = "SERVICE_NAME")

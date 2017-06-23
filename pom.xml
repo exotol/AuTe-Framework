@@ -191,10 +191,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.18</version>
-        </dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.18</version>
+    </dependency>
         
         <dependency>
             <groupId>ru.bsc.test</groupId>

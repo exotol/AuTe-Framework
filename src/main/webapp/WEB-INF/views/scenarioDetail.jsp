@@ -64,7 +64,7 @@
                         </c:if>
                         <input type="hidden" name="step[${status.index}][id]" value="${step.id}"/>
 
-                        <input type="hidden" name="step[${status.index}][scenario][id]" value="${step.scenario.id}"/>
+                        <input type="hidden" name="step[${status.index}][scenario][id]" value="${step.scenarioId}"/>
                         <input type="hidden" name="step[${status.index}][dbParams]" value="${step.dbParams}"/>
                         <input type="hidden" name="step[${status.index}][tmpServiceRequestsDirectory]" value="${step.tmpServiceRequestsDirectory}"/>
                     </td>

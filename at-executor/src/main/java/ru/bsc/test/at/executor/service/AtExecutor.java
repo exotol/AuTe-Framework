@@ -82,11 +82,13 @@ public class AtExecutor {
         }
 
         try {
+            scenario.setStepResults(new LinkedList<>());
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
             Long beforeScenarioId = scenario.getBeforeScenarioId() == null ? project.getBeforeScenarioId() : (scenario.getBeforeScenarioId() < 0 ? null : scenario.getBeforeScenarioId());
             if (beforeScenarioId != null) {
                 Scenario beforeScenario = findOneScenarioById(project, beforeScenarioId);
                 if (beforeScenario != null) {
+                    beforeScenario.setStepResults(new LinkedList<>());
                     executeSteps(connection, beforeScenario, project, httpHelper, savedValues, sessionUid);
                     scenario.getStepResults().addAll(beforeScenario.getStepResults());
                 }
@@ -99,6 +101,7 @@ public class AtExecutor {
             if (afterScenarioId != null) {
                 Scenario afterScenario = findOneScenarioById(project, afterScenarioId);
                 if (afterScenario != null) {
+                    afterScenario.setStepResults(new LinkedList<>());
                     executeSteps(connection, afterScenario, project, httpHelper, savedValues, sessionUid);
                     scenario.getStepResults().addAll(afterScenario.getStepResults());
                 }

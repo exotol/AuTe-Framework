@@ -33,7 +33,7 @@ public class Scenario implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @JoinColumn(name = "PROJECT_ID")
+    @Column(name = "PROJECT_ID")
     private Long projectId;
 
     @Column(name = "SCENARIO_GROUP_ID")
@@ -80,9 +80,6 @@ public class Scenario implements Serializable {
         this.scenarioGroupId = scenarioGroupId;
     }
     public List<StepResult> getStepResults() {
-        if (stepResults == null) {
-            stepResults = new LinkedList<>();
-        }
         return stepResults;
     }
     public void setLastRunAt(Date lastRunAt) {
