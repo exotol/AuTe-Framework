@@ -23,6 +23,7 @@ import ru.bsc.test.autotester.service.StepService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -123,7 +124,7 @@ public class ProjectController {
             @RequestParam("scenarios[]") Long[] scenarios
     ) {
         Project project = projectService.findOne(projectId);
-        List<Scenario> scenarioResultList = scenarioService.executeScenarioList(scenarios);
+        List<Scenario> scenarioResultList = scenarioService.executeScenarioList(Arrays.asList(scenarios));
 
         ModelAndView model = new ModelAndView("projectDetail");
         model.addObject("executeResult", 1);
@@ -227,7 +228,7 @@ public class ProjectController {
         return "redirect:/scenario/" + scenario.getId();
     }
 
-    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String getYaml(
             @PathVariable long projectId
@@ -235,7 +236,6 @@ public class ProjectController {
         Project project = projectService.findOne(projectId);
 
         Yaml projectYaml = new Yaml();
-        String ret = projectYaml.dump(project);
-        return ret;
+        return projectYaml.dump(project);
     }
 }

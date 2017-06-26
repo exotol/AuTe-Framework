@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -33,19 +32,14 @@ public class ExpectedServiceRequest implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-
-    @JoinColumn(name = "STEP_ID")
+    @Column(name = "STEP_ID")
     private Long stepId;
-
     @Column(name = "SERVICE_NAME")
     private String serviceName;
-
     @Column(name = "EXPECTED_SERVICE_REQUEST")
     private String expectedServiceRequest;
-
     @Column(name = "SORT")
     private Long sort;
-
     @Column(name = "IGNORED_TAGS")
     private String ignoredTags;
 
@@ -55,15 +49,12 @@ public class ExpectedServiceRequest implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getStepId() {
         return stepId;
     }
-
     public void setStepId(Long stepId) {
         this.stepId = stepId;
     }
-
     public String getServiceName() {
         return serviceName;
     }
@@ -73,6 +64,7 @@ public class ExpectedServiceRequest implements Serializable {
     public String getExpectedServiceRequest() {
         return expectedServiceRequest;
     }
+    @SuppressWarnings("unused")
     public void setExpectedServiceRequest(String expectedServiceRequest) {
         this.expectedServiceRequest = expectedServiceRequest;
     }
@@ -85,6 +77,7 @@ public class ExpectedServiceRequest implements Serializable {
     public String getIgnoredTags() {
         return ignoredTags;
     }
+    @SuppressWarnings("unused")
     public void setIgnoredTags(String ignoredTags) {
         this.ignoredTags = ignoredTags;
     }

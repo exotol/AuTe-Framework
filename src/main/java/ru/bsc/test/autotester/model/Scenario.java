@@ -33,7 +33,7 @@ public class Scenario implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @JoinColumn(name = "PROJECT_ID")
+    @Column(name = "PROJECT_ID")
     private Long projectId;
 
     @Column(name = "SCENARIO_GROUP_ID")
@@ -112,6 +112,7 @@ public class Scenario implements Serializable {
     public List<Step> getSteps() {
         return steps;
     }
+    @SuppressWarnings("unused")
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
@@ -121,6 +122,7 @@ public class Scenario implements Serializable {
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
+    @SuppressWarnings("unused")
     public void setStepResults(List<StepResult> stepResults) {
         this.stepResults = stepResults;
     }
