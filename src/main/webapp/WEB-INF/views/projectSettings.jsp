@@ -41,7 +41,7 @@
                     </select>
                 </td>
             </tr>
-            <tr><td>Database URL:</td><td><input class="form-control" type="text" name="dbUrl" value="<c:out value="${project.dbUrl}"/>"/></td></tr>
+            <tr><td>Database URL:</td><td><input placeholder="jdbc:oracle:thin:@ip:port:sid" class="form-control" type="text" name="dbUrl" value="<c:out value="${project.dbUrl}"/>"/></td></tr>
             <tr><td>Database user:</td><td><input class="form-control" type="text" name="dbUser" value="<c:out value="${project.dbUser}"/>"/></td></tr>
             <tr><td>Database password</td><td><input class="form-control" type="password" name="dbPassword" value="<c:out value="${project.dbPassword}"/>"/></td></tr>
         </table>
