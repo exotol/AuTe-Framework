@@ -13,6 +13,8 @@ import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
+import java.io.IOException;
+
 /**
  * Created by sdoroshin on 21.03.2017.
  *
