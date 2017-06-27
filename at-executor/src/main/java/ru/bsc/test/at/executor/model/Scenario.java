@@ -59,7 +59,7 @@ public class Scenario implements Serializable {
         this.name = name;
     }
     public Long getScenarioGroupId() {
-        return scen/arioGroupId;
+        return scenarioGroupId;
     }
     public void setScenarioGroupId(Long scenarioGroupId) {
         this.scenarioGroupId = scenarioGroupId;
