@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -41,13 +40,11 @@ public class Step implements Serializable {
     private String relativeUrl;
     @Column(name = "REQUEST_METHOD", length = 6)
     private String requestMethod;
-    @Lob
-    @Column(name = "REQUEST")
+    @Column(name = "REQUEST", columnDefinition = "CLOB")
     private String request;
     @Column(name = "REQUEST_HEADERS", length = 500)
     private String requestHeaders;
-    @Lob
-    @Column(name = "EXPECTED_RESPONSE")
+    @Column(name = "EXPECTED_RESPONSE", columnDefinition = "CLOB")
     private String expectedResponse;
     @Column(name = "EXPECTED_RESPONSE_IGNORE")
     private Boolean expectedResponseIgnore;
@@ -63,7 +60,7 @@ public class Step implements Serializable {
     private Integer expectedStatusCode;
     @Column(name = "SQL", length = 300)
     private String sql;
-    @Column(name = "SQL_SAVED_PARAMETER", length = 255)
+    @Column(name = "SQL_SAVED_PARAMETER")
     private String sqlSavedParameter;
     @Column(name = "JSON_XPATH", length = 500)
     private String jsonXPath;
@@ -175,15 +172,12 @@ public class Step implements Serializable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-
     public Long getScenarioId() {
         return scenarioId;
     }
-
     public void setScenarioId(Long scenarioId) {
         this.scenarioId = scenarioId;
     }
-
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         return expectedServiceRequests;
     }

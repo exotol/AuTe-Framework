@@ -3,7 +3,6 @@ package ru.bsc.test.at.executor.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -37,8 +36,7 @@ public class ServiceResponse implements Serializable {
     private String response;
     @Column(name = "SORT")
     private Long sort;
-    @Lob
-    @Column(name = "ACTUAL_REQUEST")
+    @Column(name = "ACTUAL_REQUEST", columnDefinition = "CLOB")
     private String actualRequest;
     @Column(name = "IS_CALLED")
     private Long isCalled = 0L;

@@ -3,7 +3,6 @@ package ru.bsc.test.at.executor.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -32,8 +31,7 @@ public class ExpectedServiceRequest implements Serializable {
     private Long stepId;
     @Column(name = "SERVICE_NAME", length = 100)
     private String serviceName;
-    @Lob
-    @Column(name = "EXPECTED_SERVICE_REQUEST")
+    @Column(name = "EXPECTED_SERVICE_REQUEST", columnDefinition = "CLOB")
     private String expectedServiceRequest;
     @Column(name = "SORT")
     private Long sort;
