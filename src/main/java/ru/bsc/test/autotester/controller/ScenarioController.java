@@ -60,13 +60,15 @@ public class ScenarioController {
             @PathVariable long scenarioId,
             @RequestParam String name,
             @RequestParam Long beforeScenarioId,
-            @RequestParam Long afterScenarioId
+            @RequestParam Long afterScenarioId,
+            @RequestParam(required = false) Long scenarioGroupId
     ) {
         Scenario saveScenario = scenarioService.findOne(scenarioId);
         if (saveScenario != null) {
             saveScenario.setName(name);
             saveScenario.setBeforeScenarioId(beforeScenarioId);
             saveScenario.setAfterScenarioId(afterScenarioId);
+            saveScenario.setScenarioGroupId(scenarioGroupId);
             scenarioService.save(saveScenario);
         }
 
@@ -103,5 +105,12 @@ public class ScenarioController {
         } else {
             return "redirect:/";
         }
+    }
+
+    @RequestMapping(value = "{scenarioId}/clone", method = RequestMethod.POST)
+    public String clone(@PathVariable Long scenarioId) throws IOException {
+        Scenario scenario = scenarioService.findOne(scenarioId);
+        // TODO clone Scenario
+        return "redirect:/scenario/" + scenario.getId();
     }
 }
