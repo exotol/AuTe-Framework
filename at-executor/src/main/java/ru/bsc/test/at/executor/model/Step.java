@@ -1,9 +1,11 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -29,39 +31,41 @@ public class Step implements Serializable {
     private Long id;
     @Column(name = "SCENARIO_ID")
     private Long scenarioId;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="STEP_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
     @Column(name = "SORT")
     private Long sort;
-    @Column(name = "RELATIVE_URL")
+    @Column(name = "RELATIVE_URL", length = 500)
     private String relativeUrl;
-    @Column(name = "REQUEST_METHOD")
+    @Column(name = "REQUEST_METHOD", length = 6)
     private String requestMethod;
+    @Lob
     @Column(name = "REQUEST")
     private String request;
-    @Column(name = "REQUEST_HEADERS")
+    @Column(name = "REQUEST_HEADERS", length = 500)
     private String requestHeaders;
+    @Lob
     @Column(name = "EXPECTED_RESPONSE")
     private String expectedResponse;
     @Column(name = "EXPECTED_RESPONSE_IGNORE")
     private Boolean expectedResponseIgnore;
-    @Column(name = "SAVING_VALUES")
+    @Column(name = "SAVING_VALUES", length = 100)
     private String savingValues;
-    @Column(name = "RESPONSES")
+    @Column(name = "RESPONSES", length = 500)
     private String responses;
-    @Column(name = "DB_PARAMS")
+    @Column(name = "DB_PARAMS", length = 500)
     private String dbParams;
-    @Column(name = "TMP_SERVICE_REQUESTS_DIRECTORY")
+    @Column(name = "TMP_SERVICE_REQUESTS_DIRECTORY", length = 150)
     private String tmpServiceRequestsDirectory;
     @Column(name = "EXPECTED_STATUS_CODE")
     private Integer expectedStatusCode;
-    @Column(name = "SQL")
+    @Column(name = "SQL", length = 300)
     private String sql;
-    @Column(name = "SQL_SAVED_PARAMETER")
+    @Column(name = "SQL_SAVED_PARAMETER", length = 255)
     private String sqlSavedParameter;
-    @Column(name = "JSON_XPATH")
+    @Column(name = "JSON_XPATH", length = 500)
     private String jsonXPath;
     @Column(name = "REQUEST_BODY_TYPE")
     private RequestBodyType requestBodyType;

@@ -3,6 +3,7 @@ package ru.bsc.test.at.executor.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -28,19 +29,20 @@ public class ServiceResponse implements Serializable {
     @Id
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "SESSION_UID")
+    @Column(name = "SESSION_UID", length = 36)
     private String sessionUid;
-    @Column(name = "SERVICE_NAME")
+    @Column(name = "SERVICE_NAME", length = 50)
     private String serviceName;
-    @Column(name = "RESPONSE")
+    @Column(name = "RESPONSE", length = 50)
     private String response;
     @Column(name = "SORT")
     private Long sort;
+    @Lob
     @Column(name = "ACTUAL_REQUEST")
     private String actualRequest;
     @Column(name = "IS_CALLED")
     private Long isCalled = 0L;
-    @Column(name = "PROJECT_CODE")
+    @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
 
     public Long getId() {

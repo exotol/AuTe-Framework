@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,20 +23,19 @@ public class Project implements Serializable {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", length = 100)
     private String name;
 
-    @Column(name = "SERVICE_URL")
+    @Column(name = "SERVICE_URL", length = 400)
     private String serviceUrl;
 
-    // TODO привязать before scenario с помощью @OneToMany
     @Column(name = "BEFORE_SCENARIO_ID")
     private Long beforeScenarioId;
 
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
 
-    @Column(name = "PROJECT_CODE")
+    @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
 
     @Column(name = "DB_URL")
@@ -45,12 +45,12 @@ public class Project implements Serializable {
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     private List<Scenario> scenarios;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     @OrderBy("NAME ASC")
     private List<ScenarioGroup> scenarioGroups;
@@ -120,7 +120,7 @@ public class Project implements Serializable {
     public List<ScenarioGroup> getScenarioGroups() {
         return scenarioGroups;
     }
-
+    @SuppressWarnings("unused")
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
     }

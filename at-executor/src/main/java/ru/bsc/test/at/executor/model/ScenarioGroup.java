@@ -17,7 +17,7 @@ public class ScenarioGroup implements Serializable {
     @Id
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", length = 150)
     private String name;
     @Column(name = "PROJECT_ID")
     private Long projectId;

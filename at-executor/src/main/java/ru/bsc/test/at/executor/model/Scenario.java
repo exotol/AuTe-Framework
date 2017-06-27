@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,7 +24,7 @@ public class Scenario implements Serializable {
     @Id
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", length = 500)
     private String name;
     @Column(name = "PROJECT_ID")
     private Long projectId;
@@ -39,7 +40,7 @@ public class Scenario implements Serializable {
     private Long beforeScenarioId;
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="SCENARIO_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<Step> steps;
