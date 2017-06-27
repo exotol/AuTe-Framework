@@ -10,11 +10,12 @@
     <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.autotester.model.Project>"--%>
     <h4>Import project from YAML</h4>
     <form method="post" action="${pageContext.request.contextPath}/import-project-from-yaml" enctype="multipart/form-data">
-        <label>
-            YAML file
-            <input type="file" name="yamlFile" class="form-control-file"/>
-        </label>
-        <br/>
-        <input type="submit" value="Import"/>
+        <div class="form-group">
+            <label>
+                YAML file
+                <input style="background-color: lightgray; height: 50px;" type="file" name="yamlFile" class="form-control-file"/>
+            </label>
+        </div>
+        <input class="btn" type="submit" value="Import"/>
     </form>
 </t:wrapper>

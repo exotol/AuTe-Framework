@@ -2,13 +2,10 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
@@ -22,68 +19,50 @@ import java.util.List;
 public class Step implements Serializable {
 
     public enum RequestBodyType {
-        JSON, FORM
+        @SuppressWarnings("unused")
+        JSON,
+        FORM
     }
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-
     @Column(name = "SCENARIO_ID")
     private Long scenarioId;
-
     @OneToMany
     @JoinColumn(name="STEP_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
-
     @Column(name = "SORT")
     private Long sort;
-
     @Column(name = "RELATIVE_URL")
     private String relativeUrl;
-
     @Column(name = "REQUEST_METHOD")
     private String requestMethod;
-
     @Column(name = "REQUEST")
     private String request;
-
     @Column(name = "REQUEST_HEADERS")
     private String requestHeaders;
-
     @Column(name = "EXPECTED_RESPONSE")
     private String expectedResponse;
-
     @Column(name = "EXPECTED_RESPONSE_IGNORE")
     private Boolean expectedResponseIgnore;
-
     @Column(name = "SAVING_VALUES")
     private String savingValues;
-
     @Column(name = "RESPONSES")
     private String responses;
-
     @Column(name = "DB_PARAMS")
     private String dbParams;
-
     @Column(name = "TMP_SERVICE_REQUESTS_DIRECTORY")
     private String tmpServiceRequestsDirectory;
-
     @Column(name = "EXPECTED_STATUS_CODE")
     private Integer expectedStatusCode;
-
     @Column(name = "SQL")
     private String sql;
-
     @Column(name = "SQL_SAVED_PARAMETER")
     private String sqlSavedParameter;
-
     @Column(name = "JSON_XPATH")
     private String jsonXPath;
-
     @Column(name = "REQUEST_BODY_TYPE")
     private RequestBodyType requestBodyType;
 

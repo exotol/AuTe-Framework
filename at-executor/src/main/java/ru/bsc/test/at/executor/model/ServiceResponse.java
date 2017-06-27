@@ -2,10 +2,7 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -29,32 +26,22 @@ public class ServiceResponse implements Serializable {
     }
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SERVICE_RESPONSE", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-
     @Column(name = "SESSION_UID")
     private String sessionUid;
-
     @Column(name = "SERVICE_NAME")
     private String serviceName;
-
     @Column(name = "RESPONSE")
     private String response;
-
     @Column(name = "SORT")
     private Long sort;
-
     @Column(name = "ACTUAL_REQUEST")
     private String actualRequest;
-
     @Column(name = "IS_CALLED")
     private Long isCalled = 0L;
-
     @Column(name = "PROJECT_CODE")
     private String projectCode;
-
 
     public Long getId() {
         return id;

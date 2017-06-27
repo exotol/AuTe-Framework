@@ -2,18 +2,14 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,35 +21,24 @@ import java.util.List;
 public class Scenario implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-
     @Column(name = "NAME")
     private String name;
-
     @Column(name = "PROJECT_ID")
     private Long projectId;
-
     @Column(name = "SCENARIO_GROUP_ID")
     private Long scenarioGroupId;
-
     @Transient
     private List<StepResult> stepResults = null;
-
     @Column(name = "LAST_RUN_AT")
     private Date lastRunAt;
-
     @Column(name = "LAST_RUN_FAILURES")
     private Integer lastRunFailures;
-
     @Column(name = "BEFORE_SCENARIO_ID")
     private Long beforeScenarioId;
-
     @Column(name = "AFTER_SCENARIO_ID")
     private Long afterScenarioId;
-
     @OneToMany
     @JoinColumn(name="SCENARIO_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
@@ -74,7 +59,7 @@ public class Scenario implements Serializable {
         this.name = name;
     }
     public Long getScenarioGroupId() {
-        return scenarioGroupId;
+        return scen/arioGroupId;
     }
     public void setScenarioGroupId(Long scenarioGroupId) {
         this.scenarioGroupId = scenarioGroupId;
@@ -109,6 +94,7 @@ public class Scenario implements Serializable {
     public List<Step> getSteps() {
         return steps;
     }
+    @SuppressWarnings("unused")
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }

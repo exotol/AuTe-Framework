@@ -2,11 +2,7 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -29,8 +25,6 @@ public class ExpectedServiceRequest implements Serializable {
     }
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_EXPECTED_SERVICE_REQUEST", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -73,6 +67,7 @@ public class ExpectedServiceRequest implements Serializable {
     public String getExpectedServiceRequest() {
         return expectedServiceRequest;
     }
+    @SuppressWarnings("unused")
     public void setExpectedServiceRequest(String expectedServiceRequest) {
         this.expectedServiceRequest = expectedServiceRequest;
     }
@@ -85,6 +80,7 @@ public class ExpectedServiceRequest implements Serializable {
     public String getIgnoredTags() {
         return ignoredTags;
     }
+    @SuppressWarnings("unused")
     public void setIgnoredTags(String ignoredTags) {
         this.ignoredTags = ignoredTags;
     }
