@@ -16,6 +16,6 @@
                 <input style="background-color: lightgray; height: 50px;" type="file" name="yamlFile" class="form-control-file"/>
             </label>
         </div>
-        <input class="btn" type="submit" value="Import"/>
+        <input class="btn btn-default" type="submit" value="Import"/>
     </form>
 </t:wrapper>

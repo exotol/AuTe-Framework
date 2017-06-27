@@ -18,7 +18,7 @@
             <label for="expectedRequestsBaseDir">Name:</label>
             <input class="form-control" id="expectedRequestsBaseDir" name="expectedRequestsBaseDir" value="c:\projects\jmba-at\src\test\resources\expectedJmbaToWsRequests\">
         </div>
-        <input class="btn" type="submit" value="Parse all scenarios: expected service requests (JMBA)">
+        <input class="btn btn-default" type="submit" value="Parse all scenarios: expected service requests (JMBA)">
     </form>
 
 </t:wrapper>

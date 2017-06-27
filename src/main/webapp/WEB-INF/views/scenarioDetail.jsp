@@ -21,12 +21,12 @@
     <c:if test="${empty stepDetail}">
         <form method="post" action="${pageContext.request.contextPath}/project/${project.id}/execute-scenarios" onsubmit="return confirm('Execute scenario?')">
             <input type="hidden" name="scenarios[]" value="${scenario.id}"/>
-            <input class="btn" type="submit" value="Execute this scenario">
+            <input class="btn btn-default" type="submit" value="Execute this scenario">
         </form>
 
         <form method="post" action="${pageContext.request.contextPath}/step/add-step" onsubmit="return confirm('Add step?')">
             <input type="hidden" name="scenarioId" value="${scenario.id}"/>
-            <input class="btn" type="submit" value="Add step">
+            <input class="btn btn-default" type="submit" value="Add step">
         </form>
     </c:if>
 
@@ -126,12 +126,12 @@
                 </tr>
             </c:forEach>
         </table>
-        <button class="btn" id="save-steps">Save</button> <span id="saving-state"></span>
+        <button class="btn btn-default" id="save-steps">Save</button> <span id="saving-state"></span>
     </form>
 
     <c:if test="${empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/delete-scenario" onsubmit="return confirm('Delete scenario?')">
-            <input class="btn" type="submit" value="Delete scenario" ${empty steps ? '' : 'disabled'}>
+            <input class="btn btn-default" type="submit" value="Delete scenario" ${empty steps ? '' : 'disabled'}>
             <c:if test="${not empty steps}">
                 <span style="font-size: smaller;">Allowed to delete only empty scenarios</span>
             </c:if>
@@ -140,7 +140,7 @@
 
     <c:if test="${not empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/delete-step" onsubmit="return confirm('Delete step?')">
-            <input class="btn" type="submit" value="Delete step">
+            <input class="btn btn-default" type="submit" value="Delete step">
         </form>
 
         <div style="clear: both;"></div>
@@ -171,18 +171,18 @@
                             <input class="form-control" name="expectedRequest[${status.index}][ignoredTags]" value="${expectedRequest.ignoredTags}"/>
                         </td>
                         <td>
-                            <a class="btn" data-delete-expected-request="${expectedRequest.id}">Delete</a>
+                            <a class="btn btn-default" role="button" data-delete-expected-request="${expectedRequest.id}">Delete</a>
                         </td>
                     </tr>
                 </c:forEach>
             </table>
-            <button class="btn" id="save-expected-service-requests">Save</button> <span id="save-expected-service-requests-state"></span>
+            <button class="btn btn-default" id="save-expected-service-requests">Save</button> <span id="save-expected-service-requests-state"></span>
         </form>
 
         <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-expected-request" onsubmit="return confirm('Add expected request?')">
             <input type="hidden" name="stepId" value="${stepDetail.id}"/>
             <input class="form-control" type="text" name="serviceName" placeholder="New service name"/>
-            <input class="btn" type="submit" value="Add expected request">
+            <input class="btn btn-default" type="submit" value="Add expected request">
         </form>
         <!-- TODO вывод списка ожидаемых вызовов сервисов + редактирование -->
     </c:if>

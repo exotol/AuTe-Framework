@@ -229,14 +229,14 @@ public class ProjectController {
         return "redirect:/scenario/" + scenario.getId();
     }
 
-    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
     @ResponseBody
     public String getYaml(
-            @PathVariable long projectId
+            @PathVariable long projectId,
+            HttpServletResponse response
     ) throws IOException {
         Project project = projectService.findOne(projectId);
-
-        Yaml projectYaml = new Yaml();
-        return projectYaml.dump(project);
+        response.setHeader("Content-Disposition", "inline; filename=\"project" + project.getProjectCode() +".yml\"");
+        return new Yaml().dump(project);
     }
 }

@@ -48,7 +48,7 @@
                 </td>
             </tr>
         </table>
-        <input type="submit" class="btn" value="Save">
+        <input type="submit" class="btn btn-default" value="Save">
     </form>
 
     <hr/>
@@ -57,6 +57,6 @@
             <label for="expectedRequestsBaseDir">Name:</label>
             <input class="form-control" id="expectedRequestsBaseDir" name="expectedRequestsBaseDir" value="c:\projects\jmba-at\src\test\resources\expectedJmbaToWsRequests\">
         </div>
-        <input type="submit" class="btn" value="Parse expected service requests from jmba">
+        <input type="submit" class="btn btn-default" value="Parse expected service requests from jmba">
     </form>
 </t:wrapper>
