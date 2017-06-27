@@ -6,18 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -109,27 +103,5 @@ public class ScenarioController {
         } else {
             return "redirect:/";
         }
-    }
-
-    @RequestMapping(value = "{scenarioId}/get-yaml", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-    @ResponseBody
-    public String getYaml(
-            @PathVariable long scenarioId
-    ) {
-        Scenario scenario = scenarioService.findOne(scenarioId);
-        return new Yaml().dump(scenario);
-    }
-
-    @RequestMapping(value = "{scenarioId}/import-from-yaml", method = RequestMethod.POST)
-    @ResponseBody
-    public String importFromYaml(
-            @RequestParam MultipartFile yamlFile
-    ) throws IOException {
-        if (!yamlFile.isEmpty()) {
-            Object object = new Yaml().load(yamlFile.getInputStream());
-            return object.toString();
-        }
-        // TODO реализовать загрузку из yaml
-        return new Yaml().dump(yamlFile);
     }
 }

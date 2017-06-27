@@ -47,7 +47,7 @@ public class MainController {
         Project object = (Project)new Yaml().load(yamlFile.getInputStream());
         object.getScenarios();
 
-        // TODO сохранить проект в БД (in memory)
+        // сохранить проект в БД (in memory)
         projectService.save(object);
 
         return "redirect:/";
