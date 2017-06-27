@@ -47,6 +47,17 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td>Group</td>
+                <td>
+                    <select class="form-control" name="scenarioGroupId">
+                        <option value="">-</option>
+                        <c:forEach items="${project.scenarioGroups}" var="scenarioGroup">
+                            <option value="${scenarioGroup.id}" ${scenario.scenarioGroupId eq scenarioGroup.id ? 'selected' : ''}>${scenarioGroup.name}</option>
+                        </c:forEach>
+                    </select>
+                </td>
+            </tr>
         </table>
         <input type="submit" class="btn" value="Save">
     </form>
