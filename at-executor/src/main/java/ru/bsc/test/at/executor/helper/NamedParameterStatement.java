@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.helper;
+package ru.bsc.test.at.executor.helper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

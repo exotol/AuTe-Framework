@@ -1,14 +1,12 @@
-package ru.bsc.test.autotester.model;
+package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.List;
@@ -22,68 +20,50 @@ import java.util.List;
 public class Step implements Serializable {
 
     public enum RequestBodyType {
-        JSON, FORM
+        @SuppressWarnings("unused")
+        JSON,
+        FORM
     }
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-
     @Column(name = "SCENARIO_ID")
     private Long scenarioId;
-
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="STEP_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
-
     @Column(name = "SORT")
     private Long sort;
-
-    @Column(name = "RELATIVE_URL")
+    @Column(name = "RELATIVE_URL", length = 500)
     private String relativeUrl;
-
-    @Column(name = "REQUEST_METHOD")
+    @Column(name = "REQUEST_METHOD", length = 6)
     private String requestMethod;
-
-    @Column(name = "REQUEST")
+    @Column(name = "REQUEST", columnDefinition = "CLOB")
     private String request;
-
-    @Column(name = "REQUEST_HEADERS")
+    @Column(name = "REQUEST_HEADERS", length = 500)
     private String requestHeaders;
-
-    @Column(name = "EXPECTED_RESPONSE")
+    @Column(name = "EXPECTED_RESPONSE", columnDefinition = "CLOB")
     private String expectedResponse;
-
     @Column(name = "EXPECTED_RESPONSE_IGNORE")
     private Boolean expectedResponseIgnore;
-
-    @Column(name = "SAVING_VALUES")
+    @Column(name = "SAVING_VALUES", length = 100)
     private String savingValues;
-
-    @Column(name = "RESPONSES")
+    @Column(name = "RESPONSES", length = 500)
     private String responses;
-
-    @Column(name = "DB_PARAMS")
+    @Column(name = "DB_PARAMS", length = 500)
     private String dbParams;
-
-    @Column(name = "TMP_SERVICE_REQUESTS_DIRECTORY")
+    @Column(name = "TMP_SERVICE_REQUESTS_DIRECTORY", length = 150)
     private String tmpServiceRequestsDirectory;
-
     @Column(name = "EXPECTED_STATUS_CODE")
     private Integer expectedStatusCode;
-
-    @Column(name = "SQL")
+    @Column(name = "SQL", length = 300)
     private String sql;
-
     @Column(name = "SQL_SAVED_PARAMETER")
     private String sqlSavedParameter;
-
-    @Column(name = "JSON_XPATH")
+    @Column(name = "JSON_XPATH", length = 500)
     private String jsonXPath;
-
     @Column(name = "REQUEST_BODY_TYPE")
     private RequestBodyType requestBodyType;
 
@@ -192,15 +172,12 @@ public class Step implements Serializable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-
     public Long getScenarioId() {
         return scenarioId;
     }
-
     public void setScenarioId(Long scenarioId) {
         this.scenarioId = scenarioId;
     }
-
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         return expectedServiceRequests;
     }

@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.helper;
+package ru.bsc.test.at.executor.helper;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
  * Created by rmalyshev date: 30.11.12
  *
  */
+@SuppressWarnings("Duplicates")
 class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
 
     private Set<String> ignoredTags = new HashSet<>();
@@ -27,7 +28,7 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
             this.ignoredTags = ignoredTags;
     }
 
-    private boolean isXSIType(org.w3c.dom.Node node) {
+    private boolean isXSIType(Node node) {
         return node.getNodeType() == Node.ATTRIBUTE_NODE &&
                 node.getLocalName().compareTo("type") == 0 &&
                 Objects.equals(node.getNamespaceURI(), "http://www.w3.org/2001/XMLSchema-instance");

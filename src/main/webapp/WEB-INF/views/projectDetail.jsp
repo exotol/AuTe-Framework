@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
-<t:wrapper><%--@elvariable id="scenarioGroupId" type="java.lang.Long"--%>
+<t:wrapper>
+    <%--@elvariable id="scenarioGroupId" type="java.lang.Long"--%>
     <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
     <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
     <ol class="breadcrumb">
@@ -21,6 +22,7 @@
     <h4>Project ${project.id}. ${project.name}</h4>
     <a href="${pageContext.request.contextPath}/project/${project.id}/settings">Project settings</a>
 
+    <a class="btn btn-default" target="_blank" role="button" style="float: right;" href="${pageContext.request.contextPath}/project/${project.id}/get-yaml">Download YAML</a>
 
     <nav aria-label="Scenario groups">
         <ul class="pagination">
@@ -49,7 +51,6 @@
                     <td><a href="${pageContext.request.contextPath}/scenario/${scenario.id}">${scenario.name}</a></td>
                     <td style="color: ${scenario.lastRunFailures eq 0 ? 'gray' : 'red'}">${scenario.lastRunFailures}</td>
                     <td>${scenario.lastRunAt}</td>
-                    <!--td>${scenario.scenarioGroupId}</td-->
                 </tr>
                 <c:if test="${not empty scenario.stepResults}">
                     <tr>

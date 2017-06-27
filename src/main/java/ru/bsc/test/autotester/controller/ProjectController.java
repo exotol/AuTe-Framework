@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.yaml.snakeyaml.Yaml;
-import ru.bsc.test.autotester.model.Project;
-import ru.bsc.test.autotester.model.Scenario;
-import ru.bsc.test.autotester.model.Step;
+import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
@@ -124,7 +124,8 @@ public class ProjectController {
             @RequestParam("scenarios[]") Long[] scenarios
     ) {
         Project project = projectService.findOne(projectId);
-        List<Scenario> scenarioResultList = scenarioService.executeScenarioList(Arrays.asList(scenarios));
+        List<Scenario> scenarioExecuteList = scenarioService.findAll(Arrays.asList(scenarios));
+        List<Scenario> scenarioResultList = scenarioService.executeScenarioList(project, scenarioExecuteList);
 
         ModelAndView model = new ModelAndView("projectDetail");
         model.addObject("executeResult", 1);

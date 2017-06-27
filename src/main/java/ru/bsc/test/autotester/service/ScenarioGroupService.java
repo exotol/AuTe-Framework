@@ -1,6 +1,6 @@
 package ru.bsc.test.autotester.service;
 
-import ru.bsc.test.autotester.model.ScenarioGroup;
+import ru.bsc.test.at.executor.model.ScenarioGroup;
 
 /**
  * Created by sdoroshin on 03.03.2017.

@@ -2,7 +2,7 @@ package ru.bsc.test.autotester.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.bsc.test.autotester.model.ScenarioGroup;
+import ru.bsc.test.at.executor.model.ScenarioGroup;
 
 import java.util.List;
 

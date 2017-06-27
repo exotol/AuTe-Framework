@@ -195,6 +195,19 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.18</version>
         </dependency>
+        
+        <dependency>
+            <groupId>ru.bsc.test</groupId>
+            <artifactId>at-executor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- HyperSQL DB -->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
+        </dependency>
 
     </dependencies>
 

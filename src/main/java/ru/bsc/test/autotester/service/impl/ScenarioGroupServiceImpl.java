@@ -2,7 +2,7 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.bsc.test.autotester.model.ScenarioGroup;
+import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.autotester.repository.ScenarioGroupRepository;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
 

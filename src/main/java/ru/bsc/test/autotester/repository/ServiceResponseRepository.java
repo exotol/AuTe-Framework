@@ -3,7 +3,7 @@ package ru.bsc.test.autotester.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.bsc.test.autotester.model.ServiceResponse;
+import ru.bsc.test.at.executor.model.ServiceResponse;
 
 import java.util.List;
 

@@ -1,11 +1,8 @@
-package ru.bsc.test.autotester.model;
+package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -28,19 +25,17 @@ public class ExpectedServiceRequest implements Serializable {
     }
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_EXPECTED_SERVICE_REQUEST", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "STEP_ID")
     private Long stepId;
-    @Column(name = "SERVICE_NAME")
+    @Column(name = "SERVICE_NAME", length = 100)
     private String serviceName;
-    @Column(name = "EXPECTED_SERVICE_REQUEST")
+    @Column(name = "EXPECTED_SERVICE_REQUEST", columnDefinition = "CLOB")
     private String expectedServiceRequest;
     @Column(name = "SORT")
     private Long sort;
-    @Column(name = "IGNORED_TAGS")
+    @Column(name = "IGNORED_TAGS", length = 300)
     private String ignoredTags;
 
     public Long getId() {

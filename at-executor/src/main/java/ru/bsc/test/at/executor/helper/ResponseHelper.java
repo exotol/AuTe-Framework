@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.helper;
+package ru.bsc.test.at.executor.helper;
 
 /**
  * Created by sdoroshin on 22.05.2017.

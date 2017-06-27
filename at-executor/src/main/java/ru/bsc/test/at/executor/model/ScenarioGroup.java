@@ -1,11 +1,8 @@
-package ru.bsc.test.autotester.model;
+package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -18,11 +15,9 @@ import java.io.Serializable;
 public class ScenarioGroup implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO_GROUP", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", length = 150)
     private String name;
     @Column(name = "PROJECT_ID")
     private Long projectId;
@@ -44,6 +39,7 @@ public class ScenarioGroup implements Serializable {
     public Long getProjectId() {
         return projectId;
     }
+    @SuppressWarnings("unused")
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }

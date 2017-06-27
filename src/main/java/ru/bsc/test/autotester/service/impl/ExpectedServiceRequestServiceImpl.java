@@ -2,7 +2,7 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.bsc.test.autotester.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.autotester.repository.ExpectedServiceRequestRepository;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 

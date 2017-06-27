@@ -1,6 +1,6 @@
 package ru.bsc.test.autotester.service;
 
-import ru.bsc.test.autotester.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 
 import java.util.List;
 
