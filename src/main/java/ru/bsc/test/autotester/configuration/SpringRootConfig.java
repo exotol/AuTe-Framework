@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,6 +28,8 @@ import javax.sql.DataSource;
 @EnableJpaRepositories("ru.bsc.test.autotester")
 public class SpringRootConfig {
 
+    private final static String DATABASE_HSQL = "HSQL";
+
     @Value("${jdbc.driverClassName}")
     private String driverClassName;
     @Value("${jdbc.url}")
@@ -35,14 +38,23 @@ public class SpringRootConfig {
     private String username;
     @Value("${jdbc.password}")
     private String password;
+    @Value("${database}")
+    private String database;
 
     @Bean
     public DataSource dataSource() {
-
-        EmbeddedDatabaseBuilder embeddedDatabaseBuilder = new EmbeddedDatabaseBuilder();
-        return embeddedDatabaseBuilder
-                .setType(EmbeddedDatabaseType.HSQL)
-                .build();
+        if (DATABASE_HSQL.equals(database)) {
+            return new EmbeddedDatabaseBuilder()
+                    .setType(EmbeddedDatabaseType.HSQL)
+                    .build();
+        } else {
+            DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+            driverManagerDataSource.setDriverClassName(driverClassName);
+            driverManagerDataSource.setUrl(url);
+            driverManagerDataSource.setUsername(username);
+            driverManagerDataSource.setPassword(password);
+            return driverManagerDataSource;
+        }
     }
 
     //To resolve ${} in @Value
@@ -56,7 +68,7 @@ public class SpringRootConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(true);
-        vendorAdapter.setDatabase(Database.HSQL);
+        vendorAdapter.setDatabase(DATABASE_HSQL.equals(database) ? Database.HSQL : Database.ORACLE);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
