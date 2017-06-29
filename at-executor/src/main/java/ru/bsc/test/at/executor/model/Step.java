@@ -217,6 +217,7 @@ public class Step implements Serializable, Cloneable {
         cloned.setRelativeUrl(getRelativeUrl());
         cloned.setRequestMethod(getRequestMethod());
         cloned.setRequestHeaders(getRequestHeaders());
+        cloned.setRequest(getRequest());
         cloned.setExpectedResponse(getExpectedResponse());
         cloned.setSavingValues(getSavingValues());
         cloned.setResponses(getResponses());

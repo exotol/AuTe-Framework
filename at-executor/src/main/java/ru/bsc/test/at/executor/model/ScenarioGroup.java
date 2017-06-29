@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "AT_SCENARIO_GROUP")
-public class ScenarioGroup implements Serializable {
+public class ScenarioGroup implements Serializable, Cloneable {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO_GROUP", allocationSize = 1)

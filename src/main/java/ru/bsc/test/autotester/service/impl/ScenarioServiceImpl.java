@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
@@ -69,7 +70,7 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
         for (Step step: scenario.getSteps()) {
             Long i = 0L;
             String testCaseDir = step.getTmpServiceRequestsDirectory();
-            if (testCaseDir != null && !testCaseDir.isEmpty()) {
+            if (StringUtils.isNotEmpty(testCaseDir)) {
 
                 List<ServiceNameResponsePair> servicePairs = parseServiceResponsesString(step.getResponses());
                 for (ServiceNameResponsePair pair : servicePairs) {

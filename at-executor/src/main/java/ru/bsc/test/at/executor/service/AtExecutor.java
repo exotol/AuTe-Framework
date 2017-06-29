@@ -1,6 +1,7 @@
 package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
@@ -72,7 +73,7 @@ public class AtExecutor {
 
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Connection connection = null;
-        if (project.getDbUrl() != null) {
+        if (StringUtils.isNotEmpty(project.getDbUrl())) {
             try {
                 connection = DriverManager.getConnection(project.getDbUrl(), project.getDbUser(), project.getDbPassword());
                 connection.setAutoCommit(false);
@@ -181,10 +182,8 @@ public class AtExecutor {
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
                 project.getServiceUrl() + requestUrl,
-                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ?
-                        null : requestBody,
-                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ?
-                        parseFormData(requestBody) : null,
+                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                 step.getRequestHeaders(),
                 sessionUid);
 
@@ -229,16 +228,18 @@ public class AtExecutor {
 
     private Map<String, String> parseFormData(String formDataString) {
         Map<String, String> formDataMap = new HashMap<>();
-        for (String line: formDataString.split("\\r?\\n")) {
-            String[] lineParts = line.split("=", 2);
-            formDataMap.put(lineParts[0].trim(), lineParts[1].trim());
+        if (StringUtils.isNotEmpty(formDataString)) {
+            for (String line : formDataString.split("\\r?\\n")) {
+                String[] lineParts = line.split("=", 2);
+                formDataMap.put(lineParts[0].trim(), lineParts[1].trim());
+            }
         }
         return formDataMap;
     }
 
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
-        if (responseData.getContent() != null && !responseData.getContent().isEmpty()) {
-            if (step.getJsonXPath() != null && !step.getJsonXPath().isEmpty()) {
+        if (StringUtils.isNotEmpty(responseData.getContent())) {
+            if (StringUtils.isNotEmpty(step.getJsonXPath())) {
 
                 String lines[] = step.getJsonXPath().split("\\r?\\n");
                 for (String line: lines) {
@@ -304,7 +305,7 @@ public class AtExecutor {
     }
 
     private void saveValuesFromResponse(String values, String response, Map<String, String> savedValues) {
-        if (values != null) {
+        if (StringUtils.isNotEmpty(values)) {
             List<String> valuesList = Arrays.asList(values.split(","));
             for (String value : valuesList) {
                 if (!value.isEmpty()) {
@@ -321,7 +322,7 @@ public class AtExecutor {
     }
 
     private void executeSql(Connection connection, Step step, Map<String, String> savedValues) throws SQLException {
-        if (step.getSql() != null && step.getSqlSavedParameter() != null && connection != null) {
+        if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
             try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
                 // Вставить в запрос параметры из savedValues, если они есть.
                 for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
