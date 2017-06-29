@@ -43,12 +43,14 @@ public class MainController {
     @RequestMapping(value = "import-project-from-yaml", method = RequestMethod.POST)
     public String projectFromYamlPost(
             @RequestParam MultipartFile yamlFile
-    ) throws IOException {
+    ) throws IOException, CloneNotSupportedException {
         Project object = (Project)new Yaml().load(yamlFile.getInputStream());
-        object.getScenarios();
+
+        // Клонирование необходимо, чтобы почистить все связи по ID
+        Project cloned = object.clone();
 
         // сохранить проект в БД (in memory)
-        projectService.save(object);
+        projectService.save(cloned);
 
         return "redirect:/";
     }

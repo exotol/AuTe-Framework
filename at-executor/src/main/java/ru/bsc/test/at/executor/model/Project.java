@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "AT_PROJECT")
-public class Project implements Serializable {
+public class Project implements Serializable, Cloneable {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_PROJECT", allocationSize = 1)
@@ -132,5 +132,32 @@ public class Project implements Serializable {
     @SuppressWarnings("unused")
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
+    }
+
+    @Override
+    public Project clone() throws CloneNotSupportedException {
+        super.clone();
+        Project cloned = new Project();
+        cloned.setId(null);
+        cloned.setName(getName());
+        cloned.setServiceUrl(getServiceUrl());
+        cloned.setBeforeScenarioId(getBeforeScenarioId());
+        cloned.setAfterScenarioId(getAfterScenarioId());
+        cloned.setProjectCode(getProjectCode() + "_COPY");
+        cloned.setDbUrl(getDbUrl());
+        cloned.setDbUser(getDbUser());
+        cloned.setDbPassword(getDbPassword());
+
+        cloned.setScenarios(new LinkedList<>());
+        for (Scenario scenario: getScenarios()) {
+            cloned.getScenarios().add(scenario.clone());
+        }
+
+        cloned.setScenarioGroups(new LinkedList<>());
+        for (ScenarioGroup scenarioGroup: getScenarioGroups()) {
+            cloned.getScenarioGroups().add(scenarioGroup.clone());
+        }
+
+        return cloned;
     }
 }

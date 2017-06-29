@@ -48,4 +48,13 @@ public class ScenarioGroup implements Serializable {
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
+
+    @Override
+    public ScenarioGroup clone() throws CloneNotSupportedException {
+        super.clone();
+        ScenarioGroup cloned = new ScenarioGroup();
+        cloned.setName(getName());
+
+        return cloned;
+    }
 }
