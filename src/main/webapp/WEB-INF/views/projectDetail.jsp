@@ -22,7 +22,7 @@
     <h4>Project ${project.id}. ${project.name}</h4>
     <a href="${pageContext.request.contextPath}/project/${project.id}/settings">Project settings</a>
 
-    <a class="btn btn-default" target="_blank" role="button" style="float: right;" href="${pageContext.request.contextPath}/project/${project.id}/get-yaml">Download YAML</a>
+    <a class="btn btn-default" target="_blank" role="button" style="float: right;" href="${pageContext.request.contextPath}/project/${project.id}/get-yaml">Download project as YAML</a>
 
     <nav aria-label="Scenario groups">
         <ul class="pagination">

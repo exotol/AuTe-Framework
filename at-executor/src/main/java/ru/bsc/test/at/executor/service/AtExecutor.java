@@ -209,7 +209,7 @@ public class AtExecutor {
         }
 
         // 7. Сравнить JSON ответ с ожидаемым
-        if (!step.isExpectedResponseIgnore()) {
+        if (!step.getExpectedResponseIgnore()) {
             if (!emptyString(expectedResponse) || !emptyString(responseData.getContent())) {
                 // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
                 if (!responseData.getContent().equals(expectedResponse)) {

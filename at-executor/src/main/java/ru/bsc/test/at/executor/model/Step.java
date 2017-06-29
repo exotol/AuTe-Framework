@@ -201,7 +201,7 @@ public class Step implements Serializable, Cloneable {
     public void setRequestBodyType(RequestBodyType requestBodyType) {
         this.requestBodyType = requestBodyType;
     }
-    public boolean isExpectedResponseIgnore() {
+    public Boolean getExpectedResponseIgnore() {
         return expectedResponseIgnore == null ? false : expectedResponseIgnore;
     }
     public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
@@ -227,7 +227,7 @@ public class Step implements Serializable, Cloneable {
         cloned.setSqlSavedParameter(getSqlSavedParameter());
         cloned.setJsonXPath(getJsonXPath());
         cloned.setRequestBodyType(getRequestBodyType());
-        cloned.setExpectedResponseIgnore(isExpectedResponseIgnore());
+        cloned.setExpectedResponseIgnore(getExpectedResponseIgnore());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
