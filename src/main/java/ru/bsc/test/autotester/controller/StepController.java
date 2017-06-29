@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
@@ -29,14 +28,12 @@ public class StepController {
     private StepService stepService;
     private ScenarioService scenarioService;
     private final ProjectService projectService;
-    private ExpectedServiceRequestService expectedServiceRequestService;
 
     @Autowired
-    public StepController(StepService stepService, ScenarioService scenarioService, ProjectService projectService, ExpectedServiceRequestService expectedServiceRequestService) {
+    public StepController(StepService stepService, ScenarioService scenarioService, ProjectService projectService) {
         this.stepService = stepService;
         this.scenarioService = scenarioService;
         this.projectService = projectService;
-        this.expectedServiceRequestService = expectedServiceRequestService;
     }
 
     @RequestMapping("{stepId}")
@@ -81,10 +78,11 @@ public class StepController {
         if (scenario != null) {
             Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step step = new Step();
-            step.setScenarioId(scenario.getId());
             step.setSort(maxSortStep + 50);
-            step = stepService.save(step);
-            return "redirect:/step/" + step.getId();
+
+            scenario.getSteps().add(step);
+            scenario = scenarioService.save(scenario);
+            return "redirect:/scenario/" + scenario.getId();
         }
         return "redirect:/";
     }
@@ -111,10 +109,10 @@ public class StepController {
             Long maxSort = step.getExpectedServiceRequests().stream().max(Comparator.comparing(ExpectedServiceRequest::getSort)).map(ExpectedServiceRequest::getSort).orElse(0L);
 
             ExpectedServiceRequest expectedServiceRequest = new ExpectedServiceRequest();
-            expectedServiceRequest.setStepId(step.getId());
+            step.getExpectedServiceRequests().add(expectedServiceRequest);
             expectedServiceRequest.setServiceName(serviceName);
             expectedServiceRequest.setSort(maxSort + 50);
-            expectedServiceRequestService.save(expectedServiceRequest);
+            step = stepService.save(step);
             return "redirect:/step/" + step.getId();
         }
         return "redirect:/#notfound";

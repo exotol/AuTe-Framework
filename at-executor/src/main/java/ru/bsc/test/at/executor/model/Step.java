@@ -3,21 +3,26 @@ package ru.bsc.test.at.executor.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by sdoroshin on 10.05.2017.
  *
  */
+@SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_STEP")
-public class Step implements Serializable {
+public class Step implements Serializable, Cloneable {
 
     public enum RequestBodyType {
         @SuppressWarnings("unused")
@@ -26,6 +31,8 @@ public class Step implements Serializable {
     }
 
     @Id
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "SCENARIO_ID")
@@ -175,10 +182,14 @@ public class Step implements Serializable {
     public Long getScenarioId() {
         return scenarioId;
     }
+    @SuppressWarnings("unused")
     public void setScenarioId(Long scenarioId) {
         this.scenarioId = scenarioId;
     }
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
+        if (expectedServiceRequests == null) {
+            expectedServiceRequests = new LinkedList<>();
+        }
         return expectedServiceRequests;
     }
     public void setExpectedServiceRequests(List<ExpectedServiceRequest> expectedServiceRequests) {
@@ -195,5 +206,34 @@ public class Step implements Serializable {
     }
     public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
         this.expectedResponseIgnore = expectedResponseIgnore;
+    }
+
+    @Override
+    protected Step clone() throws CloneNotSupportedException {
+        super.clone();
+        Step cloned = new Step();
+        cloned.setId(null);
+        cloned.setSort(getSort());
+        cloned.setRelativeUrl(getRelativeUrl());
+        cloned.setRequestMethod(getRequestMethod());
+        cloned.setRequestHeaders(getRequestHeaders());
+        cloned.setExpectedResponse(getExpectedResponse());
+        cloned.setSavingValues(getSavingValues());
+        cloned.setResponses(getResponses());
+        cloned.setDbParams(getDbParams());
+        cloned.setTmpServiceRequestsDirectory(getTmpServiceRequestsDirectory());
+        cloned.setExpectedStatusCode(getExpectedStatusCode());
+        cloned.setSql(getSql());
+        cloned.setSqlSavedParameter(getSqlSavedParameter());
+        cloned.setJsonXPath(getJsonXPath());
+        cloned.setRequestBodyType(getRequestBodyType());
+        cloned.setExpectedResponseIgnore(isExpectedResponseIgnore());
+
+        cloned.setExpectedServiceRequests(new LinkedList<>());
+        for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
+            cloned.getExpectedServiceRequests().add(expectedServiceRequest.clone());
+        }
+
+        return cloned;
     }
 }

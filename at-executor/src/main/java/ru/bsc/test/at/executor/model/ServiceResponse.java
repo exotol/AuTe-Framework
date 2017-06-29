@@ -2,7 +2,10 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -26,6 +29,8 @@ public class ServiceResponse implements Serializable {
     }
 
     @Id
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SERVICE_RESPONSE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "SESSION_UID", length = 36)

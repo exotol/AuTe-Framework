@@ -99,9 +99,9 @@ $(function () {
     });
 
     $('[data-delete-expected-request]').click(function () {
-        var expectedRequestId = $(this).attr('data-delete-expected-request');
+        var expectedServiceRequestId = $(this).attr('data-delete-expected-request');
         if (confirm('Delete record?')) {
-            $.post(contextPath + '/rest/step/delete-expected-request', { expectedRequestId: expectedRequestId }, function (data) {
+            $.post(contextPath + '/rest/step/delete-expected-request', { expectedServiceRequestId: expectedServiceRequestId }, function (data) {
                 console.log('delete expected request data:', data);
                 window.ttt = this;
             });

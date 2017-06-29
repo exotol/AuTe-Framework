@@ -2,7 +2,10 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -10,9 +13,10 @@ import java.io.Serializable;
  * Created by sdoroshin on 10.05.2017.
  *
  */
+@SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_EXPECTED_SERVICE_REQUEST")
-public class ExpectedServiceRequest implements Serializable {
+public class ExpectedServiceRequest implements Serializable, Cloneable {
 
     public ExpectedServiceRequest() {
     }
@@ -25,6 +29,8 @@ public class ExpectedServiceRequest implements Serializable {
     }
 
     @Id
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_EXPECTED_SERVICE_REQUEST", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "STEP_ID")
@@ -47,6 +53,7 @@ public class ExpectedServiceRequest implements Serializable {
     public Long getStepId() {
         return stepId;
     }
+    @SuppressWarnings("unused")
     public void setStepId(Long stepId) {
         this.stepId = stepId;
     }
@@ -75,5 +82,19 @@ public class ExpectedServiceRequest implements Serializable {
     @SuppressWarnings("unused")
     public void setIgnoredTags(String ignoredTags) {
         this.ignoredTags = ignoredTags;
+    }
+
+    @Override
+    protected ExpectedServiceRequest clone() throws CloneNotSupportedException {
+        super.clone();
+
+        ExpectedServiceRequest cloned = new ExpectedServiceRequest();
+        cloned.setId(null);
+        cloned.setServiceName(getServiceName());
+        cloned.setExpectedServiceRequest(getExpectedServiceRequest());
+        cloned.setSort(getSort());
+        cloned.setIgnoredTags(getIgnoredTags());
+
+        return cloned;
     }
 }

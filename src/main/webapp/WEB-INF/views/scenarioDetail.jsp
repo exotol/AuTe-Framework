@@ -19,15 +19,21 @@
     </ol>
 
     <c:if test="${empty stepDetail}">
-        <form method="post" action="${pageContext.request.contextPath}/project/${project.id}/execute-scenarios" onsubmit="return confirm('Execute scenario?')">
+        <div style="clear: both;"></div>
+        <form method="post" style="float: left;" action="${pageContext.request.contextPath}/project/${project.id}/execute-scenarios" onsubmit="return confirm('Execute scenario?')">
             <input type="hidden" name="scenarios[]" value="${scenario.id}"/>
             <input class="btn btn-default" type="submit" value="Execute this scenario">
         </form>
 
-        <form method="post" action="${pageContext.request.contextPath}/step/add-step" onsubmit="return confirm('Add step?')">
+        <form method="post" style="float: left;" action="${pageContext.request.contextPath}/step/add-step" onsubmit="return confirm('Add step?')">
             <input type="hidden" name="scenarioId" value="${scenario.id}"/>
             <input class="btn btn-default" type="submit" value="Add step">
         </form>
+
+        <form method="post" class="delete-form" style="float: right;" action="${pageContext.request.contextPath}/scenario/${scenario.id}/clone" onsubmit="return confirm('Copy scenario?')">
+            <input class="btn btn-default" type="submit" value="Copy scenario">
+        </form>
+        <div style="clear: both;"></div>
     </c:if>
 
     <%--@elvariable id="steps" type="java.util.List<ru.bsc.test.autotester.model.Step>"--%>

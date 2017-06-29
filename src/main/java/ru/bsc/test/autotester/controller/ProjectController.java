@@ -19,7 +19,6 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
-import ru.bsc.test.autotester.service.StepService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,13 +34,11 @@ import java.util.List;
 public class ProjectController {
 
     private ScenarioService scenarioService;
-    private StepService stepService;
     private ProjectService projectService;
 
     @Autowired
-    public ProjectController(ScenarioService scenarioService, StepService stepService, ProjectService projectService) {
+    public ProjectController(ScenarioService scenarioService, ProjectService projectService) {
         this.scenarioService = scenarioService;
-        this.stepService = stepService;
         this.projectService = projectService;
     }
 
@@ -196,22 +193,20 @@ public class ProjectController {
                 int scenarioIndex = 1;
                 for (List<Step> scenario : scenarioList) {
                     Scenario scenarioModel = new Scenario();
-                    scenarioModel.setProjectId(project.getId());
+                    project.getScenarios().add(scenarioModel);
                     scenarioModel.setScenarioGroupId(scenarioGroup);
                     scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
-                    scenarioModel = scenarioService.save(scenarioModel);
 
                     Long i = 0L;
                     for (Step step : scenario) {
-                        step.setScenarioId(scenarioModel.getId());
+                        scenarioModel.getSteps().add(step);
                         step.setSort(50 * ++i);
                     }
-                    stepService.saveSteps(scenario);
                 }
             }
         }
-
-        return "redirect:/project/" + projectId;
+        project = projectService.save(project);
+        return "redirect:/project/" + project.getId();
     }
 
     @RequestMapping(value = "{projectId}/add-scenario", method = RequestMethod.POST)
@@ -222,11 +217,11 @@ public class ProjectController {
     ) throws IOException {
         Project project = projectService.findOne(projectId);
         Scenario scenario = new Scenario();
+        project.getScenarios().add(scenario);
         scenario.setName(name);
-        scenario.setProjectId(project.getId());
         scenario.setScenarioGroupId(scenarioGroupId);
-        scenario = scenarioService.save(scenario);
-        return "redirect:/scenario/" + scenario.getId();
+        project = projectService.save(project);
+        return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
     }
 
     @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
@@ -236,7 +231,7 @@ public class ProjectController {
             HttpServletResponse response
     ) throws IOException {
         Project project = projectService.findOne(projectId);
-        response.setHeader("Content-Disposition", "inline; filename=\"project" + project.getProjectCode() +".yml\"");
+        response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() +".yml\"");
         return new Yaml().dump(project);
     }
 }

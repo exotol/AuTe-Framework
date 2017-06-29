@@ -3,25 +3,32 @@ package ru.bsc.test.at.executor.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by sdoroshin on 10.05.2017.
  *
  */
+@SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_SCENARIO")
-public class Scenario implements Serializable {
+public class Scenario implements Serializable, Cloneable {
 
     @Id
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "NAME", length = 500)
@@ -93,6 +100,9 @@ public class Scenario implements Serializable {
         this.afterScenarioId = afterScenarioId;
     }
     public List<Step> getSteps() {
+        if (steps == null) {
+            steps = new LinkedList<>();
+        }
         return steps;
     }
     @SuppressWarnings("unused")
@@ -102,11 +112,32 @@ public class Scenario implements Serializable {
     public Long getProjectId() {
         return projectId;
     }
+    @SuppressWarnings("unused")
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
     @SuppressWarnings("unused")
     public void setStepResults(List<StepResult> stepResults) {
         this.stepResults = stepResults;
+    }
+
+    @Override
+    public Scenario clone() throws CloneNotSupportedException {
+        super.clone();
+        Scenario cloned = new Scenario();
+        cloned.setId(null);
+        cloned.setName(getName());
+        cloned.setScenarioGroupId(getScenarioGroupId());
+        cloned.setLastRunAt(null);
+        cloned.setLastRunFailures(null);
+        cloned.setBeforeScenarioId(getBeforeScenarioId());
+        cloned.setAfterScenarioId(getAfterScenarioId());
+
+        cloned.setSteps(new LinkedList<>());
+        for (Step step: getSteps()) {
+            cloned.getSteps().add(step.clone());
+        }
+
+        return cloned;
     }
 }

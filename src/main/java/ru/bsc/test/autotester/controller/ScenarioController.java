@@ -110,9 +110,15 @@ public class ScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}/clone", method = RequestMethod.POST)
-    public String clone(@PathVariable Long scenarioId) throws IOException {
+    public String clone(@PathVariable Long scenarioId) throws IOException, CloneNotSupportedException {
         Scenario scenario = scenarioService.findOne(scenarioId);
-        // TODO clone Scenario
-        return "redirect:/scenario/" + scenario.getId();
+        Project project = projectService.findOne(scenario.getProjectId());
+
+        Scenario cloned = scenario.clone();
+        project.getScenarios().add(cloned);
+        cloned.setName(cloned.getName() + " (копия)");
+        project = projectService.save(project);
+
+        return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
     }
 }
