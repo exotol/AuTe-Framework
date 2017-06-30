@@ -85,28 +85,23 @@ public class AtExecutor {
         try {
             scenario.setStepResults(new LinkedList<>());
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-            Long beforeScenarioId = scenario.getBeforeScenarioId() == null ? project.getBeforeScenarioId() : (scenario.getBeforeScenarioId() < 0 ? null : scenario.getBeforeScenarioId());
-            if (beforeScenarioId != null) {
-                Scenario beforeScenario = findOneScenarioById(project, beforeScenarioId);
-                if (beforeScenario != null) {
-                    beforeScenario.setStepResults(new LinkedList<>());
-                    executeSteps(connection, beforeScenario, project, httpHelper, savedValues, sessionUid);
-                    scenario.getStepResults().addAll(beforeScenario.getStepResults());
-                }
+            Scenario beforeScenario = scenario.getBeforeScenario() == null ? project.getBeforeScenario() : (scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario());
+            if (beforeScenario != null) {
+                beforeScenario.setStepResults(new LinkedList<>());
+                executeSteps(connection, beforeScenario, project, httpHelper, savedValues, sessionUid);
+                scenario.getStepResults().addAll(beforeScenario.getStepResults());
             }
 
             Scenario scenarioResult = executeSteps(connection, scenario, project, httpHelper, savedValues, sessionUid);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-            Long afterScenarioId = scenario.getAfterScenarioId() == null ? project.getAfterScenarioId() : (scenario.getAfterScenarioId() < 0 ? null : scenario.getAfterScenarioId());
-            if (afterScenarioId != null) {
-                Scenario afterScenario = findOneScenarioById(project, afterScenarioId);
-                if (afterScenario != null) {
-                    afterScenario.setStepResults(new LinkedList<>());
-                    executeSteps(connection, afterScenario, project, httpHelper, savedValues, sessionUid);
-                    scenario.getStepResults().addAll(afterScenario.getStepResults());
-                }
+            Scenario afterScenario = scenario.getAfterScenario() == null ? project.getAfterScenario() : (scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario());
+            if (afterScenario != null) {
+                afterScenario.setStepResults(new LinkedList<>());
+                executeSteps(connection, afterScenario, project, httpHelper, savedValues, sessionUid);
+                scenario.getStepResults().addAll(afterScenario.getStepResults());
             }
+
             httpHelper.closeHttpConnection();
 
             return scenarioResult;
@@ -121,15 +116,6 @@ public class AtExecutor {
                 }
             }
         }
-    }
-
-    private Scenario findOneScenarioById(Project project, Long beforeScenarioId) {
-        for (Scenario scenario: project.getScenarios()) {
-            if (beforeScenarioId.equals(scenario.getId())) {
-                return scenario;
-            }
-        }
-        return null;
     }
 
     private Scenario executeSteps(Connection connection, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String sessionUid) {

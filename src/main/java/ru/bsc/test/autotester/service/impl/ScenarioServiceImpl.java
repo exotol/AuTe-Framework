@@ -81,7 +81,7 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
                             if (!serviceRequestFile.isDirectory()) {
                                 try {
                                     expectedServiceRequestService.save(new ExpectedServiceRequest(
-                                            step.getId(),
+                                            step,
                                             pair.getServiceName(),
                                             new String(Files.readAllBytes(Paths.get(serviceRequestFile.getPath())), StandardCharsets.UTF_8),
                                             50 * i++

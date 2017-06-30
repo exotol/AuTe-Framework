@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -24,8 +26,9 @@ public class ScenarioGroup implements Serializable, Cloneable {
     private Long id;
     @Column(name = "NAME", length = 150)
     private String name;
-    @Column(name = "PROJECT_ID")
-    private Long projectId;
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
 
     public Long getId() {
         return id;
@@ -41,12 +44,11 @@ public class ScenarioGroup implements Serializable, Cloneable {
     public void setName(String name) {
         this.name = name;
     }
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
-    @SuppressWarnings("unused")
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override

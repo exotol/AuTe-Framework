@@ -1,24 +1,28 @@
 package ru.bsc.test.at.executor.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 10.05.2017.
  *
  */
+@SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_PROJECT")
 public class Project implements Serializable, Cloneable {
@@ -35,11 +39,13 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "SERVICE_URL", length = 400)
     private String serviceUrl;
 
-    @Column(name = "BEFORE_SCENARIO_ID")
-    private Long beforeScenarioId;
+    @ManyToOne
+    @JoinColumn(name = "BEFORE_SCENARIO_ID")
+    private Scenario beforeScenario;
 
-    @Column(name = "AFTER_SCENARIO_ID")
-    private Long afterScenarioId;
+    @ManyToOne
+    @JoinColumn(name = "AFTER_SCENARIO_ID")
+    private Scenario afterScenario;
 
     @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
@@ -51,13 +57,12 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     private List<Scenario> scenarios;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+    //@JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     @OrderBy("NAME ASC")
     private List<ScenarioGroup> scenarioGroups;
 
@@ -79,17 +84,17 @@ public class Project implements Serializable, Cloneable {
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
-    public Long getBeforeScenarioId() {
-        return beforeScenarioId;
+    public Scenario getBeforeScenario() {
+        return beforeScenario;
     }
-    public void setBeforeScenarioId(Long beforeScenarioId) {
-        this.beforeScenarioId = beforeScenarioId;
+    public void setBeforeScenario(Scenario beforeScenario) {
+        this.beforeScenario = beforeScenario;
     }
-    public Long getAfterScenarioId() {
-        return afterScenarioId;
+    public Scenario getAfterScenario() {
+        return afterScenario;
     }
-    public void setAfterScenarioId(Long afterScenarioId) {
-        this.afterScenarioId = afterScenarioId;
+    public void setAfterScenario(Scenario afterScenario) {
+        this.afterScenario = afterScenario;
     }
     public String getProjectCode() {
         return projectCode;
@@ -141,21 +146,52 @@ public class Project implements Serializable, Cloneable {
         cloned.setId(null);
         cloned.setName(getName());
         cloned.setServiceUrl(getServiceUrl());
-        cloned.setBeforeScenarioId(getBeforeScenarioId());
-        cloned.setAfterScenarioId(getAfterScenarioId());
         cloned.setProjectCode(getProjectCode() + "_COPY");
         cloned.setDbUrl(getDbUrl());
         cloned.setDbUser(getDbUser());
         cloned.setDbPassword(getDbPassword());
 
+        Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
+
         cloned.setScenarios(new LinkedList<>());
         for (Scenario scenario: getScenarios()) {
-            cloned.getScenarios().add(scenario.clone());
+            Scenario clonedScenario = scenario.clone();
+            scenarioToClonedScenarioMap.put(scenario, clonedScenario);
+
+
+            // Для начала назначаются уже существующие в проекте группы.
+            // Во время клонирования групп далее будет переприсваиваться новые созданные группы
+            clonedScenario.setScenarioGroup(scenario.getScenarioGroup());
+
+            // Добавить склонированный сценарий в склонированный проект
+            cloned.getScenarios().add(clonedScenario);
+
+            // Правильная привязка сценариев
+            if (scenario.equals(getBeforeScenario())) {
+                cloned.setBeforeScenario(clonedScenario);
+            }
+            if (scenario.equals(getAfterScenario())) {
+                cloned.setAfterScenario(clonedScenario);
+            }
+        }
+
+        // TODO Проверить правильность "перекидывания" ссылок
+        for (Scenario scenario: cloned.getScenarios()) {
+            scenario.setBeforeScenario(scenarioToClonedScenarioMap.get(scenario.getBeforeScenario()));
+            scenario.setAfterScenario(scenarioToClonedScenarioMap.get(scenario.getAfterScenario()));
         }
 
         cloned.setScenarioGroups(new LinkedList<>());
         for (ScenarioGroup scenarioGroup: getScenarioGroups()) {
-            cloned.getScenarioGroups().add(scenarioGroup.clone());
+            ScenarioGroup clonedScenarioGroup = scenarioGroup.clone();
+            cloned.getScenarioGroups().add(clonedScenarioGroup);
+
+            // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
+            for (Scenario scenario: getScenarios()) {
+                if (scenarioGroup.equals(scenario.getScenarioGroup())) {
+                    scenario.setScenarioGroup(clonedScenarioGroup);
+                }
+            }
         }
 
         return cloned;

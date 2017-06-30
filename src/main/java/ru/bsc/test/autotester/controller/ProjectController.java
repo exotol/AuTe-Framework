@@ -18,6 +18,7 @@ import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
+import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,11 +36,13 @@ public class ProjectController {
 
     private ScenarioService scenarioService;
     private ProjectService projectService;
+    private final ScenarioGroupService scenarioGroupService;
 
     @Autowired
-    public ProjectController(ScenarioService scenarioService, ProjectService projectService) {
+    public ProjectController(ScenarioService scenarioService, ProjectService projectService, ScenarioGroupService scenarioGroupService) {
         this.scenarioService = scenarioService;
         this.projectService = projectService;
+        this.scenarioGroupService = scenarioGroupService;
     }
 
     @RequestMapping("{projectId}")
@@ -82,8 +85,8 @@ public class ProjectController {
         Project project = projectService.findOne(projectId);
         project.setName(name);
         project.setServiceUrl(serviceUrl);
-        project.setBeforeScenarioId(beforeScenarioId);
-        project.setAfterScenarioId(afterScenarioId);
+        project.setBeforeScenario(scenarioService.findOne(beforeScenarioId));
+        project.setAfterScenario(scenarioService.findOne(afterScenarioId));
         project.setDbUrl(dbUrl);
         project.setDbUser(dbUser);
         project.setDbPassword(dbPassword);
@@ -194,7 +197,7 @@ public class ProjectController {
                 for (List<Step> scenario : scenarioList) {
                     Scenario scenarioModel = new Scenario();
                     project.getScenarios().add(scenarioModel);
-                    scenarioModel.setScenarioGroupId(scenarioGroup);
+                    scenarioModel.setScenarioGroup(scenarioGroupService.findOne(scenarioGroup));
                     scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
 
                     Long i = 0L;
@@ -219,7 +222,7 @@ public class ProjectController {
         Scenario scenario = new Scenario();
         project.getScenarios().add(scenario);
         scenario.setName(name);
-        scenario.setScenarioGroupId(scenarioGroupId);
+        scenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
         project = projectService.save(project);
         return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
     }

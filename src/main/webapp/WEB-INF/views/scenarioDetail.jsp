@@ -70,7 +70,7 @@
                         </c:if>
                         <input type="hidden" name="step[${status.index}][id]" value="${step.id}"/>
 
-                        <input type="hidden" name="step[${status.index}][scenarioId]" value="${step.scenarioId}"/>
+                        <input type="hidden" name="step[${status.index}][scenario][id]" value="${step.scenario.id}"/>
                         <input type="hidden" name="step[${status.index}][dbParams]" value="${step.dbParams}"/>
                         <input type="hidden" name="step[${status.index}][tmpServiceRequestsDirectory]" value="${step.tmpServiceRequestsDirectory}"/>
                     </td>
@@ -166,7 +166,7 @@
                     <tr>
                         <td>
                             <input type="hidden" name="expectedRequest[${status.index}][id]" value="${expectedRequest.id}"/>
-                            <input type="hidden" name="expectedRequest[${status.index}][stepId]" value="${expectedRequest.stepId}"/>
+                            <input type="hidden" name="expectedRequest[${status.index}][step][id]" value="${expectedRequest.step.id}"/>
                             <input class="form-control" style="width: inherit;" size="3" name="expectedRequest[${status.index}][sort]" value="${expectedRequest.sort}"/>
                         </td>
                         <td><input class="form-control" name="expectedRequest[${status.index}][serviceName]" value="${expectedRequest.serviceName}"/></td>

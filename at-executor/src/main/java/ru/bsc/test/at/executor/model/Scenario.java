@@ -1,12 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -33,24 +34,34 @@ public class Scenario implements Serializable, Cloneable {
     private Long id;
     @Column(name = "NAME", length = 500)
     private String name;
-    @Column(name = "PROJECT_ID")
-    private Long projectId;
-    @Column(name = "SCENARIO_GROUP_ID")
-    private Long scenarioGroupId;
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
+    @ManyToOne
+    @JoinColumn(name = "SCENARIO_GROUP_ID")
+    private ScenarioGroup scenarioGroup;
     @Transient
     private List<StepResult> stepResults = null;
     @Column(name = "LAST_RUN_AT")
     private Date lastRunAt;
     @Column(name = "LAST_RUN_FAILURES")
     private Integer lastRunFailures;
-    @Column(name = "BEFORE_SCENARIO_ID")
-    private Long beforeScenarioId;
-    @Column(name = "AFTER_SCENARIO_ID")
-    private Long afterScenarioId;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="SCENARIO_ID", referencedColumnName="ID")
+
+    @ManyToOne
+    @JoinColumn(name = "BEFORE_SCENARIO_ID")
+    private Scenario beforeScenario;
+
+    @ManyToOne
+    @JoinColumn(name = "AFTER_SCENARIO_ID")
+    private Scenario afterScenario;
+    @OneToMany(mappedBy = "scenario", fetch = FetchType.EAGER)
+    //@JoinColumn(name="SCENARIO_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<Step> steps;
+    @Column(name = "BEFORE_SCENARIO_IGNORE")
+    private Boolean beforeScenarioIgnore;
+    @Column(name = "AFTER_SCENARIO_IGNORE")
+    private Boolean afterScenarioIgnore;
 
     public Long getId() {
         return id;
@@ -66,11 +77,11 @@ public class Scenario implements Serializable, Cloneable {
     public void setName(String name) {
         this.name = name;
     }
-    public Long getScenarioGroupId() {
-        return scenarioGroupId;
+    public ScenarioGroup getScenarioGroup() {
+        return scenarioGroup;
     }
-    public void setScenarioGroupId(Long scenarioGroupId) {
-        this.scenarioGroupId = scenarioGroupId;
+    public void setScenarioGroup(ScenarioGroup scenarioGroup) {
+        this.scenarioGroup = scenarioGroup;
     }
     public List<StepResult> getStepResults() {
         return stepResults;
@@ -87,17 +98,17 @@ public class Scenario implements Serializable, Cloneable {
     public Integer getLastRunFailures() {
         return lastRunFailures;
     }
-    public Long getBeforeScenarioId() {
-        return beforeScenarioId;
+    public Scenario getBeforeScenario() {
+        return beforeScenario;
     }
-    public void setBeforeScenarioId(Long beforeScenarioId) {
-        this.beforeScenarioId = beforeScenarioId;
+    public void setBeforeScenario(Scenario beforeScenario) {
+        this.beforeScenario = beforeScenario;
     }
-    public Long getAfterScenarioId() {
-        return afterScenarioId;
+    public Scenario getAfterScenario() {
+        return afterScenario;
     }
-    public void setAfterScenarioId(Long afterScenarioId) {
-        this.afterScenarioId = afterScenarioId;
+    public void setAfterScenario(Scenario afterScenario) {
+        this.afterScenario = afterScenario;
     }
     public List<Step> getSteps() {
         if (steps == null) {
@@ -109,12 +120,11 @@ public class Scenario implements Serializable, Cloneable {
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
-    @SuppressWarnings("unused")
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setProject(Project project) {
+        this.project = project;
     }
     @SuppressWarnings("unused")
     public void setStepResults(List<StepResult> stepResults) {
@@ -127,11 +137,11 @@ public class Scenario implements Serializable, Cloneable {
         Scenario cloned = new Scenario();
         cloned.setId(null);
         cloned.setName(getName());
-        cloned.setScenarioGroupId(getScenarioGroupId());
+        cloned.setScenarioGroup(getScenarioGroup());
         cloned.setLastRunAt(null);
         cloned.setLastRunFailures(null);
-        cloned.setBeforeScenarioId(getBeforeScenarioId());
-        cloned.setAfterScenarioId(getAfterScenarioId());
+        cloned.setBeforeScenario(getBeforeScenario());
+        cloned.setAfterScenario(getAfterScenario());
 
         cloned.setSteps(new LinkedList<>());
         for (Step step: getSteps()) {
@@ -139,5 +149,21 @@ public class Scenario implements Serializable, Cloneable {
         }
 
         return cloned;
+    }
+
+    public Boolean getBeforeScenarioIgnore() {
+        return beforeScenarioIgnore;
+    }
+    @SuppressWarnings("unused")
+    public void setBeforeScenarioIgnore(Boolean beforeScenarioIgnore) {
+        this.beforeScenarioIgnore = beforeScenarioIgnore;
+    }
+
+    public Boolean getAfterScenarioIgnore() {
+        return afterScenarioIgnore;
+    }
+    @SuppressWarnings("unused")
+    public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
+        this.afterScenarioIgnore = afterScenarioIgnore;
     }
 }

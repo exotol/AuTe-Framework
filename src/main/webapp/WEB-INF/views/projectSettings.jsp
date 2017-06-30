@@ -24,7 +24,7 @@
                         <option value="">-</option>
                         <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
                         <c:forEach items="${projectScenarios}" var="scenario">
-                            <option value="${scenario.id}" ${project.beforeScenarioId eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
+                            <option value="${scenario.id}" ${project.beforeScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
                     </select>
                 </td>
@@ -36,7 +36,7 @@
                         <option value="">-</option>
                         <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
                         <c:forEach items="${projectScenarios}" var="scenario">
-                            <option value="${scenario.id}" ${project.afterScenarioId eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
+                            <option value="${scenario.id}" ${project.afterScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
                     </select>
                 </td>
@@ -59,7 +59,7 @@
         <input type="file" name="excelFile"/><br/>
         <input type="file" name="excelFile"/><br/>
         <input type="file" name="excelFile"/><br/>
-        <select class="form-control" style="width: inherit;" name="scenarioGroup">
+        <select class="form-control" style="width: inherit;" name="scenarioGroupId">
             <option value="">-</option>
             <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
             <c:forEach items="${scenarioGroups}" var="group">

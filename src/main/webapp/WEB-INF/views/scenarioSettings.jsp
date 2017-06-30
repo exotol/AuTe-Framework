@@ -23,11 +23,11 @@
                 <td>Before scenario</td>
                 <td>
                     <select class="form-control" name="beforeScenarioId">
-                        <option ${scenario.beforeScenarioId eq null ? 'selected' : ''} value="">From project settings (default)</option>
-                        <option ${scenario.beforeScenarioId eq -1 ? 'selected' : ''} value="-1">Disabled</option>
+                        <option ${scenario.beforeScenario.id eq null ? 'selected' : ''} value="">From project settings (default)</option>
+                        <option ${scenario.beforeScenario.id eq -1 ? 'selected' : ''} value="-1">Disabled</option>
                         <optgroup label="Scenarios">
                             <c:forEach items="${projectScenarios}" var="scenarioItem">
-                                <option value="${scenarioItem.id}" ${scenario.beforeScenarioId eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
+                                <option value="${scenarioItem.id}" ${scenario.beforeScenario.id eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
                             </c:forEach>
                         </optgroup>
                     </select>
@@ -37,11 +37,11 @@
                 <td>After scenario</td>
                 <td>
                     <select class="form-control" name="afterScenarioId">
-                        <option ${scenario.afterScenarioId eq null ? 'selected' : ''} value="">From project settings (default)</option>
-                        <option ${scenario.afterScenarioId eq -1 ? 'selected' : ''} value="-1">Disabled</option>
+                        <option ${scenario.afterScenario.id eq null ? 'selected' : ''} value="">From project settings (default)</option>
+                        <option ${scenario.afterScenario.id eq -1 ? 'selected' : ''} value="-1">Disabled</option>
                         <optgroup label="Scenarios">
                             <c:forEach items="${projectScenarios}" var="scenarioItem">
-                                <option value="${scenarioItem.id}" ${scenario.afterScenarioId eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
+                                <option value="${scenarioItem.id}" ${scenario.afterScenario.id eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
                             </c:forEach>
                         </optgroup>
                     </select>
@@ -53,7 +53,7 @@
                     <select class="form-control" name="scenarioGroupId">
                         <option value="">-</option>
                         <c:forEach items="${project.scenarioGroups}" var="scenarioGroup">
-                            <option value="${scenarioGroup.id}" ${scenario.scenarioGroupId eq scenarioGroup.id ? 'selected' : ''}>${scenarioGroup.name}</option>
+                            <option value="${scenarioGroup.id}" ${scenario.scenarioGroup.id eq scenarioGroup.id ? 'selected' : ''}>${scenarioGroup.name}</option>
                         </c:forEach>
                     </select>
                 </td>

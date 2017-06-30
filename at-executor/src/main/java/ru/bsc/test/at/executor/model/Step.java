@@ -1,12 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -35,10 +36,11 @@ public class Step implements Serializable, Cloneable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "SCENARIO_ID")
-    private Long scenarioId;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="STEP_ID", referencedColumnName="ID")
+    @ManyToOne
+    @JoinColumn(name = "SCENARIO_ID")
+    private Scenario scenario;
+    @OneToMany(mappedBy = "step", fetch = FetchType.EAGER)
+    //@JoinColumn(name="STEP_ID", referencedColumnName="ID")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
     @Column(name = "SORT")
@@ -179,13 +181,13 @@ public class Step implements Serializable, Cloneable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-    public Long getScenarioId() {
-        return scenarioId;
+    public Scenario getScenario() {
+        return scenario;
     }
-    @SuppressWarnings("unused")
-    public void setScenarioId(Long scenarioId) {
-        this.scenarioId = scenarioId;
+    public void setScenario(Scenario scenario) {
+        this.scenario = scenario;
     }
+
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         if (expectedServiceRequests == null) {
             expectedServiceRequests = new LinkedList<>();

@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -27,25 +26,23 @@ public class StepController {
 
     private StepService stepService;
     private ScenarioService scenarioService;
-    private final ProjectService projectService;
 
     @Autowired
-    public StepController(StepService stepService, ScenarioService scenarioService, ProjectService projectService) {
+    public StepController(StepService stepService, ScenarioService scenarioService) {
         this.stepService = stepService;
         this.scenarioService = scenarioService;
-        this.projectService = projectService;
     }
 
     @RequestMapping("{stepId}")
     public ModelAndView steps(@PathVariable long stepId) {
         Step step = stepService.findOne(stepId);
-        Scenario scenario = scenarioService.findOne(step.getScenarioId());
+        Scenario scenario = step.getScenario();
 
         ModelAndView model = new ModelAndView("scenarioDetail");
         model.addObject("steps", Collections.singletonList(step));
         model.addObject("stepDetail", step);
         model.addObject("scenario", scenario);
-        model.addObject("project", projectService.findOne(scenario.getProjectId()));
+        model.addObject("project", scenario.getProject());
 
         model.addObject("expectedRequestsList", step.getExpectedServiceRequests());
 
@@ -94,7 +91,7 @@ public class StepController {
         Step step = stepService.findOne(stepId);
         if (step != null) {
             stepService.deleteStep(step.getId());
-            return "redirect:/scenario/" + step.getScenarioId();
+            return "redirect:/scenario/" + step.getScenario().getId();
         }
         return "redirect:/";
     }

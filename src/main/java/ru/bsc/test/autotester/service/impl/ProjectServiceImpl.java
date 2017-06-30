@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -28,6 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Project findOne(Long projectId) {
         return projectRepository.findOne(projectId);
     }

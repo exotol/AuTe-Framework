@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.service.ProjectService;
+import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -26,12 +27,14 @@ public class ScenarioController {
     private StepService stepService;
     private ScenarioService scenarioService;
     private final ProjectService projectService;
+    private final ScenarioGroupService scenarioGroupService;
 
     @Autowired
-    public ScenarioController(StepService stepService, ScenarioService scenarioService, ProjectService projectService) {
+    public ScenarioController(StepService stepService, ScenarioService scenarioService, ProjectService projectService, ScenarioGroupService scenarioGroupService) {
         this.stepService = stepService;
         this.scenarioService = scenarioService;
         this.projectService = projectService;
+        this.scenarioGroupService = scenarioGroupService;
     }
 
     @RequestMapping("{scenarioId}")
@@ -39,7 +42,7 @@ public class ScenarioController {
         Scenario scenario = scenarioService.findOne(scenarioId);
         ModelAndView model = new ModelAndView("scenarioDetail");
         model.addObject("scenario", scenario);
-        model.addObject("project", projectService.findOne(scenario.getProjectId()));
+        model.addObject("project", scenario.getProject());
 
         model.addObject("steps", scenario.getSteps());
         return model;
@@ -48,7 +51,7 @@ public class ScenarioController {
     @RequestMapping(value = "{scenarioId}/settings", method = RequestMethod.GET)
     public ModelAndView scenarioSettings(@PathVariable long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
-        Project project = projectService.findOne(scenario.getProjectId());
+        Project project = scenario.getProject();
 
         ModelAndView model = new ModelAndView("scenarioSettings");
         model.addObject("scenario", scenario);
@@ -68,9 +71,9 @@ public class ScenarioController {
         Scenario saveScenario = scenarioService.findOne(scenarioId);
         if (saveScenario != null) {
             saveScenario.setName(name);
-            saveScenario.setBeforeScenarioId(beforeScenarioId);
-            saveScenario.setAfterScenarioId(afterScenarioId);
-            saveScenario.setScenarioGroupId(scenarioGroupId);
+            saveScenario.setBeforeScenario(scenarioService.findOne(beforeScenarioId));
+            saveScenario.setAfterScenario(scenarioService.findOne(afterScenarioId));
+            saveScenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
             scenarioService.save(saveScenario);
         }
 
@@ -103,7 +106,7 @@ public class ScenarioController {
         Scenario scenario = scenarioService.findOne(scenarioId);
         if (scenario != null) {
             scenarioService.delete(scenario);
-            return "redirect:/project/" + scenario.getProjectId();
+            return "redirect:/project/" + scenario.getProject().getId();
         } else {
             return "redirect:/";
         }
@@ -112,7 +115,7 @@ public class ScenarioController {
     @RequestMapping(value = "{scenarioId}/clone", method = RequestMethod.POST)
     public String clone(@PathVariable Long scenarioId) throws IOException, CloneNotSupportedException {
         Scenario scenario = scenarioService.findOne(scenarioId);
-        Project project = projectService.findOne(scenario.getProjectId());
+        Project project = scenario.getProject();
 
         Scenario cloned = scenario.clone();
         project.getScenarios().add(cloned);
