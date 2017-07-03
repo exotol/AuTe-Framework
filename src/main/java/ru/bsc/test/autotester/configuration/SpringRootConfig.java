@@ -14,6 +14,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.sql.DataSource;
@@ -26,6 +27,7 @@ import javax.sql.DataSource;
 @ComponentScan("ru.bsc.test.autotester")
 @PropertySource("classpath:database.properties")
 @EnableJpaRepositories("ru.bsc.test.autotester")
+@EnableTransactionManagement
 public class SpringRootConfig {
 
     private final static String DATABASE_HSQL = "HSQL";

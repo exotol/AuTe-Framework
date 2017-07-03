@@ -2,7 +2,6 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,12 +56,11 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project")
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     private List<Scenario> scenarios;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
-    //@JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
+    @OneToMany(mappedBy = "project")
     @OrderBy("NAME ASC")
     private List<ScenarioGroup> scenarioGroups;
 

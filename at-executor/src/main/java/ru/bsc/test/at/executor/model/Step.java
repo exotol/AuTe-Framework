@@ -2,7 +2,6 @@ package ru.bsc.test.at.executor.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,8 +38,7 @@ public class Step implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "SCENARIO_ID")
     private Scenario scenario;
-    @OneToMany(mappedBy = "step", fetch = FetchType.EAGER)
-    //@JoinColumn(name="STEP_ID", referencedColumnName="ID")
+    @OneToMany(mappedBy = "step")
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
     @Column(name = "SORT")

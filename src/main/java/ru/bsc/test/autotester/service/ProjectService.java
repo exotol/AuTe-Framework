@@ -14,5 +14,7 @@ public interface ProjectService {
 
     Project findOne(Long projectId);
 
+    String findOneAsYaml(Long projectId);
+
     Project save(Project project);
 }
