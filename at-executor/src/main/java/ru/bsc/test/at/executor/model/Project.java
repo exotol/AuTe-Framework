@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,7 +57,7 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     private List<Scenario> scenarios;
 
@@ -154,6 +155,7 @@ public class Project implements Serializable, Cloneable {
         cloned.setScenarios(new LinkedList<>());
         for (Scenario scenario: getScenarios()) {
             Scenario clonedScenario = scenario.clone();
+            clonedScenario.setProject(cloned);
             scenarioToClonedScenarioMap.put(scenario, clonedScenario);
 
 
@@ -182,10 +184,11 @@ public class Project implements Serializable, Cloneable {
         cloned.setScenarioGroups(new LinkedList<>());
         for (ScenarioGroup scenarioGroup: getScenarioGroups()) {
             ScenarioGroup clonedScenarioGroup = scenarioGroup.clone();
+            clonedScenarioGroup.setProject(cloned);
             cloned.getScenarioGroups().add(clonedScenarioGroup);
 
             // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
-            for (Scenario scenario: getScenarios()) {
+            for (Scenario scenario: cloned.getScenarios()) {
                 if (scenarioGroup.equals(scenario.getScenarioGroup())) {
                     scenario.setScenarioGroup(clonedScenarioGroup);
                 }

@@ -66,14 +66,18 @@ public class ScenarioController {
             @RequestParam String name,
             @RequestParam Long beforeScenarioId,
             @RequestParam Long afterScenarioId,
-            @RequestParam(required = false) Long scenarioGroupId
+            @RequestParam(required = false) Long scenarioGroupId,
+            @RequestParam(required = false, defaultValue = "false") boolean beforeScenarioIgnore,
+            @RequestParam(required = false, defaultValue = "false") boolean afterScenarioIgnore
     ) {
         Scenario saveScenario = scenarioService.findOne(scenarioId);
         if (saveScenario != null) {
             saveScenario.setName(name);
-            saveScenario.setBeforeScenario(scenarioService.findOne(beforeScenarioId));
-            saveScenario.setAfterScenario(scenarioService.findOne(afterScenarioId));
-            saveScenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
+            saveScenario.setBeforeScenario(beforeScenarioId == null ? null : scenarioService.findOne(beforeScenarioId));
+            saveScenario.setAfterScenario(afterScenarioId == null ? null : scenarioService.findOne(afterScenarioId));
+            saveScenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
+            saveScenario.setBeforeScenarioIgnore(beforeScenarioIgnore);
+            saveScenario.setAfterScenarioIgnore(afterScenarioIgnore);
             scenarioService.save(saveScenario);
         }
 

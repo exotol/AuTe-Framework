@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -84,8 +85,8 @@ public class ProjectController {
         Project project = projectService.findOne(projectId);
         project.setName(name);
         project.setServiceUrl(serviceUrl);
-        project.setBeforeScenario(scenarioService.findOne(beforeScenarioId));
-        project.setAfterScenario(scenarioService.findOne(afterScenarioId));
+        project.setBeforeScenario(beforeScenarioId == null ? null : scenarioService.findOne(beforeScenarioId));
+        project.setAfterScenario(afterScenarioId == null ? null : scenarioService.findOne(afterScenarioId));
         project.setDbUrl(dbUrl);
         project.setDbUser(dbUser);
         project.setDbPassword(dbPassword);
@@ -137,11 +138,10 @@ public class ProjectController {
     @RequestMapping(value = "{projectId}/export-to-excel", method = RequestMethod.POST)
     public void exportToExcel(
             @PathVariable long projectId,
-            @RequestParam("scenarios[]") long[] scenarios,
+            @RequestParam("scenarios[]") Long[] scenarios,
             HttpServletResponse response
     ) throws IOException {
         String fileName = null;
-
 
         XSSFWorkbook book = new XSSFWorkbook();
         XSSFSheet sheet = book.createSheet();
@@ -153,27 +153,22 @@ public class ProjectController {
         row.createCell(3).setCellValue("EXPECTED_RESPONSE_FROM_PORTAL");
         row.createCell(4).setCellValue("SAVING_VALUES");
 
-        for (long scenarioId: scenarios) {
+        for (Scenario scenario: scenarioService.findAll(Arrays.asList(scenarios))) {
+            if (fileName == null) {
+                fileName = scenario.getName();
+            }
 
-            Scenario scenario = scenarioService.findOne(scenarioId);
-            if (scenario != null) {
-                if (fileName == null) {
-                    fileName = scenario.getName();
-                }
+            sheet.createRow(rowIndex++).createCell(0).setCellValue("# " + scenario.getName());
 
-                sheet.createRow(rowIndex++).createCell(0).setCellValue("# " + scenario.getName());
-
-                for (Step step : scenario.getSteps()) {
-                    row = sheet.createRow(rowIndex++);
-                    row.createCell(0).setCellValue(step.getRelativeUrl());
-                    row.createCell(1).setCellValue(step.getRequest());
-                    row.createCell(2).setCellValue(step.getResponses());
-                    row.createCell(3).setCellValue(step.getExpectedResponse());
-                    row.createCell(4).setCellValue(step.getSavingValues());
-                }
+            for (Step step : scenario.getSteps()) {
+                row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(step.getRelativeUrl());
+                row.createCell(1).setCellValue(step.getRequest());
+                row.createCell(2).setCellValue(step.getResponses());
+                row.createCell(3).setCellValue(step.getExpectedResponse());
+                row.createCell(4).setCellValue(step.getSavingValues());
             }
         }
-
 
         response.addHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -183,10 +178,11 @@ public class ProjectController {
     @RequestMapping(value = "{projectId}/import-from-excel", method = RequestMethod.POST)
     public String importScenarioFromExcel(
             @PathVariable long projectId,
-            @RequestParam Long scenarioGroup,
+            @RequestParam Long scenarioGroupId,
             @RequestParam("excelFile") MultipartFile[] excelFile
     ) throws IOException {
         Project project = projectService.findOne(projectId);
+        ScenarioGroup scenarioGroup = scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId);
         for (MultipartFile multipartFile: excelFile) {
             if (!multipartFile.isEmpty()) {
                 ExcelTestScenarioParser excelTestScenarioParser = new ExcelTestScenarioParser(multipartFile.getInputStream());
@@ -196,7 +192,7 @@ public class ProjectController {
                 for (List<Step> scenario : scenarioList) {
                     Scenario scenarioModel = new Scenario();
                     project.getScenarios().add(scenarioModel);
-                    scenarioModel.setScenarioGroup(scenarioGroupService.findOne(scenarioGroup));
+                    scenarioModel.setScenarioGroup(scenarioGroup);
                     scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
 
                     Long i = 0L;
@@ -221,7 +217,7 @@ public class ProjectController {
         Scenario scenario = new Scenario();
         project.getScenarios().add(scenario);
         scenario.setName(name);
-        scenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
+        scenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
         project = projectService.save(project);
         return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
     }

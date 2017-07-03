@@ -17,14 +17,13 @@
     <hr />
     <h4>Settings</h4>
     <form method="post" action="${pageContext.request.contextPath}/scenario/${scenario.id}/settings">
-        <table>
+        <table class="table table-condensed">
             <tr><td>Name:</td><td><input class="form-control" type="text" name="name" value="<c:out value="${scenario.name}"/>"/></td></tr>
             <tr>
                 <td>Before scenario</td>
                 <td>
                     <select class="form-control" name="beforeScenarioId">
                         <option ${scenario.beforeScenario.id eq null ? 'selected' : ''} value="">From project settings (default)</option>
-                        <option ${scenario.beforeScenario.id eq -1 ? 'selected' : ''} value="-1">Disabled</option>
                         <optgroup label="Scenarios">
                             <c:forEach items="${projectScenarios}" var="scenarioItem">
                                 <option value="${scenarioItem.id}" ${scenario.beforeScenario.id eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
@@ -32,6 +31,10 @@
                         </optgroup>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td>Ignore before scenario</td>
+                <td><input type="checkbox" name="beforeScenarioIgnore" ${scenario.beforeScenarioIgnore ? 'checked' : ''} /></td>
             </tr>
             <tr>
                 <td>After scenario</td>
@@ -46,6 +49,10 @@
                         </optgroup>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td>Ignore after scenario</td>
+                <td><input type="checkbox" name="afterScenarioIgnore" ${scenario.afterScenarioIgnore ? 'checked' : ''} /></td>
             </tr>
             <tr>
                 <td>Group</td>

@@ -37,7 +37,7 @@
         <table class="table table-condensed">
             <tr>
                 <th style="width: 35px;">
-                    <input style="width: 24px; height: 24px; margin: 0;" type="checkbox" onclick="$('input[name=scenarios\\[\\]]').prop('checked', $(this).prop('checked'));" />
+                    <input type="checkbox" onclick="$('input[name=scenarios\\[\\]]').prop('checked', $(this).prop('checked'));" />
                 </th>
                 <th>Название сценария</th>
                 <th>Ошибок при последнем запуске</th>
@@ -46,7 +46,7 @@
             <c:forEach items="${scenarios}" var="scenario">
                 <tr>
                     <td>
-                        <input ${scenario.lastRunFailures eq 0 ? '' : 'checked'} type="checkbox" style="width: 24px; height: 24px; margin: 0;" name="scenarios[]" value="${scenario.id}">
+                        <input ${scenario.lastRunFailures eq 0 ? '' : 'checked'} type="checkbox" name="scenarios[]" value="${scenario.id}">
                     </td>
                     <td><a href="${pageContext.request.contextPath}/scenario/${scenario.id}">${scenario.name}</a></td>
                     <td style="color: ${scenario.lastRunFailures eq 0 ? 'gray' : 'red'}">${scenario.lastRunFailures}</td>

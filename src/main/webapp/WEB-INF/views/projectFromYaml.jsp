@@ -13,7 +13,7 @@
         <div class="form-group">
             <label>
                 YAML file
-                <input style="background-color: lightgray; height: 50px;" type="file" name="yamlFile" class="form-control-file"/>
+                <input style="background-color: lightgray; height: 150px;" type="file" name="yamlFile" class="form-control-file"/>
             </label>
         </div>
         <input class="btn btn-default" type="submit" value="Import"/>

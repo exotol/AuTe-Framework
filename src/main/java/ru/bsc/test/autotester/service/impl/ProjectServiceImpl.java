@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> findAll() {
-        return projectRepository.findAll();
+        return projectRepository.findAllByOrderByNameAsc();
     }
 
     @Override

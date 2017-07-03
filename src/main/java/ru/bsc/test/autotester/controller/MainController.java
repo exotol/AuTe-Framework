@@ -50,6 +50,7 @@ public class MainController {
         Project cloned = object.clone();
 
         // сохранить проект в БД (in memory)
+        cloned.setName(cloned.getName() + " (импортировано из yaml)");
         projectService.save(cloned);
 
         return "redirect:/";

@@ -14,8 +14,8 @@
     <hr />
     <h4>Settings</h4>
     <form method="post" action="${pageContext.request.contextPath}/project/${project.id}/settings">
-        <table>
-            <tr><td>Name:</td><td style="width: 500px;"><input class="form-control" type="text" name="name" value="<c:out value="${project.name}"/>"/></td></tr>
+        <table class="table table-condensed">
+            <tr><td>Name:</td><td><input class="form-control" type="text" name="name" value="<c:out value="${project.name}"/>"/></td></tr>
             <tr><td>Base URL:</td><td><input class="form-control" type="text" name="serviceUrl" value="<c:out value="${project.serviceUrl}"/>"/></td></tr>
             <tr>
                 <td>Before scenario</td>

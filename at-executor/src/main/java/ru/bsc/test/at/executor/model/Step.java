@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Step implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "SCENARIO_ID")
     private Scenario scenario;
-    @OneToMany(mappedBy = "step")
+    @OneToMany(mappedBy = "step", cascade = CascadeType.ALL)
     @OrderBy("SORT ASC")
     private List<ExpectedServiceRequest> expectedServiceRequests;
     @Column(name = "SORT")
@@ -232,7 +233,9 @@ public class Step implements Serializable, Cloneable {
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
-            cloned.getExpectedServiceRequests().add(expectedServiceRequest.clone());
+            ExpectedServiceRequest clonedExpectedServiceRequest = expectedServiceRequest.clone();
+            clonedExpectedServiceRequest.setStep(cloned);
+            cloned.getExpectedServiceRequests().add(clonedExpectedServiceRequest);
         }
 
         return cloned;

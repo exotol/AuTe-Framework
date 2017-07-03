@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class Scenario implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "PROJECT_ID")
     private Project project;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "SCENARIO_GROUP_ID")
     private ScenarioGroup scenarioGroup;
     @Transient
@@ -53,7 +54,7 @@ public class Scenario implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "AFTER_SCENARIO_ID")
     private Scenario afterScenario;
-    @OneToMany(mappedBy = "scenario")
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL)
     @OrderBy("SORT ASC")
     private List<Step> steps;
     @Column(name = "BEFORE_SCENARIO_IGNORE")
@@ -134,6 +135,7 @@ public class Scenario implements Serializable, Cloneable {
         super.clone();
         Scenario cloned = new Scenario();
         cloned.setId(null);
+        cloned.setProject(getProject());
         cloned.setName(getName());
         cloned.setScenarioGroup(getScenarioGroup());
         cloned.setLastRunAt(null);
@@ -143,7 +145,9 @@ public class Scenario implements Serializable, Cloneable {
 
         cloned.setSteps(new LinkedList<>());
         for (Step step: getSteps()) {
-            cloned.getSteps().add(step.clone());
+            Step clonedStep = step.clone();
+            clonedStep.setScenario(cloned);
+            cloned.getSteps().add(clonedStep);
         }
 
         return cloned;

@@ -26,3 +26,9 @@ a[target='_blank']::after {
 label {
     margin-bottom: 0;
 }
+
+input[type=checkbox] {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+}
