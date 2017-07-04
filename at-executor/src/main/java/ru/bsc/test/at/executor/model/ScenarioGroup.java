@@ -1,7 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -12,7 +12,7 @@
     <h4>Project ${project.id}. ${project.name}</h4>
 
     <hr />
-    <h4>Groups</h4>
+    <h4>Project groups</h4>
     <form id="save-scenario-groups-form" onsubmit="return false;">
         <table class="table table-condensed">
             <c:forEach items="${project.scenarioGroups}" var="group" varStatus="status">
