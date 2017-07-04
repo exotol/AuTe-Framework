@@ -1,5 +1,8 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import net.minidev.json.annotate.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +31,7 @@ public class ScenarioGroup implements Serializable, Cloneable {
     private String name;
     @ManyToOne
     @JoinColumn(name = "PROJECT_ID")
+    @JsonBackReference
     private Project project;
 
     public Long getId() {

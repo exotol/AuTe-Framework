@@ -1,5 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,6 +39,7 @@ public class ExpectedServiceRequest implements Serializable, Cloneable {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "STEP_ID")
+    @JsonBackReference
     private Step step;
     @Column(name = "SERVICE_NAME", length = 100)
     private String serviceName;

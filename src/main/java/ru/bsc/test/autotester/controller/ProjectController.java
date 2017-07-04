@@ -71,6 +71,16 @@ public class ProjectController {
         return model;
     }
 
+    @RequestMapping(value = "{projectId}/groups", method = RequestMethod.GET)
+    public ModelAndView groups(
+            @PathVariable long projectId
+    ) {
+        Project project = projectService.findOne(projectId);
+        ModelAndView model = new ModelAndView("projectGroups");
+        model.addObject("project", project);
+        return model;
+    }
+
     @RequestMapping(value = "{projectId}/settings", method = RequestMethod.POST)
     public String settingsPost(
             @PathVariable long projectId,
@@ -220,6 +230,21 @@ public class ProjectController {
         scenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
         project = projectService.save(project);
         return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
+    }
+
+    @RequestMapping(value = "{projectId}/add-group", method = RequestMethod.POST)
+    public String addScenarioGroup(
+            @RequestParam String name,
+            @PathVariable long projectId
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+
+        ScenarioGroup scenarioGroup = new ScenarioGroup();
+        scenarioGroup.setName(name);
+        scenarioGroup.setProject(project);
+
+        scenarioGroupService.save(scenarioGroup);
+        return "redirect:/project/" + project.getId() + "/groups";
     }
 
     @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")

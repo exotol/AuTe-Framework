@@ -107,4 +107,8 @@ $(function () {
             });
         }
     });
+
+    $('#save-scenario-groups').click(function () {
+        restSaveForm('#save-scenario-groups-form', '#save-scenario-groups-state', '/rest/project/save-scenario-groups');
+    })
 });

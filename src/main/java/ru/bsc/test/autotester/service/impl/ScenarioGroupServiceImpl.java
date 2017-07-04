@@ -6,6 +6,8 @@ import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.autotester.repository.ScenarioGroupRepository;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
 
+import java.util.List;
+
 /**
  * Created by sdoroshin on 21.03.2017.
  *
@@ -28,6 +30,11 @@ public class ScenarioGroupServiceImpl implements ScenarioGroupService {
     @Override
     public ScenarioGroup findOne(long scenarioGroupId) {
         return scenarioGroupRepository.findOne(scenarioGroupId);
+    }
+
+    @Override
+    public List<ScenarioGroup> save(List<ScenarioGroup> scenarioGroupList) {
+        return scenarioGroupRepository.save(scenarioGroupList);
     }
 
 }

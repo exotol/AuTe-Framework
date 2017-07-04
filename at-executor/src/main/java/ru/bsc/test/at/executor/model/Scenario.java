@@ -1,5 +1,8 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +39,7 @@ public class Scenario implements Serializable, Cloneable {
     private String name;
     @ManyToOne
     @JoinColumn(name = "PROJECT_ID")
+    @JsonBackReference
     private Project project;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "SCENARIO_GROUP_ID")
@@ -56,6 +60,7 @@ public class Scenario implements Serializable, Cloneable {
     private Scenario afterScenario;
     @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL)
     @OrderBy("SORT ASC")
+    @JsonManagedReference
     private List<Step> steps;
     @Column(name = "BEFORE_SCENARIO_IGNORE")
     private Boolean beforeScenarioIgnore;

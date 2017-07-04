@@ -1,5 +1,8 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,9 +41,11 @@ public class Step implements Serializable, Cloneable {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "SCENARIO_ID")
+    @JsonBackReference
     private Scenario scenario;
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL)
     @OrderBy("SORT ASC")
+    @JsonManagedReference
     private List<ExpectedServiceRequest> expectedServiceRequests;
     @Column(name = "SORT")
     private Long sort;

@@ -1,5 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,10 +61,12 @@ public class Project implements Serializable, Cloneable {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
+    @JsonManagedReference
     private List<Scenario> scenarios;
 
     @OneToMany(mappedBy = "project")
     @OrderBy("NAME ASC")
+    @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
 
     public Long getId() {
