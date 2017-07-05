@@ -204,6 +204,7 @@ public class ProjectController {
                     project.getScenarios().add(scenarioModel);
                     scenarioModel.setScenarioGroup(scenarioGroup);
                     scenarioModel.setName(multipartFile.getOriginalFilename() + " " + scenarioIndex++);
+                    scenarioModel.setProject(project);
 
                     Long i = 0L;
                     for (Step step : scenario) {
@@ -224,12 +225,17 @@ public class ProjectController {
             @RequestParam Long scenarioGroupId
     ) throws IOException {
         Project project = projectService.findOne(projectId);
-        Scenario scenario = new Scenario();
-        project.getScenarios().add(scenario);
-        scenario.setName(name);
-        scenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
-        project = projectService.save(project);
-        return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
+        if (project != null) {
+            Scenario scenario = new Scenario();
+            project.getScenarios().add(scenario);
+            scenario.setName(name);
+            scenario.setProject(project);
+            scenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
+            project = projectService.save(project);
+            return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
+        } else {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value = "{projectId}/add-group", method = RequestMethod.POST)

@@ -76,6 +76,7 @@ public class StepController {
             Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step step = new Step();
             step.setSort(maxSortStep + 50);
+            step.setScenario(scenario);
 
             scenario.getSteps().add(step);
             scenario = scenarioService.save(scenario);
@@ -108,6 +109,7 @@ public class StepController {
             ExpectedServiceRequest expectedServiceRequest = new ExpectedServiceRequest();
             step.getExpectedServiceRequests().add(expectedServiceRequest);
             expectedServiceRequest.setServiceName(serviceName);
+            expectedServiceRequest.setStep(step);
             expectedServiceRequest.setSort(maxSort + 50);
             step = stepService.save(step);
             return "redirect:/step/" + step.getId();
