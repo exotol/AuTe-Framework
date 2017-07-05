@@ -75,7 +75,8 @@ public class SpringRootConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.getJpaPropertyMap().put("hibernate.enable_lazy_load_no_trans", true);
-        //factory.getJpaPropertyMap().put("hibernate.event.merge.entity_copy_observer", "allow");
+        // For clone scenarios - https://stackoverflow.com/questions/26591521/java-lang-illegalstateexception-multiple-representations-of-the-same-entity-wit
+        factory.getJpaPropertyMap().put("hibernate.event.merge.entity_copy_observer", "allow");
         factory.setPackagesToScan("ru.bsc.test.autotester", "ru.bsc.test.at.executor.model");
         factory.setDataSource(dataSource());
         return factory;

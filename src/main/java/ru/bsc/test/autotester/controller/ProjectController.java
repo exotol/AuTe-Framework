@@ -230,9 +230,14 @@ public class ProjectController {
             project.getScenarios().add(scenario);
             scenario.setName(name);
             scenario.setProject(project);
-            scenario.setScenarioGroup(scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
-            project = projectService.save(project);
-            return "redirect:/scenario/" + project.getScenarios().get(project.getScenarios().size() - 1).getId();
+            scenario = scenarioService.save(scenario);
+
+            if (scenarioGroupId != null) {
+                scenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
+                scenario = scenarioService.save(scenario);
+            }
+
+            return "redirect:/scenario/" + scenario.getId();
         } else {
             return "redirect:/";
         }
