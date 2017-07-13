@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
+import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
+import ru.bsc.test.autotester.service.StandService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.util.List;
@@ -25,11 +27,13 @@ public class RestTestController {
     private StepService stepService;
     private ExpectedServiceRequestService expectedServiceRequestService;
     private final ScenarioGroupService scenarioGroupService;
+    private final StandService standService;
 
-    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, ScenarioGroupService scenarioGroupService) {
+    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, ScenarioGroupService scenarioGroupService, StandService standService) {
         this.stepService = stepService;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.scenarioGroupService = scenarioGroupService;
+        this.standService = standService;
     }
 
     @RequestMapping(value = "step/save", method = RequestMethod.POST)
@@ -60,4 +64,8 @@ public class RestTestController {
         return scenarioGroupService.save(scenarioGroupList);
     }
 
+    @RequestMapping(value = "project/save-stands", method = RequestMethod.POST)
+    public List<Stand> saveStands(@RequestBody List<Stand> standList) {
+        return standService.save(standList);
+    }
 }

@@ -23,6 +23,8 @@
     <a href="${pageContext.request.contextPath}/project/${project.id}/settings">Project settings</a>
     <span style="color: #777;">|</span>
     <a href="${pageContext.request.contextPath}/project/${project.id}/groups">Project groups</a>
+    <span style="color: #777;">|</span>
+    <a href="${pageContext.request.contextPath}/project/${project.id}/stands">Project stands</a>
 
     <a class="btn btn-default" target="_blank" role="button" style="float: right;" href="${pageContext.request.contextPath}/project/${project.id}/get-yaml">Download project as YAML</a>
 

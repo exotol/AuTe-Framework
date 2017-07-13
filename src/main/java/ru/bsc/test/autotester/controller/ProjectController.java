@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
+import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -72,6 +73,16 @@ public class ProjectController {
         return model;
     }
 
+    @RequestMapping(value = "{projectId}/stands", method = RequestMethod.GET)
+    public ModelAndView stands(
+            @PathVariable long projectId
+    ) {
+        Project project = projectService.findOne(projectId);
+        ModelAndView model = new ModelAndView("projectStands");
+        model.addObject("project", project);
+        return model;
+    }
+
     @RequestMapping(value = "{projectId}/settings", method = RequestMethod.GET)
     public ModelAndView settings(
             @PathVariable long projectId
@@ -79,8 +90,6 @@ public class ProjectController {
         Project project = projectService.findOne(projectId);
         ModelAndView model = new ModelAndView("projectSettings");
         model.addObject("project", project);
-        model.addObject("scenarioGroups", project.getScenarioGroups());
-        model.addObject("projectScenarios", project.getScenarios());
         return model;
     }
 
@@ -255,6 +264,21 @@ public class ProjectController {
 
         scenarioGroupService.save(scenarioGroup);
         return "redirect:/project/" + project.getId() + "/groups";
+    }
+
+    @RequestMapping(value = "{projectId}/add-stand", method = RequestMethod.POST)
+    public String addStand(
+            @RequestParam String serviceUrl,
+            @PathVariable long projectId
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+
+        Stand stand = new Stand();
+        stand.setServiceUrl(serviceUrl);
+        stand.setProject(project);
+
+        standService.save(stand);
+        return "redirect:/project/" + project.getId() + "/stands";
     }
 
     @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")

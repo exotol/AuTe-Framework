@@ -56,7 +56,6 @@ public class ScenarioController {
         ModelAndView model = new ModelAndView("scenarioSettings");
         model.addObject("scenario", scenario);
         model.addObject("project", project);
-        model.addObject("projectScenarios", project.getScenarios());
         return model;
     }
 

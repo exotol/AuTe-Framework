@@ -22,8 +22,7 @@
                 <td>
                     <select class="form-control" name="beforeScenarioId">
                         <option value="">-</option>
-                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
-                        <c:forEach items="${projectScenarios}" var="scenario">
+                        <c:forEach items="${project.scenarios}" var="scenario">
                             <option value="${scenario.id}" ${project.beforeScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
                     </select>
@@ -34,8 +33,7 @@
                 <td>
                     <select class="form-control" name="afterScenarioId">
                         <option value="">-</option>
-                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
-                        <c:forEach items="${projectScenarios}" var="scenario">
+                        <c:forEach items="${project.scenarios}" var="scenario">
                             <option value="${scenario.id}" ${project.afterScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
                     </select>
@@ -45,8 +43,7 @@
                 <td>Default stand</td>
                 <td>
                     <select class="form-control" name="standId">
-                        <%--@elvariable id="standList" type="java.util.List<ru.bsc.test.at.executor.model.Stand>"--%>
-                        <c:forEach items="${standList}" var="stand">
+                        <c:forEach items="${project.standList}" var="stand">
                             <option value="${stand.id}" ${project.stand.id eq stand.id ? 'selected' : ''}>${stand.serviceUrl}</option>
                         </c:forEach>
                     </select>
@@ -69,8 +66,7 @@
         <input type="file" name="excelFile"/><br/>
         <select class="form-control" style="width: inherit;" name="scenarioGroupId">
             <option value="">-</option>
-            <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.at.executor.model.ScenarioGroup>"--%>
-            <c:forEach items="${scenarioGroups}" var="group">
+            <c:forEach items="${project.scenarioGroups}" var="group">
                 <option value="${group.id}">${group.name}</option>
             </c:forEach>
         </select>

@@ -4,7 +4,6 @@
 <t:wrapper>
     <%--@elvariable id="scenario" type="ru.bsc.test.at.executor.model.Scenario"--%>
     <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
-    <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
@@ -25,7 +24,7 @@
                     <select class="form-control" name="beforeScenarioId">
                         <option ${scenario.beforeScenario.id eq null ? 'selected' : ''} value="">From project settings (default)</option>
                         <optgroup label="Scenarios">
-                            <c:forEach items="${projectScenarios}" var="scenarioItem">
+                            <c:forEach items="${project.scenarios}" var="scenarioItem">
                                 <option value="${scenarioItem.id}" ${scenario.beforeScenario.id eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
                             </c:forEach>
                         </optgroup>
@@ -43,7 +42,7 @@
                         <option ${scenario.afterScenario.id eq null ? 'selected' : ''} value="">From project settings (default)</option>
                         <option ${scenario.afterScenario.id eq -1 ? 'selected' : ''} value="-1">Disabled</option>
                         <optgroup label="Scenarios">
-                            <c:forEach items="${projectScenarios}" var="scenarioItem">
+                            <c:forEach items="${project.scenarios}" var="scenarioItem">
                                 <option value="${scenarioItem.id}" ${scenario.afterScenario.id eq scenarioItem.id ? 'selected' : ''}>${scenarioItem.name}</option>
                             </c:forEach>
                         </optgroup>

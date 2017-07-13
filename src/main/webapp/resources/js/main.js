@@ -110,5 +110,9 @@ $(function () {
 
     $('#save-scenario-groups').click(function () {
         restSaveForm('#save-scenario-groups-form', '#save-scenario-groups-state', '/rest/project/save-scenario-groups');
-    })
+    });
+
+    $('#save-scenario-stands').click(function () {
+        restSaveForm('#save-scenario-stands-form', '#save-scenario-stands-state', '/rest/project/save-stands');
+    });
 });
