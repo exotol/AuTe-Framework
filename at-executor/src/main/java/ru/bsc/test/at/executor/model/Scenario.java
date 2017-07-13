@@ -67,6 +67,9 @@ public class Scenario implements Serializable, Cloneable {
     @Column(name = "AFTER_SCENARIO_IGNORE")
     private Boolean afterScenarioIgnore;
 
+    /* null - default (from project settings) */
+    private Stand stand;
+
     public Long getId() {
         return id;
     }
@@ -133,6 +136,12 @@ public class Scenario implements Serializable, Cloneable {
     @SuppressWarnings("unused")
     public void setStepResults(List<StepResult> stepResults) {
         this.stepResults = stepResults;
+    }
+    public Stand getStand() {
+        return stand;
+    }
+    public void setStand(Stand stand) {
+        this.stand = stand;
     }
 
     @Override

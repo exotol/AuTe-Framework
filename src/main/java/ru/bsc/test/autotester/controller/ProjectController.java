@@ -20,6 +20,7 @@ import ru.bsc.test.autotester.scenario.parser.ExcelTestScenarioParser;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.ScenarioService;
+import ru.bsc.test.autotester.service.StandService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,12 +38,14 @@ public class ProjectController {
     private ScenarioService scenarioService;
     private ProjectService projectService;
     private final ScenarioGroupService scenarioGroupService;
+    private final StandService standService;
 
     @Autowired
-    public ProjectController(ScenarioService scenarioService, ProjectService projectService, ScenarioGroupService scenarioGroupService) {
+    public ProjectController(ScenarioService scenarioService, ProjectService projectService, ScenarioGroupService scenarioGroupService, StandService standService) {
         this.scenarioService = scenarioService;
         this.projectService = projectService;
         this.scenarioGroupService = scenarioGroupService;
+        this.standService = standService;
     }
 
     @RequestMapping("{projectId}")
@@ -59,6 +62,16 @@ public class ProjectController {
         return model;
     }
 
+    @RequestMapping(value = "{projectId}/groups", method = RequestMethod.GET)
+    public ModelAndView groups(
+            @PathVariable long projectId
+    ) {
+        Project project = projectService.findOne(projectId);
+        ModelAndView model = new ModelAndView("projectGroups");
+        model.addObject("project", project);
+        return model;
+    }
+
     @RequestMapping(value = "{projectId}/settings", method = RequestMethod.GET)
     public ModelAndView settings(
             @PathVariable long projectId
@@ -71,16 +84,6 @@ public class ProjectController {
         return model;
     }
 
-    @RequestMapping(value = "{projectId}/groups", method = RequestMethod.GET)
-    public ModelAndView groups(
-            @PathVariable long projectId
-    ) {
-        Project project = projectService.findOne(projectId);
-        ModelAndView model = new ModelAndView("projectGroups");
-        model.addObject("project", project);
-        return model;
-    }
-
     @RequestMapping(value = "{projectId}/settings", method = RequestMethod.POST)
     public String settingsPost(
             @PathVariable long projectId,
@@ -88,18 +91,14 @@ public class ProjectController {
             @RequestParam String serviceUrl,
             @RequestParam Long beforeScenarioId,
             @RequestParam Long afterScenarioId,
-            @RequestParam String dbUrl,
-            @RequestParam String dbUser,
-            @RequestParam String dbPassword
+            @RequestParam Long standId
     ) {
         Project project = projectService.findOne(projectId);
         project.setName(name);
         project.setServiceUrl(serviceUrl);
         project.setBeforeScenario(beforeScenarioId == null ? null : scenarioService.findOne(beforeScenarioId));
         project.setAfterScenario(afterScenarioId == null ? null : scenarioService.findOne(afterScenarioId));
-        project.setDbUrl(dbUrl);
-        project.setDbUser(dbUser);
-        project.setDbPassword(dbPassword);
+        project.setStand(standId == null ? null : standService.findOne(standId));
 
         projectService.save(project);
 

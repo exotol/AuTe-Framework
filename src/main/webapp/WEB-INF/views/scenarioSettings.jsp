@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:wrapper>
-    <%--@elvariable id="scenario" type="ru.bsc.test.autotester.model.Scenario"--%>
-    <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
-    <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
+    <%--@elvariable id="scenario" type="ru.bsc.test.at.executor.model.Scenario"--%>
+    <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
+    <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>

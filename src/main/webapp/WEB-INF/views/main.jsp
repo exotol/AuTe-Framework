@@ -7,7 +7,7 @@
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/import-project-from-yaml">Import project form YAML</a></li>
     </ol>
 
-    <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.autotester.model.Project>"--%>
+    <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.at.executor.model.Project>"--%>
     <h4>Projects</h4>
     <table class="table table-condensed">
         <c:forEach items="${projects}" var="project">

@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:wrapper>
-    <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
+    <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>

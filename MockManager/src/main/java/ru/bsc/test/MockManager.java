@@ -20,6 +20,7 @@ public class MockManager {
         MockManager.getResponse("GM", "RESTMockService2", "request content", "-");
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static String getResponse(String projectCode, String serviceName, String requestContent, String sessionUid) throws SQLException, IOException, ClassNotFoundException {
         try (Connection connection = getConnection()) {
             try (PreparedStatement psResponse = connection.prepareCall("SELECT * FROM (SELECT * FROM AT_SERVICE_RESPONSE WHERE SERVICE_NAME = ? AND SESSION_UID = ? AND PROJECT_CODE = ? AND IS_CALLED = 0 ORDER BY SORT) WHERE rownum = 1")) {

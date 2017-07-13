@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:wrapper>
-    <%--@elvariable id="scenario" type="ru.bsc.test.autotester.model.Scenario"--%>
-    <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
-    <%--@elvariable id="stepDetail" type="ru.bsc.test.autotester.model.Step"--%>
+    <%--@elvariable id="scenario" type="ru.bsc.test.at.executor.model.Scenario"--%>
+    <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
+    <%--@elvariable id="stepDetail" type="ru.bsc.test.at.executor.model.Step"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
@@ -36,7 +36,7 @@
         <div style="clear: both;"></div>
     </c:if>
 
-    <%--@elvariable id="steps" type="java.util.List<ru.bsc.test.autotester.model.Step>"--%>
+    <%--@elvariable id="steps" type="java.util.List<ru.bsc.test.at.executor.model.Step>"--%>
     <c:if test="${empty stepDetail}">
         <h4>Scenario ${scenario.id}. ${scenario.name}</h4>
         <a href="${pageContext.request.contextPath}/scenario/${scenario.id}/settings">Scenario settings</a><br/><br/>
@@ -161,7 +161,7 @@
                     <th>Ignored tags</th>
                     <th style="width: 1%;"></th>
                 </tr>
-                <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.autotester.model.ExpectedServiceRequest>"--%>
+                <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.at.executor.model.ExpectedServiceRequest>"--%>
                 <c:forEach items="${expectedRequestsList}" var="expectedRequest" varStatus="status">
                     <tr>
                         <td>

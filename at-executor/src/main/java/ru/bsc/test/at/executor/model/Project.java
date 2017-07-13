@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
@@ -52,13 +53,6 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
 
-    @Column(name = "DB_URL")
-    private String dbUrl;
-    @Column(name = "DB_USER")
-    private String dbUser;
-    @Column(name = "DB_PASSWORD")
-    private String dbPassword;
-
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     @JsonManagedReference
@@ -68,6 +62,15 @@ public class Project implements Serializable, Cloneable {
     @OrderBy("NAME ASC")
     @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
+
+    @OneToMany(mappedBy = "project")
+    @JsonManagedReference
+    private List<Stand> standList;
+
+    @ManyToOne
+    @JoinColumn(name = "STAND_ID")
+    @JsonBackReference
+    private Stand stand;
 
     public Long getId() {
         return id;
@@ -106,24 +109,6 @@ public class Project implements Serializable, Cloneable {
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
-    public String getDbUrl() {
-        return dbUrl;
-    }
-    public void setDbUrl(String dbUrl) {
-        this.dbUrl = dbUrl;
-    }
-    public String getDbUser() {
-        return dbUser;
-    }
-    public void setDbUser(String dbUser) {
-        this.dbUser = dbUser;
-    }
-    public String getDbPassword() {
-        return dbPassword;
-    }
-    public void setDbPassword(String dbPassword) {
-        this.dbPassword = dbPassword;
-    }
     public List<Scenario> getScenarios() {
         if (scenarios == null) {
             scenarios = new LinkedList<>();
@@ -141,6 +126,18 @@ public class Project implements Serializable, Cloneable {
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
     }
+    public List<Stand> getStandList() {
+        return standList;
+    }
+    public void setStandList(List<Stand> standList) {
+        this.standList = standList;
+    }
+    public Stand getStand() {
+        return stand;
+    }
+    public void setStand(Stand stand) {
+        this.stand = stand;
+    }
 
     @Override
     public Project clone() throws CloneNotSupportedException {
@@ -150,16 +147,24 @@ public class Project implements Serializable, Cloneable {
         cloned.setName(getName());
         cloned.setServiceUrl(getServiceUrl());
         cloned.setProjectCode(getProjectCode() + "_COPY");
-        cloned.setDbUrl(getDbUrl());
-        cloned.setDbUser(getDbUser());
-        cloned.setDbPassword(getDbPassword());
+
+        Map<Stand, Stand> standToClonedMap = new HashMap<>();
+
+        cloned.setStandList(new LinkedList<>());
+        for (Stand stand: getStandList()) {
+            Stand clonedStand = stand.clone();
+            clonedStand.setProject(cloned);
+            standToClonedMap.put(stand, clonedStand);
+
+            cloned.getStandList().add(clonedStand);
+        }
 
         Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
-
         cloned.setScenarios(new LinkedList<>());
         for (Scenario scenario: getScenarios()) {
             Scenario clonedScenario = scenario.clone();
             clonedScenario.setProject(cloned);
+            clonedScenario.setStand(standToClonedMap.get(scenario.getStand()));
             scenarioToClonedScenarioMap.put(scenario, clonedScenario);
 
 

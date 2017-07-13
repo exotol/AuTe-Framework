@@ -11,6 +11,7 @@ import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ServiceResponse;
+import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
@@ -29,9 +30,11 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,10 +75,20 @@ public class AtExecutor {
 
 
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
+        Map<Long, Connection> standToConnectionMap = new HashMap<>();
+
+        Set<Stand> standSet = new LinkedHashSet<>();
+
+        // TODO
+        // Собрать список всех используемых стендов выбранными сценариями
+        // включая beforeScenario и afterScenario в project и в каждом scenario
+        //
+        // Создать подключение для каждого стенда
+
         Connection connection = null;
-        if (StringUtils.isNotEmpty(project.getDbUrl())) {
+        if (project.getStand() != null && StringUtils.isNotEmpty(project.getStand().getDbUrl())) {
             try {
-                connection = DriverManager.getConnection(project.getDbUrl(), project.getDbUser(), project.getDbPassword());
+                connection = DriverManager.getConnection(project.getStand().getDbUrl(), project.getStand().getDbUser(), project.getStand().getDbPassword());
                 connection.setAutoCommit(false);
             } catch (SQLException e) {
                 connection = null;

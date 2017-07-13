@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:wrapper>
-    <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
+    <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
@@ -22,7 +22,7 @@
                 <td>
                     <select class="form-control" name="beforeScenarioId">
                         <option value="">-</option>
-                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
+                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
                         <c:forEach items="${projectScenarios}" var="scenario">
                             <option value="${scenario.id}" ${project.beforeScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
@@ -34,16 +34,24 @@
                 <td>
                     <select class="form-control" name="afterScenarioId">
                         <option value="">-</option>
-                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
+                        <%--@elvariable id="projectScenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
                         <c:forEach items="${projectScenarios}" var="scenario">
                             <option value="${scenario.id}" ${project.afterScenario.id eq scenario.id ? 'selected' : ''}>${scenario.name}</option>
                         </c:forEach>
                     </select>
                 </td>
             </tr>
-            <tr><td>Database URL:</td><td><input placeholder="jdbc:oracle:thin:@ip:port:sid" class="form-control" type="text" name="dbUrl" value="<c:out value="${project.dbUrl}"/>"/></td></tr>
-            <tr><td>Database user:</td><td><input class="form-control" type="text" name="dbUser" value="<c:out value="${project.dbUser}"/>"/></td></tr>
-            <tr><td>Database password</td><td><input class="form-control" type="password" name="dbPassword" value="<c:out value="${project.dbPassword}"/>"/></td></tr>
+            <tr>
+                <td>Default stand</td>
+                <td>
+                    <select class="form-control" name="standId">
+                        <%--@elvariable id="standList" type="java.util.List<ru.bsc.test.at.executor.model.Stand>"--%>
+                        <c:forEach items="${standList}" var="stand">
+                            <option value="${stand.id}" ${project.stand.id eq stand.id ? 'selected' : ''}>${stand.serviceUrl}</option>
+                        </c:forEach>
+                    </select>
+                </td>
+            </tr>
         </table>
         <input class="btn btn-default" type="submit" value="Save">
     </form>
@@ -61,7 +69,7 @@
         <input type="file" name="excelFile"/><br/>
         <select class="form-control" style="width: inherit;" name="scenarioGroupId">
             <option value="">-</option>
-            <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
+            <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.at.executor.model.ScenarioGroup>"--%>
             <c:forEach items="${scenarioGroups}" var="group">
                 <option value="${group.id}">${group.name}</option>
             </c:forEach>

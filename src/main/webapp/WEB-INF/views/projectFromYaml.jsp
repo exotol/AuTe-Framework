@@ -7,7 +7,7 @@
         <li class="breadcrumb-item active">Import project from YAML</li>
     </ol>
 
-    <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.autotester.model.Project>"--%>
+    <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.at.executor.model.Project>"--%>
     <h4>Import project from YAML</h4>
     <form method="post" action="${pageContext.request.contextPath}/import-project-from-yaml" enctype="multipart/form-data">
         <div class="form-group">

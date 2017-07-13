@@ -3,8 +3,8 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="t" %>
 <t:wrapper>
     <%--@elvariable id="scenarioGroupId" type="java.lang.Long"--%>
-    <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
-    <%--@elvariable id="project" type="ru.bsc.test.autotester.model.Project"--%>
+    <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.at.executor.model.ScenarioGroup>"--%>
+    <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
 
@@ -18,7 +18,7 @@
         </c:if>
     </ol>
 
-    <%--@elvariable id="scenarios" type="java.util.List<ru.bsc.test.autotester.model.Scenario>"--%>
+    <%--@elvariable id="scenarios" type="java.util.List<ru.bsc.test.at.executor.model.Scenario>"--%>
     <h4>Project ${project.id}. ${project.name}</h4>
     <a href="${pageContext.request.contextPath}/project/${project.id}/settings">Project settings</a>
     <span style="color: #777;">|</span>
@@ -106,7 +106,7 @@
                     <td>
                         <select class="form-control" name="scenarioGroupId">
                             <option value="">-</option>
-                            <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.autotester.model.ScenarioGroup>"--%>
+                            <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.at.executor.model.ScenarioGroup>"--%>
                             <c:forEach items="${scenarioGroups}" var="group">
                                 <option value="${group.id}">${group.name}</option>
                             </c:forEach>
