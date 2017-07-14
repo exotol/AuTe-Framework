@@ -101,7 +101,7 @@ public class AtExecutor {
         try {
             scenario.setStepResults(new LinkedList<>());
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-            Scenario beforeScenario = scenario.getBeforeScenario() == null ? project.getBeforeScenario() : (scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario());
+            Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
             if (beforeScenario != null) {
                 beforeScenario.setStepResults(new LinkedList<>());
                 executeSteps(connection, stand, beforeScenario, project, httpHelper, savedValues, testId);
@@ -111,7 +111,7 @@ public class AtExecutor {
             Scenario scenarioResult = executeSteps(connection, stand, scenario, project, httpHelper, savedValues, testId);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-            Scenario afterScenario = scenario.getAfterScenario() == null ? project.getAfterScenario() : (scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario());
+            Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
             if (afterScenario != null) {
                 afterScenario.setStepResults(new LinkedList<>());
                 executeSteps(connection, stand, afterScenario, project, httpHelper, savedValues, testId);
@@ -173,7 +173,7 @@ public class AtExecutor {
         executeSql(connection, step, savedValues);
 
         // 2. Подстановка сохраненных параметров в строку запроса
-        String requestUrl = insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
+        String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
         stepResult.setRequestUrl(requestUrl);
 
         // 2.1 Подстановка сохраненных параметров в тело запроса
@@ -183,7 +183,7 @@ public class AtExecutor {
         // 3. Выполнить запрос
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
-                stand.getServiceUrl() + requestUrl,
+                requestUrl,
                 Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
                 Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                 step.getRequestHeaders(),
