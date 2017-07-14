@@ -42,7 +42,7 @@
         <a href="${pageContext.request.contextPath}/scenario/${scenario.id}/settings">Scenario settings</a><br/><br/>
     </c:if>
     <c:if test="${not empty stepDetail}">
-        <h4>Step ${stepDetail.id}. <span style="font-size: smaller;">${project.serviceUrl}</span>${stepDetail.relativeUrl}</h4>
+        <h4>Step ${stepDetail.id}. <span style="font-size: smaller;">${project.stand.serviceUrl}</span>${stepDetail.relativeUrl}</h4>
     </c:if>
     <form method="post" id="steps-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/save" onsubmit="return false;">
         <table class="table table-condensed steps-table">
@@ -50,7 +50,7 @@
                 <th style="width: 1%;">Sort</th>
                 <th>
                     URL<br/>Request body<br/>
-                    <small style="font-weight: initial; font-size: smaller; color: gray;">${project.serviceUrl}</small>
+                    <small style="font-weight: initial; font-size: smaller; color: gray;">${project.stand.serviceUrl}</small>
                 </th>
                 <th>Request headers</th>
                 <th>Expected response</th>

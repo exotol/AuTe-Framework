@@ -61,7 +61,7 @@
                         <td style="border-top: 0;"></td>
                         <td colspan="3">
                             <c:forEach items="${scenario.stepResults}" var="stepResult">
-                                ${stepResult.step.requestMethod} <small style="color: gray;">${project.serviceUrl}</small>${stepResult.requestUrl}
+                                ${stepResult.step.requestMethod} ${stepResult.requestUrl}
                                 <span style="color: ${stepResult.result eq 'OK' ? 'darkgreen' : 'red'};">${stepResult.result}</span>
 
 
