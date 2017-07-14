@@ -100,7 +100,9 @@ public class ProjectController {
             @RequestParam String serviceUrl,
             @RequestParam Long beforeScenarioId,
             @RequestParam Long afterScenarioId,
-            @RequestParam Long standId
+            @RequestParam Long standId,
+            @RequestParam(required = false) Boolean useRandomTestId,
+            @RequestParam String testIdHeaderName
     ) {
         Project project = projectService.findOne(projectId);
         project.setName(name);
@@ -108,6 +110,8 @@ public class ProjectController {
         project.setBeforeScenario(beforeScenarioId == null ? null : scenarioService.findOne(beforeScenarioId));
         project.setAfterScenario(afterScenarioId == null ? null : scenarioService.findOne(afterScenarioId));
         project.setStand(standId == null ? null : standService.findOne(standId));
+        project.setUseRandomTestId(Boolean.TRUE.equals(useRandomTestId));
+        project.setTestIdHeaderName(testIdHeaderName);
 
         projectService.save(project);
 

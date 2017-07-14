@@ -49,6 +49,8 @@
                     </select>
                 </td>
             </tr>
+            <tr><td>Use random test ID:</td><td><input class="form-control" type="checkbox" name="useRandomTestId" ${project.useRandomTestId ? 'checked' : ''} /></td></tr>
+            <tr><td>Test ID header name:</td><td><input class="form-control" type="text" name="testIdHeaderName" value="<c:out value="${project.testIdHeaderName}"/>"/></td></tr>
         </table>
         <input class="btn btn-default" type="submit" value="Save">
     </form>
