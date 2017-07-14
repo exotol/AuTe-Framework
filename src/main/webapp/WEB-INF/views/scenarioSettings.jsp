@@ -8,7 +8,7 @@
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/scenario/${scenario.id}">${scenario.name}</a></li>
-        <li class="breadcrumb-item active">Scenario settings</li>
+        <li class="breadcrumb-item active">Settings</li>
     </ol>
 
     <h4>Scenario ${scenario.id}. ${scenario.name}</h4>

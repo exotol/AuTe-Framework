@@ -6,7 +6,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
-        <li class="breadcrumb-item active">Project settings</li>
+        <li class="breadcrumb-item active">Admin</li>
     </ol>
 
     <h4>Project ${project.id}. ${project.name}</h4>

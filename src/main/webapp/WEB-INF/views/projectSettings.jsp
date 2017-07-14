@@ -6,7 +6,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
-        <li class="breadcrumb-item active">Project settings</li>
+        <li class="breadcrumb-item active">Settings</li>
     </ol>
 
     <h4>Project ${project.id}. ${project.name}</h4>
@@ -78,8 +78,8 @@
     <h4>SoapUI script</h4>
     <h5>Скрипт для проверки вызовов сервисов</h5>
     <pre style="display: inline-block;">import ru.bsc.test.MockManager;
-def sessionUid = mockRequest.getRequest().getHeader("CorrelationId");
-return MockManager.getResponse("<b style="text-decoration: underline;">${project.projectCode}</b>", mockOperation.wsdlOperationName, mockRequest.requestContent, sessionUid?.trim() ? sessionUid : '-');</pre>
+def testId = mockRequest.getRequest().getHeader("<b style="text-decoration: underline;">${project.testIdHeaderName}</b>");
+return MockManager.getResponse("<b style="text-decoration: underline;">${project.projectCode}</b>", mockOperation.wsdlOperationName, mockRequest.requestContent, testId?.trim() ? testId : '-');</pre>
     <h5>Скрипт для получения значений xml-тегов из запроса</h5>
     <pre style="display: inline-block;">import com.eviware.soapui.support.XmlHolder
 XmlHolder holder = new XmlHolder( mockRequest.requestContent )

@@ -39,7 +39,7 @@
     <%--@elvariable id="steps" type="java.util.List<ru.bsc.test.at.executor.model.Step>"--%>
     <c:if test="${empty stepDetail}">
         <h4>Scenario ${scenario.id}. ${scenario.name}</h4>
-        <a href="${pageContext.request.contextPath}/scenario/${scenario.id}/settings">Scenario settings</a><br/><br/>
+        <a href="${pageContext.request.contextPath}/scenario/${scenario.id}/settings">Settings</a><br/><br/>
     </c:if>
     <c:if test="${not empty stepDetail}">
         <h4>Step ${stepDetail.id}. <span style="font-size: smaller;">${project.stand.serviceUrl}</span>${stepDetail.relativeUrl}</h4>
