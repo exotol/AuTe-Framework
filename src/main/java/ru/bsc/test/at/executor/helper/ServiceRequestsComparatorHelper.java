@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 30.05.2017.
  *
  */
-@SuppressWarnings("Duplicates")
 public class ServiceRequestsComparatorHelper {
 
     private final ServiceResponseRepository serviceResponseRepository;

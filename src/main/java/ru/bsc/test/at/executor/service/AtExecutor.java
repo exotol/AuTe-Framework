@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 21.03.2017.
  *
  */
-@SuppressWarnings({"Duplicates", "unused"})
+@SuppressWarnings("unused")
 public class AtExecutor {
 
     private final ScenarioRepository scenarioRepository;
@@ -59,41 +59,44 @@ public class AtExecutor {
     }
 
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
+        // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
+        Set<Stand> standSet = new LinkedHashSet<>();
+        // Собрать список всех используемых стендов выбранными сценариями
+        for (Scenario scenario: scenarioExecuteList) {
+            if (scenario.getStand() != null) {
+                standSet.add(scenario.getStand());
+            }
+        }
+        if (project.getStand() != null) {
+            standSet.add(project.getStand());
+        }
+        Map<Stand, Connection> standConnectionMap = new HashMap<>();
+        // Создать подключение для каждого используемого стенда
+        for (Stand stand: standSet) {
+            Connection connection = null;
+            if (StringUtils.isNotEmpty(stand.getDbUrl())) {
+                try {
+                    connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
+                    connection.setAutoCommit(false);
+                } catch (SQLException e) {
+                    connection = null;
+                }
+            }
+            standConnectionMap.put(stand, connection);
+        }
+
         List<Scenario> scenarioResultList = new LinkedList<>();
         for (Scenario scenario: scenarioExecuteList) {
-            scenarioResultList.add(executeScenario(project, scenario));
+            Stand currentStand = scenario.getStand() != null ? scenario.getStand() : project.getStand();
+            scenarioResultList.add(executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand)));
         }
         return scenarioResultList;
     }
 
-    private Scenario executeScenario(Project project, Scenario scenario) {
+    private Scenario executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
-        String sessionUid = UUID.randomUUID().toString();
-        // TODO Сделать этот кейс опциональным. Пока хедеры не прокидываются тестируемым порталом, уникальный ID теста не передается.
-        sessionUid = "-";
-
-
-        // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
-        Map<Long, Connection> standToConnectionMap = new HashMap<>();
-
-        Set<Stand> standSet = new LinkedHashSet<>();
-
-        // TODO
-        // Собрать список всех используемых стендов выбранными сценариями
-        // включая beforeScenario и afterScenario в project и в каждом scenario
-        //
-        // Создать подключение для каждого стенда
-
-        Connection connection = null;
-        if (project.getStand() != null && StringUtils.isNotEmpty(project.getStand().getDbUrl())) {
-            try {
-                connection = DriverManager.getConnection(project.getStand().getDbUrl(), project.getStand().getDbUser(), project.getStand().getDbPassword());
-                connection.setAutoCommit(false);
-            } catch (SQLException e) {
-                connection = null;
-            }
-        }
+        String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
 
         try {
             scenario.setStepResults(new LinkedList<>());
@@ -101,17 +104,17 @@ public class AtExecutor {
             Scenario beforeScenario = scenario.getBeforeScenario() == null ? project.getBeforeScenario() : (scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario());
             if (beforeScenario != null) {
                 beforeScenario.setStepResults(new LinkedList<>());
-                executeSteps(connection, beforeScenario, project, httpHelper, savedValues, sessionUid);
+                executeSteps(connection, stand, beforeScenario, project, httpHelper, savedValues, testId);
                 scenario.getStepResults().addAll(beforeScenario.getStepResults());
             }
 
-            Scenario scenarioResult = executeSteps(connection, scenario, project, httpHelper, savedValues, sessionUid);
+            Scenario scenarioResult = executeSteps(connection, stand, scenario, project, httpHelper, savedValues, testId);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
             Scenario afterScenario = scenario.getAfterScenario() == null ? project.getAfterScenario() : (scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario());
             if (afterScenario != null) {
                 afterScenario.setStepResults(new LinkedList<>());
-                executeSteps(connection, afterScenario, project, httpHelper, savedValues, sessionUid);
+                executeSteps(connection, stand, afterScenario, project, httpHelper, savedValues, testId);
                 scenario.getStepResults().addAll(afterScenario.getStepResults());
             }
 
@@ -131,17 +134,17 @@ public class AtExecutor {
         }
     }
 
-    private Scenario executeSteps(Connection connection, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String sessionUid) {
+    private Scenario executeSteps(Connection connection, Stand stand, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String testId) {
         if (scenario != null) {
             int failures = 0;
             for (Step step: scenario.getSteps()) {
                 StepResult stepResult = new StepResult(step);
                 scenario.getStepResults().add(stepResult);
                 try {
-                    executeTestStep(connection, httpHelper, savedValues, sessionUid, project, step, stepResult);
+                    executeTestStep(connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                     // После выполнения шага необходимо проверить запросы к веб-сервисам
-                    serviceRequestsComparatorHelper.assertTestCaseWSRequests(sessionUid, step);
+                    serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
 
                     stepResult.setResult("OK");
                 } catch (Exception e) {
@@ -161,10 +164,10 @@ public class AtExecutor {
         return scenario;
     }
 
-    private void executeTestStep(Connection connection, HttpHelper http, Map<String, String> savedValues, String sessionUid, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
-        setResponses(project, sessionUid, step.getResponses());
+        setResponses(project, testId, step.getResponses());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, savedValues);
@@ -180,11 +183,12 @@ public class AtExecutor {
         // 3. Выполнить запрос
         ResponseHelper responseData = http.request(
                 step.getRequestMethod(),
-                project.getServiceUrl() + requestUrl,
+                stand.getServiceUrl() + requestUrl,
                 Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
                 Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                 step.getRequestHeaders(),
-                sessionUid);
+                project.getTestIdHeaderName(),
+                testId);
 
         stepResult.setActual(responseData.getContent());
         stepResult.setExpected(step.getExpectedResponse());
@@ -208,7 +212,7 @@ public class AtExecutor {
 
         // 7. Сравнить JSON ответ с ожидаемым
         if (!step.getExpectedResponseIgnore()) {
-            if (!emptyString(expectedResponse) || !emptyString(responseData.getContent())) {
+            if (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) {
                 // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
                 if (!responseData.getContent().equals(expectedResponse)) {
                     try {
@@ -253,21 +257,18 @@ public class AtExecutor {
         }
     }
 
-    private boolean emptyString(String string) {
-        return string == null || string.isEmpty();
-    }
-
-    private void setResponses(Project project, String sessionUid, String responses) {
+    private void setResponses(Project project, String testId, String responses) {
         Long sort = 0L;
         List<ServiceNameResponsePair> responsesList = parseServiceResponsesString(responses);
         responsesList.stream().map(ServiceNameResponsePair::getServiceName).collect(Collectors.toSet())
                 .forEach(item -> serviceResponseRepository.deleteByServiceNameAndProjectCode(item, project.getProjectCode()));
 
         for (ServiceNameResponsePair pair: responsesList) {
-            serviceResponseRepository.save(new ServiceResponse(sessionUid, pair.getServiceName(), pair.getResponse(), sort++, project.getProjectCode()));
+            serviceResponseRepository.save(new ServiceResponse(testId, pair.getServiceName(), pair.getResponse(), sort++, project.getProjectCode()));
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected class ServiceNameResponsePair {
         private String serviceName;
         private String response;
@@ -286,6 +287,7 @@ public class AtExecutor {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected List<ServiceNameResponsePair> parseServiceResponsesString(String responses) {
         List<ServiceNameResponsePair> result = new LinkedList<>();
         if (responses != null) {

@@ -1,6 +1,7 @@
 package ru.bsc.test.at.executor.helper;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -39,7 +40,6 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 22/05/17.
  *
  */
-@SuppressWarnings("Duplicates")
 public class HttpHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
@@ -54,7 +54,7 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String sessionUid) throws IOException, URISyntaxException {
+    public ResponseHelper request(String method, String url, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException {
         URI uri = new URIBuilder(url).build();
 
         HttpRequestBase httpRequest;
@@ -93,7 +93,9 @@ public class HttpHelper {
             }
         }
 
-        httpRequest.addHeader("CorrelationId", sessionUid);
+        if (StringUtils.isNotEmpty(testIdHeaderName)) {
+            httpRequest.addHeader(testIdHeaderName, testId);
+        }
         setHeaders(httpRequest, headers);
         CloseableHttpResponse response = httpClient.execute(httpRequest, context);
         String theString = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");

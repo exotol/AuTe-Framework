@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
  * Created by rmalyshev date: 30.11.12
  *
  */
-@SuppressWarnings("Duplicates")
 class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
 
     private Set<String> ignoredTags = new HashSet<>();

@@ -83,6 +83,7 @@ public class Stand implements Cloneable {
     public Stand clone() throws CloneNotSupportedException {
         super.clone();
         Stand cloned = new Stand();
+        cloned.setProject(getProject());
         cloned.setServiceUrl(getServiceUrl());
         cloned.setDbUrl(getDbUrl());
         cloned.setDbUser(getDbUser());

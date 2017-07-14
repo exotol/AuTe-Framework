@@ -39,9 +39,6 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "NAME", length = 100)
     private String name;
 
-    @Column(name = "SERVICE_URL", length = 400)
-    private String serviceUrl;
-
     @ManyToOne
     @JoinColumn(name = "BEFORE_SCENARIO_ID")
     private Scenario beforeScenario;
@@ -72,6 +69,12 @@ public class Project implements Serializable, Cloneable {
     @JsonBackReference
     private Stand stand;
 
+    @Column(name = "USE_RANDOM_TEST_ID")
+    private Boolean useRandomTestId;
+    @Column(name = "TEST_ID_HEADER_NAME")
+    private String testIdHeaderName;
+
+    @SuppressWarnings("unused")
     public Long getId() {
         return id;
     }
@@ -83,12 +86,6 @@ public class Project implements Serializable, Cloneable {
     }
     public void setName(String name) {
         this.name = name;
-    }
-    public String getServiceUrl() {
-        return serviceUrl;
-    }
-    public void setServiceUrl(String serviceUrl) {
-        this.serviceUrl = serviceUrl;
     }
     public Scenario getBeforeScenario() {
         return beforeScenario;
@@ -105,7 +102,6 @@ public class Project implements Serializable, Cloneable {
     public String getProjectCode() {
         return projectCode;
     }
-    @SuppressWarnings("unused")
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
@@ -115,14 +111,12 @@ public class Project implements Serializable, Cloneable {
         }
         return scenarios;
     }
-    @SuppressWarnings("unused")
     public void setScenarios(List<Scenario> scenarios) {
         this.scenarios = scenarios;
     }
     public List<ScenarioGroup> getScenarioGroups() {
         return scenarioGroups;
     }
-    @SuppressWarnings("unused")
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
     }
@@ -138,6 +132,18 @@ public class Project implements Serializable, Cloneable {
     public void setStand(Stand stand) {
         this.stand = stand;
     }
+    public Boolean getUseRandomTestId() {
+        return useRandomTestId == null ? false : useRandomTestId;
+    }
+    public void setUseRandomTestId(Boolean useRandomTestId) {
+        this.useRandomTestId = useRandomTestId;
+    }
+    public String getTestIdHeaderName() {
+        return testIdHeaderName;
+    }
+    public void setTestIdHeaderName(String testIdHeaderName) {
+        this.testIdHeaderName = testIdHeaderName;
+    }
 
     @Override
     public Project clone() throws CloneNotSupportedException {
@@ -145,8 +151,9 @@ public class Project implements Serializable, Cloneable {
         Project cloned = new Project();
         cloned.setId(null);
         cloned.setName(getName());
-        cloned.setServiceUrl(getServiceUrl());
         cloned.setProjectCode(getProjectCode() + "_COPY");
+        cloned.setUseRandomTestId(getUseRandomTestId());
+        cloned.setTestIdHeaderName(getTestIdHeaderName());
 
         Map<Stand, Stand> standToClonedMap = new HashMap<>();
 
@@ -158,6 +165,8 @@ public class Project implements Serializable, Cloneable {
 
             cloned.getStandList().add(clonedStand);
         }
+
+        cloned.setStand(standToClonedMap.get(getStand()));
 
         Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
         cloned.setScenarios(new LinkedList<>());

@@ -67,20 +67,21 @@ public class Scenario implements Serializable, Cloneable {
     @Column(name = "AFTER_SCENARIO_IGNORE")
     private Boolean afterScenarioIgnore;
 
+    @ManyToOne
+    @JoinColumn(name = "STAND_ID")
     /* null - default (from project settings) */
     private Stand stand;
 
+    @SuppressWarnings("unused")
     public Long getId() {
         return id;
     }
-    @SuppressWarnings("unused")
     public void setId(Long id) {
         this.id = id;
     }
     public String getName() {
         return name;
     }
-    @SuppressWarnings("unused")
     public void setName(String name) {
         this.name = name;
     }
@@ -96,12 +97,14 @@ public class Scenario implements Serializable, Cloneable {
     public void setLastRunAt(Date lastRunAt) {
         this.lastRunAt = lastRunAt;
     }
+    @SuppressWarnings("unused")
     public Date getLastRunAt() {
         return lastRunAt;
     }
     public void setLastRunFailures(Integer lastRunFailures) {
         this.lastRunFailures = lastRunFailures;
     }
+    @SuppressWarnings("unused")
     public Integer getLastRunFailures() {
         return lastRunFailures;
     }
@@ -123,7 +126,6 @@ public class Scenario implements Serializable, Cloneable {
         }
         return steps;
     }
-    @SuppressWarnings("unused")
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
@@ -133,7 +135,6 @@ public class Scenario implements Serializable, Cloneable {
     public void setProject(Project project) {
         this.project = project;
     }
-    @SuppressWarnings("unused")
     public void setStepResults(List<StepResult> stepResults) {
         this.stepResults = stepResults;
     }
@@ -156,6 +157,7 @@ public class Scenario implements Serializable, Cloneable {
         cloned.setLastRunFailures(null);
         cloned.setBeforeScenario(getBeforeScenario());
         cloned.setAfterScenario(getAfterScenario());
+        cloned.setStand(getStand());
 
         cloned.setSteps(new LinkedList<>());
         for (Step step: getSteps()) {
