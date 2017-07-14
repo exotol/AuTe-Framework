@@ -97,7 +97,6 @@ public class ProjectController {
     public String settingsPost(
             @PathVariable long projectId,
             @RequestParam String name,
-            @RequestParam String serviceUrl,
             @RequestParam Long beforeScenarioId,
             @RequestParam Long afterScenarioId,
             @RequestParam Long standId,
@@ -106,7 +105,6 @@ public class ProjectController {
     ) {
         Project project = projectService.findOne(projectId);
         project.setName(name);
-        project.setServiceUrl(serviceUrl);
         project.setBeforeScenario(beforeScenarioId == null ? null : scenarioService.findOne(beforeScenarioId));
         project.setAfterScenario(afterScenarioId == null ? null : scenarioService.findOne(afterScenarioId));
         project.setStand(standId == null ? null : standService.findOne(standId));
