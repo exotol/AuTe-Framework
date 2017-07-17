@@ -12,6 +12,7 @@ public class StepResult {
     private String actual;
     private String requestUrl;
     private String requestBody;
+    private Integer pollingRetryCount;
 
     public StepResult(Step step) {
         this.step = step;
@@ -57,5 +58,11 @@ public class StepResult {
     }
     public void setRequestBody(String requestBody) {
         this.requestBody = requestBody;
+    }
+    public void setPollingRetryCount(Integer pollingRetryCount) {
+        this.pollingRetryCount = pollingRetryCount;
+    }
+    public Integer getPollingRetryCount() {
+        return pollingRetryCount;
     }
 }

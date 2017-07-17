@@ -28,6 +28,14 @@ import java.util.List;
 @Table(name = "AT_STEP")
 public class Step implements Serializable, Cloneable {
 
+    public String getPollingJsonXPath() {
+        return pollingJsonXPath;
+    }
+
+    public void setPollingJsonXPath(String pollingJsonXPath) {
+        this.pollingJsonXPath = pollingJsonXPath;
+    }
+
     public enum RequestBodyType {
         @SuppressWarnings("unused")
         JSON,
@@ -79,6 +87,10 @@ public class Step implements Serializable, Cloneable {
     private String jsonXPath;
     @Column(name = "REQUEST_BODY_TYPE")
     private RequestBodyType requestBodyType;
+    @Column(name = "USE_POLLING")
+    private Boolean usePolling;
+    @Column(name = "POLLING_JSON_XPATH")
+    private String pollingJsonXPath;
 
     public Step() {
     }
@@ -213,6 +225,12 @@ public class Step implements Serializable, Cloneable {
     public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
         this.expectedResponseIgnore = expectedResponseIgnore;
     }
+    public Boolean getUsePolling() {
+        return usePolling == null ? false : usePolling;
+    }
+    public void setUsePolling(Boolean usePolling) {
+        this.usePolling = usePolling;
+    }
 
     @Override
     protected Step clone() throws CloneNotSupportedException {
@@ -235,6 +253,8 @@ public class Step implements Serializable, Cloneable {
         cloned.setJsonXPath(getJsonXPath());
         cloned.setRequestBodyType(getRequestBodyType());
         cloned.setExpectedResponseIgnore(getExpectedResponseIgnore());
+        cloned.setUsePolling(getUsePolling());
+        cloned.setPollingJsonXPath(getPollingJsonXPath());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {

@@ -1,6 +1,8 @@
 package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -46,6 +48,9 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("unused")
 public class AtExecutor {
+
+    private final static int POLLING_RETRY_COUNT = 50;
+    private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
     private final ScenarioRepository scenarioRepository;
     private final ServiceResponseRepository serviceResponseRepository;
@@ -180,16 +185,45 @@ public class AtExecutor {
         String requestBody = insertSavedValues(step.getRequest(), savedValues);
         stepResult.setRequestBody(requestBody);
 
-        // 3. Выполнить запрос
-        ResponseHelper responseData = http.request(
-                step.getRequestMethod(),
-                requestUrl,
-                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
-                Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
-                step.getRequestHeaders(),
-                project.getTestIdHeaderName(),
-                testId);
+        int retryCounter = 0;
+        boolean retry;
+        ResponseHelper responseData;
+        do {
+            retryCounter++;
+            // 3. Выполнить запрос
+            responseData = http.request(
+                    step.getRequestMethod(),
+                    requestUrl,
+                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
+                    step.getRequestHeaders(),
+                    project.getTestIdHeaderName(),
+                    testId);
 
+            // 3.1. Polling
+            retry = false;
+            if (step.getUsePolling()) {
+                try {
+                    Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
+                    if (pollingParameter == null) {
+                        retry = true;
+                    } else if (pollingParameter instanceof String && StringUtils.isEmpty((String)pollingParameter)) {
+                        retry = true;
+                    } else if (pollingParameter instanceof Map && ((Map) pollingParameter).size() == 0) {
+                        retry = true;
+                    } else if (pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).size() == 0) {
+                        retry = true;
+                    }
+                } catch (PathNotFoundException e) {
+                    retry = true;
+                }
+                if (retry) {
+                    Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
+                }
+            }
+        } while (retry && retryCounter <= POLLING_RETRY_COUNT);
+
+        stepResult.setPollingRetryCount(retryCounter);
         stepResult.setActual(responseData.getContent());
         stepResult.setExpected(step.getExpectedResponse());
 
