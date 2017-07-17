@@ -50,7 +50,7 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     @JsonManagedReference
     private List<Scenario> scenarios;

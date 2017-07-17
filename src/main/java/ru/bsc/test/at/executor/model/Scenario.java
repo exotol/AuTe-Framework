@@ -170,7 +170,7 @@ public class Scenario implements Serializable, Cloneable {
     }
 
     public Boolean getBeforeScenarioIgnore() {
-        return beforeScenarioIgnore;
+        return beforeScenarioIgnore == null ? false : beforeScenarioIgnore;
     }
     @SuppressWarnings("unused")
     public void setBeforeScenarioIgnore(Boolean beforeScenarioIgnore) {
@@ -178,7 +178,7 @@ public class Scenario implements Serializable, Cloneable {
     }
 
     public Boolean getAfterScenarioIgnore() {
-        return afterScenarioIgnore;
+        return afterScenarioIgnore == null ? false : afterScenarioIgnore;
     }
     @SuppressWarnings("unused")
     public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
