@@ -68,6 +68,9 @@
                                 <a href="#" onclick="$(this).next().toggle(); return false;">Details</a>
                                 <div style="display: none;">
                                     <a href="${pageContext.request.contextPath}/step/${stepResult.step.id}" style="font-size: smaller;" target="_blank">Edit step</a>
+                                    <c:if test="${stepResult.step.usePolling}">
+                                        <small style="color: gray;">Polling retry count: ${stepResult.pollingRetryCount}</small>
+                                    </c:if>
                                     <h4 style="font-weight: bold;">Request body</h4>
                                     <textarea rows="5" readonly style="width: 97.5%;"><c:out value="${stepResult.requestBody}"/></textarea>
                                     <table style="width: 100%;">

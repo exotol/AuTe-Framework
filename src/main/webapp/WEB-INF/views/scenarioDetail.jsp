@@ -119,7 +119,7 @@
                 </tr>
                 <tr>
                     <td style="border-top: 0;"></td>
-                    <td style="border-top: 0;" colspan="5">
+                    <td style="border-top: 0;" colspan="3">
                         <div class="form-group" style="width: 20%; float: left;">
                             <label for="exampleInputName2">Variables <a href="#" onclick="alert('Example\nVariables: varA,varB,varC\nSql: select fieldA, fieldB, fieldC from table where id = :savedValueId or name = :parameterName '); return false;">(?)</a></label>
                             <input name="step[${status.index}][sqlSavedParameter]" type="text" class="form-control" id="exampleInputName2" placeholder="Variable name (saving values)" value="${step.sqlSavedParameter}">
@@ -127,6 +127,16 @@
                         <div class="form-group" style="width: 80%; float: right;">
                             <label for="exampleInputEmail2">Sql</label>
                             <input name="step[${status.index}][sql]" type="text" class="form-control" id="exampleInputEmail2" placeholder="Sql query" value="${step.sql}">
+                        </div>
+                    </td>
+                    <td style="border-top: 0;">
+                        <div class="form-group" style="width: 10%; float: left;">
+                            <label for="exampleInputName3">Polling</label>
+                            <input style="margin: 5px;" name="step[${status.index}][usePolling]" type="checkbox" class="form-control" id="exampleInputName3" ${step.usePolling ? 'checked' : ''}>
+                        </div>
+                        <div class="form-group" style="width: 90%; float: left;">
+                            <label for="exampleInputName4">Polling, checked element (JsonXPath) <a href="#" onclick="alert('Example:\n$.accountPortfolio[0].accountInfo.accountNumber\n\ncheck item not empty.'); return false;">(?)</a></label>
+                            <input name="step[${status.index}][pollingJsonXPath]" type="text" class="form-control" id="exampleInputName4" placeholder="Variable name (saving values)" value="${step.pollingJsonXPath}">
                         </div>
                     </td>
                 </tr>

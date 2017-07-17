@@ -36,6 +36,7 @@
                 keys = this.name.match(patterns.key),
                 merge = this.value,
                 reverse_key = this.name;
+            merge = this.value == "on" ? 1 : merge;
 
             while((k = keys.pop()) !== undefined){
 
