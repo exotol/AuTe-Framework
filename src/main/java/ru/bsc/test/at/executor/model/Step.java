@@ -51,7 +51,7 @@ public class Step implements Serializable, Cloneable {
     @JoinColumn(name = "SCENARIO_ID")
     @JsonBackReference
     private Scenario scenario;
-    @OneToMany(mappedBy = "step", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "step", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @OrderBy("SORT ASC")
     @JsonManagedReference
     private List<ExpectedServiceRequest> expectedServiceRequests;
