@@ -136,7 +136,7 @@
                         </div>
                         <div class="form-group" style="width: 90%; float: left;">
                             <label for="exampleInputName4">Polling, checked element (JsonXPath) <a href="#" onclick="alert('Example:\n$.accountPortfolio[0].accountInfo.accountNumber\n\ncheck item not empty.'); return false;">(?)</a></label>
-                            <input name="step[${status.index}][pollingJsonXPath]" type="text" class="form-control" id="exampleInputName4" placeholder="Variable name (saving values)" value="${step.pollingJsonXPath}">
+                            <input name="step[${status.index}][pollingJsonXPath]" type="text" class="form-control" id="exampleInputName4" placeholder="Example: $.items" value="${step.pollingJsonXPath}">
                         </div>
                     </td>
                 </tr>

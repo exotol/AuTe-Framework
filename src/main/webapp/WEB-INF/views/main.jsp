@@ -4,7 +4,7 @@
 <t:wrapper>
     <ol class="breadcrumb">
         <li class="breadcrumb-item active">Home</li>
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/import-project-from-yaml">Import project form YAML</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/import-project-from-yaml">Import project from YAML</a></li>
     </ol>
 
     <%--@elvariable id="projects" type="java.util.List<ru.bsc.test.at.executor.model.Project>"--%>

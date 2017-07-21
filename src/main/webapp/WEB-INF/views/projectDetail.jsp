@@ -71,6 +71,7 @@
                                     <c:if test="${stepResult.step.usePolling}">
                                         <small style="color: gray;">Polling retry count: ${stepResult.pollingRetryCount}</small>
                                     </c:if>
+                                    <small style="color: gray;">Saved values: ${stepResult.savedParameters}</small>
                                     <h4 style="font-weight: bold;">Request body</h4>
                                     <textarea rows="5" readonly style="width: 97.5%;"><c:out value="${stepResult.requestBody}"/></textarea>
                                     <table style="width: 100%;">
