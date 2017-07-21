@@ -101,10 +101,10 @@ $(function () {
 
     $('[data-delete-expected-request]').click(function () {
         var expectedServiceRequestId = $(this).attr('data-delete-expected-request');
+        var $this = this;
         if (confirm('Delete record?')) {
-            $.post(contextPath + '/rest/step/delete-expected-request', { expectedServiceRequestId: expectedServiceRequestId }, function (data) {
-                console.log('delete expected request data:', data);
-                window.ttt = this;
+            $.post(contextPath + '/rest/step/delete-expected-request', { expectedServiceRequestId: expectedServiceRequestId }, function () {
+                $($this).closest('tr').remove();
             });
         }
     });
