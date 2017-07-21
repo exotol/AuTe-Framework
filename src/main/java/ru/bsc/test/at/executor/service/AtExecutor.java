@@ -231,6 +231,8 @@ public class AtExecutor {
         saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
         saveValuesByJsonXPath(step, responseData, savedValues);
 
+        stepResult.setSavedParameters(savedValues.toString());
+
         // 5. Подставить сохраненые значения в ожидаемый результат
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
         // 5.1. Расчитать выражения <f></f>
@@ -388,7 +390,7 @@ public class AtExecutor {
         if (template != null) {
             for (Map.Entry<String, String> value : savedValues.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue()));
+                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : value.getValue()));
             }
         }
         return template;
@@ -398,7 +400,7 @@ public class AtExecutor {
         if (template != null) {
             for (Map.Entry<String, String> value : savedValues.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue(), "UTF-8")));
+                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : value.getValue(), "UTF-8")));
             }
         }
         return template;

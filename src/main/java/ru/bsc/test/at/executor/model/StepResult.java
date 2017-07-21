@@ -13,6 +13,7 @@ public class StepResult {
     private String requestUrl;
     private String requestBody;
     private Integer pollingRetryCount;
+    private String savedParameters;
 
     public StepResult(Step step) {
         this.step = step;
@@ -64,5 +65,11 @@ public class StepResult {
     }
     public Integer getPollingRetryCount() {
         return pollingRetryCount;
+    }
+    public String getSavedParameters() {
+        return savedParameters;
+    }
+    public void setSavedParameters(String savedParameters) {
+        this.savedParameters = savedParameters;
     }
 }
