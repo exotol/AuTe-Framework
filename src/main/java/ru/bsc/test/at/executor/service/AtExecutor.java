@@ -183,6 +183,9 @@ public class AtExecutor {
 
         // 2.1 Подстановка сохраненных параметров в тело запроса
         String requestBody = insertSavedValues(step.getRequest(), savedValues);
+
+        // 2.2 Вычислить функции в теле запроса
+        requestBody = evaluateExpressions(requestBody);
         stepResult.setRequestBody(requestBody);
 
         int retryCounter = 0;
@@ -201,6 +204,7 @@ public class AtExecutor {
                     testId);
 
             // 3.1. Polling
+            // TODO Вынести поллиг в отдельный метод
             retry = false;
             if (step.getUsePolling()) {
                 try {
