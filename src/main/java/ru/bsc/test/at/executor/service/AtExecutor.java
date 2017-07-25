@@ -91,9 +91,20 @@ public class AtExecutor {
         }
 
         List<Scenario> scenarioResultList = new LinkedList<>();
-        for (Scenario scenario: scenarioExecuteList) {
-            Stand currentStand = scenario.getStand() != null ? scenario.getStand() : project.getStand();
-            scenarioResultList.add(executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand)));
+        try {
+            for (Scenario scenario : scenarioExecuteList) {
+                Stand currentStand = scenario.getStand() != null ? scenario.getStand() : project.getStand();
+                scenarioResultList.add(executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand)));
+            }
+        } finally {
+            standConnectionMap.values().stream().filter(connection -> connection != null).forEach(connection -> {
+                try {
+                    connection.rollback();
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         }
         return scenarioResultList;
     }
@@ -103,7 +114,6 @@ public class AtExecutor {
         Map<String, String> savedValues = new HashMap<>();
         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
 
-        try {
             scenario.setStepResults(new LinkedList<>());
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
             Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
@@ -126,17 +136,6 @@ public class AtExecutor {
             httpHelper.closeHttpConnection();
 
             return scenarioResult;
-
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     private Scenario executeSteps(Connection connection, Stand stand, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String testId) {
