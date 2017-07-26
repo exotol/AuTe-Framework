@@ -9,7 +9,7 @@
     },
     "response": {
         "status": 200,
-        "bodyFileName": "velocity/at-velocity.vm",
+        "bodyFileName": "at-velocity.vm",
         "headers": {
             "Content-Type": "application/xop+xml"
         },
