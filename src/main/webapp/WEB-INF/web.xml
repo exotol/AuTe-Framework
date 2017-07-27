@@ -6,15 +6,10 @@
 
     <listener>
         <display-name>wiremock-startup-listener</display-name>
-        <listener-class>ru.bsc.wiremock.transformers.CustomWireMockWebContextListener</listener-class>
+        <listener-class>ru.bsc.wiremock.webcontextlistener.CustomWireMockWebContextListener</listener-class>
         <!--listener-class>com.github.tomakehurst.wiremock.servlet.WireMockWebContextListener</listener-class-->
         <!-- Loads WireMock and populates the servlet context with its services -->
     </listener>
-
-    <context-param>
-        <param-name>WireMockFileSourceRoot</param-name>
-        <param-value>/WEB-INF/wiremock</param-value>
-    </context-param>
 
     <context-param>
         <param-name>verboseLoggingEnabled</param-name>

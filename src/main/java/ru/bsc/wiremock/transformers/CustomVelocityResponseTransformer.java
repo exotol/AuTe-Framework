@@ -22,8 +22,7 @@ import java.util.regex.Pattern;
  * Created by sdoroshin on 26.07.2017.
  *
  */
-@SuppressWarnings("JavaDoc")
-class CustomVelocityResponseTransformer extends ResponseDefinitionTransformer {
+public class CustomVelocityResponseTransformer extends ResponseDefinitionTransformer {
     /**
      * The Velocity context that will hold our request header
      * data.
@@ -75,10 +74,6 @@ class CustomVelocityResponseTransformer extends ResponseDefinitionTransformer {
         }
     }
 
-    /**
-     * Renders the velocity template.
-     * @param response
-     */
     private String getRenderedBody(final ResponseDefinition response) {
         final Template template = Velocity.getTemplate(response.getBodyFileName());
         StringWriter writer = new StringWriter();
