@@ -16,17 +16,6 @@ public class ServiceResponseRepositoryWrapper implements ServiceResponseReposito
         this.serviceResponseRepository = serviceResponseRepository;
     }
 
-
-    @Override
-    public Long deleteByServiceNameAndProjectCode(String item, String projectCode) {
-        return serviceResponseRepository.deleteByServiceNameAndProjectCode(item, projectCode);
-    }
-
-    @Override
-    public ServiceResponse save(ServiceResponse serviceResponse) {
-        return serviceResponseRepository.save(serviceResponse);
-    }
-
     @Override
     public List<ServiceResponse> findAllBySessionUidAndServiceNameInAndIsCalledOrderById(String sessionUid, List<String> expectedServicesName, Long isCalled) {
         return serviceResponseRepository.findAllBySessionUidAndServiceNameInAndIsCalledOrderById(sessionUid, expectedServicesName, isCalled);
