@@ -1,6 +1,6 @@
 userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective
 resource.loader=file
-file.resource.loader.path=c:/work/bcs-wire-mock-velocity
+file.resource.loader.path=c:/work/bsc-wire-mock-velocity
 
 # Sample: "${wiremock.mapping.path}/mappings/velocity-at-mapping.json"
-wiremock.mapping.path=c:/work/bcs-wire-mock-mapping
+wiremock.mapping.path=c:/work/bsc-wire-mock-mapping
