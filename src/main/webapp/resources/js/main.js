@@ -99,6 +99,10 @@ $(function () {
         restSaveForm('#expected-service-requests-form', '#save-expected-service-requests-state', '/rest/step/save-expected-service-requests');
     });
 
+    $('#save-mock-service-response').click(function () {
+        restSaveForm('#mock-service-response-form', '#save-mock-service-response-state', '/rest/step/save-mock-service-response');
+    });
+
     $('[data-delete-expected-request]').click(function () {
         var expectedServiceRequestId = $(this).attr('data-delete-expected-request');
         var $this = this;
@@ -108,6 +112,17 @@ $(function () {
             });
         }
     });
+
+    $('[data-delete-mock-service-response]').click(function () {
+        var mockServiceId = $(this).attr('data-delete-mock-service-response');
+        var $this = this;
+        if (confirm('Delete record?')) {
+            $.post(contextPath + '/rest/step/delete-mock-service-response', { mockServiceId: mockServiceId }, function () {
+                $($this).closest('tr').remove();
+            });
+        }
+    });
+
 
     $('#save-scenario-groups').click(function () {
         restSaveForm('#save-scenario-groups-form', '#save-scenario-groups-state', '/rest/project/save-scenario-groups');

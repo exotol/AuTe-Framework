@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.service.ScenarioService;
@@ -45,6 +46,7 @@ public class StepController {
         model.addObject("project", scenario.getProject());
 
         model.addObject("expectedRequestsList", step.getExpectedServiceRequests());
+        model.addObject("mockServiceResponseList", step.getMockServiceResponseList());
 
         return model;
     }
@@ -111,6 +113,26 @@ public class StepController {
             expectedServiceRequest.setServiceName(serviceName);
             expectedServiceRequest.setStep(step);
             expectedServiceRequest.setSort(maxSort + 50);
+            step = stepService.save(step);
+            return "redirect:/step/" + step.getId();
+        }
+        return "redirect:/#notfound";
+    }
+
+    @RequestMapping(value = "add-mock-service", method = RequestMethod.POST)
+    public String addMockService(
+            @RequestParam long stepId,
+            @RequestParam String serviceUrl
+    ) {
+        Step step = stepService.findOne(stepId);
+        if (step != null) {
+            Long maxSort = step.getMockServiceResponseList().stream().max(Comparator.comparing(MockServiceResponse::getSort)).map(MockServiceResponse::getSort).orElse(0L);
+
+            MockServiceResponse mockServiceResponse = new MockServiceResponse();
+            step.getMockServiceResponseList().add(mockServiceResponse);
+            mockServiceResponse.setServiceUrl(serviceUrl);
+            mockServiceResponse.setStep(step);
+            mockServiceResponse.setSort(maxSort + 50);
             step = stepService.save(step);
             return "redirect:/step/" + step.getId();
         }

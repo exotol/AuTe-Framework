@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
+import ru.bsc.test.autotester.service.MockServiceResponseService;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
 import ru.bsc.test.autotester.service.StandService;
 import ru.bsc.test.autotester.service.StepService;
@@ -26,12 +28,14 @@ public class RestTestController {
 
     private StepService stepService;
     private ExpectedServiceRequestService expectedServiceRequestService;
+    private final MockServiceResponseService mockServiceResponseService;
     private final ScenarioGroupService scenarioGroupService;
     private final StandService standService;
 
-    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, ScenarioGroupService scenarioGroupService, StandService standService) {
+    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, MockServiceResponseService mockServiceResponseService, ScenarioGroupService scenarioGroupService, StandService standService) {
         this.stepService = stepService;
         this.expectedServiceRequestService = expectedServiceRequestService;
+        this.mockServiceResponseService = mockServiceResponseService;
         this.scenarioGroupService = scenarioGroupService;
         this.standService = standService;
     }
@@ -46,6 +50,11 @@ public class RestTestController {
         expectedServiceRequestService.save(expectedRequest);
     }
 
+    @RequestMapping(value = "step/save-mock-service-response", method = RequestMethod.POST)
+    public void saveMockServiceResponse(@RequestBody List<MockServiceResponse> mockServiceResponse) {
+        mockServiceResponseService.save(mockServiceResponse);
+    }
+
     @RequestMapping(value = "step/delete-expected-request", method = RequestMethod.POST)
     public String deleteExpectedRequest(
             @RequestParam long expectedServiceRequestId
@@ -54,6 +63,19 @@ public class RestTestController {
         if (request != null) {
             expectedServiceRequestService.delete(request);
             return "redirect:/step/" + request.getStep().getId();
+
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "step/delete-mock-service-response", method = RequestMethod.POST)
+    public String deleteMockServiceResponse(
+            @RequestParam long mockServiceId
+    ) {
+        MockServiceResponse mockServiceResponse = mockServiceResponseService.findOne(mockServiceId);
+        if (mockServiceResponse != null) {
+            mockServiceResponseService.delete(mockServiceResponse);
+            return "redirect:/step/" + mockServiceResponse.getStep().getId();
 
         }
         return "redirect:/";

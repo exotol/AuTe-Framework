@@ -194,12 +194,49 @@
             </table>
             <button class="btn btn-default" id="save-expected-service-requests">Save</button> <span id="save-expected-service-requests-state"></span>
         </form>
-
         <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-expected-request" onsubmit="return confirm('Add expected request?')">
             <input type="hidden" name="stepId" value="${stepDetail.id}"/>
             <input class="form-control" type="text" name="serviceName" placeholder="New service name"/>
             <input class="btn btn-default" type="submit" value="Add expected request">
         </form>
         <!-- TODO вывод списка ожидаемых вызовов сервисов + редактирование -->
+
+
+        <div style="clear: both;"></div>
+        <h4>Mock service response</h4>
+        <form method="post" id="mock-service-response-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-mock-service-responses" onsubmit="return false;">
+            <table class="table table-condensed">
+                <tr>
+                    <th style="width: 1%;">Sort</th>
+                    <th>Service url<br/>Response http-status<br/>Response body</th>
+                    <th style="width: 1%;"></th>
+                </tr>
+                <%--@elvariable id="mockServiceResponseList" type="java.util.List<ru.bsc.test.at.executor.model.MockServiceResponse>"--%>
+                <c:forEach items="${mockServiceResponseList}" var="mockServiceResponse" varStatus="status">
+                    <tr>
+                        <td style="width: 70px;">
+                            <input type="hidden" name="mockServiceResponse[${status.index}][id]" value="${mockServiceResponse.id}"/>
+                            <input type="hidden" name="mockServiceResponse[${status.index}][step][id]" value="${mockServiceResponse.step.id}"/>
+                            <input class="form-control" style="width: inherit;" size="3" name="mockServiceResponse[${status.index}][sort]" value="${mockServiceResponse.sort}"/>
+                        </td>
+                        <td>
+                            <input class="form-control" name="mockServiceResponse[${status.index}][serviceUrl]" value="${mockServiceResponse.serviceUrl}" placeholder="Service URL. Example: /mockDkboDebtServiceSoap11"/>
+                            <input class="form-control" name="mockServiceResponse[${status.index}][httpStatus]" value="${mockServiceResponse.httpStatus}" placeholder="HTTP-status response. Example: 200"/>
+                            <textarea rows="10" class="form-control" name="mockServiceResponse[${status.index}][responseBody]">${mockServiceResponse.responseBody}</textarea>
+                        </td>
+                        <td style="width: 1%;">
+                            <a class="btn btn-default" role="button" data-delete-mock-service-response="${mockServiceResponse.id}">Delete</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <button class="btn btn-default" id="save-mock-service-response">Save</button> <span id="save-mock-service-response-state"></span>
+        </form>
+
+        <form class="form-inline" method="post" action="${pageContext.request.contextPath}/step/add-mock-service" onsubmit="return confirm('Confirm this action: Add mock service')">
+            <input type="hidden" name="stepId" value="${stepDetail.id}"/>
+            <input class="form-control" type="text" name="serviceUrl" placeholder="New mock URL"/>
+            <input class="btn btn-default" type="submit" value="Add mock service">
+        </form>
     </c:if>
 </t:wrapper>
