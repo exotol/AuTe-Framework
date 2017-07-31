@@ -10,7 +10,5 @@ import java.util.List;
  */
 public interface ServiceResponseRepository {
 
-    Long deleteByServiceNameAndProjectCode(String item, String projectCode);
-    ServiceResponse save(ServiceResponse serviceResponse);
     List<ServiceResponse> findAllBySessionUidAndServiceNameInAndIsCalledOrderById(String sessionUid, List<String> expectedServicesName, Long isCalled);
 }

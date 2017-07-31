@@ -10,17 +10,21 @@ import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
+import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.ServiceResponse;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
+import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +40,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -53,25 +58,31 @@ public class AtExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
     private final ScenarioRepository scenarioRepository;
-    private final ServiceResponseRepository serviceResponseRepository;
-
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper;
+
+    private final String wireMockAdminUrl;
 
     public AtExecutor(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository) {
         this.scenarioRepository = scenarioRepository;
-        this.serviceResponseRepository = serviceResponseRepository;
         this.serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper(serviceResponseRepository);
+
+        Properties properties = new Properties();
+        try (final InputStream stream = this.getClass().getResourceAsStream("/at-executor.properties")) {
+            properties.load(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wireMockAdminUrl = properties.getProperty("wiremock.admin.url");
     }
 
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
-        for (Scenario scenario: scenarioExecuteList) {
-            if (scenario.getStand() != null) {
-                standSet.add(scenario.getStand());
-            }
-        }
+        standSet.addAll(scenarioExecuteList.stream()
+                .filter(scenario -> scenario.getStand() != null)
+                .map(Scenario::getStand)
+                .collect(Collectors.toList()));
         if (project.getStand() != null) {
             standSet.add(project.getStand());
         }
@@ -144,8 +155,8 @@ public class AtExecutor {
             for (Step step: scenario.getSteps()) {
                 StepResult stepResult = new StepResult(step);
                 scenario.getStepResults().add(stepResult);
-                try {
-                    executeTestStep(connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                try(WireMockAdmin wireMockAdmin = new WireMockAdmin(wireMockAdminUrl)) {
+                    executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                     // После выполнения шага необходимо проверить запросы к веб-сервисам
                     serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
@@ -168,10 +179,10 @@ public class AtExecutor {
         return scenario;
     }
 
-    private void executeTestStep(Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
-        setResponses(project, testId, step.getResponses());
+        setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, savedValues);
@@ -296,14 +307,18 @@ public class AtExecutor {
         }
     }
 
-    private void setResponses(Project project, String testId, String responses) {
-        Long sort = 0L;
-        List<ServiceNameResponsePair> responsesList = parseServiceResponsesString(responses);
-        responsesList.stream().map(ServiceNameResponsePair::getServiceName).collect(Collectors.toSet())
-                .forEach(item -> serviceResponseRepository.deleteByServiceNameAndProjectCode(item, project.getProjectCode()));
+    private void setMockResponses(WireMockAdmin wireMockAdmin, Project project, String testId, List<MockServiceResponse> responseList) throws IOException {
+        Long priority = 0L;
+        if (responseList != null) {
+            for (MockServiceResponse mockServiceResponse : responseList) {
+                MockDefinition mockDefinition = new MockDefinition(priority--, project.getTestIdHeaderName(), testId);
+                mockDefinition.getRequest().setUrl(mockServiceResponse.getServiceUrl());
+                mockDefinition.getRequest().setMethod("POST"); // SOAP always POST
+                mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
+                mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
 
-        for (ServiceNameResponsePair pair: responsesList) {
-            serviceResponseRepository.save(new ServiceResponse(testId, pair.getServiceName(), pair.getResponse(), sort++, project.getProjectCode()));
+                wireMockAdmin.addMapping(mockDefinition);
+            }
         }
     }
 

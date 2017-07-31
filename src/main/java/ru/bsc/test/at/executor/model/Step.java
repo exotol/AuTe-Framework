@@ -28,14 +28,6 @@ import java.util.List;
 @Table(name = "AT_STEP")
 public class Step implements Serializable, Cloneable {
 
-    public String getPollingJsonXPath() {
-        return pollingJsonXPath;
-    }
-
-    public void setPollingJsonXPath(String pollingJsonXPath) {
-        this.pollingJsonXPath = pollingJsonXPath;
-    }
-
     public enum RequestBodyType {
         @SuppressWarnings("unused")
         JSON,
@@ -91,6 +83,10 @@ public class Step implements Serializable, Cloneable {
     private Boolean usePolling;
     @Column(name = "POLLING_JSON_XPATH")
     private String pollingJsonXPath;
+    @OneToMany(mappedBy = "step", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OrderBy("SORT ASC")
+    @JsonManagedReference
+    private List<MockServiceResponse> mockServiceResponseList;
 
     public Step() {
     }
@@ -231,6 +227,18 @@ public class Step implements Serializable, Cloneable {
     public void setUsePolling(Boolean usePolling) {
         this.usePolling = usePolling;
     }
+    public String getPollingJsonXPath() {
+        return pollingJsonXPath;
+    }
+    public void setPollingJsonXPath(String pollingJsonXPath) {
+        this.pollingJsonXPath = pollingJsonXPath;
+    }
+    public List<MockServiceResponse> getMockServiceResponseList() {
+        return mockServiceResponseList;
+    }
+    public void setMockServiceResponseList(List<MockServiceResponse> mockServiceResponseList) {
+        this.mockServiceResponseList = mockServiceResponseList;
+    }
 
     @Override
     protected Step clone() throws CloneNotSupportedException {
@@ -261,6 +269,13 @@ public class Step implements Serializable, Cloneable {
             ExpectedServiceRequest clonedExpectedServiceRequest = expectedServiceRequest.clone();
             clonedExpectedServiceRequest.setStep(cloned);
             cloned.getExpectedServiceRequests().add(clonedExpectedServiceRequest);
+        }
+
+        cloned.setMockServiceResponseList(new LinkedList<>());
+        for (MockServiceResponse mockServiceResponse: getMockServiceResponseList()) {
+            MockServiceResponse clonedMockServiceResponse = mockServiceResponse.clone();
+            clonedMockServiceResponse.setStep(cloned);
+            cloned.getMockServiceResponseList().add(clonedMockServiceResponse);
         }
 
         return cloned;
