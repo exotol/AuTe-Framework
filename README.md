@@ -35,7 +35,8 @@ wiremock.mapping.path=c:/work/bsc-wire-mock-mapping
 На POST запрос */mockBankAccountBalanceWebServiceSoap11* с http-заголовком *testIdHeader: ololoshka* будет возвращен ответ из файла, указанного в параметре **bodyFileName**.
  
 В параметре **bodyFileName** могут быть указаны:
-* Файл с шаблоном *.vm*, пример: at-velocity.vm. При этом шаблон должен быть расположен в папке file.resource.loader.path;
+
+* Файл с шаблоном .vm, пример: at-velocity.vm. При этом шаблон должен быть расположен в папке file.resource.loader.path;
 * Файл с ответом, расположенный в папке ${wiremock.mapping.path}/__files/
 
 ```
