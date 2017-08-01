@@ -87,6 +87,8 @@ public class Step implements Serializable, Cloneable {
     @OrderBy("SORT ASC")
     @JsonManagedReference
     private List<MockServiceResponse> mockServiceResponseList;
+    private Boolean disabled;
+    private String stepComment;
 
     public Step() {
     }
@@ -239,6 +241,18 @@ public class Step implements Serializable, Cloneable {
     public void setMockServiceResponseList(List<MockServiceResponse> mockServiceResponseList) {
         this.mockServiceResponseList = mockServiceResponseList;
     }
+    public Boolean getDisabled() {
+        return disabled == null ? false : disabled;
+    }
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+    public String getStepComment() {
+        return stepComment;
+    }
+    public void setStepComment(String stepComment) {
+        this.stepComment = stepComment;
+    }
 
     @Override
     protected Step clone() throws CloneNotSupportedException {
@@ -263,6 +277,8 @@ public class Step implements Serializable, Cloneable {
         cloned.setExpectedResponseIgnore(getExpectedResponseIgnore());
         cloned.setUsePolling(getUsePolling());
         cloned.setPollingJsonXPath(getPollingJsonXPath());
+        cloned.setDisabled(getDisabled());
+        cloned.setStepComment(getStepComment());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {

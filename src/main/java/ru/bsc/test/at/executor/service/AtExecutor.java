@@ -3,6 +3,7 @@ package ru.bsc.test.at.executor.service;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -123,6 +124,7 @@ public class AtExecutor {
     private Scenario executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
+        savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
 
             scenario.setStepResults(new LinkedList<>());
@@ -153,22 +155,24 @@ public class AtExecutor {
         if (scenario != null) {
             int failures = 0;
             for (Step step: scenario.getSteps()) {
-                StepResult stepResult = new StepResult(step);
-                scenario.getStepResults().add(stepResult);
-                try(WireMockAdmin wireMockAdmin = new WireMockAdmin(wireMockAdminUrl)) {
-                    executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                if (!step.getDisabled()) {
+                    StepResult stepResult = new StepResult(step);
+                    scenario.getStepResults().add(stepResult);
+                    try (WireMockAdmin wireMockAdmin = new WireMockAdmin(wireMockAdminUrl)) {
+                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
-                    // После выполнения шага необходимо проверить запросы к веб-сервисам
-                    serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
+                        // После выполнения шага необходимо проверить запросы к веб-сервисам
+                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
 
-                    stepResult.setResult("OK");
-                } catch (Exception e) {
-                    StringWriter sw = new StringWriter();
-                    e.printStackTrace(new PrintWriter(sw));
+                        stepResult.setResult("OK");
+                    } catch (Exception e) {
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
 
-                    stepResult.setResult("Fail");
-                    stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
-                    failures++;
+                        stepResult.setResult("Fail");
+                        stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
+                        failures++;
+                    }
                 }
             }
 
