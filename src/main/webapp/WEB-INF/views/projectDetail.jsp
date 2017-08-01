@@ -99,6 +99,7 @@
         </table>
         <input type="submit" class="btn btn-default" value="Execute selected scenarios"/>
         <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" formaction="${pageContext.request.contextPath}/project/${project.id}/export-to-excel"/>
+        <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" formaction="${pageContext.request.contextPath}/project/${project.id}/export-selected-to-yaml"/>
     </form>
 
     <c:if test="${empty executeResult}">

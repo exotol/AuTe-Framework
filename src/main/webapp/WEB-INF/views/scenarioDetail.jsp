@@ -140,6 +140,22 @@
                         </div>
                     </td>
                 </tr>
+
+                <tr>
+                    <td style="border-top: 0;"></td>
+                    <td style="border-top: 0;" colspan="4">
+                        <div class="form-horizontal">
+                            <div class="col-sm-11">
+                                <label>Comment:</label>
+                                <input name="step[${status.index}][stepComment]" type="text" class="form-control" value="${step.stepComment}" placeholder="Comment" />
+                            </div>
+                            <div class="col-sm-1">
+                                <label for="input_disabled">Disable step:</label>
+                                <input style="margin: 5px;" name="step[${status.index}][disabled]" type="checkbox" class="form-control" id="input_disabled" ${step.disabled ? 'checked' : ''}>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             </c:forEach>
         </table>
         <button class="btn btn-default" id="save-steps">Save</button> <span id="saving-state"></span>

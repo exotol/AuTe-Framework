@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -194,6 +195,21 @@ public class ProjectController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         book.write(response.getOutputStream());
     }
+
+    @RequestMapping(value = "{projectId}/export-selected-to-yaml", method = RequestMethod.POST)
+    @ResponseBody
+    public String exportToYaml(
+            @PathVariable long projectId,
+            @RequestParam("scenarios[]") Long[] scenarios,
+            HttpServletResponse response
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+        List<Long> scenarioList = Arrays.asList(scenarios);
+        project.setScenarios(project.getScenarios().stream().filter(scenario -> scenarioList.contains(scenario.getId()) ).collect(Collectors.toList()));
+        response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getProjectCode() +".yml\"");
+        return projectService.findOneAsYaml(projectId);
+    }
+
 
     @RequestMapping(value = "{projectId}/import-from-excel", method = RequestMethod.POST)
     public String importScenarioFromExcel(
