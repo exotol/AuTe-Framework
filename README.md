@@ -6,8 +6,6 @@
 
 * [WireMock](http://wiremock.org/)
 * [WireMock API](http://wiremock.org/docs/api/)
-* Quick summary
-* Version
 
 
 ## Настройка ##
