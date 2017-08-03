@@ -23,4 +23,15 @@ export class WireMockService {
   deleteOne(mapping: Mapping) {
     this.http.delete(this.adminUrl + '/mappings/' + mapping.uuid);
   }
+
+  save(mapping: Mapping) {
+    if (mapping.uuid) {
+      this.http.post(
+        this.adminUrl + '/' + mapping.uuid,
+        mapping
+      )
+    } else {
+      this.http.put(this.adminUrl, mapping);
+    }
+  }
 }
