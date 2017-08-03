@@ -1,0 +1,11 @@
+<div>
+  Welcome to BSC WireMock UI!
+  <div class="list-group">
+    <a class="list-group-item" href="#" *ngFor="let mapping of mappingList" (click)="onSelect(mapping)">
+      <label>Method:</label>
+      {{mapping.request.method}}
+      <label>Url:</label>
+      {{mapping.request.urlPattern}}
+    </a>
+  </div>
+</div>
