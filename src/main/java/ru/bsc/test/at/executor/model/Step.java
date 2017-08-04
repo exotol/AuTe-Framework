@@ -4,20 +4,25 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -89,6 +94,10 @@ public class Step implements Serializable, Cloneable {
     private List<MockServiceResponse> mockServiceResponseList;
     private Boolean disabled;
     private String stepComment;
+    @ElementCollection
+    @MapKeyColumn(name = "savedValueName")
+    @CollectionTable(name = "AT_STEP_SAVED_VALUES_CHECK", joinColumns = @JoinColumn(name = "STEP_ID"))
+    private Map<String, String> savedValuesCheck;
 
     public Step() {
     }
@@ -253,6 +262,15 @@ public class Step implements Serializable, Cloneable {
     public void setStepComment(String stepComment) {
         this.stepComment = stepComment;
     }
+    public Map<String, String> getSavedValuesCheck() {
+        return savedValuesCheck;
+    }
+    public void setSavedValuesCheck(Map<String, String> savedValuesCheck) {
+        if (savedValuesCheck == null) {
+            savedValuesCheck = new HashMap<>();
+        }
+        this.savedValuesCheck = savedValuesCheck;
+    }
 
     @Override
     protected Step clone() throws CloneNotSupportedException {
@@ -279,6 +297,7 @@ public class Step implements Serializable, Cloneable {
         cloned.setPollingJsonXPath(getPollingJsonXPath());
         cloned.setDisabled(getDisabled());
         cloned.setStepComment(getStepComment());
+        cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {

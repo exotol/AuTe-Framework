@@ -251,6 +251,15 @@ public class AtExecutor {
 
         stepResult.setSavedParameters(savedValues.toString());
 
+        // 4.1 Проверить сохраненные значения
+        for(Map.Entry<String, String> entry: step.getSavedValuesCheck().entrySet()) {
+            String valueExpected = entry.getValue() == null ? "" : entry.getValue();
+            String valueActual = savedValues.get(entry.getKey());
+            if (!valueExpected.equals(valueActual)) {
+                throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+            }
+        }
+
         // 5. Подставить сохраненые значения в ожидаемый результат
         String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
         // 5.1. Расчитать выражения <f></f>
