@@ -6,6 +6,7 @@
       </a>
       <button class="btn btn-default list-group-item" [routerLink]="['/mapping/new']"><span class="glyphicon glyphicon-plus"></span> <i>Add mapping</i></button>
     </div>
+    <button class="btn btn-default list-group-item" (click)="saveToBackStorage()"><span class="glyphicon glyphicon-floppy-save"></span> <i>Save to back storage</i></button>
   </div>
   <div class="col-sm-9">
     <router-outlet></router-outlet>
