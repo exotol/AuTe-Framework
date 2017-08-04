@@ -28,7 +28,7 @@ export class WireMockService {
       .delete(this.adminUrl + '/mappings/' + mapping.uuid);
   }
 
-  save(mapping: Mapping): Promise<Mapping> {
+  apply(mapping: Mapping): Promise<Mapping> {
     if (mapping.uuid) {
       return this.http
         .put(

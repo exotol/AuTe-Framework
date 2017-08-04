@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Mapping} from '../../model/mapping';
 import {BodyPattern} from '../../model/body-pattern';
 import {WireMockService} from '../../service/wire-mock.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
 import 'rxjs/add/operator/switchMap';
 
@@ -19,7 +19,8 @@ export class MappingDetailComponent implements OnInit {
   constructor(
     public wireMockService: WireMockService,
     private route: ActivatedRoute,
-    private toastyService: ToastyService
+    private toastyService: ToastyService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -50,14 +51,15 @@ export class MappingDetailComponent implements OnInit {
     this.mapping.request.bodyPatterns = this.mapping.request.bodyPatterns.filter(item => item !== bodyPattern);
   }
 
-  saveMapping() {
+  applyMapping() {
     this.wireMockService
-      .save(this.mapping)
+      .apply(this.mapping)
       .then(value => {
         this.mapping = value;
+        this.router.navigate(['/mapping', this.mapping.uuid]);
         const toastOptions: ToastOptions = {
-          title: 'Saved',
-          msg: 'Маппинг сохранен',
+          title: 'Applied',
+          msg: 'Маппинг применен',
           showClose: true,
           timeout: 5000,
           theme: 'bootstrap'
