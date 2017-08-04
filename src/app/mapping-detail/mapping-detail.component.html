@@ -1,7 +1,67 @@
-<p>
-  mapping-detail works!<br/>
-  {{mapping.id}}<br/>
-  {{mapping.request.urlPattern}}<br/>
-  {{mapping.response.bodyFileName}}<br/>
-  {{mapping.response.body}}
-</p>
+<div class="form-horizontal" *ngIf="mapping">
+  <div class="form-group">
+
+    <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.urlPattern}}</h4>
+    <div class="small">
+      {{mapping.id}}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Request mapping</label>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-2">
+      <label>Method</label>
+      <app-input-null title="Method" [(ngModel)]="mapping.request.method" [type]="'input'"></app-input-null>
+    </div>
+    <div class="col-sm-8">
+      <label>Url pattern</label>
+      <input class="form-control" title="URL pattern" [(ngModel)]="mapping.request.urlPattern"/>
+    </div>
+    <div class="col-sm-2">
+      <label>Priority</label>
+      <app-input-null title="Priority" [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
+      <label>Body pattern (XPath)</label>
+      <div class="form-horizontal">
+        <ng-container *ngFor="let bodyPattern of mapping.request.bodyPatterns">
+          <div class="form-group">
+            <div class="col-sm-11">
+              <input class="form-control" [(ngModel)]="bodyPattern.matchesXPath" title="XPath"/>
+            </div>
+            <div class="col-sm-1">
+              <button class="btn btn-default form-control" (click)="removeBodyPattern(bodyPattern)"><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <button class="btn btn-default" (click)="addBodyPattern();">Add body pattern</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Response</label>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-4">
+      <label>Body file name</label>
+      <app-input-null title="Body file name" [(ngModel)]="mapping.response.bodyFileName" [type]="'input'"></app-input-null>
+    </div>
+    <div class="col-sm-8">
+      <label>Body</label>
+      <app-input-null [(ngModel)]="mapping.response.body" [type]="'textarea'"></app-input-null>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button class="btn btn-primary" style="float: right;" (click)="saveMapping()">Save mapping</button>
+  </div>
+
+  <div class="form-group">
+    {{mapping | json}}
+  </div>
+</div>

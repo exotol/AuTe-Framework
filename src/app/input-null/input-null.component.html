@@ -1,0 +1,9 @@
+<ng-container *ngIf="type != 'input'">
+  <textarea class="form-control" title="" rows="10" *ngIf="value != null" [(ngModel)]="value" (blur)="onBlur()" ></textarea>
+</ng-container>
+<ng-container *ngIf="type == 'input'">
+  <input class="form-control" title="" *ngIf="value != null" [(ngModel)]="value" (blur)="onBlur()" />
+</ng-container>
+<button class="btn btn-sm btn-default" style="float: right;" *ngIf="value != null" (click)="setNull()"><span class="glyphicon glyphicon-remove"></span> {{removeButtonText}}</button>
+
+<button class="form-control btn btn-sm btn-default" *ngIf="value == null" (click)="setNotNull()"><span class="glyphicon glyphicon-plus"></span> {{addButtonText}}</button>

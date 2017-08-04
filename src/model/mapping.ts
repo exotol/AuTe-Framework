@@ -6,4 +6,10 @@ export class Mapping {
   request: RequestMapping;
   response: ResponseMapping;
   uuid: String;
+  priority: number;
+
+  constructor() {
+    this.request = new RequestMapping;
+    this.response = new ResponseMapping;
+  }
 }
