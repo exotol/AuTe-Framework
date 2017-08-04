@@ -138,4 +138,20 @@ public class StepController {
         }
         return "redirect:/#notfound";
     }
+
+    @RequestMapping(value = "add-check-saved-value", method = RequestMethod.POST)
+    public String add(
+            @RequestParam long stepId,
+            @RequestParam String key,
+            @RequestParam String value
+    ) {
+        Step step = stepService.findOne(stepId);
+        if (step != null) {
+            step.getSavedValuesCheck().put(key, value);
+            step = stepService.save(step);
+            return "redirect:/step/" + step.getId();
+        }
+        return "redirect:/#notfound";
+    }
+
 }

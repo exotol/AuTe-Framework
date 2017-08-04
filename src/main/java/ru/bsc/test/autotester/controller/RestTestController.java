@@ -10,6 +10,7 @@ import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.dto.CheckSavedValuesDto;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.MockServiceResponseService;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
@@ -48,6 +49,14 @@ public class RestTestController {
     @RequestMapping(value = "step/save-expected-service-requests", method = RequestMethod.POST)
     public void saveExpectedServiceRequests(@RequestBody List<ExpectedServiceRequest> expectedRequest) {
         expectedServiceRequestService.save(expectedRequest);
+    }
+
+    @RequestMapping(value = "step/save-check-saved-values", method = RequestMethod.POST)
+    public void saveCheckSavedValues(@RequestBody CheckSavedValuesDto checkSavedValuesDto) {
+        Step step = stepService.findOne(checkSavedValuesDto.getStepId());
+        step.getSavedValuesCheck().clear();
+        checkSavedValuesDto.getMap().forEach(keyValuePair -> step.getSavedValuesCheck().put(keyValuePair.getKey(), keyValuePair.getValue()));
+        stepService.save(step);
     }
 
     @RequestMapping(value = "step/save-mock-service-response", method = RequestMethod.POST)

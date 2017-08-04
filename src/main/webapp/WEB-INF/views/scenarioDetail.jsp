@@ -148,6 +148,8 @@
                             <div class="col-sm-11">
                                 <label>Comment:</label>
                                 <input name="step[${status.index}][stepComment]" type="text" class="form-control" value="${step.stepComment}" placeholder="Comment" />
+                                <label class="help-block">Check saved values:</label>
+                                <div class="help-block">${step.savedValuesCheck}</div>
                             </div>
                             <div class="col-sm-1">
                                 <label for="input_disabled">Disable step:</label>
@@ -173,6 +175,50 @@
     <c:if test="${not empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/delete-step" onsubmit="return confirm('Delete step?')">
             <input class="btn btn-default" type="submit" value="Delete step">
+        </form>
+
+        <div style="clear: both;"></div>
+        <h4>Check saved values</h4>
+        <form method="post" id="check-saved-values-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-check-saved-values" onsubmit="return false;">
+            <input type="hidden" name="savedValue[stepId]" value="${stepDetail.id}"/>
+            <c:if test="${not empty stepDetail.savedValuesCheck}">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2"><label>Variable name</label></div>
+                        <div class="col-sm-2"><label>Checked value</label></div>
+                        <div class="col-sm-2"></div>
+                    </div>
+
+                    <c:forEach items="${stepDetail.savedValuesCheck}" var="savedValue" varStatus="status">
+                        <div class="form-group">
+                            <div class="col-sm-2">
+                                <input class="form-control" name="savedValue[map][${status.index}][key]" value="${savedValue.key}"/>
+                            </div>
+                            <div class="col-sm-2">
+                                <input class="form-control" name="savedValue[map][${status.index}][value]" value="${savedValue.value}" placeholder="Value"/>
+                            </div>
+                            <div class="col-sm-1">
+                                <a class="btn btn-default" role="button" data-delete-check-saved-values="${savedValue.key}">Delete</a>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+                <button class="btn btn-default" id="save-check-saved-values">Save</button> <span id="save-check-saved-values-state"></span>
+            </c:if>
+        </form>
+        <form class="form-horizontal" method="post" action="${pageContext.request.contextPath}/step/add-check-saved-value">
+            <div class="form-group">
+                <input type="hidden" name="stepId" value="${stepDetail.id}"/>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="key" placeholder="Variable name"/>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" name="value" placeholder="Value"/>
+                </div>
+                <div class="col-sm-2">
+                    <input class="btn btn-default" type="submit" value="Add">
+                </div>
+            </div>
         </form>
 
         <div style="clear: both;"></div>
@@ -215,7 +261,6 @@
             <input class="form-control" type="text" name="serviceName" placeholder="New service name"/>
             <input class="btn btn-default" type="submit" value="Add expected request">
         </form>
-        <!-- TODO вывод списка ожидаемых вызовов сервисов + редактирование -->
 
 
         <div style="clear: both;"></div>

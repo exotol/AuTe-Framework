@@ -99,6 +99,10 @@ $(function () {
         restSaveForm('#expected-service-requests-form', '#save-expected-service-requests-state', '/rest/step/save-expected-service-requests');
     });
 
+    $('#save-check-saved-values').click(function () {
+        restSaveForm('#check-saved-values-form', '#save-check-saved-values-state', '/rest/step/save-check-saved-values');
+    });
+
     $('#save-mock-service-response').click(function () {
         restSaveForm('#mock-service-response-form', '#save-mock-service-response-state', '/rest/step/save-mock-service-response');
     });
@@ -121,6 +125,10 @@ $(function () {
                 $($this).closest('tr').remove();
             });
         }
+    });
+
+    $('[data-delete-check-saved-values]').click(function () {
+        $(this).closest('div.form-group').remove();
     });
 
 
