@@ -23,7 +23,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
  */
 public class CustomWireMockWebContextListener extends WireMockWebContextListener {
 
-    private static final String APP_CONTEXT_KEY = "WireMockApp";
+    public static final String APP_CONTEXT_KEY = "WireMockApp";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
