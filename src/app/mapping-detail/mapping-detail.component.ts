@@ -7,6 +7,7 @@ import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 
 import {ToastyService, ToastOptions} from 'ng2-toasty';
+import {HeaderItem} from '../../model/request-mapping';
 
 @Component({
   selector: 'app-mapping-detail',
@@ -15,6 +16,7 @@ import {ToastyService, ToastOptions} from 'ng2-toasty';
 export class MappingDetailComponent implements OnInit {
 
   mapping: Mapping;
+  customHeaders: HeaderItem[];
 
   constructor(
     public wireMockService: WireMockService,
@@ -29,6 +31,7 @@ export class MappingDetailComponent implements OnInit {
         const id = params.get('uuid');
         if (id === 'new') {
           this.mapping = new Mapping();
+          this.customHeaders = [];
           return new Promise<Mapping>(() => { });
         } else {
           return this.wireMockService.findOne(id);
@@ -36,7 +39,9 @@ export class MappingDetailComponent implements OnInit {
       })
       .subscribe(mapping => {
         console.log(mapping);
+        this.customHeaders = [];
         this.mapping = mapping;
+        this.setHeaders(mapping.request.headers);
       });
   }
 
@@ -52,6 +57,9 @@ export class MappingDetailComponent implements OnInit {
   }
 
   applyMapping() {
+    console.log('before', this.mapping.request.headers);
+    this.mapping.request.headers = this.getHeaders();
+    console.log('after', this.mapping.request.headers);
     this.wireMockService
       .apply(this.mapping)
       .then(value => {
@@ -66,5 +74,42 @@ export class MappingDetailComponent implements OnInit {
         };
         this.toastyService.success(toastOptions);
       });
+  }
+
+  getHeaders(): any {
+    console.log('get headers', this.customHeaders);
+    const obj = {};
+    this.customHeaders.forEach(header => {
+      obj[header.headerName] = {
+        [header.compareType]: header.headerValue
+      }
+    });
+    return obj;
+  }
+
+  setHeaders(headers: any) {
+    console.log('set headers', headers);
+    this.customHeaders = [];
+    for (const headerName of Object.keys(headers)) {
+      const headerItem = new HeaderItem();
+      headerItem.headerName = headerName;
+      for (const compareType of Object.keys(headers[headerName])) {
+        headerItem.compareType = compareType;
+        headerItem.headerValue = headers[headerName][compareType];
+      }
+      this.customHeaders.push(headerItem);
+    }
+
+  }
+
+  addHeaderPattern() {
+    if (!this.customHeaders) {
+      this.customHeaders = [];
+    }
+    this.customHeaders.push(new HeaderItem());
+  }
+
+  deleteHeader(header: HeaderItem) {
+    this.customHeaders = this.customHeaders.filter(value => value !== header);
   }
 }

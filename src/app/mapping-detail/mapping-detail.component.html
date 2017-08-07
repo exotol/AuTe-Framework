@@ -24,20 +24,45 @@
       <app-input-null title="Priority" [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
     </div>
   </div>
+
+
+  <div class="form-group">
+    <div class="col-sm-12">
+      <label>Header pattern</label>
+      <div class="form-horizontal">
+        <div class="form-group" *ngFor="let header of customHeaders">
+          <div class="col-sm-4">
+            <input class="form-control" title="" [(ngModel)]="header.headerName">
+          </div>
+          <div class="col-sm-3">
+            <select class="form-control" title="" [(ngModel)]="header.compareType">
+              <option [ngValue]="'equalTo'">equalTo</option>
+            </select>
+          </div>
+          <div class="col-sm-4">
+            <input class="form-control" title="" [(ngModel)]="header.headerValue">
+          </div>
+          <div class="col-sm-1">
+            <button class="btn btn-default" (click)="deleteHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+          </div>
+        </div>
+        <button class="btn btn-default" (click)="addHeaderPattern();">Add header</button>
+      </div>
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-12">
       <label>Body pattern (XPath)</label>
       <div class="form-horizontal">
-        <ng-container *ngFor="let bodyPattern of mapping.request.bodyPatterns">
-          <div class="form-group">
-            <div class="col-sm-11">
-              <input class="form-control" [(ngModel)]="bodyPattern.matchesXPath" title="XPath"/>
-            </div>
-            <div class="col-sm-1">
-              <button class="btn btn-default form-control" (click)="removeBodyPattern(bodyPattern)"><span class="glyphicon glyphicon-remove"></span></button>
-            </div>
+        <div class="form-group" *ngFor="let bodyPattern of mapping.request.bodyPatterns">
+          <div class="col-sm-11">
+            <input class="form-control" [(ngModel)]="bodyPattern.matchesXPath" title="XPath"/>
           </div>
-        </ng-container>
+          <div class="col-sm-1">
+            <button class="btn btn-default form-control" (click)="removeBodyPattern(bodyPattern)"><span class="glyphicon glyphicon-remove"></span></button>
+          </div>
+        </div>
       </div>
       <button class="btn btn-default" (click)="addBodyPattern();">Add body pattern</button>
     </div>

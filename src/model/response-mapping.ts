@@ -1,6 +1,6 @@
 export class ResponseMapping {
-  status: String;
-  body: String;
-  bodyFileName: String;
-  transformers: String[];
+  status: string;
+  body: string;
+  bodyFileName: string;
+  transformers: string[];
 }

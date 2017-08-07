@@ -8,8 +8,8 @@ import {Mapping} from '../model/mapping';
 export class WireMockService {
 
   // URL to WireMock
-  // private serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
-  public serviceUrl = 'http://localhost:7770';
+  public serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
+  ///public serviceUrl = 'http://localhost:7770';
   public adminUrl = this.serviceUrl + '/__admin';
   private headers = new Headers({'Content-Type': 'text/plain'});
 
@@ -63,7 +63,7 @@ export class WireMockService {
       .catch(reason => console.log(reason));
   }
 
-  findOne(uuid: String): Promise<Mapping> {
+  findOne(uuid: string): Promise<Mapping> {
     return this.http
       .get(this.adminUrl + '/mappings/' + uuid)
       .toPromise()

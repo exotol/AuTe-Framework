@@ -14,7 +14,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputNullComponent implements OnInit, ControlValueAccessor  {
 
-  innerValue: String;
+  innerValue: string;
   @Input()
   type = 'input';
   @Input()

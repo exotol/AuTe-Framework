@@ -2,10 +2,10 @@ import {RequestMapping} from './request-mapping';
 import {ResponseMapping} from './response-mapping';
 
 export class Mapping {
-  id: String;
+  id: string;
   request: RequestMapping;
   response: ResponseMapping;
-  uuid: String;
+  uuid: string;
   priority: number;
 
   constructor() {

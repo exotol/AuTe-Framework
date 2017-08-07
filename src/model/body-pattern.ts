@@ -1,3 +1,3 @@
 export class BodyPattern {
-  matchesXPath: String;
+  matchesXPath: string;
 }
