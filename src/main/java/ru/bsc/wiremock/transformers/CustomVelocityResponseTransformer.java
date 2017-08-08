@@ -12,8 +12,13 @@ import org.apache.velocity.Template;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.RuntimeSingleton;
+import org.apache.velocity.runtime.parser.ParseException;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.apache.velocity.tools.ToolManager;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,24 +38,33 @@ public class CustomVelocityResponseTransformer extends ResponseDefinitionTransfo
     public ResponseDefinition transform(final Request request,
                                         final ResponseDefinition responseDefinition, final FileSource files,
                                         final Parameters parameters) {
+        final VelocityEngine velocityEngine = new VelocityEngine();
+        velocityEngine.init();
+        final ToolManager toolManager = new ToolManager();
+        toolManager.setVelocityEngine(velocityEngine);
+        context = toolManager.createContext();
+        addBodyToContext(request.getBodyAsString());
+        addHeadersToContext(request.getHeaders());
+        context.put("requestAbsoluteUrl", request.getAbsoluteUrl());
+        context.put("requestUrl", request.getUrl());
+        context.put("requestMethod", request.getMethod());
+        String body;
+
         if (responseDefinition.specifiesBodyFile() && templateDeclared(responseDefinition)) {
-            final VelocityEngine velocityEngine = new VelocityEngine();
-            velocityEngine.init();
-            final ToolManager toolManager = new ToolManager();
-            toolManager.setVelocityEngine(velocityEngine);
-            context = toolManager.createContext();
-            addBodyToContext(request.getBodyAsString());
-            addHeadersToContext(request.getHeaders());
-            context.put("requestAbsoluteUrl", request.getAbsoluteUrl());
-            context.put("requestUrl", request.getUrl());
-            context.put("requestMethod", request.getMethod());
-            final String body = getRenderedBody(responseDefinition);
-            return ResponseDefinitionBuilder.like(responseDefinition).but()
-                    .withBody(body)
-                    .build();
+            body = getRenderedBody(responseDefinition);
+        } else if (responseDefinition.specifiesBodyContent()) {
+            try {
+                body = getRenderedBodyFromFile(responseDefinition);
+            } catch (ParseException e) {
+                body = e.getMessage();
+                e.printStackTrace();
+            }
         } else {
             return responseDefinition;
         }
+        return ResponseDefinitionBuilder.like(responseDefinition).but()
+                .withBody(body)
+                .build();
     }
 
     private Boolean templateDeclared(final ResponseDefinition response) {
@@ -72,6 +86,20 @@ public class CustomVelocityResponseTransformer extends ResponseDefinitionTransfo
         if (body != null && !body.isEmpty()) {
             context.put("requestBody", body);
         }
+    }
+
+    private String getRenderedBodyFromFile(final ResponseDefinition response) throws ParseException {
+        RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+        StringReader reader = new StringReader(response.getBody());
+        SimpleNode node = runtimeServices.parse(reader, "Template name");
+        Template template = new Template();
+        template.setRuntimeServices(runtimeServices);
+        template.setData(node);
+        template.initDocument();
+
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+        return String.valueOf(writer.getBuffer());
     }
 
     private String getRenderedBody(final ResponseDefinition response) {
