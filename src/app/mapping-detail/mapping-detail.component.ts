@@ -89,17 +89,18 @@ export class MappingDetailComponent implements OnInit {
 
   setHeaders(headers: any) {
     console.log('set headers', headers);
-    this.customHeaders = [];
-    for (const headerName of Object.keys(headers)) {
-      const headerItem = new HeaderItem();
-      headerItem.headerName = headerName;
-      for (const compareType of Object.keys(headers[headerName])) {
-        headerItem.compareType = compareType;
-        headerItem.headerValue = headers[headerName][compareType];
+    if (headers) {
+      this.customHeaders = [];
+      for (const headerName of Object.keys(headers)) {
+        const headerItem = new HeaderItem();
+        headerItem.headerName = headerName;
+        for (const compareType of Object.keys(headers[headerName])) {
+          headerItem.compareType = compareType;
+          headerItem.headerValue = headers[headerName][compareType];
+        }
+        this.customHeaders.push(headerItem);
       }
-      this.customHeaders.push(headerItem);
     }
-
   }
 
   addHeaderPattern() {

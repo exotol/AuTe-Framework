@@ -24,7 +24,7 @@ const routes: Routes = [
     BrowserModule,
     HttpModule,
     FormsModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot()
   ],
   providers: [WireMockService],

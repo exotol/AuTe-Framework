@@ -1,10 +1,6 @@
 <div class="form-horizontal" *ngIf="mapping">
   <div class="form-group">
-
     <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.urlPattern}}</h4>
-    <div class="small">
-      {{mapping.id}}
-    </div>
   </div>
 
   <div class="form-group">
@@ -72,11 +68,11 @@
     <label>Response</label>
   </div>
   <div class="form-group">
-    <div class="col-sm-4">
+    <div class="col-sm-12">
       <label>Body file name</label>
       <app-input-null title="Body file name" [(ngModel)]="mapping.response.bodyFileName" [type]="'input'"></app-input-null>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-12">
       <label>Body</label>
       <app-input-null [(ngModel)]="mapping.response.body" [type]="'textarea'"></app-input-null>
     </div>
