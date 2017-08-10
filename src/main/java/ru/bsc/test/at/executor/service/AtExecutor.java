@@ -146,7 +146,7 @@ public class AtExecutor {
                 if (!step.getDisabled()) {
                     StepResult stepResult = new StepResult(step);
                     scenario.getStepResults().add(stepResult);
-                    try (WireMockAdmin wireMockAdmin = new WireMockAdmin(stand.getWireMockUrl() + "/__admin")) {
+                    try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
                         executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
@@ -310,7 +310,7 @@ public class AtExecutor {
 
     private void setMockResponses(WireMockAdmin wireMockAdmin, Project project, String testId, List<MockServiceResponse> responseList) throws IOException {
         Long priority = 0L;
-        if (responseList != null) {
+        if (responseList != null && wireMockAdmin != null) {
             for (MockServiceResponse mockServiceResponse : responseList) {
                 MockDefinition mockDefinition = new MockDefinition(priority--, project.getTestIdHeaderName(), testId);
                 mockDefinition.getRequest().setUrl(mockServiceResponse.getServiceUrl());
