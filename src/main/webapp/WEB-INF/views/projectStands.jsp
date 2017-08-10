@@ -28,6 +28,10 @@
                             <input class="form-control" type="text" name="stand[${status.index}][serviceUrl]" value="${stand.serviceUrl}"/>
                         </label>
                         <label>
+                            WireMock URL
+                            <input class="form-control" type="text" name="stand[${status.index}][wireMockUrl]" value="${stand.wireMockUrl}"/>
+                        </label>
+                        <label>
                             Database URL
                             <input class="form-control" type="text" name="stand[${status.index}][dbUrl]" value="${stand.dbUrl}"/>
                         </label>
