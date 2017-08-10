@@ -41,6 +41,7 @@ public class Stand implements Cloneable {
     private String dbUser;
     @Column(name = "DB_PASSWORD")
     private String dbPassword;
+    private String wireMockUrl;
 
     public Long getId() {
         return id;
@@ -78,6 +79,12 @@ public class Stand implements Cloneable {
     public void setDbPassword(String dbPassword) {
         this.dbPassword = dbPassword;
     }
+    public String getWireMockUrl() {
+        return wireMockUrl;
+    }
+    public void setWireMockUrl(String wireMockUrl) {
+        this.wireMockUrl = wireMockUrl;
+    }
 
     @Override
     public Stand clone() throws CloneNotSupportedException {
@@ -88,6 +95,7 @@ public class Stand implements Cloneable {
         cloned.setDbUrl(getDbUrl());
         cloned.setDbUser(getDbUser());
         cloned.setDbPassword(getDbPassword());
+        cloned.setWireMockUrl(getWireMockUrl());
 
         return cloned;
     }

@@ -25,7 +25,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -41,7 +40,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -61,19 +59,9 @@ public class AtExecutor {
     private final ScenarioRepository scenarioRepository;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper;
 
-    private final String wireMockAdminUrl;
-
     public AtExecutor(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository) {
         this.scenarioRepository = scenarioRepository;
         this.serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper(serviceResponseRepository);
-
-        Properties properties = new Properties();
-        try (final InputStream stream = this.getClass().getResourceAsStream("/at-executor.properties")) {
-            properties.load(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        wireMockAdminUrl = properties.getProperty("wiremock.admin.url");
     }
 
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
@@ -158,7 +146,7 @@ public class AtExecutor {
                 if (!step.getDisabled()) {
                     StepResult stepResult = new StepResult(step);
                     scenario.getStepResults().add(stepResult);
-                    try (WireMockAdmin wireMockAdmin = new WireMockAdmin(wireMockAdminUrl)) {
+                    try (WireMockAdmin wireMockAdmin = new WireMockAdmin(stand.getWireMockUrl() + "/__admin")) {
                         executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
