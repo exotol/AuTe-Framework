@@ -2,6 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
 
+
 ## Настройка
 
 Настроить URL к серверу WireMock необходимо в файле src/service/wire-mock.service.ts:
