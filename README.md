@@ -13,7 +13,7 @@
 velocity.properties
 
 ```
-userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective
+userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective,ru.bsc.wiremock.velocity.directive.GroovyDirective
 resource.loader=file
  
 # Sample: "${wiremock.mapping.path}/
@@ -30,7 +30,7 @@ wiremock.mapping.path=c:/work/bsc-wire-mock-mapping
 
 (файл **at-velocity.vm** должен быть расположен в папке **file.resource.loader.path**)
 
-На POST запрос */mockBankAccountBalanceWebServiceSoap11* с http-заголовком *testIdHeader: ololoshka* будет возвращен ответ из файла, указанного в параметре **bodyFileName**.
+На POST запрос */mockBankAccountBalanceWebServiceSoap11* с http-заголовком *testIdHeader: testIdValue* будет возвращен ответ из файла, указанного в параметре **bodyFileName**.
  
 В параметре **bodyFileName** могут быть указаны:
 
@@ -63,7 +63,6 @@ wiremock.mapping.path=c:/work/bsc-wire-mock-mapping
 В данном примере в тело ответа вставляется текст из xml-запроса из тега //accounts/account
 
 ```
-
 #xpath($result $requestBody "//*[local-name()='accounts']/*[local-name()='account']")
 <response>
     <testIdHeader>${requestHeadertestidheader}</testIdHeader>	
@@ -71,6 +70,33 @@ wiremock.mapping.path=c:/work/bsc-wire-mock-mapping
 </response>
 ```
 
+
+#### Использование Groovy в шаблонах ####
+
+В шаблонах можно использовать Groovy-скрипты. Пример шаблона:
+
+```
+#groovy()
+// document - распарсенный запрос
+def document = new XmlParser().parseText(context.get("requestBody"))
+ 
+// Сохранение переменной в контекст для дальнейшего использования в шаблоне
+context.put("out", document.accounts.account[0].text())
+#end
+ 
+Account: $out
+```
+
+Для следующего запроса шаблон выведет значение: "Account: 1234567890":
+
+```
+<body>
+    <accounts>
+        <account>1234567890</account>
+        <account>0987654321</account>
+    </accounts>
+</body>
+```
 
 ## Работа ##
 

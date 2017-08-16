@@ -1,4 +1,4 @@
-userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective
+userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective,ru.bsc.wiremock.velocity.directive.GroovyDirective
 resource.loader=file
 file.resource.loader.path=c:/work/bsc-wire-mock-velocity
 
