@@ -4,11 +4,12 @@ import com.github.tomakehurst.wiremock.core.MappingsSaver;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.io.Files;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -38,21 +39,18 @@ class BscMappingSaver implements MappingsSaver {
     @Override
     public void save(List<StubMapping> stubMappings) {
         try {
-            File mappingTmp = new File(mappingPath + "/mappings_tmp/");
             File mappingActual = new File(mappingPath + "/mappings/");
 
-            FileUtils.deleteDirectory(mappingTmp);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS");
+            mappingActual.renameTo(new File(mappingPath + "/mappings_" + format.format(Calendar.getInstance().getTime()) + "/"));
             for (StubMapping stubMapping: stubMappings) {
                 String fileName = stubMapping.getRequest().getUrlPattern().replaceAll("[^\\\\/a-zA-Z0-9.-]", "_");
                 // Replace to: "/mappings/"
-                File file = new File(mappingTmp, fileName);
+                File file = new File(mappingActual, fileName);
                 //noinspection ResultOfMethodCallIgnored
                 file.mkdirs();
                 Files.write(stubMapping.toString(), new File(file, stubMapping.getUuid() + ".json"), Charsets.UTF_8);
             }
-
-            FileUtils.deleteDirectory(mappingActual);
-            mappingTmp.renameTo(mappingActual);
         } catch (IOException e) {
             e.printStackTrace();
         }
