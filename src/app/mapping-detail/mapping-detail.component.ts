@@ -33,7 +33,10 @@ export class MappingDetailComponent implements OnInit {
         if (id === 'new') {
           this.mapping = new Mapping();
           this.customRequestHeaders = [];
-          this.customResponseHeaders = [];
+          const contentTypeHeader = new HeaderItem();
+          contentTypeHeader.headerName = 'Content-Type';
+          contentTypeHeader.headerValue = 'text/xml';
+          this.customResponseHeaders = [ contentTypeHeader ];
           return new Promise<Mapping>(() => { });
         } else {
           return this.wireMockService.findOne(id);
