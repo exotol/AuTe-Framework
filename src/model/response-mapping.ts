@@ -3,4 +3,5 @@ export class ResponseMapping {
   body: string;
   bodyFileName: string;
   transformers: string[];
+  headers: any;
 }

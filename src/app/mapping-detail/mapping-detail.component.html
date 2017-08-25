@@ -1,6 +1,6 @@
 <div class="form-horizontal" *ngIf="mapping">
   <div class="form-group">
-    <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.urlPattern}}</h4>
+    <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.url}}</h4>
   </div>
 
   <div class="form-group">
@@ -12,8 +12,8 @@
       <app-input-null title="Method" [(ngModel)]="mapping.request.method" [type]="'input'"></app-input-null>
     </div>
     <div class="col-sm-8">
-      <label>Url pattern</label>
-      <input class="form-control" title="URL pattern" [(ngModel)]="mapping.request.urlPattern"/>
+      <label>Url</label>
+      <input class="form-control" title="URL" [(ngModel)]="mapping.request.url"/>
     </div>
     <div class="col-sm-2">
       <label>Priority</label>
@@ -26,7 +26,7 @@
     <div class="col-sm-12">
       <label>Header pattern</label>
       <div class="form-horizontal">
-        <div class="form-group" *ngFor="let header of customHeaders">
+        <div class="form-group" *ngFor="let header of customRequestHeaders">
           <div class="col-sm-4">
             <input class="form-control" title="" [(ngModel)]="header.headerName">
           </div>
@@ -39,10 +39,10 @@
             <input class="form-control" title="" [(ngModel)]="header.headerValue">
           </div>
           <div class="col-sm-1">
-            <button class="btn btn-default" (click)="deleteHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+            <button class="btn btn-default" (click)="deleteRequestHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
           </div>
         </div>
-        <button class="btn btn-default" (click)="addHeaderPattern();">Add header</button>
+        <button class="btn btn-default" (click)="addHeaderPattern(customRequestHeaders);">Add header</button>
       </div>
     </div>
   </div>
@@ -67,6 +67,27 @@
   <div class="form-group">
     <label>Response</label>
   </div>
+
+  <div class="form-group">
+    <div class="col-sm-12">
+      <label>Headers</label>
+      <div class="form-horizontal">
+        <div class="form-group" *ngFor="let header of customResponseHeaders">
+          <div class="col-sm-4">
+            <input class="form-control" placeholder="Content-Type" title="" [(ngModel)]="header.headerName">
+          </div>
+          <div class="col-sm-7">
+            <input class="form-control" placeholder="text/xml" title="" [(ngModel)]="header.headerValue">
+          </div>
+          <div class="col-sm-1">
+            <button class="btn btn-default" (click)="deleteResponseHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+          </div>
+        </div>
+        <button class="btn btn-default" (click)="addHeaderPattern(customResponseHeaders);">Add header</button>
+      </div>
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-12">
       <label>Body file name</label>

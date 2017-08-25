@@ -16,7 +16,8 @@ import {HeaderItem} from '../../model/request-mapping';
 export class MappingDetailComponent implements OnInit {
 
   mapping: Mapping;
-  customHeaders: HeaderItem[];
+  customRequestHeaders: HeaderItem[];
+  customResponseHeaders: HeaderItem[];
 
   constructor(
     public wireMockService: WireMockService,
@@ -31,17 +32,19 @@ export class MappingDetailComponent implements OnInit {
         const id = params.get('uuid');
         if (id === 'new') {
           this.mapping = new Mapping();
-          this.customHeaders = [];
+          this.customRequestHeaders = [];
+          this.customResponseHeaders = [];
           return new Promise<Mapping>(() => { });
         } else {
           return this.wireMockService.findOne(id);
         }
       })
       .subscribe(mapping => {
-        console.log(mapping);
-        this.customHeaders = [];
+        this.customRequestHeaders = [];
+        this.customResponseHeaders = [];
         this.mapping = mapping;
-        this.setHeaders(mapping.request.headers);
+        this.setRequestHeaders(mapping.request.headers);
+        this.setResponseHeaders(mapping.response.headers);
       });
   }
 
@@ -57,9 +60,8 @@ export class MappingDetailComponent implements OnInit {
   }
 
   applyMapping() {
-    console.log('before', this.mapping.request.headers);
-    this.mapping.request.headers = this.getHeaders();
-    console.log('after', this.mapping.request.headers);
+    this.mapping.request.headers = this.getRequestHeaders();
+    this.mapping.response.headers = this.getResponseHeaders();
     this.wireMockService
       .apply(this.mapping)
       .then(value => {
@@ -76,21 +78,23 @@ export class MappingDetailComponent implements OnInit {
       });
   }
 
-  getHeaders(): any {
-    console.log('get headers', this.customHeaders);
+  getRequestHeaders(): any {
     const obj = {};
-    this.customHeaders.forEach(header => {
-      obj[header.headerName] = {
-        [header.compareType]: header.headerValue
-      }
-    });
+    this.customRequestHeaders
+      .forEach(header => obj[header.headerName] = { [header.compareType]: header.headerValue });
     return obj;
   }
 
-  setHeaders(headers: any) {
-    console.log('set headers', headers);
+  getResponseHeaders(): any {
+    const obj = {};
+    this.customResponseHeaders
+      .forEach(header => obj[header.headerName] = header.headerValue);
+    return obj;
+  }
+
+  setRequestHeaders(headers: any) {
     if (headers) {
-      this.customHeaders = [];
+      this.customRequestHeaders = [];
       for (const headerName of Object.keys(headers)) {
         const headerItem = new HeaderItem();
         headerItem.headerName = headerName;
@@ -98,19 +102,35 @@ export class MappingDetailComponent implements OnInit {
           headerItem.compareType = compareType;
           headerItem.headerValue = headers[headerName][compareType];
         }
-        this.customHeaders.push(headerItem);
+        this.customRequestHeaders.push(headerItem);
       }
     }
   }
 
-  addHeaderPattern() {
-    if (!this.customHeaders) {
-      this.customHeaders = [];
+  setResponseHeaders(headers: any) {
+    if (headers) {
+      this.customResponseHeaders = [];
+      for (const headerName of Object.keys(headers)) {
+        const headerItem = new HeaderItem();
+        headerItem.headerName = headerName;
+        headerItem.headerValue = headers[headerName];
+        this.customResponseHeaders.push(headerItem);
+      }
     }
-    this.customHeaders.push(new HeaderItem());
   }
 
-  deleteHeader(header: HeaderItem) {
-    this.customHeaders = this.customHeaders.filter(value => value !== header);
+  addHeaderPattern(customRequestHeaders: HeaderItem[]) {
+    if (!customRequestHeaders) {
+      customRequestHeaders = [];
+    }
+    customRequestHeaders.push(new HeaderItem());
+  }
+
+  deleteRequestHeader(header: HeaderItem) {
+    this.customRequestHeaders = this.customRequestHeaders.filter(value => value !== header);
+  }
+
+  deleteResponseHeader(header: HeaderItem) {
+    this.customResponseHeaders = this.customResponseHeaders.filter(value => value !== header);
   }
 }

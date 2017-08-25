@@ -8,8 +8,8 @@ import {Mapping} from '../model/mapping';
 export class WireMockService {
 
   // URL to WireMock
-  public serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
-  ///public serviceUrl = 'http://localhost:7770';
+  // public serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
+  public serviceUrl = 'http://localhost:7770';
   public adminUrl = this.serviceUrl + '/__admin';
   private headers = new Headers({'Content-Type': 'text/plain'});
 

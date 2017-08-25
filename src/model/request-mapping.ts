@@ -1,7 +1,7 @@
 import {BodyPattern} from './body-pattern';
 
 export class RequestMapping {
-  urlPattern: string;
+  url: string;
   method: string;
   headers: any;
   bodyPatterns: BodyPattern[];
