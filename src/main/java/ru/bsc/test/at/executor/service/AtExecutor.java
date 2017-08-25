@@ -317,6 +317,9 @@ public class AtExecutor {
                 mockDefinition.getRequest().setMethod("POST"); // SOAP always POST
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
+                mockDefinition.getResponse().setHeaders(new HashMap<String, String>() {{
+                    put("Content-Type", "text/xml");
+                }});
 
                 wireMockAdmin.addMapping(mockDefinition);
             }
