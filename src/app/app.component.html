@@ -1,7 +1,7 @@
 <div class="container">
   <div class="col-sm-3">
     <div class="list-group">
-      <a class="list-group-item" style="overflow: hidden;" *ngFor="let mapping of mappingList" [routerLink]="['/mapping', mapping.uuid]">
+      <a class="list-group-item" style="overflow: hidden;" *ngFor="let mapping of mappingList" [routerLink]="['/mapping', mapping.uuid]" [routerLinkActive]="'active'">
         {{mapping.request.url}}
       </a>
       <button class="btn btn-default list-group-item" [routerLink]="['/mapping/new']"><span class="glyphicon glyphicon-plus"></span> <i>Add mapping</i></button>

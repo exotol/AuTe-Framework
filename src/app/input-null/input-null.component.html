@@ -1,5 +1,5 @@
 <ng-container *ngIf="type != 'input'">
-  <textarea class="form-control" title="" rows="15" *ngIf="value != null" [(ngModel)]="value" (blur)="onBlur()" ></textarea>
+  <textarea class="form-control" title="" rows="30" *ngIf="value != null" [(ngModel)]="value" (blur)="onBlur()" ></textarea>
 </ng-container>
 <ng-container *ngIf="type == 'input'">
   <input class="form-control" title="" *ngIf="value != null" [(ngModel)]="value" (blur)="onBlur()" />
