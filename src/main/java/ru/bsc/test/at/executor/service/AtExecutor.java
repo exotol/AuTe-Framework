@@ -433,7 +433,6 @@ public class AtExecutor {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
             Matcher m = p.matcher(template);
             while (m.find()) {
-                System.out.println(m.group(1));
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine engine = manager.getEngineByName("js");
                 Object result = engine.eval(m.group(1));
