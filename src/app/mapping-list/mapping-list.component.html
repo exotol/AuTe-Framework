@@ -1,0 +1,8 @@
+<button class="btn btn-default btn-xs" (click)="detailsToggle()">Details</button>
+<button class="btn btn-default list-group-item" [routerLink]="['/mapping/new']"><span class="glyphicon glyphicon-plus"></span> <i>Add mapping</i></button>
+<div class="list-group" *ngIf="mappingList">
+  <a class="list-group-item" style="overflow: hidden;" *ngFor="let mapping of mappingList" [routerLink]="['/mapping', mapping.uuid]" [routerLinkActive]="'active'">
+    {{mapping.request.url}}
+    <div style="margin: 0; overflow: hidden; font-size: x-small; padding-left: 25px;" *ngIf="displayDetails && mapping.request.bodyPatterns != null && mapping.request.bodyPatterns.length > 0">{{mapping.request.bodyPatterns[0].matchesXPath}}</div>
+  </a>
+</div>

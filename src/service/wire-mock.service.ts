@@ -3,6 +3,9 @@ import {Headers, Http} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 import {Mapping} from '../model/mapping';
+import {Observable} from 'rxjs/Observable';
+import {RequestList} from '../model/request-list';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class WireMockService {
@@ -69,5 +72,20 @@ export class WireMockService {
       .toPromise()
       .then(response => response.json() as Mapping)
       .catch(reason => console.log(reason));
+  }
+
+  getRequestList(): Observable<RequestList> {
+    return this.http
+      .get(this.adminUrl + '/requests')
+      .map(value => value.json() as RequestList);
+  }
+
+  clearRequestList(): Observable<any> {
+    return this.http
+      .post(
+        this.adminUrl + '/requests/reset',
+        null,
+        { headers: this.headers }
+      );
   }
 }

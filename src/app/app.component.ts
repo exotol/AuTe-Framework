@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {WireMockService} from '../service/wire-mock.service';
-import {Mapping} from '../model/mapping';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
 
 @Component({
@@ -9,17 +8,12 @@ import {ToastOptions, ToastyService} from 'ng2-toasty';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  mappingList: Mapping[];
-
   constructor(
-    private wireMockService: WireMockService,
+    public wireMockService: WireMockService,
     private toastyService: ToastyService
   ) { }
 
-  ngOnInit(): void {
-    this.wireMockService.getMappingList()
-      .then(mappingList => this.mappingList = mappingList);
-  }
+  ngOnInit(): void {}
 
   saveToBackStorage() {
     if (confirm('Confirm saving')) {

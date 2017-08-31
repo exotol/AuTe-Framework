@@ -9,8 +9,12 @@ import {FormsModule} from '@angular/forms';
 import { InputNullComponent } from './input-null/input-null.component';
 import {RouterModule, Routes} from '@angular/router';
 import {ToastyModule} from 'ng2-toasty';
+import { RequestListComponent } from './requests/request-list.component';
+import { MappingListComponent } from './mapping-list/mapping-list.component';
 
 const routes: Routes = [
+  { path: 'requests', component: RequestListComponent },
+  { path: 'mapping', component: MappingListComponent },
   { path: 'mapping/:uuid', component: MappingDetailComponent }
 ];
 
@@ -18,7 +22,9 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     MappingDetailComponent,
-    InputNullComponent
+    InputNullComponent,
+    RequestListComponent,
+    MappingListComponent
   ],
   imports: [
     BrowserModule,

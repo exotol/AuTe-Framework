@@ -1,109 +1,117 @@
-<div class="form-horizontal" *ngIf="mapping">
-  <div class="form-group">
-    <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.url}}</h4>
+<div>
+  <div class="col-sm-3">
+    <app-mapping-list></app-mapping-list>
   </div>
+  <div class="col-sm-9">
 
-  <div class="form-group">
-    <label>Request mapping</label>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-2">
-      <label>Method</label>
-      <app-input-null title="Method" [(ngModel)]="mapping.request.method" [type]="'input'"></app-input-null>
-    </div>
-    <div class="col-sm-8">
-      <label>Url</label>
-      <input class="form-control" title="URL" [(ngModel)]="mapping.request.url"/>
-    </div>
-    <div class="col-sm-2">
-      <label>Priority</label>
-      <app-input-null title="Priority" [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <div class="col-sm-12">
-      <label>Header pattern</label>
-      <div class="form-horizontal">
-        <div class="form-group" *ngFor="let header of customRequestHeaders">
-          <div class="col-sm-4">
-            <input class="form-control" title="" [(ngModel)]="header.headerName">
-          </div>
-          <div class="col-sm-3">
-            <select class="form-control" title="" [(ngModel)]="header.compareType">
-              <option [ngValue]="'equalTo'">equalTo</option>
-            </select>
-          </div>
-          <div class="col-sm-4">
-            <input class="form-control" title="" [(ngModel)]="header.headerValue">
-          </div>
-          <div class="col-sm-1">
-            <button class="btn btn-default" (click)="deleteRequestHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
-          </div>
-        </div>
-        <button class="btn btn-default" (click)="addHeaderPattern(customRequestHeaders);">Add header</button>
+    <div class="form-horizontal" *ngIf="mapping">
+      <div class="form-group">
+        <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.url}}</h4>
       </div>
-    </div>
-  </div>
 
-  <div class="form-group">
-    <div class="col-sm-12">
-      <label>Body pattern (XPath)</label>
-      <div class="form-horizontal">
-        <div class="form-group" *ngFor="let bodyPattern of mapping.request.bodyPatterns">
-          <div class="col-sm-11">
-            <input class="form-control" [(ngModel)]="bodyPattern.matchesXPath" title="XPath"/>
-          </div>
-          <div class="col-sm-1">
-            <button class="btn btn-default form-control" (click)="removeBodyPattern(bodyPattern)"><span class="glyphicon glyphicon-remove"></span></button>
+      <div class="form-group">
+        <label>Request mapping</label>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-2">
+          <label>Method</label>
+          <app-input-null title="Method" [(ngModel)]="mapping.request.method" [type]="'input'"></app-input-null>
+        </div>
+        <div class="col-sm-8">
+          <label>Url</label>
+          <input class="form-control" title="URL" [(ngModel)]="mapping.request.url"/>
+        </div>
+        <div class="col-sm-2">
+          <label>Priority</label>
+          <app-input-null title="Priority" [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label>Header pattern</label>
+          <div class="form-horizontal">
+            <div class="form-group" *ngFor="let header of customRequestHeaders">
+              <div class="col-sm-4">
+                <input class="form-control" title="" [(ngModel)]="header.headerName">
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control" title="" [(ngModel)]="header.compareType">
+                  <option [ngValue]="'equalTo'">equalTo</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <input class="form-control" title="" [(ngModel)]="header.headerValue">
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-default" (click)="deleteRequestHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+            <button class="btn btn-default" (click)="addHeaderPattern(customRequestHeaders);">Add header</button>
           </div>
         </div>
       </div>
-      <button class="btn btn-default" (click)="addBodyPattern();">Add body pattern</button>
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label>Response</label>
-  </div>
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label>Body pattern (XPath)</label>
+          <div class="form-horizontal">
+            <div class="form-group" *ngFor="let bodyPattern of mapping.request.bodyPatterns">
+              <div class="col-sm-11">
+                <input class="form-control" [(ngModel)]="bodyPattern.matchesXPath" title="XPath"/>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-default form-control" (click)="removeBodyPattern(bodyPattern)"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-default" (click)="addBodyPattern();">Add body pattern</button>
+        </div>
+      </div>
 
-  <div class="form-group">
-    <div class="col-sm-12">
-      <label>Headers</label>
-      <div class="form-horizontal">
-        <div class="form-group" *ngFor="let header of customResponseHeaders">
-          <div class="col-sm-4">
-            <input class="form-control" placeholder="Content-Type" title="" [(ngModel)]="header.headerName">
-          </div>
-          <div class="col-sm-7">
-            <input class="form-control" placeholder="text/xml" title="" [(ngModel)]="header.headerValue">
-          </div>
-          <div class="col-sm-1">
-            <button class="btn btn-default" (click)="deleteResponseHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+      <div class="form-group">
+        <label>Response</label>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label>Headers</label>
+          <div class="form-horizontal">
+            <div class="form-group" *ngFor="let header of customResponseHeaders">
+              <div class="col-sm-4">
+                <input class="form-control" placeholder="Content-Type" title="" [(ngModel)]="header.headerName">
+              </div>
+              <div class="col-sm-7">
+                <input class="form-control" placeholder="text/xml" title="" [(ngModel)]="header.headerValue">
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-default" (click)="deleteResponseHeader(header)"><span class="glyphicon glyphicon-remove"></span></button>
+              </div>
+            </div>
+            <button class="btn btn-default" (click)="addHeaderPattern(customResponseHeaders);">Add header</button>
           </div>
         </div>
-        <button class="btn btn-default" (click)="addHeaderPattern(customResponseHeaders);">Add header</button>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <label>Body file name</label>
+          <app-input-null title="Body file name" [(ngModel)]="mapping.response.bodyFileName" [type]="'input'"></app-input-null>
+        </div>
+        <div class="col-sm-12">
+          <label>Body</label>
+          <app-input-null [(ngModel)]="mapping.response.body" [type]="'textarea'"></app-input-null>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary" style="float: right;" (click)="applyMapping()">Применить маппинг</button>
+      </div>
+
+      <div class="form-group" style="display: none;">
+        {{mapping | json}}
       </div>
     </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-12">
-      <label>Body file name</label>
-      <app-input-null title="Body file name" [(ngModel)]="mapping.response.bodyFileName" [type]="'input'"></app-input-null>
-    </div>
-    <div class="col-sm-12">
-      <label>Body</label>
-      <app-input-null [(ngModel)]="mapping.response.body" [type]="'textarea'"></app-input-null>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <button class="btn btn-primary" style="float: right;" (click)="applyMapping()">Применить маппинг</button>
-  </div>
-
-  <div class="form-group" style="display: none;">
-    {{mapping | json}}
   </div>
 </div>

@@ -1,0 +1,21 @@
+<button class="btn btn-default" (click)="updateRequestList()">Update request list</button>
+<button class="btn btn-default right" (click)="clearRequestList()">Clear request list</button>
+<div *ngIf="requestList">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Method</th>
+        <th>Url</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let request of requestList.requests" (click)="select(request)">
+        <td>{{request.request.loggedDateString}}</td>
+        <td>{{request.request.method}}</td>
+        <td>{{request.request.absoluteUrl}}</td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>

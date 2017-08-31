@@ -69,6 +69,7 @@ export class MappingDetailComponent implements OnInit {
       .apply(this.mapping)
       .then(value => {
         this.mapping = value;
+        // noinspection JSIgnoredPromiseFromCall
         this.router.navigate(['/mapping', this.mapping.uuid]);
         const toastOptions: ToastOptions = {
           title: 'Applied',
@@ -122,6 +123,7 @@ export class MappingDetailComponent implements OnInit {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   addHeaderPattern(customRequestHeaders: HeaderItem[]) {
     if (!customRequestHeaders) {
       customRequestHeaders = [];
