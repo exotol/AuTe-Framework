@@ -150,6 +150,7 @@ public class AtExecutor {
                         executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
+                        // TODO: Использовать WireMockAdmin
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
 
                         stepResult.setResult("OK");
