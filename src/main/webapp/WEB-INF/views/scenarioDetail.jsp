@@ -164,6 +164,19 @@
     </form>
 
     <c:if test="${empty stepDetail}">
+        <div style="clear: both;"></div>
+        <form method="post" style="float: left;" action="${pageContext.request.contextPath}/project/${project.id}/execute-scenarios" onsubmit="return confirm('Execute scenario?')">
+            <input type="hidden" name="scenarios[]" value="${scenario.id}"/>
+            <input class="btn btn-default" type="submit" value="Execute this scenario">
+        </form>
+
+        <form method="post" style="float: left;" action="${pageContext.request.contextPath}/step/add-step" onsubmit="return confirm('Add step?')">
+            <input type="hidden" name="scenarioId" value="${scenario.id}"/>
+            <input class="btn btn-default" type="submit" value="Add step">
+        </form>
+    </c:if>
+
+    <c:if test="${empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/delete-scenario" onsubmit="return confirm('Delete scenario?')">
             <input class="btn btn-default" type="submit" value="Delete scenario" ${empty steps ? '' : 'disabled'}>
             <c:if test="${not empty steps}">

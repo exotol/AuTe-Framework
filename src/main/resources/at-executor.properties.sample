@@ -1,2 +1,0 @@
-# Example: http://localhost:7770/__admin
-wiremock.admin.url=http://localhost:7770/__admin
