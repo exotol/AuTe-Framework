@@ -10,6 +10,7 @@ import {Request} from '../../model/request';
 export class RequestListComponent implements OnInit {
 
   requestList: RequestList;
+  selectedRequest: Request;
 
   constructor(
     public wireMockService: WireMockService
@@ -20,6 +21,8 @@ export class RequestListComponent implements OnInit {
   }
 
   updateRequestList() {
+    this.selectedRequest = null;
+    this.requestList = null;
     this.wireMockService
       .getRequestList()
       .subscribe(value => this.requestList = value);
@@ -27,11 +30,13 @@ export class RequestListComponent implements OnInit {
 
   clearRequestList() {
     if (confirm('Confirm: clear request list')) {
+      this.selectedRequest = null;
+      this.requestList = null;
       this.wireMockService.clearRequestList().subscribe(() => this.updateRequestList());
     }
   }
 
   select(request: Request) {
-    alert(request.id);
+    this.selectedRequest = request;
   }
 }

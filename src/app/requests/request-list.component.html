@@ -1,7 +1,7 @@
-<button class="btn btn-default" (click)="updateRequestList()">Update request list</button>
-<button class="btn btn-default right" (click)="clearRequestList()">Clear request list</button>
-<div *ngIf="requestList">
-  <table class="table table-hover">
+<button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="updateRequestList()"><span class="glyphicon glyphicon-refresh"></span> Update request list</button>
+<button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="clearRequestList()"><span class="glyphicon glyphicon-remove"></span> Clear request list</button>
+<div *ngIf="!selectedRequest && requestList">
+  <table style="margin-top: 10px;" class="table table-hover">
     <thead>
       <tr>
         <th>Time</th>
@@ -18,4 +18,10 @@
       </tr>
     </tbody>
   </table>
+</div>
+
+<div style="margin: 10px;" *ngIf="selectedRequest">
+  <h3>Request details</h3>
+  <button style="margin: 10px 0;" class="btn btn-default" (click)="selectedRequest = null"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
+  <div style="overflow: scroll; height: 700px; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest | json}}</div>
 </div>
