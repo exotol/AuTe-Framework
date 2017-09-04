@@ -45,6 +45,7 @@ public class ScenarioController {
         model.addObject("project", scenario.getProject());
 
         model.addObject("steps", scenario.getSteps());
+        model.addObject("scenarioGroup", scenario.getScenarioGroup());
         return model;
     }
 

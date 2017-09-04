@@ -61,6 +61,7 @@ public class ProjectController {
         model.addObject("project", project);
         model.addObject("scenarioGroups", project.getScenarioGroups());
         model.addObject("scenarioGroupId", scenarioGroupId == null ? 0 : scenarioGroupId);
+        model.addObject("selectedGroup", scenarioGroupId == null ? null : scenarioGroupService.findOne(scenarioGroupId));
         return model;
     }
 

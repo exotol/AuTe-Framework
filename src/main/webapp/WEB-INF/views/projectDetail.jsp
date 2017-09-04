@@ -5,12 +5,19 @@
     <%--@elvariable id="scenarioGroupId" type="java.lang.Long"--%>
     <%--@elvariable id="scenarioGroups" type="java.util.List<ru.bsc.test.at.executor.model.ScenarioGroup>"--%>
     <%--@elvariable id="project" type="ru.bsc.test.at.executor.model.Project"--%>
+    <%--@elvariable id="selectedGroup" type="ru.bsc.test.at.executor.model.ScenarioGroup"--%>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
 
         <%--@elvariable id="executeResult" type="java.lang.Integer"--%>
         <c:if test="${empty executeResult}">
-            <li class="breadcrumb-item active">${project.name}</li>
+            <c:if test="${empty selectedGroup}">
+                <li class="breadcrumb-item active">${project.name}</li>
+            </c:if>
+            <c:if test="${not empty selectedGroup}">
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
+                <li class="breadcrumb-item active">${selectedGroup.name}</li>
+            </c:if>
         </c:if>
         <c:if test="${not empty executeResult}">
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
@@ -61,6 +68,9 @@
                         <td style="border-top: 0;"></td>
                         <td colspan="3">
                             <c:forEach items="${scenario.stepResults}" var="stepResult">
+                                <div style="clear: both;"></div>
+                                <small style="color: gray;">${stepResult.step.stepComment}</small>
+                                <div style="clear: both;"></div>
                                 ${stepResult.step.requestMethod} ${stepResult.requestUrl}
                                 <span style="color: ${stepResult.result eq 'OK' ? 'darkgreen' : 'red'};">${stepResult.result}</span>
 

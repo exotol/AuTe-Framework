@@ -8,6 +8,10 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
+        <%--@elvariable id="scenarioGroup" type="ru.bsc.test.at.executor.model.ScenarioGroup"--%>
+        <c:if test="${not empty scenarioGroup}">
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}?scenarioGroupId=${scenarioGroup.id}">${scenarioGroup.name}</a></li>
+        </c:if>
         <c:if test="${empty stepDetail}">
             <li class="breadcrumb-item active">${scenario.name}</li>
         </c:if>
