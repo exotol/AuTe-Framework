@@ -15,7 +15,9 @@ import ru.bsc.test.autotester.repository.impl.ScenarioRepositoryWrapper;
 import ru.bsc.test.autotester.repository.impl.ServiceResponseRepositoryWrapper;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
+import ru.bsc.test.autotester.service.StepService;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,14 +34,21 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
+    private final StepService stepService;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
 
         super(new ScenarioRepositoryWrapper(scenarioRepository), new ServiceResponseRepositoryWrapper(serviceResponseRepository));
 
         this.scenarioRepository = scenarioRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
+        this.stepService = stepService;
+    }
+
+    @PostConstruct
+    public void init() {
+        stepService.setScenarioService(this);
     }
 
     @Override
@@ -102,5 +111,14 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
     @Override
     public List<Scenario> findAll(List<Long> scenarioIdList) {
         return scenarioRepository.findAll(scenarioIdList);
+    }
+
+    @Override
+    public Step cloneStep(Long stepId) {
+        Step step = stepService.findOne(stepId);
+        Scenario scenario = step.getScenario();
+        Step newStep = step.clone();
+        newStep.setScenario(scenario);
+        return stepService.save(newStep);
     }
 }

@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.Step;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface ScenarioService {
     void parseExpectedServiceRequestsJmba(String expectedRequestsBaseDir, Scenario scenario);
 
     List<Scenario> findAll(List<Long> scenarioIdList);
+
+    Step cloneStep(Long stepId);
 }

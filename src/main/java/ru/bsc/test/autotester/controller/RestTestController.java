@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
@@ -11,9 +12,11 @@ import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.dto.CheckSavedValuesDto;
+import ru.bsc.test.autotester.dto.StepDto;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.MockServiceResponseService;
 import ru.bsc.test.autotester.service.ScenarioGroupService;
+import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StandService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -32,18 +35,22 @@ public class RestTestController {
     private final MockServiceResponseService mockServiceResponseService;
     private final ScenarioGroupService scenarioGroupService;
     private final StandService standService;
+    private final ScenarioService scenarioService;
 
-    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, MockServiceResponseService mockServiceResponseService, ScenarioGroupService scenarioGroupService, StandService standService) {
+    public RestTestController(StepService stepService, ExpectedServiceRequestService expectedServiceRequestService, MockServiceResponseService mockServiceResponseService, ScenarioGroupService scenarioGroupService, StandService standService, ScenarioService scenarioService) {
         this.stepService = stepService;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.mockServiceResponseService = mockServiceResponseService;
         this.scenarioGroupService = scenarioGroupService;
         this.standService = standService;
+        this.scenarioService = scenarioService;
     }
 
     @RequestMapping(value = "step/save", method = RequestMethod.POST)
-    public void saveSteps(@RequestBody List<Step> step) {
-        stepService.saveSteps(step);
+    public void saveSteps(@RequestBody List<StepDto> stepDtoList) {
+        if (stepDtoList != null && !stepDtoList.isEmpty()) {
+            stepService.saveSteps(stepDtoList.get(0).getScenarioId(), stepDtoList);
+        }
     }
 
     @RequestMapping(value = "step/save-expected-service-requests", method = RequestMethod.POST)
@@ -88,6 +95,12 @@ public class RestTestController {
 
         }
         return "redirect:/";
+    }
+
+    @RequestMapping(value = "step/clone", method = RequestMethod.POST)
+    @ResponseBody
+    public Step cloneStep(@RequestParam Long stepId) {
+        return scenarioService.cloneStep(stepId);
     }
 
     @RequestMapping(value = "project/save-scenario-groups", method = RequestMethod.POST)

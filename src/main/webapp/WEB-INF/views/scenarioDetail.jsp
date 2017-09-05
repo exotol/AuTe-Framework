@@ -71,10 +71,11 @@
                         <input type="text" style="width: inherit;" class="form-control" name="step[${status.index}][sort]" size="3" value="${step.sort}">
                         <c:if test="${empty stepDetail}">
                             <span><a href="${pageContext.request.contextPath}/step/${step.id}" target="_blank">Edit</a></span>
+                            <div style="margin-top: 10px;"><a href="#" onclick="cloneStep(${step.id}); return false;">Clone</a></div>
                         </c:if>
                         <input type="hidden" name="step[${status.index}][id]" value="${step.id}"/>
 
-                        <input type="hidden" name="step[${status.index}][scenario][id]" value="${step.scenario.id}"/>
+                        <input type="hidden" name="step[${status.index}][scenarioId]" value="${step.scenario.id}"/>
                         <input type="hidden" name="step[${status.index}][dbParams]" value="${step.dbParams}"/>
                         <input type="hidden" name="step[${status.index}][tmpServiceRequestsDirectory]" value="${step.tmpServiceRequestsDirectory}"/>
                     </td>

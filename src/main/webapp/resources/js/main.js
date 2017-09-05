@@ -66,7 +66,7 @@
     };
 })(jQuery);
 
-function restSaveForm(formSelector, stateSelector, url) {
+function restSaveForm(formSelector, stateSelector, url, successCallback) {
     $(stateSelector).html('Saving...').css('color', 'orange');
     var json = $(formSelector).serializeObject();
     $.ajax({
@@ -80,6 +80,10 @@ function restSaveForm(formSelector, stateSelector, url) {
             setTimeout(function () {
                 $(stateSelector).html('');
             }, 3000);
+            console.log(successCallback);
+            if (successCallback !== undefined) {
+                successCallback();
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(xhr, ajaxOptions, thrownError);
@@ -140,3 +144,16 @@ $(function () {
         restSaveForm('#save-scenario-stands-form', '#save-scenario-stands-state', '/rest/project/save-stands');
     });
 });
+
+function cloneStep(stepId) {
+    if (confirm('Confirm: Clone the step ' + stepId)) {
+        // Save form
+        restSaveForm('#steps-form', '#saving-state', '/rest/step/save', function () {
+            // Clone step after save
+            $.post(contextPath + '/rest/step/clone', { stepId: stepId }, function () {
+                // Reload page after clone
+                location.reload();
+            });
+        });
+    }
+}
