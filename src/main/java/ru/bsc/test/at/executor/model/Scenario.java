@@ -58,7 +58,7 @@ public class Scenario implements Serializable, Cloneable {
     @ManyToOne
     @JoinColumn(name = "AFTER_SCENARIO_ID")
     private Scenario afterScenario;
-    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("SORT ASC")
     @JsonManagedReference
     private List<Step> steps;

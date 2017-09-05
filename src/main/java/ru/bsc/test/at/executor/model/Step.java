@@ -31,7 +31,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_STEP")
-public class Step implements Serializable, Cloneable {
+public class Step implements Serializable {
 
     public enum RequestBodyType {
         @SuppressWarnings("unused")
@@ -48,7 +48,7 @@ public class Step implements Serializable, Cloneable {
     @JoinColumn(name = "SCENARIO_ID")
     @JsonBackReference
     private Scenario scenario;
-    @OneToMany(mappedBy = "step", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("SORT ASC")
     @JsonManagedReference
     private List<ExpectedServiceRequest> expectedServiceRequests;
@@ -88,7 +88,7 @@ public class Step implements Serializable, Cloneable {
     private Boolean usePolling;
     @Column(name = "POLLING_JSON_XPATH")
     private String pollingJsonXPath;
-    @OneToMany(mappedBy = "step", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("SORT ASC")
     @JsonManagedReference
     private List<MockServiceResponse> mockServiceResponseList;
@@ -272,9 +272,7 @@ public class Step implements Serializable, Cloneable {
         this.savedValuesCheck = savedValuesCheck;
     }
 
-    @Override
-    protected Step clone() throws CloneNotSupportedException {
-        super.clone();
+    public Step clone() {
         Step cloned = new Step();
         cloned.setId(null);
         cloned.setSort(getSort());

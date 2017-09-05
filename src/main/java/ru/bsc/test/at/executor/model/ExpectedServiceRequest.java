@@ -20,7 +20,7 @@ import java.io.Serializable;
 @SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_EXPECTED_SERVICE_REQUEST")
-public class ExpectedServiceRequest implements Serializable, Cloneable {
+public class ExpectedServiceRequest implements Serializable {
 
     public ExpectedServiceRequest() {
     }
@@ -89,10 +89,7 @@ public class ExpectedServiceRequest implements Serializable, Cloneable {
         this.ignoredTags = ignoredTags;
     }
 
-    @Override
-    protected ExpectedServiceRequest clone() throws CloneNotSupportedException {
-        super.clone();
-
+    protected ExpectedServiceRequest clone() {
         ExpectedServiceRequest cloned = new ExpectedServiceRequest();
         cloned.setId(null);
         cloned.setServiceName(getServiceName());

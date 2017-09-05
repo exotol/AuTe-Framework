@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AT_MOCK_SERVICE_RESPONSE")
-public class MockServiceResponse implements Cloneable {
+public class MockServiceResponse {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_MOCK_SERVICE_RESPONSE", allocationSize = 1)
@@ -74,9 +74,7 @@ public class MockServiceResponse implements Cloneable {
         this.httpStatus = httpStatus;
     }
 
-    @Override
-    protected MockServiceResponse clone() throws CloneNotSupportedException {
-        super.clone();
+    protected MockServiceResponse clone() {
         MockServiceResponse cloned = new MockServiceResponse();
         cloned.setSort(getSort());
         cloned.setServiceUrl(getServiceUrl());
