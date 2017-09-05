@@ -93,6 +93,7 @@ public class CustomVelocityResponseTransformer extends ResponseDefinitionTransfo
         StringReader reader = new StringReader(response.getBody());
         SimpleNode node = runtimeServices.parse(reader, "Template name");
         Template template = new Template();
+        template.setEncoding("UTF-8");
         template.setRuntimeServices(runtimeServices);
         template.setData(node);
         template.initDocument();
@@ -103,7 +104,7 @@ public class CustomVelocityResponseTransformer extends ResponseDefinitionTransfo
     }
 
     private String getRenderedBody(final ResponseDefinition response) {
-        final Template template = Velocity.getTemplate(response.getBodyFileName());
+        final Template template = Velocity.getTemplate(response.getBodyFileName(), "UTF-8");
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         return String.valueOf(writer.getBuffer());
