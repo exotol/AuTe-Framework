@@ -24,4 +24,6 @@
   <h3>Request details</h3>
   <button style="margin: 10px 0;" class="btn btn-default" (click)="selectedRequest = null"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
   <div style="overflow: scroll; height: 700px; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest | json}}</div>
+  <h3>Response body</h3>
+  <div style="overflow: scroll; height: 700px; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.response.body}}</div>
 </div>

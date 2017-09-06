@@ -17,7 +17,7 @@ export class MappingListComponent implements OnInit {
 
   ngOnInit() {
     this.wireMockService.getMappingList()
-      .then(mappingList => this.mappingList = mappingList);
+      .then(mappingList => this.mappingList = mappingList.sort((a, b) => a.request.url > b.request.url ? 1 : -1));
   }
 
   detailsToggle() {
