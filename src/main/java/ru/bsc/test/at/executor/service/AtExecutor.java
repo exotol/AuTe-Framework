@@ -269,7 +269,7 @@ public class AtExecutor {
                 if (!responseData.getContent().equals(expectedResponse)) {
                     try {
                         JSONAssert.assertEquals(
-                                expectedResponse,
+                                expectedResponse.replaceAll(" ", " "),
                                 responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
                                 new IgnoringComparator(JSONCompareMode.LENIENT)
                         );
