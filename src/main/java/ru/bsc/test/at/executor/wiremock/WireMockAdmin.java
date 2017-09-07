@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.wiremock;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,6 +10,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -20,7 +23,6 @@ import java.util.List;
  * Created by sdoroshin on 27.07.2017.
  *
  */
-@SuppressWarnings("unused")
 public class WireMockAdmin implements Closeable {
 
     private String wireMockAdminUrl;
@@ -29,8 +31,7 @@ public class WireMockAdmin implements Closeable {
         this.wireMockAdminUrl = wireMockAdminUrl;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public void clearSavedMappings() throws IOException {
+    private void clearSavedMappings() throws IOException {
         mockIdList.forEach(s -> sendDelete("/mappings/" + s));
     }
 
@@ -38,6 +39,13 @@ public class WireMockAdmin implements Closeable {
         String result = sendPost("/mappings", new ObjectMapper().writeValueAsString(mockDefinition));
         MockDefinition mockDefinitionResponse = new ObjectMapper().readValue(result, MockDefinition.class);
         mockIdList.add(mockDefinitionResponse.getUuid());
+    }
+
+    public RequestList findRequests(MockRequest mockRequest) throws IOException {
+        String result = sendPost("/requests/find", new ObjectMapper().writeValueAsString(mockRequest));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper.readValue(result, RequestList.class);
     }
 
     private String sendPost(String url, String jsonRequestBody) throws IOException {

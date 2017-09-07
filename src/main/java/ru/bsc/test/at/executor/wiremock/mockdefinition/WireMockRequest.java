@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by sdoroshin on 27.07.2017.
+ * Created by sdoroshin on 06.09.2017.
  *
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
-public class MockRequest {
+public class WireMockRequest {
     private String method;
     private String url;
-    private Map<String, Map<String, String>> headers = new HashMap<>();
+    private Map<String, String> headers = new HashMap<>();
+    private String body;
 
     public String getMethod() {
         return method;
@@ -29,14 +29,22 @@ public class MockRequest {
         this.url = url;
     }
 
-    public Map<String, Map<String, String>> getHeaders() {
+    public Map<String, String> getHeaders() {
         if (headers == null) {
             headers = new HashMap<>();
         }
         return headers;
     }
 
-    public void setHeaders(Map<String, Map<String, String>> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

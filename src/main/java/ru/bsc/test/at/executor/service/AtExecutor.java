@@ -57,11 +57,10 @@ public class AtExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
     private final ScenarioRepository scenarioRepository;
-    private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper;
+    private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
 
-    public AtExecutor(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository) {
+    public AtExecutor(ScenarioRepository scenarioRepository) {
         this.scenarioRepository = scenarioRepository;
-        this.serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper(serviceResponseRepository);
     }
 
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
@@ -150,8 +149,7 @@ public class AtExecutor {
                         executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
-                        // TODO: Использовать WireMockAdmin
-                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(testId, step);
+                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
                         stepResult.setResult("OK");
                     } catch (Exception e) {
