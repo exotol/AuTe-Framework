@@ -7,6 +7,8 @@
         <th>Time</th>
         <th>Method</th>
         <th>Url</th>
+        <th>Response code</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -14,6 +16,8 @@
         <td>{{request.request.loggedDateString}}</td>
         <td>{{request.request.method}}</td>
         <td>{{request.request.absoluteUrl}}</td>
+        <td>{{request.response.status}}</td>
+        <td>{{request.request.headers['testidheader'] ? 'AT' : ''}}</td>
 
       </tr>
     </tbody>

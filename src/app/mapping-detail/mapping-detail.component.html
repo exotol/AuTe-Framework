@@ -6,7 +6,7 @@
 
     <div class="form-horizontal" *ngIf="mapping">
       <div class="form-group">
-        <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.url}}</h4>
+        <h4><small>{{wireMockService.serviceUrl}}</small>{{mapping.request.url ? mapping.request.url : mapping.request.urlPattern}}</h4>
       </div>
 
       <div class="form-group">
@@ -19,11 +19,14 @@
         </div>
         <div class="col-sm-8">
           <label>Url</label>
-          <input class="form-control" title="URL" [(ngModel)]="mapping.request.url"/>
+          <app-input-null [(ngModel)]="mapping.request.url"></app-input-null>
+          <div style="clear: both;"></div>
+          <label>Url pattern</label>
+          <app-input-null [(ngModel)]="mapping.request.urlPattern"></app-input-null>
         </div>
         <div class="col-sm-2">
           <label>Priority</label>
-          <app-input-null title="Priority" [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
+          <app-input-null [(ngModel)]="mapping.priority" [type]="'input'"></app-input-null>
         </div>
       </div>
 

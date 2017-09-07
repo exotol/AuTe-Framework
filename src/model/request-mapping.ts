@@ -2,6 +2,7 @@ import {BodyPattern} from './body-pattern';
 
 export class RequestMapping {
   url: string;
+  urlPattern: string;
   method: string;
   headers: any;
   bodyPatterns: BodyPattern[];
