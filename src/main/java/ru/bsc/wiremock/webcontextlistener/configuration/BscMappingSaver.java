@@ -44,7 +44,12 @@ class BscMappingSaver implements MappingsSaver {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS");
             mappingActual.renameTo(new File(mappingPath + "/mappings_" + format.format(Calendar.getInstance().getTime()) + "/"));
             for (StubMapping stubMapping: stubMappings) {
-                String fileName = stubMapping.getRequest().getUrl().replaceAll("[^\\\\/a-zA-Z0-9.-]", "_");
+                String fileName = "";
+                if (stubMapping.getRequest().getUrl() != null) {
+                    fileName = stubMapping.getRequest().getUrl().replaceAll("[^\\\\/a-zA-Z0-9.-]", "_");
+                } else if (stubMapping.getRequest().getUrlPattern() != null) {
+                    fileName = stubMapping.getRequest().getUrlPattern().replaceAll("[^\\\\/a-zA-Z0-9.-]", "_");
+                }
                 // Replace to: "/mappings/"
                 File file = new File(mappingActual, fileName);
                 //noinspection ResultOfMethodCallIgnored
