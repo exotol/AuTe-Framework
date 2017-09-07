@@ -10,9 +10,7 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.service.AtExecutor;
 
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.repository.ServiceResponseRepository;
 import ru.bsc.test.autotester.repository.impl.ScenarioRepositoryWrapper;
-import ru.bsc.test.autotester.repository.impl.ServiceResponseRepositoryWrapper;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
@@ -23,6 +21,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -37,10 +36,8 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
     private final StepService stepService;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ServiceResponseRepository serviceResponseRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
-
-        super(new ScenarioRepositoryWrapper(scenarioRepository), new ServiceResponseRepositoryWrapper(serviceResponseRepository));
-
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
+        super(new ScenarioRepositoryWrapper(scenarioRepository));
         this.scenarioRepository = scenarioRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.stepService = stepService;
@@ -117,7 +114,9 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
     public Step cloneStep(Long stepId) {
         Step step = stepService.findOne(stepId);
         Scenario scenario = step.getScenario();
+        Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
         Step newStep = step.clone();
+        newStep.setSort(maxSortStep + 50);
         newStep.setScenario(scenario);
         return stepService.save(newStep);
     }
