@@ -246,24 +246,13 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "{projectId}/add-scenario", method = RequestMethod.POST)
-    public String importScenarioFromExcel(
+    public String addNewScenarioToProject(
             @RequestParam String name,
             @PathVariable long projectId,
             @RequestParam Long scenarioGroupId
     ) throws IOException {
-        Project project = projectService.findOne(projectId);
-        if (project != null) {
-            Scenario scenario = new Scenario();
-            project.getScenarios().add(scenario);
-            scenario.setName(name);
-            scenario.setProject(project);
-            scenario = scenarioService.save(scenario);
-
-            if (scenarioGroupId != null) {
-                scenario.setScenarioGroup(scenarioGroupService.findOne(scenarioGroupId));
-                scenario = scenarioService.save(scenario);
-            }
-
+        Scenario scenario = projectService.addNewScenario(name, projectId, scenarioGroupId);
+        if (scenario != null) {
             return "redirect:/scenario/" + scenario.getId();
         } else {
             return "redirect:/";

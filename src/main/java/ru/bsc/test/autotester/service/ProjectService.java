@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.Scenario;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ProjectService {
     String findOneAsYaml(Long projectId);
 
     Project save(Project project);
+
+    Scenario addNewScenario(String name, long projectId, Long scenarioGroupId);
 }
