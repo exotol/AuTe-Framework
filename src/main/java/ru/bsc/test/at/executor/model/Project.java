@@ -39,18 +39,18 @@ public class Project implements Serializable, Cloneable {
     @Column(name = "NAME", length = 100)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "BEFORE_SCENARIO_ID")
     private Scenario beforeScenario;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "AFTER_SCENARIO_ID")
     private Scenario afterScenario;
 
     @Column(name = "PROJECT_CODE", length = 20)
     private String projectCode;
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
     @JsonManagedReference
     private List<Scenario> scenarios;
@@ -60,11 +60,11 @@ public class Project implements Serializable, Cloneable {
     @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Stand> standList;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "STAND_ID")
     @JsonBackReference
     private Stand stand;
@@ -206,11 +206,9 @@ public class Project implements Serializable, Cloneable {
             cloned.getScenarioGroups().add(clonedScenarioGroup);
 
             // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
-            for (Scenario scenario: cloned.getScenarios()) {
-                if (scenarioGroup.equals(scenario.getScenarioGroup())) {
-                    scenario.setScenarioGroup(clonedScenarioGroup);
-                }
-            }
+            cloned.getScenarios().stream()
+                    .filter(scenario -> scenarioGroup.equals(scenario.getScenarioGroup()))
+                    .forEach(scenario -> scenario.setScenarioGroup(clonedScenarioGroup));
         }
 
         return cloned;
