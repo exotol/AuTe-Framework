@@ -157,3 +157,84 @@ function cloneStep(stepId) {
         });
     }
 }
+
+function saveParameterSet(callback) {
+    var parameterSetList = {};
+    var parameterList = {};
+    var stepId = 0;
+
+    $('#parameter-set-form').find('input[data-sps-id]').each(function () {
+        parameterSetList[$(this).attr('data-sps-id')] = $(this).val();
+    });
+
+    $('#parameter-set-form').find('input[data-sp-id]').each(function () {
+        if (!parameterList[$(this).attr('data-sp-id')]) {
+            parameterList[$(this).attr('data-sp-id')] = {};
+        }
+        parameterList[$(this).attr('data-sp-id')][$(this).attr('name')] = $(this).val();
+    });
+
+    $('#parameter-set-form').find('[data-sps-step-id]').each(function () {
+        stepId = $(this).attr('data-sps-step-id');
+    });
+
+    var data = {
+        stepId: stepId,
+        parameterSetList: parameterSetList,
+        parameterList: parameterList
+    };
+    console.log(data);
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: contextPath + '/rest/save-parameter-set-list',
+        data: JSON.stringify(data),
+        success: function (data) {
+            console.log('result:', data);
+            if (callback) {
+                callback();
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr, ajaxOptions, thrownError);
+        }
+    });
+}
+
+function addStepParameter(stepId, parameterSetId) {
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: contextPath + '/rest/add-parameter',
+        data: JSON.stringify({
+            stepId: stepId,
+            parameterSetId: parameterSetId
+        }),
+        success: function (data) {
+            location.reload();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr, ajaxOptions, thrownError);
+        }
+    });
+}
+
+function addStepParameterSet(stepId) {
+    saveParameterSet(function () {
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: contextPath + '/rest/add-parameter-set',
+            data: JSON.stringify({
+                stepId: stepId
+            }),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr, ajaxOptions, thrownError);
+            }
+        });
+    });
+}

@@ -49,6 +49,7 @@
         <h4>Step ${stepDetail.id}. <span style="font-size: smaller;">${project.stand.serviceUrl}</span>${stepDetail.relativeUrl}</h4>
     </c:if>
     <form method="post" id="steps-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/save" onsubmit="return false;">
+        <button class="btn btn-default" id="save-steps">Save</button> <span id="saving-state"></span>
         <table class="table table-condensed steps-table">
             <tr>
                 <th style="width: 1%;">Sort</th>
@@ -193,6 +194,62 @@
     <c:if test="${not empty stepDetail}">
         <form method="post" class="delete-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/delete-step" onsubmit="return confirm('Delete step?')">
             <input class="btn btn-default" type="submit" value="Delete step">
+        </form>
+
+        <div style="clear: both;"></div>
+        <h4>Parameter set</h4>
+        <form method="post" id="parameter-set-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-parameter-set" onsubmit="return false;">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button class="btn btn-default" onclick="saveParameterSet()">Save</button>
+                    </div>
+                </div>
+            </div>
+            <input data-sps-step-id="${stepDetail.id}" type="hidden" name="savedValue[stepId]" value="${stepDetail.id}"/>
+            <c:forEach items="${stepDetail.stepParameterSetList}" var="parameterSet">
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <input data-sps-id="${parameterSet.id}" class="form-control" name="description" placeholder="description" value="${parameterSet.description}"/>
+                        </div>
+                        <div class="col-sm-10">
+                            <c:forEach items="${parameterSet.stepParameterList}" var="stepParameter">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-3">
+                                            <input data-sp-id="${stepParameter.id}" placeholder="name" class="form-control" name="name" value="${stepParameter.name}"/>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <input data-sp-id="${stepParameter.id}" placeholder="value" class="form-control" name="value" value="<c:out value="${stepParameter.value}"/>"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <button onclick="addStepParameter(${parameterSet.id})" class="btn btn-default">Add parameter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <button onclick="addStepParameterSet(${stepDetail.id})" class="btn btn-default">Add parameter set</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <button class="btn btn-default" onclick="saveParameterSet()">Save</button>
+                    </div>
+                </div>
+            </div>
         </form>
 
         <div style="clear: both;"></div>

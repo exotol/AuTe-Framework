@@ -69,7 +69,7 @@
                         <td colspan="3">
                             <c:forEach items="${scenario.stepResults}" var="stepResult">
                                 <div style="clear: both;"></div>
-                                <small style="color: gray;">${stepResult.step.stepComment}</small>
+                                <small style="color: gray;">${stepResult.step.stepComment} ${stepResult.description}</small>
                                 <div style="clear: both;"></div>
                                 ${stepResult.step.requestMethod} ${stepResult.requestUrl}
                                 <span style="color: ${stepResult.result eq 'OK' ? 'darkgreen' : 'red'};">${stepResult.result}</span>

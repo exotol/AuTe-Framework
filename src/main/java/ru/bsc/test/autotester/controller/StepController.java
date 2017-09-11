@@ -11,11 +11,18 @@ import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepParameter;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -44,6 +51,25 @@ public class StepController {
         model.addObject("stepDetail", step);
         model.addObject("scenario", scenario);
         model.addObject("project", scenario.getProject());
+
+        Set<String> psParameters = new LinkedHashSet<>();
+        List<Map<String, StepParameter>> stepParameterSetMapList = new LinkedList<>();
+
+        step.getStepParameterSetList()
+                .forEach(stepParameterSet -> {
+                    Map<String, StepParameter> parameterMap = new HashMap<>();
+                    stepParameterSet.getStepParameterList()
+                            .forEach(stepParameter -> {
+                                if (stepParameter.getName() != null) {
+                                    psParameters.add(stepParameter.getName());
+                                    parameterMap.put(stepParameter.getName(), stepParameter);
+                                }
+                            });
+                    stepParameterSetMapList.add(parameterMap);
+                });
+
+        model.addObject("psParameters", psParameters);
+        model.addObject("stepParameterSetMapList", stepParameterSetMapList);
 
         model.addObject("expectedRequestsList", step.getExpectedServiceRequests());
         model.addObject("mockServiceResponseList", step.getMockServiceResponseList());

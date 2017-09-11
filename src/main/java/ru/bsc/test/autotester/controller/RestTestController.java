@@ -11,7 +11,10 @@ import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepParameter;
+import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.autotester.dto.CheckSavedValuesDto;
+import ru.bsc.test.autotester.dto.ParameterSetDto;
 import ru.bsc.test.autotester.dto.StepDto;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.MockServiceResponseService;
@@ -21,6 +24,7 @@ import ru.bsc.test.autotester.service.StandService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 22.05.2017.
@@ -111,5 +115,62 @@ public class RestTestController {
     @RequestMapping(value = "project/save-stands", method = RequestMethod.POST)
     public List<Stand> saveStands(@RequestBody List<Stand> standList) {
         return standService.save(standList);
+    }
+
+    @RequestMapping(value = "save-parameter-set-list", method = RequestMethod.POST)
+    public String saveParameterSetList(@RequestBody ParameterSetDto parameterSetDto) {
+        Step step = stepService.findOne(parameterSetDto.getStepId());
+        step.getStepParameterSetList().forEach(stepParameterSet -> {
+            String description = parameterSetDto.getParameterSetList().get(stepParameterSet.getId());
+            if (description != null) {
+                stepParameterSet.setDescription(description);
+            }
+
+
+            stepParameterSet.getStepParameterList().forEach(stepParameter -> {
+                Map<String, String> a = parameterSetDto.getParameterList().get(stepParameter.getId());
+                if (a != null) {
+                    stepParameter.setName(a.get("name"));
+                    stepParameter.setValue(a.get("value"));
+                }
+            });
+
+        });
+
+        stepService.save(step);
+        return "";
+    }
+
+    @RequestMapping(value = "add-parameter", method = RequestMethod.POST)
+    public String addStepParameter(@RequestBody Map<String, String> model) {
+        Long parameterSetId = Long.valueOf(model.get("parameterSetId"));
+        Long stepId = Long.valueOf(model.get("stepId"));
+
+        Step step = stepService.findOne(stepId);
+        StepParameterSet parameterSet = step.getStepParameterSetList().stream()
+                .filter(stepParameterSet -> stepParameterSet.getId().equals(parameterSetId))
+                .findFirst().orElseGet(null);
+        if (parameterSet != null) {
+            StepParameter stepParameter = new StepParameter();
+            stepParameter.setStepParameterSet(parameterSet);
+            stepParameter.setName("");
+            stepParameter.setValue("");
+            parameterSet.getStepParameterList().add(stepParameter);
+        }
+        stepService.save(step);
+        return "";
+    }
+
+    @RequestMapping(value = "add-parameter-set", method = RequestMethod.POST)
+    public String addStepParameterSet(@RequestBody Map<String, String> model) {
+        Long stepId = Long.valueOf(model.get("stepId"));
+        Step step = stepService.findOne(stepId);
+
+        StepParameterSet stepParameterSet = new StepParameterSet();
+        stepParameterSet.setStep(step);
+        step.getStepParameterSetList().add(stepParameterSet);
+        stepService.save(step);
+
+        return "";
     }
 }
