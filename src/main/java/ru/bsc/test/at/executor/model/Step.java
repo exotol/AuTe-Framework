@@ -99,6 +99,11 @@ public class Step implements Serializable {
     @CollectionTable(name = "AT_STEP_SAVED_VALUES_CHECK", joinColumns = @JoinColumn(name = "STEP_ID"))
     private Map<String, String> savedValuesCheck;
 
+    @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("SORT ASC")
+    @JsonManagedReference
+    private List<StepParameterSet> stepParameterSetList;
+
     public Step() {
     }
 
@@ -271,6 +276,12 @@ public class Step implements Serializable {
         }
         this.savedValuesCheck = savedValuesCheck;
     }
+    public List<StepParameterSet> getStepParameterSetList() {
+        return stepParameterSetList;
+    }
+    public void setStepParameterSetList(List<StepParameterSet> stepParameterSetList) {
+        this.stepParameterSetList = stepParameterSetList;
+    }
 
     public Step clone() {
         Step cloned = new Step();
@@ -309,6 +320,15 @@ public class Step implements Serializable {
             MockServiceResponse clonedMockServiceResponse = mockServiceResponse.clone();
             clonedMockServiceResponse.setStep(cloned);
             cloned.getMockServiceResponseList().add(clonedMockServiceResponse);
+        }
+
+        cloned.setStepParameterSetList(new LinkedList<>());
+        if (getStepParameterSetList() != null) {
+            for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
+                StepParameterSet clonedStepParameterSet = stepParameterSet.copy();
+                clonedStepParameterSet.setStep(cloned);
+                cloned.getStepParameterSetList().add(clonedStepParameterSet);
+            }
         }
 
         return cloned;

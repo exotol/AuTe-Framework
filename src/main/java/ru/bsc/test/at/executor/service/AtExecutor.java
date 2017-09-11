@@ -16,6 +16,7 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
@@ -143,22 +144,37 @@ public class AtExecutor {
             int failures = 0;
             for (Step step: scenario.getSteps()) {
                 if (!step.getDisabled()) {
-                    StepResult stepResult = new StepResult(step);
-                    scenario.getStepResults().add(stepResult);
-                    try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
-                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                    List<StepParameterSet> parametersEnvironment;
+                    if (step.getStepParameterSetList() != null && !step.getStepParameterSetList().isEmpty()) {
+                        parametersEnvironment = step.getStepParameterSetList();
+                    } else {
+                        parametersEnvironment = new LinkedList<>();
+                        parametersEnvironment.add(new StepParameterSet());
+                    }
+                    for (StepParameterSet stepParameterSet: parametersEnvironment) {
+                        StepResult stepResult = new StepResult(step);
+                        scenario.getStepResults().add(stepResult);
 
-                        // После выполнения шага необходимо проверить запросы к веб-сервисам
-                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
+                        if (stepParameterSet.getStepParameterList() != null) {
+                            stepParameterSet.getStepParameterList()
+                                    .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
+                            stepResult.setDescription(stepParameterSet.getDescription());
+                        }
+                        try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                            executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
-                        stepResult.setResult("OK");
-                    } catch (Exception e) {
-                        StringWriter sw = new StringWriter();
-                        e.printStackTrace(new PrintWriter(sw));
+                            // После выполнения шага необходимо проверить запросы к веб-сервисам
+                            serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                        stepResult.setResult("Fail");
-                        stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
-                        failures++;
+                            stepResult.setResult("OK");
+                        } catch (Exception e) {
+                            StringWriter sw = new StringWriter();
+                            e.printStackTrace(new PrintWriter(sw));
+
+                            stepResult.setResult("Fail");
+                            stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
+                            failures++;
+                        }
                     }
                 }
             }

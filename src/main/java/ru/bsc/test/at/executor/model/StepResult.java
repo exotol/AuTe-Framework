@@ -14,6 +14,7 @@ public class StepResult {
     private String requestBody;
     private Integer pollingRetryCount;
     private String savedParameters;
+    private String description;
 
     public StepResult(Step step) {
         this.step = step;
@@ -71,5 +72,11 @@ public class StepResult {
     }
     public void setSavedParameters(String savedParameters) {
         this.savedParameters = savedParameters;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

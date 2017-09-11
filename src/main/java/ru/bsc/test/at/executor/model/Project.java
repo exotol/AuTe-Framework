@@ -47,7 +47,7 @@ public class Project implements Serializable, Cloneable {
     @JoinColumn(name = "AFTER_SCENARIO_ID")
     private Scenario afterScenario;
 
-    @Column(name = "PROJECT_CODE", length = 20)
+    @Column(name = "PROJECT_CODE", length = 200)
     private String projectCode;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
