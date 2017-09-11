@@ -261,3 +261,23 @@ function addStepParameterSet(stepId) {
         });
     });
 }
+
+function deleteStepParameterSet(stepParameterSetId, stepId) {
+    saveParameterSet(function () {
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: contextPath + '/rest/delete-parameter-set',
+            data: JSON.stringify({
+                stepId: stepId,
+                stepParameterSetId: stepParameterSetId
+            }),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr, ajaxOptions, thrownError);
+            }
+        });
+    });
+}

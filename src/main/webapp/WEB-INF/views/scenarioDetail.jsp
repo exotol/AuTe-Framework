@@ -221,6 +221,7 @@
                 <c:forEach items="${stepParameterSetMapList}" var="parameterSetMap">
                     <tr>
                         <td>
+                            <button onclick="deleteStepParameterSet(${parameterSetMap.stepParameterSet.id}, ${stepDetail.id})">x</button>
                             ${parameterSetMap.stepParameterSet.description}
                         </td>
                         <c:forEach items="${psParameters}" var="parameter">

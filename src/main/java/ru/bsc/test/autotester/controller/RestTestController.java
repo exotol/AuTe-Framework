@@ -15,6 +15,7 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameter;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.autotester.dto.CheckSavedValuesDto;
+import ru.bsc.test.autotester.dto.DeleteParameterSetDto;
 import ru.bsc.test.autotester.dto.ParameterSetDto;
 import ru.bsc.test.autotester.dto.StepDto;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
@@ -27,6 +28,7 @@ import ru.bsc.test.autotester.service.StepService;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 22.05.2017.
@@ -130,24 +132,26 @@ public class RestTestController {
 
             Map<String, String> a = parameterSetDto.getParameterList().get(stepParameterSet.getId());
 
-            a.forEach((s, s2) -> {
-                StepParameter sp = stepParameterSet.getStepParameterList()
-                        .stream().filter(stepParameter -> Objects.equals(stepParameter.getName(), s))
-                        .findAny().orElse(null);
-                if (sp == null) {
-                    sp = new StepParameter();
-                    sp.setStepParameterSet(stepParameterSet);
-                    sp.setName(s);
-                    sp.setValue(s2);
-                    stepParameterSet.getStepParameterList().add(sp);
-                }
-            });
+            if (a != null) {
+                a.forEach((s, s2) -> {
+                    StepParameter sp = stepParameterSet.getStepParameterList()
+                            .stream().filter(stepParameter -> Objects.equals(stepParameter.getName(), s))
+                            .findAny().orElse(null);
+                    if (sp == null) {
+                        sp = new StepParameter();
+                        sp.setStepParameterSet(stepParameterSet);
+                        sp.setName(s);
+                        sp.setValue(s2);
+                        stepParameterSet.getStepParameterList().add(sp);
+                    }
+                });
 
-            stepParameterSet.getStepParameterList().forEach(stepParameter -> {
-                if (a.containsKey(stepParameter.getName())) {
-                    stepParameter.setValue(a.get(stepParameter.getName()));
-                }
-            });
+                stepParameterSet.getStepParameterList().forEach(stepParameter -> {
+                    if (a.containsKey(stepParameter.getName())) {
+                        stepParameter.setValue(a.get(stepParameter.getName()));
+                    }
+                });
+            }
 
         });
 
@@ -187,5 +191,15 @@ public class RestTestController {
         stepService.save(step);
 
         return "";
+    }
+
+    @RequestMapping(value = "delete-parameter-set", method = RequestMethod.POST)
+    public void delete(@RequestBody DeleteParameterSetDto deleteParameterSetDto) {
+        Step step = stepService.findOne(deleteParameterSetDto.getStepId());
+        step.setStepParameterSetList(step.getStepParameterSetList().stream()
+                .filter(stepParameterSet -> !Objects.equals(stepParameterSet.getId(), deleteParameterSetDto.getStepParameterSetId()))
+                .collect(Collectors.toList())
+        );
+        stepService.save(step);
     }
 }
