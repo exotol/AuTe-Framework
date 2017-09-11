@@ -230,7 +230,7 @@
                             <div class="form-horizontal">
                                 <div class="form-group">
                                     <div class="col-sm-6">
-                                        <button onclick="addStepParameter(${parameterSet.id})" class="btn btn-default">Add parameter</button>
+                                        <button onclick="addStepParameter(${stepDetail.id}, ${parameterSet.id})" class="btn btn-default">Add parameter</button>
                                     </div>
                                 </div>
                             </div>
