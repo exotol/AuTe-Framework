@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,7 @@ import ru.bsc.test.autotester.service.StepService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by sdoroshin on 22.05.2017.
@@ -126,12 +128,24 @@ public class RestTestController {
                 stepParameterSet.setDescription(description);
             }
 
+            Map<String, String> a = parameterSetDto.getParameterList().get(stepParameterSet.getId());
+
+            a.forEach((s, s2) -> {
+                StepParameter sp = stepParameterSet.getStepParameterList()
+                        .stream().filter(stepParameter -> Objects.equals(stepParameter.getName(), s))
+                        .findAny().orElse(null);
+                if (sp == null) {
+                    sp = new StepParameter();
+                    sp.setStepParameterSet(stepParameterSet);
+                    sp.setName(s);
+                    sp.setValue(s2);
+                    stepParameterSet.getStepParameterList().add(sp);
+                }
+            });
 
             stepParameterSet.getStepParameterList().forEach(stepParameter -> {
-                Map<String, String> a = parameterSetDto.getParameterList().get(stepParameter.getId());
-                if (a != null) {
-                    stepParameter.setName(a.get("name"));
-                    stepParameter.setValue(a.get("value"));
+                if (a.containsKey(stepParameter.getName())) {
+                    stepParameter.setValue(a.get(stepParameter.getName()));
                 }
             });
 
@@ -143,31 +157,32 @@ public class RestTestController {
 
     @RequestMapping(value = "add-parameter", method = RequestMethod.POST)
     public String addStepParameter(@RequestBody Map<String, String> model) {
-        Long parameterSetId = Long.valueOf(model.get("parameterSetId"));
+        String parameterName = model.get("parameterName");
         Long stepId = Long.valueOf(model.get("stepId"));
-
         Step step = stepService.findOne(stepId);
-        StepParameterSet parameterSet = step.getStepParameterSetList().stream()
-                .filter(stepParameterSet -> stepParameterSet.getId().equals(parameterSetId))
-                .findFirst().orElseGet(null);
-        if (parameterSet != null) {
-            StepParameter stepParameter = new StepParameter();
-            stepParameter.setStepParameterSet(parameterSet);
-            stepParameter.setName("");
-            stepParameter.setValue("");
-            parameterSet.getStepParameterList().add(stepParameter);
+
+        if (StringUtils.isNotEmpty(parameterName) && step != null) {
+            step.getStepParameterSetList().forEach(stepParameterSet -> {
+                StepParameter stepParameter = new StepParameter();
+                stepParameter.setStepParameterSet(stepParameterSet);
+                stepParameter.setName(parameterName);
+                stepParameter.setValue("");
+                stepParameterSet.getStepParameterList().add(stepParameter);
+            });
+            stepService.save(step);
         }
-        stepService.save(step);
         return "";
     }
 
     @RequestMapping(value = "add-parameter-set", method = RequestMethod.POST)
     public String addStepParameterSet(@RequestBody Map<String, String> model) {
         Long stepId = Long.valueOf(model.get("stepId"));
+        String description = model.get("description");
         Step step = stepService.findOne(stepId);
 
         StepParameterSet stepParameterSet = new StepParameterSet();
         stepParameterSet.setStep(step);
+        stepParameterSet.setDescription(description);
         step.getStepParameterSetList().add(stepParameterSet);
         stepService.save(step);
 

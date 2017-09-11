@@ -8,7 +8,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}">${project.name}</a></li>
-        <%--@elvariable id="scenarioGroup" type="ru.bsc.test.at.executor.model.ScenarioGroup"--%>
+            <%--@elvariable id="scenarioGroup" type="ru.bsc.test.at.executor.model.ScenarioGroup"--%>
         <c:if test="${not empty scenarioGroup}">
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/project/${project.id}?scenarioGroupId=${scenarioGroup.id}">${scenarioGroup.name}</a></li>
         </c:if>
@@ -49,7 +49,7 @@
         <h4>Step ${stepDetail.id}. <span style="font-size: smaller;">${project.stand.serviceUrl}</span>${stepDetail.relativeUrl}</h4>
     </c:if>
     <form method="post" id="steps-form" action="${pageContext.request.contextPath}/scenario/${scenario.id}/save" onsubmit="return false;">
-        <button class="btn btn-default" id="save-steps">Save</button> <span id="saving-state"></span>
+        <button class="btn btn-default" data-save-steps>Save</button> <span data-saving-state></span>
         <table class="table table-condensed steps-table">
             <tr>
                 <th style="width: 1%;">Sort</th>
@@ -166,7 +166,7 @@
                 </tr>
             </c:forEach>
         </table>
-        <button class="btn btn-default" id="save-steps">Save</button> <span id="saving-state"></span>
+        <button class="btn btn-default" data-save-steps>Save</button> <span data-saving-state></span>
     </form>
 
     <c:if test="${empty stepDetail}">
@@ -199,54 +199,50 @@
         <div style="clear: both;"></div>
         <h4>Parameter set</h4>
         <form method="post" id="parameter-set-form" action="${pageContext.request.contextPath}/step/${stepDetail.id}/save-parameter-set" onsubmit="return false;">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <button class="btn btn-default" onclick="saveParameterSet()">Save</button>
-                    </div>
-                </div>
-            </div>
             <input data-sps-step-id="${stepDetail.id}" type="hidden" name="savedValue[stepId]" value="${stepDetail.id}"/>
-            <c:forEach items="${stepDetail.stepParameterSetList}" var="parameterSet">
-
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-sm-2">
-                            <input data-sps-id="${parameterSet.id}" class="form-control" name="description" placeholder="description" value="${parameterSet.description}"/>
-                        </div>
-                        <div class="col-sm-10">
-                            <c:forEach items="${parameterSet.stepParameterList}" var="stepParameter">
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <div class="col-sm-3">
-                                            <input data-sp-id="${stepParameter.id}" placeholder="name" class="form-control" name="name" value="${stepParameter.name}"/>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <input data-sp-id="${stepParameter.id}" placeholder="value" class="form-control" name="value" value="<c:out value="${stepParameter.value}"/>"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <button onclick="addStepParameter(${stepDetail.id}, ${parameterSet.id})" class="btn btn-default">Add parameter</button>
-                                    </div>
-                                </div>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th></th>
+                            <%--@elvariable id="psParameters" type="java.util.Set<java.lang.String>"--%>
+                        <c:forEach items="${psParameters}" var="parameter">
+                            <th>${parameter}</th>
+                        </c:forEach>
+                        <th>
+                            <div class="form-inline">
+                                <input class="form-control" id="stepParameterNameNew" placeholder="Parameter name" />
+                                <button onclick="addStepParameter(${stepDetail.id})" class="btn btn-default">Add</button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </c:forEach>
+                        </th>
+                    </tr>
+                </thead>
+
+                <%--@elvariable id="stepParameterSetMapList" type="java.util.List<ru.bsc.test.autotester.dto.ParameterSetJspDto>"--%>
+                <c:forEach items="${stepParameterSetMapList}" var="parameterSetMap">
+                    <tr>
+                        <td>
+                            ${parameterSetMap.stepParameterSet.description}
+                        </td>
+                        <c:forEach items="${psParameters}" var="parameter">
+                            <td>
+                                <input data-case-id="${parameterSetMap.stepParameterSet.id}" data-sp-parameter-name="${parameter}" data-sp-id="${parameterSetMap.parameterMap.get(parameter).id}" placeholder="value" class="form-control" name="value" value="<c:out value="${parameterSetMap.parameterMap.get(parameter).value}"/>"/>
+                            </td>
+                        </c:forEach>
+                    </tr>
+                </c:forEach>
+                <tr>
+                    <td>
+                        <input class="form-control" id="stepParameterSetCommentNew" placeholder="Case description" />
+                        <button onclick="addStepParameterSet(${stepDetail.id})" class="btn btn-default">Add case</button>
+                    </td>
+                </tr>
+            </table>
+
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-sm-6">
-                        <button onclick="addStepParameterSet(${stepDetail.id})" class="btn btn-default">Add parameter set</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-6">
                         <button class="btn btn-default" onclick="saveParameterSet()">Save</button>
+                        <span data-saving-parameters-state></span>
                     </div>
                 </div>
             </div>
@@ -308,7 +304,7 @@
                     <th>Ignored tags</th>
                     <th style="width: 1%;"></th>
                 </tr>
-                <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.at.executor.model.ExpectedServiceRequest>"--%>
+                    <%--@elvariable id="expectedRequestsList" type="java.util.List<ru.bsc.test.at.executor.model.ExpectedServiceRequest>"--%>
                 <c:forEach items="${expectedRequestsList}" var="expectedRequest" varStatus="status">
                     <tr>
                         <td>
@@ -347,7 +343,7 @@
                     <th>Service url<br/>Response http-status<br/>Response body</th>
                     <th style="width: 1%;"></th>
                 </tr>
-                <%--@elvariable id="mockServiceResponseList" type="java.util.List<ru.bsc.test.at.executor.model.MockServiceResponse>"--%>
+                    <%--@elvariable id="mockServiceResponseList" type="java.util.List<ru.bsc.test.at.executor.model.MockServiceResponse>"--%>
                 <c:forEach items="${mockServiceResponseList}" var="mockServiceResponse" varStatus="status">
                     <tr>
                         <td style="width: 70px;">

@@ -95,8 +95,8 @@ function restSaveForm(formSelector, stateSelector, url, successCallback) {
 $(function () {
     $.ajaxSetup({traditional: true});
 
-    $('#save-steps').click(function () {
-        restSaveForm('#steps-form', '#saving-state', '/rest/step/save');
+    $('[data-save-steps]').click(function () {
+        restSaveForm('#steps-form', '[data-saving-state]', '/rest/step/save');
     });
 
     $('#save-expected-service-requests').click(function () {
@@ -159,6 +159,7 @@ function cloneStep(stepId) {
 }
 
 function saveParameterSet(callback) {
+    $('[data-saving-parameters-state]').html('Saving...').css('color', 'orange');
     var parameterSetList = {};
     var parameterList = {};
     var stepId = 0;
@@ -167,11 +168,11 @@ function saveParameterSet(callback) {
         parameterSetList[$(this).attr('data-sps-id')] = $(this).val();
     });
 
-    $('#parameter-set-form').find('input[data-sp-id]').each(function () {
-        if (!parameterList[$(this).attr('data-sp-id')]) {
-            parameterList[$(this).attr('data-sp-id')] = {};
+    $('#parameter-set-form').find('input[data-case-id]').each(function () {
+        if (!parameterList[$(this).attr('data-case-id')]) {
+            parameterList[$(this).attr('data-case-id')] = {};
         }
-        parameterList[$(this).attr('data-sp-id')][$(this).attr('name')] = $(this).val();
+        parameterList[$(this).attr('data-case-id')][$(this).attr('data-sp-parameter-name')] = $(this).val();
     });
 
     $('#parameter-set-form').find('[data-sps-step-id]').each(function () {
@@ -191,43 +192,65 @@ function saveParameterSet(callback) {
         url: contextPath + '/rest/save-parameter-set-list',
         data: JSON.stringify(data),
         success: function (data) {
+            $('[data-saving-parameters-state]').html('Saved').css('color', 'darkgreen');
+            setTimeout(function () {
+                $('[data-saving-parameters-state]').html('');
+            }, 3000);
             console.log('result:', data);
             if (callback) {
                 callback();
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
+            $('[data-saving-parameters-state]').html('Error!').css('color', 'red');
             console.log(xhr, ajaxOptions, thrownError);
         }
     });
 }
 
-function addStepParameter(stepId, parameterSetId) {
-    $.ajax({
-        type: 'POST',
-        contentType: 'application/json',
-        url: contextPath + '/rest/add-parameter',
-        data: JSON.stringify({
-            stepId: stepId,
-            parameterSetId: parameterSetId
-        }),
-        success: function (data) {
-            location.reload();
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            console.log(xhr, ajaxOptions, thrownError);
+function addStepParameter(stepId) {
+    saveParameterSet(function () {
+        var stepParameterNameNew = $('#stepParameterNameNew').val();
+        if (stepParameterNameNew.trim() == '') {
+            alert('Parameter name cannot be empty');
+            return;
         }
+
+        var data = {
+            stepId: stepId,
+            parameterName: stepParameterNameNew
+        };
+        console.log('addStepParameter:', data);
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: contextPath + '/rest/add-parameter',
+            data: JSON.stringify(data),
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr, ajaxOptions, thrownError);
+            }
+        });
     });
 }
 
 function addStepParameterSet(stepId) {
     saveParameterSet(function () {
+        var description = $('#stepParameterSetCommentNew').val();
+        if (description.trim() == '') {
+            alert('Case description cannot be empty');
+            return;
+        }
         $.ajax({
             type: 'POST',
             contentType: 'application/json',
             url: contextPath + '/rest/add-parameter-set',
             data: JSON.stringify({
-                stepId: stepId
+                stepId: stepId,
+                description: description
             }),
             success: function (data) {
                 location.reload();
