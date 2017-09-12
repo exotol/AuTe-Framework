@@ -11,6 +11,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ToastyModule} from 'ng2-toasty';
 import { RequestListComponent } from './requests/request-list.component';
 import { MappingListComponent } from './mapping-list/mapping-list.component';
+import ObjNgFor from './pipe/obj-ng-for-pipe';
 
 const routes: Routes = [
   { path: 'requests', component: RequestListComponent },
@@ -24,7 +25,8 @@ const routes: Routes = [
     MappingDetailComponent,
     InputNullComponent,
     RequestListComponent,
-    MappingListComponent
+    MappingListComponent,
+    ObjNgFor
   ],
   imports: [
     BrowserModule,
