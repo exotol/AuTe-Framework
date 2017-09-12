@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Project} from '../model/project';
-import {Http} from '@angular/http';
+import {Headers, Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()

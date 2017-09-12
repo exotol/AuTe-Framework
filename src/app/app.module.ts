@@ -7,9 +7,11 @@ import {RouterModule, Routes} from '@angular/router';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ScenarioDetailComponent } from './scenario-detail/scenario-detail.component';
+import {ProjectService} from './service/project.service';
+import {HttpModule} from '@angular/http';
 
 const routes: Routes = [
-  { path: 'project', component: ProjectListComponent },
+  { path: '', component: ProjectListComponent },
   { path: 'project/:id', component: ProjectDetailComponent },
   { path: 'scenario/:id', component: ScenarioDetailComponent }
 ];
@@ -23,10 +25,11 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot()
   ],
-  providers: [],
+  providers: [ProjectService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
