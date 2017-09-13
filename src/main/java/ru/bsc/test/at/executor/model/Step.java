@@ -100,7 +100,7 @@ public class Step implements Serializable {
     private Map<String, String> savedValuesCheck;
 
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("SORT ASC")
+    @OrderBy("ID ASC")
     @JsonManagedReference
     private List<StepParameterSet> stepParameterSetList;
 
