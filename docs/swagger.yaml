@@ -104,7 +104,7 @@ paths:
       tags:
         - Project
         - Stand
-      summary: Get stand list of project
+      summary: Get Stand list of project
       description: ''
       operationId: getStandList
       parameters:
@@ -114,13 +114,15 @@ paths:
           required: true
           type: integer
       responses:
-        '200':
-          description: Get stand list of Project
+        200:
+          description: Stand list of Project
+        404:
+          description: Project not found
     post:
       tags:
         - Project
         - Stand
-      summary: Get stand list of project
+      summary: Create Stand
       description: ''
       operationId: createStand
       parameters:
@@ -130,13 +132,15 @@ paths:
           required: true
           type: integer
       responses:
-        '200':
-          description: Get stand list of Project
+        200:
+          description: Stand list of Project
+        404:
+          description: Project not found
   '/stands/{standId}':
     put:
       tags:
         - Stand
-      summary: Get stand list of project
+      summary: Update Stand details
       description: ''
       operationId: saveStand
       parameters:
@@ -153,13 +157,13 @@ paths:
             $ref: '#/definitions/Stand'
       responses:
         '200':
-          description: Get stand list of Project
+          description: Stand updated
           schema:
             $ref: '#/definitions/Stand'
     delete:
       tags:
         - Stand
-      summary: Delete stand
+      summary: Delete Stand
       description: ''
       operationId: deleteStand
       parameters:
@@ -175,6 +179,7 @@ paths:
           description: Stand not found
   '/projects/{projectId}/scenario-groups':
     get:
+      summary: Get ScenarioGroup list
       tags:
         - ScenarioGroup
         - Project
@@ -194,6 +199,7 @@ paths:
             items:
               $ref: '#/definitions/ScenarioGroup'
     post:
+      summary: Create ScenarioGroup list
       tags:
         - ScenarioGroup
         - Project
@@ -212,11 +218,12 @@ paths:
         '404':
           description: Project not found
         '200':
-          description: Created stand
+          description: Created scenario group
           schema:
             $ref: '#/definitions/ScenarioGroup'
   '/scenario-groups/{scenarioGroupId}':
     put:
+      summary: Update ScenarioGroup details
       tags:
         - ScenarioGroup
       parameters:
@@ -239,6 +246,7 @@ paths:
         404:
           description: ScenarioGroup not found
     delete:
+      summary: Delete ScenarioGroup
       tags:
         - ScenarioGroup
       operationId: deleteScenarioGroup
@@ -258,7 +266,7 @@ paths:
       tags:
         - Scenario
         - Project
-      summary: Get Scenarios of Project
+      summary: Get Scenario
       operationId: getScenarioList
       parameters:
         - name: projectId
@@ -304,7 +312,6 @@ paths:
     get:
       tags:
         - Scenario
-        - Step
       summary: Get Scenario details
       operationId: getScenarioDetail
       parameters:
@@ -323,8 +330,7 @@ paths:
     put:
       tags:
         - Scenario
-        - Step
-      summary: Save Scenario details
+      summary: Update Scenario details
       operationId: saveScenarioDetails
       parameters:
         - name: scenarioId
@@ -347,7 +353,6 @@ paths:
     delete:
       tags:
         - Scenario
-        - Step
       summary: Delete Scenario
       operationId: deleteScenario
       parameters:
@@ -366,7 +371,7 @@ paths:
       tags:
         - Step
         - Scenario
-      summary: Get steps of Scenario
+      summary: Get Step list
       operationId: getSteps
       parameters:
         - name: scenarioId
@@ -411,8 +416,7 @@ paths:
     delete:
       tags:
         - Step
-        - Scenario
-      summary: Delete step
+      summary: Delete Step
       operationId: deleteStep
       parameters:
         - name: stepId
