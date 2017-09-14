@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.controller.rest;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.autotester.dto.ProjectDto;
+import ru.bsc.test.autotester.mapper.RoMapper;
+import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
 import java.util.List;
@@ -18,9 +20,10 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/rest/project")
+@RequestMapping("/rest/projects")
 public class RestProjectController {
 
+    private RoMapper mapper = Mappers.getMapper(RoMapper.class);
     private final ProjectService projectService;
 
     @Autowired
@@ -29,19 +32,19 @@ public class RestProjectController {
     }
 
     @RequestMapping("")
-    public List<Project> findAll() {
-        return projectService.findAll();
+    public List<ProjectRo> findAll() {
+        return mapper.convertProjectListToProjectRoList(projectService.findAll());
     }
 
     @RequestMapping(value = "{projectId}", method = RequestMethod.PUT)
-    public Project findOne(@PathVariable Long projectId, @RequestBody ProjectDto projectDto) {
+    public ProjectRo findOne(@PathVariable Long projectId, @RequestBody ProjectRo projectRo) {
 
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            projectDto.mergeTo(project);
+            mapper.updateProjectFromRo(projectRo, project);
             projectService.save(project);
         }
 
-        return project;
+        return mapper.projectToProjectRo(project);
     }
 }
