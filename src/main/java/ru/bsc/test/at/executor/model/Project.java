@@ -60,7 +60,7 @@ public class Project implements Serializable, Cloneable {
     @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Stand> standList;
 
