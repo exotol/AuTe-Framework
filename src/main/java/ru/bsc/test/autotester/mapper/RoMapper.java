@@ -15,6 +15,8 @@ import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StandRo;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 14.09.2017.
@@ -22,7 +24,7 @@ import java.util.List;
  */
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface RoMapper {
+public abstract class RoMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -36,22 +38,64 @@ public interface RoMapper {
             @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
             @Mapping(target = "testIdHeaderName", source = "testIdHeaderName")
     })
-    ProjectRo projectToProjectRo(Project project);
+    abstract public ProjectRo projectToProjectRo(Project project);
 
     @Mappings({
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "projectCode", source = "projectCode"),
-            @Mapping(target = "beforeScenario", source = "beforeScenario"),
-            @Mapping(target = "afterScenario", source = "afterScenario"),
-            @Mapping(target = "scenarioGroups", source = "scenarioGroups"),
+            @Mapping(target = "beforeScenario", ignore = true),
+            @Mapping(target = "afterScenario", ignore = true),
+            @Mapping(target = "scenarioGroups", ignore = true),
             @Mapping(target = "stand", source = "stand"),
-            @Mapping(target = "standList", source = "standList"),
+            @Mapping(target = "standList", ignore = true),
 
             @Mapping(target = "scenarios", ignore = true)
     })
-    void updateProjectFromRo(ProjectRo projectRo, @MappingTarget Project project);
+    abstract void updateProjectFromRo(ProjectRo projectRo, @MappingTarget Project project);
 
-    List<ProjectRo> convertProjectListToProjectRoList(List<Project> list);
+    public void updateProject(ProjectRo projectRo, @MappingTarget Project project) {
+        updateProjectFromRo(projectRo, project);
+
+        project.setBeforeScenario(
+                projectRo.getBeforeScenario() == null || projectRo.getBeforeScenario().getId() == null ? null :
+                    project.getScenarios().stream()
+                            .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getBeforeScenario().getId()))
+                            .findAny().orElseGet(null)
+        );
+
+        project.setAfterScenario(
+                projectRo.getAfterScenario() == null || projectRo.getAfterScenario().getId() == null ? null :
+                    project.getScenarios().stream()
+                            .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getAfterScenario().getId()))
+                            .findAny().orElseGet(null)
+        );
+
+        project.setStand(
+                projectRo.getStand() == null || projectRo.getStand().getId() == null ? null :
+                project.getStandList().stream()
+                        .filter(stand -> Objects.equals(stand.getId(), projectRo.getStand().getId()))
+                        .findAny().orElse(null)
+        );
+
+        project.setStandList(projectRo.getStandList().stream()
+                .map(standRo -> {
+                    // Найти соответствующий Stand из standRo
+                    return project.getStandList().stream()
+                            .filter(projectStand -> Objects.equals(projectStand.getId(), standRo.getId()))
+                            .map(stand1 -> updateStandFromRo(standRo, stand1))
+                            .findAny()
+                            .orElseGet(() -> {
+                                Stand newStand = new Stand();
+                                updateStandFromRo(standRo, newStand);
+                                newStand.setProject(project);
+                                return newStand;
+                            });
+                })
+                .collect(Collectors.toList())
+        );
+    }
+
+    abstract public List<ProjectRo> convertProjectListToProjectRoList(List<Project> list);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -67,7 +111,7 @@ public interface RoMapper {
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    ScenarioRo scenarioToScenarioRo(Scenario scenario);
+    abstract ScenarioRo scenarioToScenarioRo(Scenario scenario);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
@@ -80,30 +124,30 @@ public interface RoMapper {
             @Mapping(target = "steps", ignore = true),
             @Mapping(target = "project", ignore = true),
             @Mapping(target = "stepResults", ignore = true),
-            @Mapping(target = "stand", source = "stand"),
+            @Mapping(target = "stand", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    Scenario scenarioRoToScenario(ScenarioRo scenarioRo);
+    abstract Scenario scenarioRoToScenario(ScenarioRo scenarioRo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name")
     })
-    ScenarioGroupRo scenarioGroupToScenarioGroupRo(ScenarioGroup scenarioGroup);
+    abstract ScenarioGroupRo scenarioGroupToScenarioGroupRo(ScenarioGroup scenarioGroup);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "project", ignore = true)
     })
-    ScenarioGroup scenarioGroupRoToScenarioGroup(ScenarioGroupRo scenarioGroupRo);
+    abstract ScenarioGroup scenarioGroupRoToScenarioGroup(ScenarioGroupRo scenarioGroupRo);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "serviceUrl", source = "serviceUrl")
     })
-    StandRo standToStandRo(Stand stand);
+    abstract StandRo standToStandRo(Stand stand);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -114,5 +158,5 @@ public interface RoMapper {
             @Mapping(target = "dbPassword", source = "dbPassword"),
             @Mapping(target = "wireMockUrl", source = "wireMockUrl")
     })
-    Stand standRoToStand(StandRo standRo);
+    abstract Stand updateStandFromRo(StandRo standRo, @MappingTarget Stand stand);
 }

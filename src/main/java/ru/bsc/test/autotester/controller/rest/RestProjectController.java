@@ -41,7 +41,7 @@ public class RestProjectController {
 
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            mapper.updateProjectFromRo(projectRo, project);
+            mapper.updateProject(projectRo, project);
             projectService.save(project);
         }
 
