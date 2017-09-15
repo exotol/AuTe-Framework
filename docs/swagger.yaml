@@ -70,7 +70,7 @@ paths:
     put:
       tags:
         - Project
-      summary: Update project details
+      summary: Update project details with stands and scenario groups
       description: ''
       operationId: saveProject
       consumes:
@@ -99,128 +99,6 @@ paths:
           description: 'Updated project-object'
           schema:
             $ref: '#/definitions/Project'
-  '/projects/{projectId}/stands':
-    get:
-      tags:
-        - Project
-        - Stand
-      summary: Get Stand list of project
-      description: ''
-      operationId: getStandList
-      parameters:
-        - name: projectId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        200:
-          description: Stand list of Project
-        404:
-          description: Project not found
-    post:
-      tags:
-        - Project
-        - Stand
-      summary: Create Stand
-      description: ''
-      operationId: createStand
-      parameters:
-        - name: projectId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        200:
-          description: Stand list of Project
-        404:
-          description: Project not found
-  '/stands/{standId}':
-    put:
-      tags:
-        - Stand
-      summary: Update Stand details
-      description: ''
-      operationId: saveStand
-      parameters:
-        - name: standId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-        - name: body
-          in: body
-          description: Update stand details
-          required: true
-          schema:
-            $ref: '#/definitions/Stand'
-      responses:
-        '200':
-          description: Stand updated
-          schema:
-            $ref: '#/definitions/Stand'
-    delete:
-      tags:
-        - Stand
-      summary: Delete Stand
-      description: ''
-      operationId: deleteStand
-      parameters:
-        - name: standId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Stand deleted
-        '404':
-          description: Stand not found
-  '/projects/{projectId}/scenario-groups':
-    get:
-      summary: Get ScenarioGroup list
-      tags:
-        - ScenarioGroup
-        - Project
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          type: integer
-          description: Project id
-      responses:
-        '404':
-          description: Project not found
-        '200':
-          description: ScenarioGroup list
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ScenarioGroup'
-    post:
-      summary: Create ScenarioGroup list
-      tags:
-        - ScenarioGroup
-        - Project
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          type: integer
-          description: Project id
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
-      responses:
-        '404':
-          description: Project not found
-        '200':
-          description: Created scenario group
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
   '/scenario-groups/{scenarioGroupId}':
     put:
       summary: Update ScenarioGroup details

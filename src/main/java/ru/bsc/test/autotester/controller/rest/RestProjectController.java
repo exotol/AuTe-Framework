@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.autotester.mapper.RoMapper;
+import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 @RequestMapping("/rest/projects")
 public class RestProjectController {
 
-    private RoMapper mapper = Mappers.getMapper(RoMapper.class);
+    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private final ProjectService projectService;
 
     @Autowired
@@ -33,18 +35,57 @@ public class RestProjectController {
 
     @RequestMapping("")
     public List<ProjectRo> findAll() {
-        return mapper.convertProjectListToProjectRoList(projectService.findAll());
+        return projectRoMapper.convertProjectListToProjectRoList(projectService.findAll());
+    }
+
+    @RequestMapping(value = "{projectId}", method = RequestMethod.GET)
+    public ProjectRo findOne(@PathVariable Long projectId) {
+        Project project = projectService.findOne(projectId);
+        if (project != null) {
+            return projectRoMapper.projectToProjectRo(project);
+        } else {
+            // TODO: Return 404 error
+            return null;
+        }
     }
 
     @RequestMapping(value = "{projectId}", method = RequestMethod.PUT)
-    public ProjectRo findOne(@PathVariable Long projectId, @RequestBody ProjectRo projectRo) {
+    public ProjectRo saveOne(@PathVariable Long projectId, @RequestBody ProjectRo projectRo) {
 
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            mapper.updateProject(projectRo, project);
-            projectService.save(project);
+            projectRoMapper.updateProject(projectRo, project);
+            project = projectService.save(project);
         }
 
-        return mapper.projectToProjectRo(project);
+        return projectRoMapper.projectToProjectRo(project);
+    }
+
+    @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.GET)
+    public List<ScenarioRo> getScenarios(@PathVariable Long projectId) {
+        Project project = projectService.findOne(projectId);
+        if (project != null) {
+            return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarios());
+        } else {
+            // TODO: Return 404 error
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.POST)
+    public ProjectRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
+        Project project = projectService.findOne(projectId);
+        if (project != null) {
+            Scenario newScenario = projectRoMapper.scenarioRoToScenario(scenarioRo);
+            newScenario.setProject(project);
+            project.getScenarios().add(newScenario);
+            project = projectService.save(project);
+
+            // TODO: Return created scenario
+            return projectRoMapper.projectToProjectRo(project);
+        } else {
+            // TODO: Return 404 error
+            return null;
+        }
     }
 }
