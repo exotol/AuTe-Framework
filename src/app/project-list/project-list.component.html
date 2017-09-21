@@ -1,3 +1,5 @@
-<p>
-  project-list works!
-</p>
+<div *ngIf="projectList">
+  <div *ngFor="let project of projectList">
+    {{project.id}} {{project.name}}
+  </div>
+</div>

@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ProjectService {
 
-  public serviceUrl = '/api/rest/project';
+  public serviceUrl = '/api/rest/projects';
   private headers = new Headers({'Content-Type': 'text/plain'});
 
   constructor(
