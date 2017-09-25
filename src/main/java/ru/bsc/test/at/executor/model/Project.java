@@ -55,7 +55,7 @@ public class Project implements Serializable, Cloneable {
     @JsonManagedReference
     private List<Scenario> scenarios;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("NAME ASC")
     @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
