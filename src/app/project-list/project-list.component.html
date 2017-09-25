@@ -1,5 +1,13 @@
-<div *ngIf="projectList">
-  <div *ngFor="let project of projectList">
-    {{project.id}} {{project.name}}
-  </div>
-</div>
+<h4>Projects</h4>
+<table class="table table-condensed" *ngIf="projectList">
+    <tr *ngFor="let project of projectList">
+      <td>
+        <a [routerLink]="['/project', project.id]">{{project.name}}</a>
+      </td>
+      <td>
+        <ng-container *ngIf="project.stand">
+          {{project.stand.serviceUrl}}
+        </ng-container>
+      </td>
+    </tr>
+</table>

@@ -9,6 +9,9 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ScenarioDetailComponent } from './scenario-detail/scenario-detail.component';
 import {ProjectService} from './service/project.service';
 import {HttpModule} from '@angular/http';
+import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
+import {ScenarioService} from './service/scenario.service';
+import {StepService} from './service/step.service';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -21,7 +24,8 @@ const routes: Routes = [
     AppComponent,
     ProjectListComponent,
     ProjectDetailComponent,
-    ScenarioDetailComponent
+    ScenarioDetailComponent,
+    ScenarioListItemComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +33,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot()
   ],
-  providers: [ProjectService],
+  providers: [ProjectService, ScenarioService, StepService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

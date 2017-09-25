@@ -3,6 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {Project} from '../model/project';
 import {Headers, Http} from '@angular/http';
 import 'rxjs/add/operator/map';
+import {Scenario} from '../model/scenario';
 
 @Injectable()
 export class ProjectService {
@@ -25,5 +26,15 @@ export class ProjectService {
       project,
       this.headers
     );
+  }
+
+  findOne(projectId: number): Observable<Project> {
+    return this.http.get(this.serviceUrl + '/' + projectId)
+      .map(value => value.json() as Project);
+  }
+
+  findScenariosByProject(projectId: number): Observable<Scenario[]> {
+    return this.http.get(this.serviceUrl + '/' + projectId + '/scenarios')
+      .map(value => value.json() as Scenario[]);
   }
 }

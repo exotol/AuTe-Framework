@@ -1,3 +1,26 @@
-<p>
-  project-detail works!
-</p>
+<ng-container *ngIf="project">
+  <small>Project</small>
+  <h4>{{project.name}}</h4>
+  <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
+
+  <a class="btn btn-default" target="_blank" role="button" style="float: right;" [routerLink]="['/project/' + project.id + '/get-yaml']">Download project as YAML</a>
+
+  <nav aria-label="Scenario groups">
+    <ul class="pagination">
+      <li><a (click)="selectGroup(null)">All</a></li>
+      <li *ngFor="let scenarioGroup of project.scenarioGroups">
+        <a (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
+      </li>
+    </ul>
+  </nav>
+
+
+  <div *ngFor="let scenario of scenarioList">
+    <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
+  </div>
+
+  <input type="submit" class="btn btn-default" value="Execute selected scenarios"/>
+  <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" (click)="downloadAsExcel()"/>
+  <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" (click)="downloadSelectedAsYaml()"/>
+
+</ng-container>
