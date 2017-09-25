@@ -34,15 +34,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,8 +49,11 @@ public class AtExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
-    private final ScenarioRepository scenarioRepository;
+    private ScenarioRepository scenarioRepository;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
+
+    public AtExecutor() {
+    }
 
     public AtExecutor(ScenarioRepository scenarioRepository) {
         this.scenarioRepository = scenarioRepository;
@@ -97,7 +92,7 @@ public class AtExecutor {
                 scenarioResultList.add(executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand)));
             }
         } finally {
-            standConnectionMap.values().stream().filter(connection -> connection != null).forEach(connection -> {
+            standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
                 try {
                     connection.rollback();
                     connection.close();
@@ -181,7 +176,9 @@ public class AtExecutor {
 
             scenario.setLastRunAt(Calendar.getInstance().getTime());
             scenario.setLastRunFailures(failures);
-            scenarioRepository.save(scenario);
+            if (scenarioRepository != null) {
+                scenarioRepository.save(scenario);
+            }
         }
         return scenario;
     }
