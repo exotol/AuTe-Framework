@@ -80,7 +80,7 @@ public abstract class ProjectRoMapper {
         project.setStandList(projectRo.getStandList().stream()
                 .map(standRo -> project.getStandList().stream()
                         .filter(projectStand -> Objects.equals(projectStand.getId(), standRo.getId()))
-                        .map(stand1 -> updateStandFromRo(standRo, stand1))
+                        .map(stand -> updateStandFromRo(standRo, stand))
                         .findAny()
                         .orElseGet(() -> {
                             Stand newStand = new Stand();
@@ -138,7 +138,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    abstract ScenarioRo scenarioToScenarioRo(Scenario scenario);
+    public abstract ScenarioRo scenarioToScenarioRo(Scenario scenario);
 
     @Mappings({
             @Mapping(target = "id", source = "id"),

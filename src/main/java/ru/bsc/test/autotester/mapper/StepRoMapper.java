@@ -1,6 +1,5 @@
 package ru.bsc.test.autotester.mapper;
 
-import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,6 +17,8 @@ import ru.bsc.test.autotester.ro.StepResultRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 14.09.2017.
@@ -49,13 +50,13 @@ public abstract class StepRoMapper {
             @Mapping(target = "requestBodyType", source = "requestBodyType"),
             @Mapping(target = "usePolling", source = "usePolling"),
             @Mapping(target = "pollingJsonXPath", source = "pollingJsonXPath"),
-            @Mapping(target = "mockServiceResponseList", source = "mockServiceResponseList"),
+            @Mapping(target = "mockServiceResponseList", ignore = true),
             @Mapping(target = "disabled", source = "disabled"),
             @Mapping(target = "stepComment", source = "stepComment"),
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
-            @Mapping(target = "stepParameterSetList", source = "stepParameterSetList")
+            @Mapping(target = "stepParameterSetList", ignore = true)
     })
-    abstract Step stepRoToStep(StepRo stepRo);
+    abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -83,26 +84,47 @@ public abstract class StepRoMapper {
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList")
     })
-    abstract StepRo stepToStepRo(Step step);
+    public abstract StepRo stepToStepRo(Step step);
 
-    abstract List<Step> convertStepListToStepRoList(List<StepRo> stepRoList);
+    // abstract List<Step> convertStepListToStepRoList(List<StepRo> stepRoList);
     abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
 
-    abstract List<StepParameterSet> convertStepParameterSetRoListToStepParameterSetList(List<StepParameterSetRo> stepParameterSetRoList);
+    // abstract List<StepParameterSet> convertStepParameterSetRoListToStepParameterSetList(List<StepParameterSetRo> stepParameterSetRoList);
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "step", ignore = true),
             @Mapping(target = "sort", source = "sort"),
-            @Mapping(target = "stepParameterList", source = "stepParameterList"),
+            @Mapping(target = "stepParameterList", ignore = true), // TODO
             @Mapping(target = "description", source = "description")
     })
-    abstract StepParameterSet stepParameterSetRoToStepParameterSet(StepParameterSetRo stepParameterSetRo);
+    abstract void updateStepParameterSetFromRo(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet);
     abstract StepParameterSetRo stepParameterSetToStepParameterSetRo(StepParameterSet stepParameterSet);
 
+    private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet) {
+        updateStepParameterSetFromRo(stepParameterSetRo, stepParameterSet);
+
+        stepParameterSet.setStepParameterList(stepParameterSetRo.getStepParameterList().stream()
+                .map(stepParameterRo -> stepParameterSet.getStepParameterList().stream()
+                        .filter(stepParameter -> Objects.equals(stepParameter.getId(), stepParameterRo.getId()))
+                        .map(stepParameter -> updateStepParameterFromRo(stepParameterRo, stepParameter))
+                        .findAny()
+                        .orElseGet(() -> {
+                            StepParameter newParameter = new StepParameter();
+                            updateStepParameterFromRo(stepParameterRo, newParameter);
+                            newParameter.setStepParameterSet(stepParameterSet);
+                            return newParameter;
+                        })
+                )
+                .collect(Collectors.toList())
+        );
+
+        return stepParameterSet;
+    }
+
     abstract List<StepParameterRo> convertStepParameterToStepParameterRo(List<StepParameter> stepParameterList);
-    abstract List<StepParameter> convertStepParameterRoToStepParameter(List<StepParameterRo> stepParameterListRo);
+    // abstract List<StepParameter> convertStepParameterRoToStepParameter(List<StepParameterRo> stepParameterListRo);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -110,10 +132,10 @@ public abstract class StepRoMapper {
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "value", source = "value")
     })
-    abstract StepParameter stepParameterRoToStepParameter(StepParameterRo stepParameterRo);
+    abstract StepParameter updateStepParameterFromRo(StepParameterRo stepParameterRo, @MappingTarget StepParameter stepParameter);
     abstract StepParameterRo stepParameterToStepParameterRo(StepParameter stepParameter);
 
-    abstract List<StepResultRo> convertStepResultListToStepResultRo(List<StepResult> stepResultList);
+    public abstract List<StepResultRo> convertStepResultListToStepResultRo(List<StepResult> stepResultList);
     @Mappings({
             @Mapping(target = "step", source = "step"),
             @Mapping(target = "result", source = "result"),
@@ -128,6 +150,7 @@ public abstract class StepRoMapper {
     })
     abstract StepResultRo stepResultToStepResultRo(StepResult stepResult);
 
+    /*
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "sort", source = "sort"),
@@ -155,8 +178,9 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList")
     })
     abstract void stepToStepRo(Step step, @MappingTarget StepRo stepRo);
+    */
 
-    abstract List<MockServiceResponse> convertMockServiceResponseRoListToMockServiceResponseList(List<MockServiceResponseRo> mockServiceResponseRoList);
+    // abstract List<MockServiceResponse> convertMockServiceResponseRoListToMockServiceResponseList(List<MockServiceResponseRo> mockServiceResponseRoList);
     abstract List<MockServiceResponseRo> convertMockServiceResponseListToMockServiceResponseRoList(List<MockServiceResponse> mockServiceResponseList);
 
     @Mappings({
@@ -176,10 +200,38 @@ public abstract class StepRoMapper {
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "httpStatus", source = "httpStatus")
     })
-    abstract MockServiceResponse mockServiceResponseRoToMockServiceResponse(MockServiceResponseRo mockServiceResponseRo);
+    abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo, @MappingTarget MockServiceResponse mockServiceResponse);
 
-    @BeforeMapping
-    void mapBefore(StepRo stepRo, @MappingTarget Step step) {
-        stepRo.getId();
+    public void updateStep(StepRo stepRo, @MappingTarget Step step) {
+        updateStepFromRo(stepRo, step);
+
+        step.setMockServiceResponseList(stepRo.getMockServiceResponseList().stream()
+                .map(mockServiceResponseRo -> step.getMockServiceResponseList().stream()
+                        .filter(mockServiceResponse -> Objects.equals(mockServiceResponse.getId(), mockServiceResponseRo.getId()))
+                        .map(mockServiceResponse -> updateMockServiceResponseFromRo(mockServiceResponseRo, mockServiceResponse))
+                        .findAny()
+                        .orElseGet(() -> {
+                            MockServiceResponse newResponse = new MockServiceResponse();
+                            updateMockServiceResponseFromRo(mockServiceResponseRo, newResponse);
+                            newResponse.setStep(step);
+                            return newResponse;
+                        }))
+                .collect(Collectors.toList())
+        );
+
+        step.setStepParameterSetList(stepRo.getStepParameterSetList().stream()
+                .map(stepParameterSetRo -> step.getStepParameterSetList().stream()
+                        .filter(stepParameterSet -> Objects.equals(stepParameterSet.getId(), stepParameterSetRo.getId()))
+                        .map(stepParameterSet -> updateStepParameterSet(stepParameterSetRo, stepParameterSet))
+                        .findAny()
+                        .orElseGet(() -> {
+                            StepParameterSet newSet = new StepParameterSet();
+                            updateStepParameterSet(stepParameterSetRo, newSet);
+                            newSet.setStep(step);
+                            return newSet;
+                        }))
+                .collect(Collectors.toList())
+        );
+
     }
 }
