@@ -142,23 +142,6 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
-            @Mapping(target = "name", source = "name"),
-            @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
-            @Mapping(target = "lastRunAt", source = "lastRunAt"),
-            @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
-            @Mapping(target = "beforeScenario", source = "beforeScenario"),
-            @Mapping(target = "afterScenario", source = "afterScenario"),
-            @Mapping(target = "steps", ignore = true),
-            @Mapping(target = "project", ignore = true),
-            @Mapping(target = "stepResults", ignore = true),
-            @Mapping(target = "stand", ignore = true),
-            @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
-            @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
-    })
-    public abstract Scenario scenarioRoToScenario(ScenarioRo scenarioRo);
-
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name")
     })
     abstract ScenarioGroupRo scenarioGroupToScenarioGroupRo(ScenarioGroup scenarioGroup);
@@ -169,13 +152,6 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "project", ignore = true)
     })
     abstract ScenarioGroup updateScenarioGroupFromRo(ScenarioGroupRo scenarioGroupRo, @MappingTarget ScenarioGroup scenarioGroup);
-
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "name", source = "name"),
-            @Mapping(target = "project", ignore = true)
-    })
-    abstract ScenarioGroup scenarioGroupRoToScenarioGroup(ScenarioGroupRo scenarioGroupRo);
 
     public abstract List<ScenarioRo> convertScenarioListToScenarioRoList(List<Scenario> scenarioList);
 }

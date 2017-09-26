@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
+import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -26,6 +27,7 @@ import java.util.List;
 public class RestProjectController {
 
     private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectService projectService;
 
     @Autowired
@@ -76,7 +78,7 @@ public class RestProjectController {
     public ProjectRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            Scenario newScenario = projectRoMapper.scenarioRoToScenario(scenarioRo);
+            Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
             newScenario.setProject(project);
             project.getScenarios().add(newScenario);
             project = projectService.save(project);

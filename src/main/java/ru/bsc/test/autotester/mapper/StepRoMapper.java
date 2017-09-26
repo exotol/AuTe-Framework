@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public abstract class StepRoMapper {
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "id", ignore = true),
             @Mapping(target = "scenario", ignore = true),
             @Mapping(target = "expectedServiceRequests", ignore = true),
             @Mapping(target = "sort", source = "sort"),
@@ -59,7 +59,7 @@ public abstract class StepRoMapper {
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "id", source = "id"),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
@@ -86,10 +86,8 @@ public abstract class StepRoMapper {
     })
     public abstract StepRo stepToStepRo(Step step);
 
-    // abstract List<Step> convertStepListToStepRoList(List<StepRo> stepRoList);
     abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
 
-    // abstract List<StepParameterSet> convertStepParameterSetRoListToStepParameterSetList(List<StepParameterSetRo> stepParameterSetRoList);
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
 
     @Mappings({
@@ -124,7 +122,6 @@ public abstract class StepRoMapper {
     }
 
     abstract List<StepParameterRo> convertStepParameterToStepParameterRo(List<StepParameter> stepParameterList);
-    // abstract List<StepParameter> convertStepParameterRoToStepParameter(List<StepParameterRo> stepParameterListRo);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -150,37 +147,6 @@ public abstract class StepRoMapper {
     })
     abstract StepResultRo stepResultToStepResultRo(StepResult stepResult);
 
-    /*
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "sort", source = "sort"),
-            @Mapping(target = "relativeUrl", source = "relativeUrl"),
-            @Mapping(target = "requestMethod", source = "requestMethod"),
-            @Mapping(target = "request", source = "request"),
-            @Mapping(target = "requestHeaders", source = "requestHeaders"),
-            @Mapping(target = "expectedResponse", source = "expectedResponse"),
-            @Mapping(target = "expectedResponseIgnore", source = "expectedResponseIgnore"),
-            @Mapping(target = "savingValues", source = "savingValues"),
-            @Mapping(target = "responses", source = "responses"),
-            @Mapping(target = "dbParams", source = "dbParams"),
-            @Mapping(target = "tmpServiceRequestsDirectory", source = "tmpServiceRequestsDirectory"),
-            @Mapping(target = "expectedStatusCode", source = "expectedStatusCode"),
-            @Mapping(target = "sql", source = "sql"),
-            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
-            @Mapping(target = "jsonXPath", source = "jsonXPath"),
-            @Mapping(target = "requestBodyType", source = "requestBodyType"),
-            @Mapping(target = "usePolling", source = "usePolling"),
-            @Mapping(target = "pollingJsonXPath", source = "pollingJsonXPath"),
-            @Mapping(target = "mockServiceResponseList", source = "mockServiceResponseList"),
-            @Mapping(target = "disabled", source = "disabled"),
-            @Mapping(target = "stepComment", source = "stepComment"),
-            @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
-            @Mapping(target = "stepParameterSetList", source = "stepParameterSetList")
-    })
-    abstract void stepToStepRo(Step step, @MappingTarget StepRo stepRo);
-    */
-
-    // abstract List<MockServiceResponse> convertMockServiceResponseRoListToMockServiceResponseList(List<MockServiceResponseRo> mockServiceResponseRoList);
     abstract List<MockServiceResponseRo> convertMockServiceResponseListToMockServiceResponseRoList(List<MockServiceResponse> mockServiceResponseList);
 
     @Mappings({
