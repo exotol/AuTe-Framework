@@ -6,6 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
+import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameter;
 import ru.bsc.test.at.executor.model.StepParameterSet;
@@ -168,7 +169,7 @@ public abstract class StepRoMapper {
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo, @MappingTarget MockServiceResponse mockServiceResponse);
 
-    public void updateStep(StepRo stepRo, @MappingTarget Step step) {
+    public Step updateStep(StepRo stepRo, @MappingTarget Step step) {
         updateStepFromRo(stepRo, step);
 
         step.setMockServiceResponseList(stepRo.getMockServiceResponseList().stream()
@@ -199,5 +200,21 @@ public abstract class StepRoMapper {
                 .collect(Collectors.toList())
         );
 
+        return step;
+    }
+
+    public List<Step> updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
+        return stepRoList.stream()
+                .map(stepRo -> scenario.getSteps().stream()
+                        .filter(step -> Objects.equals(step.getId(), stepRo.getId()))
+                        .map(step -> updateStep(stepRo, step))
+                        .findAny()
+                        .orElseGet(() -> {
+                            Step newStep = new Step();
+                            updateStep(stepRo, newStep);
+                            newStep.setScenario(scenario);
+                            return newStep;
+                        }))
+                .collect(Collectors.toList());
     }
 }

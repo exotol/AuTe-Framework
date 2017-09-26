@@ -250,12 +250,39 @@ paths:
           description: Step created
           schema:
             $ref: '#/definitions/Step'
-  '/steps/{stepId}':
-    delete:
+    put:
       tags:
         - Step
-      summary: Delete Step
-      operationId: deleteStep
+        - Scenario
+      summary: Save step list
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Step list saved
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+  '/steps/{stepId}':
+    put:
+      tags:
+        - Step
+      summary: Update Step details
+      operationId: updateStep
       parameters:
         - name: stepId
           in: path
@@ -266,7 +293,9 @@ paths:
         404:
           description: Step not found
         200:
-          description: Step deleted
+          description: Step updated
+          schema:
+            $ref: '#/definitions/Step'
   '/scenarios/{scenarioId}/exec':
     post:
       tags:

@@ -100,6 +100,18 @@ public class RestScenarioController {
         return null;
     }
 
+    @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
+    public List<StepRo> saveStepList(@PathVariable Long scenarioId, @RequestBody List<StepRo> stepRoList) {
+        Scenario scenario = scenarioService.findOne(scenarioId);
+        if (scenario != null) {
+            scenario.setSteps(stepRoMapper.updateScenarioStepList(stepRoList, scenario));
+            scenario = scenarioService.save(scenario);
+            return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
+        }
+        // TODO: return 404 error
+        return null;
+    }
+
     @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
     public List<StepResultRo> executing(@PathVariable Long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
