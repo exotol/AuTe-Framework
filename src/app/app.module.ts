@@ -12,6 +12,9 @@ import {HttpModule} from '@angular/http';
 import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
 import {ScenarioService} from './service/scenario.service';
 import {StepService} from './service/step.service';
+import { StepResultItemComponent } from './step-result-item/step-result-item.component';
+import { StepItemComponent } from './step-item/step-item.component';
+import {FormsModule} from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -25,13 +28,16 @@ const routes: Routes = [
     ProjectListComponent,
     ProjectDetailComponent,
     ScenarioDetailComponent,
-    ScenarioListItemComponent
+    ScenarioListItemComponent,
+    StepResultItemComponent,
+    StepItemComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
     RouterModule.forRoot(routes, { useHash: true }),
-    ToastyModule.forRoot()
+    ToastyModule.forRoot(),
+    FormsModule
   ],
   providers: [ProjectService, ScenarioService, StepService],
   bootstrap: [AppComponent]

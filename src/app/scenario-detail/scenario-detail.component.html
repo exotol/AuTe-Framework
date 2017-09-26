@@ -1,3 +1,14 @@
-<p>
-  scenario-detail works!
-</p>
+<div>
+  <div *ngIf="scenario">
+    <h3>{{scenario.name}}</h3>
+    <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
+  </div>
+
+  <div class="container-fluid" style="margin-bottom: 20px;">
+    <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
+  </div>
+  <app-step-item [step]="step" *ngFor="let step of stepList"></app-step-item>
+  <div class="container-fluid" style="margin-bottom: 20px;">
+    <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
+  </div>
+</div>

@@ -14,6 +14,7 @@ export class ScenarioListItemComponent implements OnInit {
   stepResultList: StepResult[];
 
   state = 'none';
+  showResultDetails = false;
 
   constructor(
     private scenarioService: ScenarioService
@@ -23,10 +24,12 @@ export class ScenarioListItemComponent implements OnInit {
   }
 
   runScenario() {
-    if (confirm('Confirm: run scenario')) {
-      this.state = 'executing';
-      this.scenarioService.run(this.scenario)
-        .subscribe(value => { this.stepResultList = value; this.state = 'finished'; });
-    }
+    this.state = 'executing';
+    this.scenarioService.run(this.scenario)
+      .subscribe(value => { this.stepResultList = value; this.state = 'finished'; });
+  }
+
+  resultDetailsToggle() {
+    this.showResultDetails = !this.showResultDetails;
   }
 }

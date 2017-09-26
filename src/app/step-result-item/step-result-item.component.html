@@ -1,0 +1,57 @@
+<div class="form-group" >
+  <div class="col-sm-1">
+    <span class="glyphicon glyphicon-ok-circle" style="color: green;" *ngIf="stepResult.result == 'OK'"></span>
+    <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result != 'OK'"></span>
+    {{stepResult.result}}
+  </div>
+  <div style="color: gray;" class="col-sm-11">{{stepResult.step.stepComment}} {{stepResult.description}}</div>
+  <div class="clearfix"></div>
+  <div class="col-sm-11 col-sm-offset-1">
+    {{stepResult.step.requestMethod}}
+    {{stepResult.requestUrl}}
+  </div>
+  <div class="clearfix"></div>
+  <div class="col-sm-11 col-sm-offset-1">
+    <ul class="nav nav-tabs">
+      <li [class.active]="tab == 'none'"><a href="#" (click)="selectTab('none')">None</a></li>
+      <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
+      <li [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">Edit step</a></li>
+      <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
+    </ul>
+    <div class="tab-content" style="padding: 10px;">
+      <div [style.display]="tab == 'details' || tab == 'all' ? '' : 'none'">
+        <div class="row">
+          <div class="col-sm-12" style="color: gray;">
+            <div *ngIf="stepResult.pollingRetryCount > 1">Polling retry count: {{stepResult.pollingRetryCount}}</div>
+            Saved parameters: {{stepResult.savedParameters}}
+          </div>
+          <div class="clearfix"></div>
+          <div class="col-sm-12">
+            <label>Request body</label>
+            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.requestBody}}</div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="col-sm-6">
+            <label>Actual</label>
+            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.actual}}</div>
+          </div>
+          <div class="col-sm-6">
+            <label>Expected</label>
+            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.expected}}</div>
+          </div>
+          <div class="col-sm-12" style="color: gray;">
+            <label>Details</label>
+            <pre>{{stepResult.details}}</pre>
+          </div>
+        </div>
+      </div>
+      <div [style.display]="tab == 'json' || tab == 'all' ? '' : 'none'">
+        <pre>{{stepResult | json}}</pre>
+      </div>
+      <div *ngIf="tab == 'stepEdit' || tab == 'all'">
+        <app-step-item [step]="stepResult.step"></app-step-item>
+        <button class="btn btn-xs btn-success" (click)="saveStep()">Save step</button>
+      </div>
+    </div>
+  </div>
+</div>

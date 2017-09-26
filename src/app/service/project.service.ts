@@ -9,7 +9,7 @@ import {Scenario} from '../model/scenario';
 export class ProjectService {
 
   public serviceUrl = '/api/rest/projects';
-  private headers = new Headers({'Content-Type': 'text/plain'});
+  private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(
     private http: Http

@@ -1,0 +1,126 @@
+<div class="container-fluid" style="padding-bottom: 30px;">
+  <div class="row">
+    <div class="col-sm-12">
+      <input style="font-weight: bold; border-width: 0; box-shadow: none;" placeholder="Step description" class="form-control" title="" [(ngModel)]="step.stepComment" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-11">
+      <div class="input-group">
+        <div class="input-group-btn">
+          <select class="form-control" title="Request method" [(ngModel)]="step.requestMethod">
+            <option [ngValue]="''"></option>
+            <option [ngValue]="'POST'">POST</option>
+            <option [ngValue]="'GET'">GET</option>
+            <option [ngValue]="'PUT'">PUT</option>
+            <option [ngValue]="'DELETE'">DELETE</option>
+          </select>
+        </div>
+        <input placeholder="Relative url. Example: /relative/url?parameter=value" class="form-control" title="" [(ngModel)]="step.relativeUrl" />
+      </div>
+    </div>
+    <div class="col-sm-1" style="text-align: center;">
+      <label>
+        <input title="Disabled step" type="checkbox" [(ngModel)]="step.disabled" /><br/>
+        <small [style.color]="step.disabled ? 'red' : ''">Disabled</small>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul class="nav nav-tabs">
+        <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">Summary</a></li>
+        <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
+        <li [class.active]="tab == 'savedValues'"><a href="#" (click)="selectTab('savedValues')">Saved values</a></li>
+        <li [class.active]="tab == 'headers'"><a href="#" (click)="selectTab('headers')">Headers</a></li>
+        <li [class.active]="tab == 'sql'"><a href="#" (click)="selectTab('sql')">Sql</a></li>
+        <li [class.active]="tab == 'mockServiceResponse'"><a href="#" (click)="selectTab('mockServiceResponse')">Mock service responses</a></li>
+        <li [class.active]="tab == 'polling'"><a href="#" (click)="selectTab('polling')">Polling</a></li>
+        <li [class.active]="tab == 'parameterSet'"><a href="#" (click)="selectTab('parameterSet')">Parameter set</a></li>
+        <li [class.active]="tab == 'all'"><a href="#" (click)="selectTab('all')">All</a></li>
+        <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
+      </ul>
+      <div class="tab-content" style="padding: 10px;">
+        <div class="row" [style.display]="tab == 'summary' ? '' : 'none'">
+          <div class="col-sm-6">
+            <textarea title="Request body" class="form-control" rows="5" [(ngModel)]="step.request"></textarea>
+          </div>
+          <div class="col-sm-6">
+            <textarea title="Expected response" class="form-control" rows="5" [(ngModel)]="step.expectedResponse"></textarea>
+          </div>
+        </div>
+        <div class="row" [style.display]="tab == 'details' || tab == 'all' ? '' : 'none'">
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Request body type</label>
+                <select class="form-control" title="Request body type" [(ngModel)]="step.requestBodyType">
+                  <option [ngValue]="'JSON'">JSON request body (default)</option>
+                  <option [ngValue]="'FORM'">FORM-data request body</option>
+                </select>
+              </div>
+            </div>
+            <label>Request body</label>
+            <textarea title="Request body" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
+          </div>
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-sm-6" style="text-align: center; padding-top: 10px;">
+                <label>
+                  <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
+                  Ignore response
+                </label>
+              </div>
+              <div class="col-sm-6">
+                <label>Expected status code</label>
+                <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
+              </div>
+            </div>
+            <label>Expected response</label>
+            <textarea title="Expected response" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
+          </div>
+        </div>
+        <div [style.display]="tab == 'savedValues' || tab == 'all' ? '' : 'none'">
+          <div class="row">
+            <div class="col-sm-6">
+              <label>Expected response</label>
+              <textarea title="Expected response" class="form-control" rows="13" [(ngModel)]="step.expectedResponse"></textarea>
+            </div>
+            <div class="col-sm-6">
+              <label>Saved values (JSON XPath):</label>
+              <textarea placeholder="parameterName = $.element.items[2].title" rows="13" title="Request headers" class="form-control" [(ngModel)]="step.jsonXPath"></textarea>
+            </div>
+          </div>
+        </div>
+        <div [style.display]="tab == 'headers' || tab == 'all' ? '' : 'none'">
+          <label>Request headers:</label>
+          <textarea placeholder="HeaderName: headerValue" rows="5" title="Request headers" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
+        </div>
+        <div [style.display]="tab == 'sql' || tab == 'all' ? '' : 'none'">
+          <label>Sql parameters</label>
+          <input placeholder="paramNameFirst, paramNameSecond" class="form-control" title="" [(ngModel)]="step.sqlSavedParameter"/>
+          <label>Sql query</label>
+          <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="step.sql"/>
+        </div>
+        <div [style.display]="tab == 'mockServiceResponse' || tab == 'all' ? '' : 'none'">mockServiceResponse:<pre>{{step.mockServiceResponseList | json}}</pre></div>
+        <div [style.display]="tab == 'polling' || tab == 'all' ? '' : 'none'">
+          <div class="row">
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" title="Use polling" [(ngModel)]="step.usePolling"/>
+                Use polling
+              </label>
+            </div>
+            <div class="col-sm-10">
+              <label>Polling json xpath:</label>
+              <input placeholder="$.body.items" class="form-control" title="Polling json xpath" [(ngModel)]="step.pollingJsonXPath" />
+              <div class="help-block">Waiting for json element exists. Example: $.body.items</div>
+            </div>
+          </div>
+        </div>
+        <div [style.display]="tab == 'parameterSet' || tab == 'all' ? '' : 'none'">Parameter set: <pre>{{step.stepParameterSetList | json}}</pre></div>
+        <div [style.display]="tab == 'json' ? '' : 'none'"><pre>{{step | json}}</pre></div>
+      </div>
+    </div>
+  </div>
+</div>
