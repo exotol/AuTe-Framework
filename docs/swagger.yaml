@@ -289,6 +289,12 @@ paths:
           required: true
           description: Step id
           type: integer
+        - name: body
+          in: body
+          required: true
+          description: Step to update
+          schema:
+            $ref: '#/definitions/Step'
       responses:
         404:
           description: Step not found
