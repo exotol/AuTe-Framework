@@ -17,6 +17,7 @@ import ru.bsc.test.autotester.ro.StepParameterSetRo;
 import ru.bsc.test.autotester.ro.StepResultRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -104,6 +105,9 @@ public abstract class StepRoMapper {
     private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet) {
         updateStepParameterSetFromRo(stepParameterSetRo, stepParameterSet);
 
+        if (stepParameterSet.getStepParameterList() == null) {
+            stepParameterSet.setStepParameterList(new LinkedList<>());
+        }
         stepParameterSet.setStepParameterList(stepParameterSetRo.getStepParameterList().stream()
                 .map(stepParameterRo -> stepParameterSet.getStepParameterList().stream()
                         .filter(stepParameter -> Objects.equals(stepParameter.getId(), stepParameterRo.getId()))
@@ -172,6 +176,9 @@ public abstract class StepRoMapper {
     public Step updateStep(StepRo stepRo, @MappingTarget Step step) {
         updateStepFromRo(stepRo, step);
 
+        if (step.getMockServiceResponseList() == null) {
+            step.setMockServiceResponseList(new LinkedList<>());
+        }
         step.setMockServiceResponseList(stepRo.getMockServiceResponseList().stream()
                 .map(mockServiceResponseRo -> step.getMockServiceResponseList().stream()
                         .filter(mockServiceResponse -> Objects.equals(mockServiceResponse.getId(), mockServiceResponseRo.getId()))
@@ -186,6 +193,9 @@ public abstract class StepRoMapper {
                 .collect(Collectors.toList())
         );
 
+        if (step.getStepParameterSetList() == null) {
+            step.setStepParameterSetList(new LinkedList<>());
+        }
         step.setStepParameterSetList(stepRo.getStepParameterSetList().stream()
                 .map(stepParameterSetRo -> step.getStepParameterSetList().stream()
                         .filter(stepParameterSet -> Objects.equals(stepParameterSet.getId(), stepParameterSetRo.getId()))
