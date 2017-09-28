@@ -34,7 +34,7 @@ export class ScenarioDetailComponent implements OnInit {
   saveSteps() {
     if (this.scenario && this.stepList) {
       this.scenarioService.saveStepList(this.scenario, this.stepList)
-        .subscribe(() => {
+        .subscribe(savedStepList => {
           const toastOptions: ToastOptions = {
             title: 'Updated',
             msg: 'Steps updated',
@@ -43,6 +43,7 @@ export class ScenarioDetailComponent implements OnInit {
             theme: 'bootstrap'
           };
           this.toastyService.success(toastOptions);
+          this.stepList = savedStepList;
         });
     }
   }

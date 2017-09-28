@@ -1,0 +1,31 @@
+<div *ngIf="stepParameterSetList">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th></th>
+        <th *ngFor="let parameterName of parameterNameList">
+          <label><a href="#" (click)="updateParameterName(parameterName)">{{parameterName}} <small><span class="glyphicon glyphicon-edit"></span></small></a></label>
+        </th>
+        <th>
+          <button class="btn btn-sm btn-default" (click)="addParameterName()"><span class="glyphicon glyphicon-plus"></span></button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stepParameterSet of stepParameterSetList">
+        <th>
+          <input title="" placeholder="Case description" class="form-control no-border" [(ngModel)]="stepParameterSet.description" />
+        </th>
+        <td *ngFor="let parameterName of parameterNameList">
+          <ng-container *ngIf="findParameter(stepParameterSet, parameterName)">
+            <input title="" class="form-control" [(ngModel)]="findParameter(stepParameterSet, parameterName).value"/>
+          </ng-container>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-default" (click)="removeParameterSet(stepParameterSet)"><span class="glyphicon glyphicon-minus"></span></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-default" (click)="addParameterSet()"><span class="glyphicon glyphicon-plus"></span> Add case</button>
+</div>

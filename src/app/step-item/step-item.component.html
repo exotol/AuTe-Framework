@@ -102,7 +102,19 @@
           <label>Sql query</label>
           <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="step.sql"/>
         </div>
-        <div [style.display]="tab == 'mockServiceResponse' || tab == 'all' ? '' : 'none'">mockServiceResponse:<pre>{{step.mockServiceResponseList | json}}</pre></div>
+        <div [style.display]="tab == 'mockServiceResponse' || tab == 'all' ? '' : 'none'">
+          <div *ngFor="let mockServiceResponse of step.mockServiceResponseList">
+            <div class="row">
+              <div class="col-sm-1">
+                <button class="btn btn-sm btn-default" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+              </div>
+              <div class="col-sm-11">
+                <app-mock-service-response [mockServiceResponse]="mockServiceResponse"></app-mock-service-response>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> Add mock</button>
+        </div>
         <div [style.display]="tab == 'polling' || tab == 'all' ? '' : 'none'">
           <div class="row">
             <div class="col-sm-2">
@@ -118,7 +130,9 @@
             </div>
           </div>
         </div>
-        <div [style.display]="tab == 'parameterSet' || tab == 'all' ? '' : 'none'">Parameter set: <pre>{{step.stepParameterSetList | json}}</pre></div>
+        <div [style.display]="tab == 'parameterSet' || tab == 'all' ? '' : 'none'">
+          <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
+        </div>
         <div [style.display]="tab == 'json' ? '' : 'none'"><pre>{{step | json}}</pre></div>
       </div>
     </div>

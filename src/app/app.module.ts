@@ -15,6 +15,8 @@ import {StepService} from './service/step.service';
 import { StepResultItemComponent } from './step-result-item/step-result-item.component';
 import { StepItemComponent } from './step-item/step-item.component';
 import {FormsModule} from '@angular/forms';
+import { MockServiceResponseComponent } from './mock-service-response/mock-service-response.component';
+import { StepParameterSetComponent } from './step-parameter-set/step-parameter-set.component';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -30,7 +32,9 @@ const routes: Routes = [
     ScenarioDetailComponent,
     ScenarioListItemComponent,
     StepResultItemComponent,
-    StepItemComponent
+    StepItemComponent,
+    MockServiceResponseComponent,
+    StepParameterSetComponent
   ],
   imports: [
     BrowserModule,

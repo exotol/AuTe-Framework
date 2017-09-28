@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Step} from '../model/step';
+import {MockServiceResponse} from '../model/mock-service-response';
 
 @Component({
   selector: 'app-step-item',
@@ -26,5 +27,18 @@ export class StepItemComponent implements OnInit {
   selectTab(tabName: string) {
     this.tab = tabName;
     return false;
+  }
+
+  addMockServiceResponse() {
+    this.step.mockServiceResponseList.push(new MockServiceResponse());
+  }
+
+  removeMockServiceResponse(mockServiceResponse: MockServiceResponse) {
+    if (confirm('Confirm: remove mock response')) {
+      const indexToRemove = this.step.mockServiceResponseList.indexOf(mockServiceResponse);
+      if (indexToRemove > -1) {
+        this.step.mockServiceResponseList.splice(indexToRemove, 1);
+      }
+    }
   }
 }

@@ -1,27 +1,24 @@
-<div *ngIf="scenario">
-  <div class="form-horizontal">
-    <div class="form-group">
-      <div class="col-sm-5"><label>{{scenario.name}}</label></div>
-      <div class="col-sm-1">{{scenario.lastRunAt | date: 'y-MM-dd HH:mm'}}</div>
-      <div class="col-sm-1">
-        <div style="color: red" *ngIf="scenario.lastRunFailures > 0">{{scenario.lastRunFailures}}</div>
-        <div style="" *ngIf="scenario.lastRunFailures == 0">{{scenario.lastRunFailures}}</div>
-      </div>
-      <div class="col-sm-1">
-        <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">Run</button>
-        <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>Executing...</button>
-      </div>
-      <div class="col-sm-3">
-        <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
-      </div>
-      <div class="col-sm-1">
-        <a [routerLink]="['/scenario', scenario.id]">Edit</a>
-      </div>
+<div class="form-horizontal" *ngIf="scenario">
+  <div class="form-group">
+    <div class="col-sm-5"><label>{{scenario.name}}</label></div>
+    <div class="col-sm-1">{{scenario.lastRunAt | date: 'y-MM-dd HH:mm'}}</div>
+    <div class="col-sm-1">
+      <div [style.color]="scenario.lastRunFailures > 0 ? 'red' : ''">{{scenario.lastRunFailures}}</div>
     </div>
-    <div style="margin-left: 30px;" [style.display]="showResultDetails ? '' : 'none'" *ngIf="stepResultList">
-      <ng-container *ngFor="let stepResult of stepResultList">
-        <app-step-result-item [stepResult]="stepResult"></app-step-result-item>
-      </ng-container>
+    <div class="col-sm-1">
+      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">Run</button>
+      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>Executing...</button>
     </div>
+    <div class="col-sm-3">
+      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
+    </div>
+    <div class="col-sm-1">
+      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
+    </div>
+  </div>
+  <div style="margin-left: 30px;" [style.display]="showResultDetails ? '' : 'none'" *ngIf="stepResultList">
+    <ng-container *ngFor="let stepResult of stepResultList">
+      <app-step-result-item [stepResult]="stepResult"></app-step-result-item>
+    </ng-container>
   </div>
 </div>
