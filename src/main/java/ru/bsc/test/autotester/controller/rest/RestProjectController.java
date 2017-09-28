@@ -75,7 +75,7 @@ public class RestProjectController {
     }
 
     @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.POST)
-    public ProjectRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
+    public ScenarioRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
         Project project = projectService.findOne(projectId);
         if (project != null) {
             Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
@@ -83,8 +83,9 @@ public class RestProjectController {
             project.getScenarios().add(newScenario);
             project = projectService.save(project);
 
-            // TODO: Return created scenario
-            return projectRoMapper.projectToProjectRo(project);
+            return projectRoMapper.scenarioToScenarioRo(
+                    project.getScenarios().stream().max((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1).orElse(null)
+            );
         } else {
             // TODO: Return 404 error
             return null;

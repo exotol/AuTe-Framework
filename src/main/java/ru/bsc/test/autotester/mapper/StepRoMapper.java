@@ -96,7 +96,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "step", ignore = true),
             @Mapping(target = "sort", source = "sort"),
-            @Mapping(target = "stepParameterList", ignore = true), // TODO
+            @Mapping(target = "stepParameterList", ignore = true),
             @Mapping(target = "description", source = "description")
     })
     abstract void updateStepParameterSetFromRo(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet);
