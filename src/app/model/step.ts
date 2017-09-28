@@ -4,7 +4,7 @@ import {StepParameterSet} from './step-parameter-set';
 
 export class Step {
   id: number;
-  expectedServiceRequests: ExpectedServiceRequest[];
+  expectedServiceRequestList: ExpectedServiceRequest[];
   sort: number;
   relativeUrl: string;
   requestMethod: string;
@@ -24,7 +24,7 @@ export class Step {
   usePolling: boolean;
   pollingJsonXPath: string;
   mockServiceResponseList: MockServiceResponse[];
-  disabled: boolean
+  disabled: boolean;
   stepComment: string;
   savedValuesCheck: any;
   stepParameterSetList: StepParameterSet[];

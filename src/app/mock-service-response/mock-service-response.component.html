@@ -1,22 +1,19 @@
 <div>
   <div class="row">
     <div class="col-sm-6">
-      <label>Service URL:</label>
-      <input class="form-control" title="" [(ngModel)]="mockServiceResponse.serviceUrl"/>
+      <input class="form-control" placeholder="Service URL" title="" [(ngModel)]="mockServiceResponse.serviceUrl"/>
     </div>
-    <div class="col-sm-3">
-      <label>Response HTTP-status:</label>
-      <input class="form-control" title="" [(ngModel)]="mockServiceResponse.httpStatus"/>
+    <div class="col-sm-4">
+      <input class="form-control" placeholder="HTTP-status: 200, 404, 500, [empty]" title="" [(ngModel)]="mockServiceResponse.httpStatus"/>
     </div>
-    <div class="col-sm-3">
-      <label>Sort:</label>
-      <input class="form-control" title="" [(ngModel)]="mockServiceResponse.sort"/>
+    <div class="col-sm-2">
+      <input class="form-control" placeholder="Sort" title="" [(ngModel)]="mockServiceResponse.sort"/>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12">
       <label>Response body</label>
-      <textarea title="" rows="7" class="form-control" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
+      <textarea class="form-control" placeholder="Response body" title="" rows="7" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
     </div>
   </div>
 </div>

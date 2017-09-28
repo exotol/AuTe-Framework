@@ -5,7 +5,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-11">
+    <div class="col-sm-12">
       <div class="input-group">
         <div class="input-group-btn">
           <select class="form-control" title="Request method" [(ngModel)]="step.requestMethod">
@@ -17,13 +17,13 @@
           </select>
         </div>
         <input placeholder="Relative url. Example: /relative/url?parameter=value" class="form-control" title="" [(ngModel)]="step.relativeUrl" />
+        <span class="input-group-addon">
+        <label>
+          <input title="Disabled step" type="checkbox" [(ngModel)]="step.disabled" />
+          <small [style.color]="step.disabled ? 'red' : ''">Disabled</small>
+        </label>
+      </span>
       </div>
-    </div>
-    <div class="col-sm-1" style="text-align: center;">
-      <label>
-        <input title="Disabled step" type="checkbox" [(ngModel)]="step.disabled" /><br/>
-        <small [style.color]="step.disabled ? 'red' : ''">Disabled</small>
-      </label>
     </div>
   </div>
   <div class="row">
@@ -34,9 +34,10 @@
         <li [class.active]="tab == 'savedValues'"><a href="#" (click)="selectTab('savedValues')">Saved values</a></li>
         <li [class.active]="tab == 'headers'"><a href="#" (click)="selectTab('headers')">Headers</a></li>
         <li [class.active]="tab == 'sql'"><a href="#" (click)="selectTab('sql')">Sql</a></li>
-        <li [class.active]="tab == 'mockServiceResponse'"><a href="#" (click)="selectTab('mockServiceResponse')">Mock service responses</a></li>
+        <li [class.active]="tab == 'mockServiceResponse'"><a href="#" (click)="selectTab('mockServiceResponse')">Mock responses</a></li>
+        <li [class.active]="tab == 'expectedServiceRequestList'"><a href="#" (click)="selectTab('expectedServiceRequestList')">Expected mock requests</a></li>
         <li [class.active]="tab == 'polling'"><a href="#" (click)="selectTab('polling')">Polling</a></li>
-        <li [class.active]="tab == 'parameterSet'"><a href="#" (click)="selectTab('parameterSet')">Parameter set</a></li>
+        <li [class.active]="tab == 'parameterSet'"><a href="#" (click)="selectTab('parameterSet')">Test cases</a></li>
         <li [class.active]="tab == 'all'"><a href="#" (click)="selectTab('all')">All</a></li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
@@ -103,17 +104,30 @@
           <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="step.sql"/>
         </div>
         <div [style.display]="tab == 'mockServiceResponse' || tab == 'all' ? '' : 'none'">
-          <div *ngFor="let mockServiceResponse of step.mockServiceResponseList">
-            <div class="row">
-              <div class="col-sm-1">
-                <button class="btn btn-sm btn-default" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
-              </div>
-              <div class="col-sm-11">
-                <app-mock-service-response [mockServiceResponse]="mockServiceResponse"></app-mock-service-response>
-              </div>
+          <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">
+            <div class="col-sm-1">
+              <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+            </div>
+            <div class="col-sm-11">
+              <app-mock-service-response [mockServiceResponse]="mockServiceResponse"></app-mock-service-response>
             </div>
           </div>
           <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> Add mock</button>
+        </div>
+        <div [style.display]="tab == 'expectedServiceRequestList' || tab == 'all' ? '' : 'none'">
+          <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedServiceRequest of step.expectedServiceRequestList">
+            <div class="col-sm-12">
+              <div class="input-group" style="margin-bottom: 5px;">
+                <input placeholder="Service name" class="form-control" title="" [(ngModel)]="expectedServiceRequest.serviceName"/>
+                <span class="input-group-btn">
+                  <button class="btn" (click)="removeExpectedServiceRequest(expectedServiceRequest)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+                </span>
+              </div>
+              <input class="form-control" placeholder="Ignored tags" style="margin-bottom: 5px;" title="" [(ngModel)]="expectedServiceRequest.ignoredTags"/>
+              <textarea class="form-control" placeholder="Expected request" title="" rows="7" [(ngModel)]="expectedServiceRequest.expectedServiceRequest"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> Add expected mock request</button>
         </div>
         <div [style.display]="tab == 'polling' || tab == 'all' ? '' : 'none'">
           <div class="row">
@@ -134,6 +148,34 @@
           <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
         </div>
         <div [style.display]="tab == 'json' ? '' : 'none'"><pre>{{step | json}}</pre></div>
+        <div [style.display]="tab == 'savedValues' || tab == 'sql' || tab == 'all' ? '' : 'none'">
+          <div class="row">
+            <div class="col-sm-12">
+              <hr/>
+              <label>Check saved values</label>
+            </div>
+          </div>
+          <div class="row" *ngFor="let checkedValueName of getObjectKeys(step.savedValuesCheck)">
+            <div class="col-sm-4" style="text-align: right;">
+              <label>
+                <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>
+              </label>
+            </div>
+            <div class="col-sm-8">
+              <div class="input-group">
+                <input placeholder="Checked value" title="" class="form-control" [(ngModel)]="step.savedValuesCheck[checkedValueName]"/>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" (click)="removeCheckedValue(checkedValueName)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <button class="btn btn-default" (click)="addCheckedValue()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

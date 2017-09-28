@@ -5,11 +5,11 @@
     <div class="col-sm-1">
       <div [style.color]="scenario.lastRunFailures > 0 ? 'red' : ''">{{scenario.lastRunFailures}}</div>
     </div>
-    <div class="col-sm-1">
+    <div class="col-sm-2">
       <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">Run</button>
       <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>Executing...</button>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
       <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
     </div>
     <div class="col-sm-1">
