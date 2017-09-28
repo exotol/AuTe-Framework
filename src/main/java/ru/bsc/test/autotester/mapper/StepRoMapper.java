@@ -5,12 +5,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
+import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameter;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.ro.ExpectedServiceRequestRo;
 import ru.bsc.test.autotester.ro.MockServiceResponseRo;
 import ru.bsc.test.autotester.ro.StepParameterRo;
 import ru.bsc.test.autotester.ro.StepParameterSetRo;
@@ -84,11 +86,22 @@ public abstract class StepRoMapper {
             @Mapping(target = "disabled", source = "disabled"),
             @Mapping(target = "stepComment", source = "stepComment"),
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
-            @Mapping(target = "stepParameterSetList", source = "stepParameterSetList")
+            @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
+            @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests")
     })
     public abstract StepRo stepToStepRo(Step step);
 
     abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
+
+    @Mappings({
+        @Mapping(target = "id", source = "id"),
+        @Mapping(target = "sort", source = "sort"),
+        @Mapping(target = "serviceName", source = "serviceName"),
+        @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
+        @Mapping(target = "ignoredTags", source = "ignoredTags"),
+    })
+    abstract ExpectedServiceRequestRo expectedServiceRequestToRo(ExpectedServiceRequest expectedServiceRequest);
+    abstract List<ExpectedServiceRequestRo> convertExpectedServiceRequestListToRoList(List<ExpectedServiceRequest> expectedServiceRequests);
 
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
 
@@ -210,7 +223,38 @@ public abstract class StepRoMapper {
                 .collect(Collectors.toList())
         );
 
+        if (step.getExpectedServiceRequests() == null) {
+            step.setExpectedServiceRequests(new LinkedList<>());
+        }
+        step.setExpectedServiceRequests(stepRo.getExpectedServiceRequestList().stream()
+                .map(expectedServiceRequestRo -> step.getExpectedServiceRequests().stream()
+                        .filter(expectedServiceRequest -> Objects.equals(expectedServiceRequest.getId(), expectedServiceRequestRo.getId()))
+                        .map(expectedServiceRequest -> updateExpectedServiceRequest(expectedServiceRequestRo, expectedServiceRequest))
+                        .findAny()
+                        .orElseGet(() -> {
+                            ExpectedServiceRequest newRequest = new ExpectedServiceRequest();
+                            updateExpectedServiceRequest(expectedServiceRequestRo, newRequest);
+                            newRequest.setStep(step);
+                            return newRequest;
+                        }))
+                .collect(Collectors.toList())
+        );
+
         return step;
+    }
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "step", ignore = true),
+            @Mapping(target = "sort", source = "sort"),
+            @Mapping(target = "serviceName", source = "serviceName"),
+            @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
+            @Mapping(target = "ignoredTags", source = "ignoredTags")
+    })
+    abstract void updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest);
+    private ExpectedServiceRequest updateExpectedServiceRequest(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest) {
+        updateExpectedServiceRequestFromRo(expectedServiceRequestRo, expectedServiceRequest);
+        return expectedServiceRequest;
     }
 
     public List<Step> updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
