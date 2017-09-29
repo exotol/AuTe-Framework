@@ -126,6 +126,9 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
+            @Mapping(target = "projectId", source = "project.id"),
+            @Mapping(target = "projectName", source = "project.name"),
+            @Mapping(target = "projectStand", source = "project.stand"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "lastRunAt", source = "lastRunAt"),

@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class ScenarioRo extends AbstractRo {
     private Long id;
+    private Long projectId;
+    private String projectName;
+    private StandRo projectStand;
     private String name;
 
     private ScenarioGroupRo scenarioGroup;
@@ -30,6 +33,30 @@ public class ScenarioRo extends AbstractRo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public StandRo getProjectStand() {
+        return projectStand;
+    }
+
+    public void setProjectStand(StandRo projectStand) {
+        this.projectStand = projectStand;
     }
 
     public String getName() {
