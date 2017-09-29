@@ -17,6 +17,7 @@ import { StepItemComponent } from './step-item/step-item.component';
 import {FormsModule} from '@angular/forms';
 import { MockServiceResponseComponent } from './mock-service-response/mock-service-response.component';
 import { StepParameterSetComponent } from './step-parameter-set/step-parameter-set.component';
+import {Globals} from './globals';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -43,7 +44,7 @@ const routes: Routes = [
     ToastyModule.forRoot(),
     FormsModule
   ],
-  providers: [ProjectService, ScenarioService, StepService],
+  providers: [ProjectService, ScenarioService, StepService, Globals],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
