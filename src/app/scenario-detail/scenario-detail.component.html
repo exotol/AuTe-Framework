@@ -1,4 +1,13 @@
 <div>
+  <ol class="breadcrumb" *ngIf="scenario">
+    <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="['/project', scenario.projectId]">{{scenario.projectId}}. {{scenario.projectName}}</a></li>
+    <li class="breadcrumb-item" *ngIf="scenario.scenarioGroup">
+      <a [routerLink]="['/project', scenario.projectId]" [queryParams]="{scenarioGroupId: scenario.scenarioGroup.id}">{{scenario.scenarioGroup.name}}</a>
+    </li>
+    <li class="breadcrumb-item active">{{scenario.id}}. {{scenario.name}}</li>
+  </ol>
+
   <div *ngIf="scenario">
     <h3>{{scenario.name}}</h3>
     <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>

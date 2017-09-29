@@ -5,6 +5,9 @@ import {Stand} from './stand';
 
 export class Scenario {
   id: number;
+  projectId: number;
+  projectName: string;
+  projectStand: Stand;
   name: string;
   scenarioGroup: ScenarioGroup;
   stepResults: StepResult[];

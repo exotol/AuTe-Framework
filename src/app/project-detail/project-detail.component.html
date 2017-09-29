@@ -1,5 +1,9 @@
 <ng-container *ngIf="project">
-  <small>Project</small>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+    <li class="breadcrumb-item active">{{project.id}}. {{project.name}}</li>
+  </ol>
+
   <h4>{{project.name}}</h4>
   <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
 
