@@ -3,24 +3,25 @@
   <h4>{{project.name}}</h4>
   <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
 
-  <a class="btn btn-default" target="_blank" role="button" style="float: right;" [routerLink]="['/project/' + project.id + '/get-yaml']">Download project as YAML</a>
+  <a class="btn btn-default" target="_blank" style="float: right;" [attr.href]="platformLocation.getBaseHrefFromDOM() + 'api/project/' + project.id + '/get-yaml'">Download project as YAML</a>
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
-      <li><a (click)="selectGroup(null)">All</a></li>
-      <li *ngFor="let scenarioGroup of project.scenarioGroups">
-        <a (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
+      <li [class.active]="filter == null || filter.scenarioGroup == null">
+        <a href="#" (click)="selectGroup(null)">All</a>
+      </li>
+      <li [class.active]="filter != null && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of project.scenarioGroups">
+        <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
       </li>
     </ul>
   </nav>
 
-
-  <div *ngFor="let scenario of scenarioList">
+  <div [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
     <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
   </div>
 
-  <input type="submit" class="btn btn-default" value="Execute selected scenarios"/>
-  <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" (click)="downloadAsExcel()"/>
-  <input type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" (click)="downloadSelectedAsYaml()"/>
+  <input disabled type="submit" class="btn btn-default" value="Execute selected scenarios"/>
+  <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" (click)="downloadAsExcel()"/>
+  <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" (click)="downloadSelectedAsYaml()"/>
 
 </ng-container>

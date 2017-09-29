@@ -5,6 +5,7 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {Scenario} from '../model/scenario';
 import {ScenarioGroup} from '../model/scenario-group';
+import {PlatformLocation} from '@angular/common';
 
 @Component({
   selector: 'app-project-detail',
@@ -14,8 +15,10 @@ export class ProjectDetailComponent implements OnInit {
 
   project: Project;
   scenarioList: Scenario[];
+  filter = new Scenario();
 
   constructor(
+    public platformLocation: PlatformLocation,
     private route: ActivatedRoute,
     private projectService: ProjectService
   ) { }
@@ -30,8 +33,10 @@ export class ProjectDetailComponent implements OnInit {
       .subscribe(value => this.scenarioList = value);
   }
 
-  selectGroup(scenarioGroup: ScenarioGroup) {
-    // TODO: filter
+  selectGroup(scenarioGroup: ScenarioGroup): boolean {
+    this.filter = new Scenario();
+    this.filter.scenarioGroup = scenarioGroup;
+    return false;
   }
 
   downloadAsExcel() {
@@ -42,5 +47,12 @@ export class ProjectDetailComponent implements OnInit {
   downloadSelectedAsYaml() {
     // TODO
     // formaction="${pageContext.request.contextPath}/project/${project.id}/export-selected-to-yaml"
+  }
+
+  isDisplayScenario(scenario: Scenario) {
+    return this.filter == null || this.filter.scenarioGroup == null ||
+      (scenario != null && scenario.scenarioGroup != null &&
+          scenario.scenarioGroup.id === this.filter.scenarioGroup.id
+      );
   }
 }
