@@ -74,9 +74,9 @@ export class WireMockService {
       .catch(reason => console.log(reason));
   }
 
-  getRequestList(): Observable<RequestList> {
+  getRequestList(limit?): Observable<RequestList> {
     return this.http
-      .get(this.adminUrl + '/requests')
+      .get(this.adminUrl + '/requests?limit=' + (limit ? limit : 50))
       .map(value => value.json() as RequestList);
   }
 

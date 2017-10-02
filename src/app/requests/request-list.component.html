@@ -1,5 +1,16 @@
 <button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="updateRequestList()"><span class="glyphicon glyphicon-refresh"></span> Update request list</button>
+<select style="margin: 10px 0 0 0;" title="Limit" class="btn btn-default" [(ngModel)]="requestLimit">
+  <option [ngValue]="10">10</option>
+  <option [ngValue]="30">30</option>
+  <option [ngValue]="50">50</option>
+  <option [ngValue]="100">100</option>
+  <option [ngValue]="200">200</option>
+  <option [ngValue]="null">All</option>
+</select>
 <button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="clearRequestList()"><span class="glyphicon glyphicon-remove"></span> Clear request list</button>
+<div class="help-block" *ngIf="!selectedRequest && !requestList">
+  Loading...
+</div>
 <div *ngIf="!selectedRequest && requestList">
   <table style="margin-top: 10px;" class="table table-hover">
     <thead>
@@ -11,41 +22,57 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody style="cursor: pointer;">
       <tr *ngFor="let request of requestList.requests" (click)="select(request)">
         <td>{{request.request.loggedDateString}}</td>
         <td>{{request.request.method}}</td>
         <td>{{request.request.absoluteUrl}}</td>
         <td>{{request.response.status}}</td>
         <td>{{request.request.headers['testidheader'] ? 'AT' : ''}}</td>
-
       </tr>
     </tbody>
   </table>
 </div>
 
 <div style="margin: 10px;" *ngIf="selectedRequest">
-  <button style="margin: 10px 0;" class="btn btn-default" (click)="selectedRequest = null"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
-
-  <h3>Request</h3>
-  <div class="form-horizontal">
-    <div class="form-group">
-      <div class="col-sm-2">
-        <label>Headers</label>
-        <div *ngFor="let key of selectedRequest.request.headers | ObjNgFor">
-          {{key}}: {{selectedRequest.request.headers[key]}}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="list-group">
+          <a style="overflow: hidden;" class="list-group-item" href="#" [class.active]="request === selectedRequest" *ngFor="let request of requestList.requests" (click)="select(request)">{{request.request.url}}</a>
         </div>
       </div>
-      <div class="col-sm-10">
-        <label>Body</label>
-        <div style="overflow: scroll; height: auto; background-color: #eee;" class="form-control">{{selectedRequest.request.body}}</div>
+      <div class="col-sm-9">
+        <button style="margin: 10px 0;" class="btn btn-default" (click)="selectedRequest = null"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
+        <h4>{{selectedRequest.request.absoluteUrl}}</h4>
+        <small class="help-block">{{selectedRequest.request.loggedDateString}}</small>
+        <ul class="nav nav-tabs">
+          <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">Summary</a></li>
+          <li [class.active]="tab == 'headers'"><a href="#" (click)="selectTab('headers')">Headers</a></li>
+          <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
+        </ul>
+        <div class="tab-content" style="padding: 10px;">
+
+          <div [style.display]="tab == 'summary' || tab == 'all' ? '' : 'none'">
+            <h3>Request body</h3>
+            <div style="overflow: scroll; height: auto; background-color: #eee;" class="form-control">{{selectedRequest.request.body}}</div>
+            <h3>Response body</h3>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.response.body}}</div>
+          </div>
+
+          <div [style.display]="tab == 'headers' || tab == 'all' ? '' : 'none'">
+            <h3>Request headers</h3>
+            <div *ngFor="let key of (selectedRequest.request.headers | ObjNgFor)">
+              {{key}}: {{selectedRequest.request.headers[key]}}
+            </div>
+          </div>
+
+          <div [style.display]="tab == 'json' || tab == 'all' ? '' : 'none'">
+            <h3>WireMock request details</h3>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest | json}}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <h3>Response body</h3>
-  <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.response.body}}</div>
-
-  <h3>Wiremock request details</h3>
-  <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest | json}}</div>
 </div>

@@ -5,12 +5,17 @@ import {Request} from '../../model/request';
 
 @Component({
   selector: 'app-requests',
-  templateUrl: './request-list.component.html'
+  templateUrl: './request-list.component.html',
+  styles: [
+    '.tab-content { border: 1px solid #ddd; border-top-width: 0;}'
+  ]
 })
 export class RequestListComponent implements OnInit {
 
   requestList: RequestList;
   selectedRequest: Request;
+  tab = 'summary';
+  requestLimit = 30;
 
   constructor(
     public wireMockService: WireMockService
@@ -24,7 +29,7 @@ export class RequestListComponent implements OnInit {
     this.selectedRequest = null;
     this.requestList = null;
     this.wireMockService
-      .getRequestList()
+      .getRequestList(this.requestLimit)
       .subscribe(value => this.requestList = value);
   }
 
@@ -38,5 +43,11 @@ export class RequestListComponent implements OnInit {
 
   select(request: Request) {
     this.selectedRequest = request;
+    return false;
+  }
+
+  selectTab(newTab: string) {
+    this.tab = newTab;
+    return false;
   }
 }
