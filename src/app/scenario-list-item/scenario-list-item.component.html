@@ -1,6 +1,11 @@
-<div class="form-horizontal" *ngIf="scenario">
-  <div class="form-group">
-    <div class="col-sm-5"><label>{{scenario.name}}</label></div>
+<div class="container-fluid" *ngIf="scenario">
+  <div class="row">
+    <div class="col-sm-5">
+      <label>
+        <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" />
+        {{scenario.name}}
+      </label>
+    </div>
     <div class="col-sm-1">{{scenario.lastRunAt | date: 'y-MM-dd HH:mm'}}</div>
     <div class="col-sm-1">
       <div [style.color]="scenario.lastRunFailures > 0 ? 'red' : ''">{{scenario.lastRunFailures}}</div>
@@ -16,7 +21,7 @@
       <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
     </div>
   </div>
-  <div style="margin-left: 30px;" [style.display]="showResultDetails ? '' : 'none'" *ngIf="stepResultList">
+  <div class="row" [style.display]="showResultDetails ? '' : 'none'" *ngIf="stepResultList">
     <ng-container *ngFor="let stepResult of stepResultList">
       <app-step-result-item [stepResult]="stepResult"></app-step-result-item>
     </ng-container>

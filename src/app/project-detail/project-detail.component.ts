@@ -1,28 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterContentChecked, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ProjectService} from '../service/project.service';
 import {Project} from '../model/project';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {Scenario} from '../model/scenario';
 import {ScenarioGroup} from '../model/scenario-group';
-import {PlatformLocation} from '@angular/common';
+import {Globals} from '../globals';
+import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 
 @Component({
   selector: 'app-project-detail',
-  templateUrl: './project-detail.component.html'
+  templateUrl: './project-detail.component.html',
+  styles: ['input.select-all { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
 })
-export class ProjectDetailComponent implements OnInit {
+export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   project: Project;
   scenarioList: Scenario[];
   filter = new Scenario();
+  selectAllFlag = false;
+  failCount = 0;
+  Math: any;
+
+  @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
+  executingStateExecuting = 0;
+  executingStateFinished = 0;
 
   constructor(
-    public platformLocation: PlatformLocation,
+    public globals: Globals,
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService
-  ) { }
+  ) {
+    this.Math = Math;
+  }
 
   ngOnInit() {
     this.route.paramMap
@@ -47,12 +58,19 @@ export class ProjectDetailComponent implements OnInit {
       .subscribe(value => this.scenarioList = value);
   }
 
+  ngAfterContentChecked(): void {
+    this.updateFailCountSum();
+  }
+
   selectGroup(scenarioGroup: ScenarioGroup): boolean {
     this.filter = new Scenario();
     this.filter.scenarioGroup = scenarioGroup;
 
-    this.router.navigate([], scenarioGroup != null ? {queryParams: {scenarioGroupId: scenarioGroup.id}} : {})
-      .then(value => console.log('navigate then:', value));
+    this.router
+      .navigate([], scenarioGroup != null ? {queryParams: {scenarioGroupId: scenarioGroup.id}} : {})
+      .then(() => {});
+
+    this.updateFailCountSum();
 
     return false;
   }
@@ -72,5 +90,42 @@ export class ProjectDetailComponent implements OnInit {
       (scenario != null && scenario.scenarioGroup != null &&
           scenario.scenarioGroup.id === this.filter.scenarioGroup.id
       );
+  }
+
+  executeSelectedScenarios() {
+    this.scenarioComponentList
+      .filter(item => item.scenario._selected && this.isDisplayScenario(item.scenario))
+      .forEach(value => value.runScenario());
+  }
+
+  selectAll() {
+    this.selectAllFlag = !this.selectAllFlag;
+    this.scenarioComponentList.forEach(item => item.scenario._selected = this.selectAllFlag);
+  }
+
+  updateFailCountSum() {
+    if (this.scenarioList) {
+      this.failCount = this.scenarioList
+        .filter(item => this.isDisplayScenario(item))
+        .map(value => value.lastRunFailures)
+        .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    } else {
+      this.failCount = 0;
+    }
+    return this.failCount;
+  }
+
+  updateExecutionStatus() {
+    this.executingStateExecuting = this.scenarioComponentList
+      .filter(item => item.state === 'executing')
+      .length;
+    this.executingStateFinished = this.scenarioComponentList
+      .filter(item => item.state === 'finished')
+      .length;
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  onStateChange(event: any, scenario: Scenario) {
+    this.updateExecutionStatus();
   }
 }

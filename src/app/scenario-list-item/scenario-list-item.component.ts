@@ -1,16 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {ScenarioService} from '../service/scenario.service';
 import {StepResult} from '../model/step-result';
 
 @Component({
   selector: 'app-scenario-list-item',
-  templateUrl: './scenario-list-item.component.html'
+  templateUrl: './scenario-list-item.component.html',
+  styles: [' input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
 })
 export class ScenarioListItemComponent implements OnInit {
 
   @Input()
   scenario: Scenario;
+  @Output() onStateChange = new EventEmitter<any>();
+
   stepResultList: StepResult[];
 
   state = 'none';
@@ -21,12 +24,20 @@ export class ScenarioListItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.scenario._selected = this.scenario.lastRunFailures !== 0;
+  }
+
+  stateChanged() {
+    this.onStateChange.emit({state: this.state})
   }
 
   runScenario() {
-    this.state = 'executing';
-    this.scenarioService.run(this.scenario)
-      .subscribe(value => { this.stepResultList = value; this.state = 'finished'; });
+    if (this.state !== 'executing') {
+      this.state = 'executing';
+      this.stateChanged();
+      this.scenarioService.run(this.scenario)
+        .subscribe(value => { this.stepResultList = value; this.state = 'finished'; this.stateChanged(); });
+    }
   }
 
   resultDetailsToggle() {

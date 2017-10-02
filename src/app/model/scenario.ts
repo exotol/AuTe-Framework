@@ -21,4 +21,6 @@ export class Scenario {
 
   steps: Step[];
   stand: Stand;
+
+  _selected = false;
 }

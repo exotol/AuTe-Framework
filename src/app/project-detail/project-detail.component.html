@@ -7,7 +7,7 @@
   <h4>{{project.name}}</h4>
   <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
 
-  <a class="btn btn-default" target="_blank" style="float: right;" [attr.href]="platformLocation.getBaseHrefFromDOM() + 'api/project/' + project.id + '/get-yaml'">Download project as YAML</a>
+  <a class="btn btn-default" target="_blank" style="float: right;" [attr.href]="globals.serviceBaseUrl + '/project/' + project.id + '/get-yaml'">Download project as YAML</a>
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
@@ -20,11 +20,37 @@
     </ul>
   </nav>
 
-  <div [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
-    <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
+  <div class="container-fluid" style="background-color: #f5f5f5; padding-top: 10px;">
+    <div class="row">
+      <div style="height: 40px;" class="col-sm-6">
+        <label>
+          <input class="select-all" type="checkbox" title="Select" (click)="selectAll()" />
+        </label>
+        <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">Execute selected scenarios</button>
+      </div>
+      <div class="col-sm-1" style="font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
+        {{failCount}}
+      </div>
+      <div class="col-sm-4">
+        <div class="progress" style="background-color: #fff;">
+          <div class="progress-bar progress-bar-striped"
+               role="progressbar"
+               [class.active]="executingStateExecuting > 0"
+               [style.display]="(executingStateExecuting + executingStateFinished) > 0 ? '' : 'none'"
+               [style.width]="(5 + executingStateFinished / (executingStateExecuting + executingStateFinished) * 95) + '%'">
+            {{Math.round(executingStateFinished / (executingStateExecuting + executingStateFinished) * 100)}} %
+            {{executingStateExecuting > 0 ? '(left: ' + executingStateExecuting + ')' : ''}}
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div style="min-height: 33px; margin-top: 7px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
+    <app-scenario-list-item [scenario]="scenario" (onStateChange)="onStateChange($event, scenario)"></app-scenario-list-item>
   </div>
 
-  <input disabled type="submit" class="btn btn-default" value="Execute selected scenarios"/>
   <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" (click)="downloadAsExcel()"/>
   <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" (click)="downloadSelectedAsYaml()"/>
 
