@@ -42,7 +42,7 @@
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
-        <div class="row" [style.display]="tab == 'summary' ? '' : 'none'">
+        <div class="row" *ngIf="tab == 'summary'">
           <div class="col-sm-6">
             <textarea title="Request body" class="form-control" rows="5" [(ngModel)]="step.request"></textarea>
           </div>
@@ -50,7 +50,7 @@
             <textarea title="Expected response" class="form-control" rows="5" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
         </div>
-        <div class="row" [style.display]="tab == 'details' || tab == 'all' ? '' : 'none'">
+        <div class="row" *ngIf="tab == 'details' || tab == 'all'">
           <div class="col-sm-6">
             <div class="row">
               <div class="col-sm-12">
@@ -81,7 +81,7 @@
             <textarea title="Expected response" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
         </div>
-        <div [style.display]="tab == 'savedValues' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'savedValues' || tab == 'all'">
           <div class="row">
             <div class="col-sm-6">
               <label>Expected response</label>
@@ -93,17 +93,17 @@
             </div>
           </div>
         </div>
-        <div [style.display]="tab == 'headers' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'headers' || tab == 'all'">
           <label>Request headers:</label>
           <textarea placeholder="HeaderName: headerValue" rows="5" title="Request headers" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
         </div>
-        <div [style.display]="tab == 'sql' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'sql' || tab == 'all'">
           <label>Sql parameters</label>
           <input placeholder="paramNameFirst, paramNameSecond" class="form-control" title="" [(ngModel)]="step.sqlSavedParameter"/>
           <label>Sql query</label>
           <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="step.sql"/>
         </div>
-        <div [style.display]="tab == 'mockServiceResponse' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'mockServiceResponse' || tab == 'all'">
           <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">
             <div class="col-sm-1">
               <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
@@ -114,7 +114,7 @@
           </div>
           <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> Add mock</button>
         </div>
-        <div [style.display]="tab == 'expectedServiceRequestList' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'expectedServiceRequestList' || tab == 'all'">
           <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedServiceRequest of step.expectedServiceRequestList">
             <div class="col-sm-12">
               <div class="input-group" style="margin-bottom: 5px;">
@@ -129,7 +129,7 @@
           </div>
           <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> Add expected mock request</button>
         </div>
-        <div [style.display]="tab == 'polling' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'polling' || tab == 'all'">
           <div class="row">
             <div class="col-sm-2">
               <label>
@@ -144,11 +144,11 @@
             </div>
           </div>
         </div>
-        <div [style.display]="tab == 'parameterSet' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'parameterSet' || tab == 'all'">
           <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
         </div>
-        <div [style.display]="tab == 'json' ? '' : 'none'"><pre>{{step | json}}</pre></div>
-        <div [style.display]="tab == 'savedValues' || tab == 'sql' || tab == 'all' ? '' : 'none'">
+        <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
+        <div *ngIf="tab == 'savedValues' || tab == 'sql' || tab == 'all'">
           <div class="row">
             <div class="col-sm-12">
               <hr/>

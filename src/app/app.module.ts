@@ -19,12 +19,14 @@ import { MockServiceResponseComponent } from './mock-service-response/mock-servi
 import { StepParameterSetComponent } from './step-parameter-set/step-parameter-set.component';
 import {Globals} from './globals';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ScenarioSettingsComponent } from './scenario-settings/scenario-settings.component';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
   { path: 'project/:id', component: ProjectDetailComponent },
   { path: 'project/:id/settings', component: ProjectSettingsComponent },
-  { path: 'scenario/:id', component: ScenarioDetailComponent }
+  { path: 'scenario/:id', component: ScenarioDetailComponent },
+  { path: 'scenario/:id/settings', component: ScenarioSettingsComponent }
 ];
 
 @NgModule({
@@ -38,7 +40,8 @@ const routes: Routes = [
     StepItemComponent,
     MockServiceResponseComponent,
     StepParameterSetComponent,
-    ProjectSettingsComponent
+    ProjectSettingsComponent,
+    ScenarioSettingsComponent
   ],
   imports: [
     BrowserModule,

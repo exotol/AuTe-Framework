@@ -15,9 +15,9 @@ export class Scenario {
   lastRunFailures: number;
 
   beforeScenarioIgnore: boolean;
-  beforeScenario: Scenario;
+  beforeScenarioId: Number;
   afterScenarioIgnore: boolean;
-  afterScenario: Scenario;
+  afterScenarioId: Number;
 
   steps: Step[];
   stand: Stand;

@@ -19,7 +19,7 @@
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
-      <div [style.display]="tab == 'details' || tab == 'all' ? '' : 'none'">
+      <div *ngIf="tab == 'details' || tab == 'all'">
         <div class="row">
           <div class="col-sm-12" style="color: gray;">
             <div *ngIf="stepResult.pollingRetryCount > 1">Polling retry count: {{stepResult.pollingRetryCount}}</div>
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div [style.display]="tab == 'json' || tab == 'all' ? '' : 'none'">
+      <div *ngIf="tab == 'json' || tab == 'all'">
         <pre>{{stepResult | json}}</pre>
       </div>
       <div *ngIf="tab == 'stepEdit' || tab == 'all'">

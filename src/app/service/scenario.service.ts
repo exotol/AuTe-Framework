@@ -43,4 +43,12 @@ export class ScenarioService {
       {headers: this.headers}
     ).map(value => value.json() as Step[]);
   }
+
+  saveOne(scenario: Scenario): Observable<Scenario> {
+    return this.http.put(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id,
+      scenario,
+      {headers: this.headers}
+    ).map(value => value.json() as Scenario);
+  }
 }

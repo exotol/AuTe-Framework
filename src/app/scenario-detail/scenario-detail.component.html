@@ -9,7 +9,10 @@
   </ol>
 
   <div *ngIf="scenario">
-    <h3>{{scenario.name}}</h3>
+    <div style="margin-bottom: 10px;">
+      <h3>{{scenario.name}}</h3>
+      <a [routerLink]="['/scenario/' + scenario.id + '/settings']">Settings</a>
+    </div>
     <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
   </div>
 
