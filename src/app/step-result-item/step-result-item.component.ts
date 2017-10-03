@@ -18,7 +18,7 @@ export class StepResultItemComponent implements OnInit {
   @Input()
   stepResult: StepResult;
 
-  tab = 'none';
+  tab = 'summary';
 
   constructor(
     private stepService: StepService,

@@ -20,6 +20,7 @@
     <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
   </div>
   <app-step-item [step]="step" *ngFor="let step of stepList"></app-step-item>
+  <div class="help-block" *ngIf="!stepList">Loading...</div>
   <div class="container-fluid" style="margin-bottom: 20px;">
     <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
   </div>

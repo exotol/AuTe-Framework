@@ -1,6 +1,7 @@
 import {Step} from './step';
 
 export class StepResult {
+  testId: String;
   step: Step;
   result: string;
 
