@@ -45,15 +45,9 @@ public class HttpHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
     private final CloseableHttpClient httpClient;
     private HttpClientContext context;
-    private static final int CONNECTION_TIMEOUT = 10;
 
     public HttpHelper() {
-        RequestConfig globalConfig = RequestConfig.custom()
-                .setCookieSpec(CookieSpecs.NETSCAPE)
-                .setConnectTimeout(CONNECTION_TIMEOUT * 1000)
-                .setConnectionRequestTimeout(CONNECTION_TIMEOUT * 1000)
-                .setSocketTimeout(CONNECTION_TIMEOUT * 1000)
-                .build();
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
         CookieStore cookieStore = new BasicCookieStore();
         context = HttpClientContext.create();
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();

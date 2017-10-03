@@ -108,33 +108,32 @@ public class AtExecutor {
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
-        String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
 
-            scenario.setStepResults(new LinkedList<>());
-            // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-            Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
-            if (beforeScenario != null) {
-                beforeScenario.setStepResults(new LinkedList<>());
-                executeSteps(connection, stand, beforeScenario, project, httpHelper, savedValues, testId);
-                scenario.getStepResults().addAll(beforeScenario.getStepResults());
-            }
+        scenario.setStepResults(new LinkedList<>());
+        // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
+        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
+        if (beforeScenario != null) {
+            beforeScenario.setStepResults(new LinkedList<>());
+            executeSteps(connection, stand, beforeScenario, project, httpHelper, savedValues);
+            scenario.getStepResults().addAll(beforeScenario.getStepResults());
+        }
 
-            Scenario scenarioResult = executeSteps(connection, stand, scenario, project, httpHelper, savedValues, testId);
+        Scenario scenarioResult = executeSteps(connection, stand, scenario, project, httpHelper, savedValues);
 
-            // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-            Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
-            if (afterScenario != null) {
-                afterScenario.setStepResults(new LinkedList<>());
-                executeSteps(connection, stand, afterScenario, project, httpHelper, savedValues, testId);
-                scenario.getStepResults().addAll(afterScenario.getStepResults());
-            }
+        // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
+        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
+        if (afterScenario != null) {
+            afterScenario.setStepResults(new LinkedList<>());
+            executeSteps(connection, stand, afterScenario, project, httpHelper, savedValues);
+            scenario.getStepResults().addAll(afterScenario.getStepResults());
+        }
 
-            httpHelper.closeHttpConnection();
+        httpHelper.closeHttpConnection();
 
-            return scenarioResult;
+        return scenarioResult;
     }
 
-    private Scenario executeSteps(Connection connection, Stand stand, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues, String testId) {
+    private Scenario executeSteps(Connection connection, Stand stand, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {
         if (scenario != null) {
             int failures = 0;
             for (Step step: scenario.getSteps()) {
@@ -156,6 +155,7 @@ public class AtExecutor {
                             stepResult.setDescription(stepParameterSet.getDescription());
                         }
                         try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                            String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
                             executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                             // После выполнения шага необходимо проверить запросы к веб-сервисам
