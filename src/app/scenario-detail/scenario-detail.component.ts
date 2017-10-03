@@ -47,4 +47,23 @@ export class ScenarioDetailComponent implements OnInit {
         });
     }
   }
+
+  addStep() {
+    if (!this.stepList) {
+      this.stepList = [];
+    }
+    const newStep = new Step();
+    const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
+    newStep.sort = maxSort ? maxSort + 50 : 50;
+    this.stepList.push(newStep);
+  }
+
+  onDeleteClick(step: Step) {
+    if (confirm('Confirm: delete step')) {
+      const indexToRemove = this.stepList.indexOf(step);
+      if (indexToRemove > -1) {
+        this.stepList.splice(indexToRemove, 1);
+      }
+    }
+  }
 }

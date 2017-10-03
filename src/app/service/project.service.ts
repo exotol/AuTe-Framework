@@ -39,4 +39,12 @@ export class ProjectService {
     return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/scenarios')
       .map(value => value.json() as Scenario[]);
   }
+
+  createScenario(project: Project, scenario: Scenario): Observable<Scenario> {
+    return this.http.post(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/scenarios',
+      scenario,
+      {headers: this.headers}
+    ).map(value => value.json() as Scenario);
+  }
 }

@@ -17,12 +17,11 @@
           </select>
         </div>
         <input placeholder="Relative url. Example: /relative/url?parameter=value" class="form-control" title="" [(ngModel)]="step.relativeUrl" />
-        <span class="input-group-addon">
-          <label>
-            <input title="Disabled step" type="checkbox" [(ngModel)]="step.disabled" />
-            <small [style.color]="step.disabled ? 'red' : ''">Disabled</small>
-          </label>
-        </span>
+        <div class="input-group-btn">
+          <button class="btn btn-default" title="Delete" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete step</button>
+          <button class="btn btn-default" title="Disabled toggle" *ngIf="!step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disable</button>
+          <button class="btn btn-default" title="Disabled toggle" style="color: red;" *ngIf="step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disabled</button>
+        </div>
       </div>
     </div>
   </div>

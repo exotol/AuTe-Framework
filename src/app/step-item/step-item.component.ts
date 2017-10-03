@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Step} from '../model/step';
 import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
@@ -18,6 +18,8 @@ export class StepItemComponent implements OnInit {
 
   @Input()
   step: Step;
+
+  @Output() onDeleteClick? = new EventEmitter<any>();
 
   tab = 'summary';
   toastOptions: ToastOptions = {
@@ -99,5 +101,13 @@ export class StepItemComponent implements OnInit {
         this.step.expectedServiceRequestList.splice(indexToRemove, 1);
       }
     }
+  }
+
+  deleteStep() {
+    this.onDeleteClick.emit({step: this.step});
+  }
+
+  disabledToggle() {
+    this.step.disabled = !this.step.disabled;
   }
 }
