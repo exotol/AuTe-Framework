@@ -156,6 +156,7 @@ public class AtExecutor {
                         }
                         try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
                             String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
+                            stepResult.setTestId(testId);
                             executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
                             // После выполнения шага необходимо проверить запросы к веб-сервисам
