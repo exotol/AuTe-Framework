@@ -20,8 +20,8 @@ public class ScenarioRo extends AbstractRo {
     private List<StepResultRo> stepResults = null;
     private Date lastRunAt;
     private Integer lastRunFailures;
-    private ScenarioRo beforeScenario;
-    private ScenarioRo afterScenario;
+    private Long beforeScenarioId;
+    private Long afterScenarioId;
     private List<StepRo> steps;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
@@ -99,20 +99,20 @@ public class ScenarioRo extends AbstractRo {
         this.lastRunFailures = lastRunFailures;
     }
 
-    public ScenarioRo getBeforeScenario() {
-        return beforeScenario;
+    public Long getBeforeScenarioId() {
+        return beforeScenarioId;
     }
 
-    public void setBeforeScenario(ScenarioRo beforeScenario) {
-        this.beforeScenario = beforeScenario;
+    public void setBeforeScenarioId(Long beforeScenarioId) {
+        this.beforeScenarioId = beforeScenarioId;
     }
 
-    public ScenarioRo getAfterScenario() {
-        return afterScenario;
+    public Long getAfterScenarioId() {
+        return afterScenarioId;
     }
 
-    public void setAfterScenario(ScenarioRo afterScenario) {
-        this.afterScenario = afterScenario;
+    public void setAfterScenarioId(Long afterScenarioId) {
+        this.afterScenarioId = afterScenarioId;
     }
 
     public List<StepRo> getSteps() {

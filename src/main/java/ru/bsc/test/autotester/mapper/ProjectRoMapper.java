@@ -29,8 +29,8 @@ public abstract class ProjectRoMapper {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "beforeScenario", source = "beforeScenario"),
-            @Mapping(target = "afterScenario", source = "afterScenario"),
+            @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
+            @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
             @Mapping(target = "projectCode", source = "projectCode"),
             @Mapping(target = "scenarioGroups", source = "scenarioGroups"),
             @Mapping(target = "standList", source = "standList"),
@@ -57,16 +57,16 @@ public abstract class ProjectRoMapper {
         updateProjectFromRo(projectRo, project);
 
         project.setBeforeScenario(
-                projectRo.getBeforeScenario() == null || projectRo.getBeforeScenario().getId() == null ? null :
+                projectRo.getBeforeScenarioId() == null ? null :
                         project.getScenarios().stream()
-                                .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getBeforeScenario().getId()))
+                                .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getBeforeScenarioId()))
                                 .findAny().orElseGet(null)
         );
 
         project.setAfterScenario(
-                projectRo.getAfterScenario() == null || projectRo.getAfterScenario().getId() == null ? null :
+                projectRo.getAfterScenarioId() == null ? null :
                         project.getScenarios().stream()
-                                .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getAfterScenario().getId()))
+                                .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getAfterScenarioId()))
                                 .findAny().orElseGet(null)
         );
 
@@ -133,8 +133,8 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "lastRunAt", source = "lastRunAt"),
             @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
-            @Mapping(target = "beforeScenario", source = "beforeScenario"),
-            @Mapping(target = "afterScenario", source = "afterScenario"),
+            @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
+            @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
             @Mapping(target = "steps", ignore = true),
             @Mapping(target = "stepResults", ignore = true),
             @Mapping(target = "stand", source = "stand"),
