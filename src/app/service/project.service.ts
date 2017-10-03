@@ -22,12 +22,12 @@ export class ProjectService {
       .map(value => value.json() as Project[]);
   }
 
-  save(project: Project): void {
-    this.http.put(
+  save(project: Project): Observable<Project> {
+    return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id,
       project,
       this.headers
-    );
+    ).map(value => value.json() as Project);
   }
 
   findOne(projectId: number): Observable<Project> {

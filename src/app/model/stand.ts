@@ -1,5 +1,5 @@
 export class Stand {
-  id: number;
+  id: Number;
   serviceUrl: string;
   dbUrl: string;
   dbUser: string;
