@@ -152,6 +152,7 @@ public abstract class StepRoMapper {
 
     public abstract List<StepResultRo> convertStepResultListToStepResultRo(List<StepResult> stepResultList);
     @Mappings({
+            @Mapping(target = "testId", source = "testId"),
             @Mapping(target = "step", source = "step"),
             @Mapping(target = "result", source = "result"),
             @Mapping(target = "details", source = "details"),
