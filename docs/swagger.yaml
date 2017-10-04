@@ -10,8 +10,6 @@ basePath: /autotester/rest
 tags:
   - name: Project
     description: Autotes project, contains Scenario list
-  - name: Stand
-    description: Stand of project
   - name: Scenario
     description: Scenario of Project, contains Step list
   - name: Step
@@ -146,6 +144,29 @@ paths:
           description: Scenario created
           schema:
             $ref: '#/definitions/Scenario'
+  '/projects/{projectId}/export-selected-to-yaml':
+    post:
+      tags:
+        - Project
+      summary: Download YAML
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: projectId
+          in: path
+          type: integer
+          required: true
+          description: Project id
+        - name: selectedScenarios
+          in: formData
+          type: array
+          items:
+            type: integer
+      responses:
+        404:
+          description: Project not found
+        200:
+          description: Project YAML
   '/scenarios/{scenarioId}':
     get:
       tags:
