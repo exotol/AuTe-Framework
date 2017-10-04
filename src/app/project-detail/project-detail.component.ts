@@ -7,6 +7,7 @@ import {Scenario} from '../model/scenario';
 import {ScenarioGroup} from '../model/scenario-group';
 import {Globals} from '../globals';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
+import { saveAs } from 'file-saver/FileSaver';
 
 @Component({
   selector: 'app-project-detail',
@@ -21,6 +22,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   selectAllFlag = false;
   failCount = 0;
   Math: any;
+  newScenarioName = '';
 
   @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
   executingStateExecuting = 0;
@@ -75,14 +77,16 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     return false;
   }
 
-  downloadAsExcel() {
-    // TODO
-    // formaction="${pageContext.request.contextPath}/project/${project.id}/export-to-excel"
+  downloadSelectedAsYaml() {
+    const selectedScenarios = this.scenarioList
+      .filter(value => this.isSelectedScenario(value))
+      .map(value => value.id);
+    this.projectService.downloadYaml(this.project, selectedScenarios)
+      .subscribe(res => saveAs(res, 'PROJECT_' + this.project.projectCode + '.yml'))
   }
 
-  downloadSelectedAsYaml() {
-    // TODO
-    // formaction="${pageContext.request.contextPath}/project/${project.id}/export-selected-to-yaml"
+  isSelectedScenario(scenario: Scenario) {
+    return scenario != null && scenario._selected && this.isDisplayScenario(scenario);
   }
 
   isDisplayScenario(scenario: Scenario) {
@@ -127,5 +131,16 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   // noinspection JSUnusedLocalSymbols
   onStateChange(event: any, scenario: Scenario) {
     this.updateExecutionStatus();
+  }
+
+  saveNewScenario() {
+    const newScenario = new Scenario();
+    newScenario.name = this.newScenarioName;
+
+    this.projectService.createScenario(this.project, newScenario)
+      .subscribe(savedScenario => {
+        this.scenarioList.push(savedScenario);
+        this.newScenarioName = '';
+      });
   }
 }

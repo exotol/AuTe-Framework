@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Project} from '../model/project';
-import {Headers, Http} from '@angular/http';
+import {Headers, Http, ResponseContentType} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Scenario} from '../model/scenario';
 import {Globals} from '../globals';
@@ -46,5 +46,13 @@ export class ProjectService {
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);
+  }
+
+  downloadYaml(project: Project, selectedScenarios: number[]) {
+    return this.http.post(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/export-selected-to-yaml',
+      selectedScenarios,
+      {responseType: ResponseContentType.Blob}
+    ).map(value => new Blob([value.blob()]));
   }
 }

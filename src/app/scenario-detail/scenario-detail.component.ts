@@ -54,7 +54,7 @@ export class ScenarioDetailComponent implements OnInit {
     }
     const newStep = new Step();
     const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
-    newStep.sort = maxSort ? maxSort + 50 : 50;
+    newStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
     this.stepList.push(newStep);
   }
 

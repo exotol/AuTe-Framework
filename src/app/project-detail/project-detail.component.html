@@ -7,8 +7,6 @@
   <h4>{{project.name}}</h4>
   <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
 
-  <a class="btn btn-default" target="_blank" style="float: right;" [attr.href]="globals.serviceBaseUrl + '/project/' + project.id + '/get-yaml'">Download project as YAML</a>
-
   <nav aria-label="Scenario groups">
     <ul class="pagination">
       <li [class.active]="filter == null || filter.scenarioGroup == null">
@@ -47,11 +45,31 @@
       </div>
     </div>
   </div>
-  <div style="min-height: 33px; margin-top: 7px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
+  <div style="min-height: 33px; margin-top: 7px; margin-bottom: 25px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
     <app-scenario-list-item [scenario]="scenario" (onStateChange)="onStateChange($event, scenario)"></app-scenario-list-item>
   </div>
 
-  <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as .xlsx" (click)="downloadAsExcel()"/>
-  <input disabled type="submit" style="float: right;" class="btn btn-default" value="Download selected scenarios as YAML" (click)="downloadSelectedAsYaml()"/>
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/project/' + project.id + '/get-yaml'">Download project as YAML</a>
+        <button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <label>Create new scenario</label>
+        <div class="input-group">
+          <input placeholder="Scenario name" class="form-control" title="New scenario name" [(ngModel)]="newScenarioName" />
+          <span class="input-group-btn">
+            <button class="btn btn-success" (click)="saveNewScenario()"><span class="glyphicon glyphicon-plus"></span> Create</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </ng-container>

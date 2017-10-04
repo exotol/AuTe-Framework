@@ -6,7 +6,7 @@
 
 <div class="container-fluid" *ngIf="project">
   <h3>{{project.name}}</h3>
-  <button class="btn btn-success" style="margin-bottom: 5px;" (click)="save()">Save</button>
+  <button class="btn btn-success" style="margin-bottom: 15px;" (click)="save()">Save project settings</button>
   <div>
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
