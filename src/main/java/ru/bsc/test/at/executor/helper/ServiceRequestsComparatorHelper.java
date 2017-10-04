@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 30.05.2017.
@@ -64,7 +65,11 @@ public class ServiceRequestsComparatorHelper {
                 compareWSRequest(
                         expectedRequest.getExpectedServiceRequest(),
                         actualRequest.getBody(),
-                        expectedRequest.getIgnoredTags() != null ? new HashSet<>(Arrays.asList(expectedRequest.getIgnoredTags().split(","))) : null
+                        expectedRequest.getIgnoredTags() != null ?
+                                new HashSet<>(Arrays.stream(expectedRequest.getIgnoredTags()
+                                        .split(","))
+                                        .map(String::trim)
+                                        .collect(Collectors.toList())) : null
                 );
             } else {
                 throw new Exception("Service " + expectedRequest.getServiceName() + " not called");

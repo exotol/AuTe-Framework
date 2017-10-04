@@ -186,11 +186,14 @@ public class AtExecutor {
 
     private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
+        stepResult.setSavedParameters(savedValues.toString());
+
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, savedValues);
+        stepResult.setSavedParameters(savedValues.toString());
 
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
