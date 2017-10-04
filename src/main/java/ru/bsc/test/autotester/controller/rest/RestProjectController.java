@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -15,6 +16,8 @@ import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -91,5 +94,22 @@ public class RestProjectController {
             // TODO: Return 404 error
             return null;
         }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @RequestMapping(value = "{projectId}/export-selected-to-yaml", method = RequestMethod.POST)
+    @ResponseBody
+    public String exportToYaml(
+            @PathVariable long projectId,
+            @RequestBody() List<Long> selectedScenarios,
+            HttpServletResponse response
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+        if (project != null) {
+            response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getProjectCode() + ".yml\"");
+            return projectService.getSelectedAsYaml(projectId, selectedScenarios);
+        }
+        // TODO: return 404
+        return null;
     }
 }
