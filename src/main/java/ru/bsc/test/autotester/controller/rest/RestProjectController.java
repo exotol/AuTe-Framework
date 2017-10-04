@@ -78,8 +78,9 @@ public class RestProjectController {
     public ScenarioRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
+            Scenario newScenario = new Scenario();
             newScenario.setProject(project);
+            newScenario = scenarioRoMapper.updateScenario(scenarioRo, newScenario);
             project.getScenarios().add(newScenario);
             project = projectService.save(project);
 

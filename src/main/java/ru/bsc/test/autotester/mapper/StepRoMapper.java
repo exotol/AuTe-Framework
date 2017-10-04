@@ -121,6 +121,9 @@ public abstract class StepRoMapper {
         if (stepParameterSet.getStepParameterList() == null) {
             stepParameterSet.setStepParameterList(new LinkedList<>());
         }
+        if (stepParameterSetRo.getStepParameterList() == null) {
+            stepParameterSetRo.setStepParameterList(new LinkedList<>());
+        }
         stepParameterSet.setStepParameterList(stepParameterSetRo.getStepParameterList().stream()
                 .map(stepParameterRo -> stepParameterSet.getStepParameterList().stream()
                         .filter(stepParameter -> Objects.equals(stepParameter.getId(), stepParameterRo.getId()))
@@ -193,6 +196,9 @@ public abstract class StepRoMapper {
         if (step.getMockServiceResponseList() == null) {
             step.setMockServiceResponseList(new LinkedList<>());
         }
+        if (stepRo.getMockServiceResponseList() == null) {
+            stepRo.setMockServiceResponseList(new LinkedList<>());
+        }
         step.setMockServiceResponseList(stepRo.getMockServiceResponseList().stream()
                 .map(mockServiceResponseRo -> step.getMockServiceResponseList().stream()
                         .filter(mockServiceResponse -> Objects.equals(mockServiceResponse.getId(), mockServiceResponseRo.getId()))
@@ -210,6 +216,9 @@ public abstract class StepRoMapper {
         if (step.getStepParameterSetList() == null) {
             step.setStepParameterSetList(new LinkedList<>());
         }
+        if (stepRo.getStepParameterSetList() == null) {
+            stepRo.setStepParameterSetList(new LinkedList<>());
+        }
         step.setStepParameterSetList(stepRo.getStepParameterSetList().stream()
                 .map(stepParameterSetRo -> step.getStepParameterSetList().stream()
                         .filter(stepParameterSet -> Objects.equals(stepParameterSet.getId(), stepParameterSetRo.getId()))
@@ -226,6 +235,9 @@ public abstract class StepRoMapper {
 
         if (step.getExpectedServiceRequests() == null) {
             step.setExpectedServiceRequests(new LinkedList<>());
+        }
+        if (stepRo.getExpectedServiceRequestList() == null) {
+            stepRo.setExpectedServiceRequestList(new LinkedList<>());
         }
         step.setExpectedServiceRequests(stepRo.getExpectedServiceRequestList().stream()
                 .map(expectedServiceRequestRo -> step.getExpectedServiceRequests().stream()
