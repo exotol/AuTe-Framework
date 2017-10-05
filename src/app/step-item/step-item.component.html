@@ -1,7 +1,12 @@
 <div class="container-fluid" style="padding-bottom: 30px;">
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-11">
       <input style="font-weight: bold; border-width: 0; box-shadow: none;" placeholder="Step description" class="form-control" title="" [(ngModel)]="step.stepComment" />
+    </div>
+    <div class="col-sm-1 text-right" *ngIf="showUpDownDeleteButtons">
+      <button class="btn btn-xs btn-block btn-default" (click)="upStep()"><span class="glyphicon glyphicon-hand-up"></span> Up</button>
+      <div class="clearfix"></div>
+      <button class="btn btn-xs btn-block btn-default" (click)="downStep()"><span class="glyphicon glyphicon-hand-down"></span> Down</button>
     </div>
   </div>
   <div class="row">
@@ -18,7 +23,7 @@
         </div>
         <input placeholder="Relative url. Example: /relative/url?parameter=value" class="form-control" title="" [(ngModel)]="step.relativeUrl" />
         <div class="input-group-btn">
-          <button class="btn btn-default" title="Delete" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete step</button>
+          <button class="btn btn-default" title="Delete" *ngIf="showUpDownDeleteButtons" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete step</button>
           <button class="btn btn-default" title="Disabled toggle" *ngIf="!step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disable</button>
           <button class="btn btn-default" title="Disabled toggle" style="color: red;" *ngIf="step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disabled</button>
         </div>

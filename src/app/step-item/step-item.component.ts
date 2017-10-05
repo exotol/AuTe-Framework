@@ -18,8 +18,12 @@ export class StepItemComponent implements OnInit {
 
   @Input()
   step: Step;
+  @Input()
+  showUpDownDeleteButtons: Boolean;
 
   @Output() onDeleteClick? = new EventEmitter<any>();
+  @Output() onUpClick? = new EventEmitter<any>();
+  @Output() onDownClick? = new EventEmitter<any>();
 
   tab = 'summary';
   toastOptions: ToastOptions = {
@@ -109,5 +113,13 @@ export class StepItemComponent implements OnInit {
 
   disabledToggle() {
     this.step.disabled = !this.step.disabled;
+  }
+
+  upStep() {
+    this.onUpClick.emit();
+  }
+
+  downStep() {
+    this.onDownClick.emit();
   }
 }

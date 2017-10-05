@@ -80,4 +80,30 @@ export class ScenarioDetailComponent implements OnInit {
       this.stepList.splice(addAfterIndex, 0, newStep);
     }
   }
+
+  onUpClick(step: Step) {
+    const index = this.stepList.indexOf(step);
+    if (index > 0) {
+      const topSort = this.stepList[index - 1].sort;
+      this.stepList[index - 1].sort = step.sort;
+      step.sort = topSort;
+
+      const tmpStep = this.stepList[index];
+      this.stepList[index] = this.stepList[index - 1];
+      this.stepList[index - 1] = tmpStep;
+    }
+  }
+
+  onDownClick(step: Step) {
+    const index = this.stepList.indexOf(step);
+    if (index > -1 && index < this.stepList.length - 1) {
+      const bottomSort = this.stepList[index + 1].sort;
+      this.stepList[index + 1].sort = step.sort;
+      step.sort = bottomSort;
+
+      const tmpStep = this.stepList[index];
+      this.stepList[index] = this.stepList[index + 1];
+      this.stepList[index + 1] = tmpStep;
+    }
+  }
 }
