@@ -5,6 +5,7 @@ package ru.bsc.test.autotester.ro;
  *
  */
 public class StepResultRo {
+    private String testId;
     private StepRo step;
     private String result;
     private String details;
@@ -15,6 +16,14 @@ public class StepResultRo {
     private Integer pollingRetryCount;
     private String savedParameters;
     private String description;
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
 
     public StepRo getStep() {
         return step;

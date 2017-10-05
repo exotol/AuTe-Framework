@@ -11,14 +11,17 @@ import java.util.List;
  */
 public class ScenarioRo extends AbstractRo {
     private Long id;
+    private Long projectId;
+    private String projectName;
+    private StandRo projectStand;
     private String name;
 
     private ScenarioGroupRo scenarioGroup;
     private List<StepResultRo> stepResults = null;
     private Date lastRunAt;
     private Integer lastRunFailures;
-    private ScenarioRo beforeScenario;
-    private ScenarioRo afterScenario;
+    private Long beforeScenarioId;
+    private Long afterScenarioId;
     private List<StepRo> steps;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
@@ -30,6 +33,30 @@ public class ScenarioRo extends AbstractRo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public StandRo getProjectStand() {
+        return projectStand;
+    }
+
+    public void setProjectStand(StandRo projectStand) {
+        this.projectStand = projectStand;
     }
 
     public String getName() {
@@ -72,20 +99,20 @@ public class ScenarioRo extends AbstractRo {
         this.lastRunFailures = lastRunFailures;
     }
 
-    public ScenarioRo getBeforeScenario() {
-        return beforeScenario;
+    public Long getBeforeScenarioId() {
+        return beforeScenarioId;
     }
 
-    public void setBeforeScenario(ScenarioRo beforeScenario) {
-        this.beforeScenario = beforeScenario;
+    public void setBeforeScenarioId(Long beforeScenarioId) {
+        this.beforeScenarioId = beforeScenarioId;
     }
 
-    public ScenarioRo getAfterScenario() {
-        return afterScenario;
+    public Long getAfterScenarioId() {
+        return afterScenarioId;
     }
 
-    public void setAfterScenario(ScenarioRo afterScenario) {
-        this.afterScenario = afterScenario;
+    public void setAfterScenarioId(Long afterScenarioId) {
+        this.afterScenarioId = afterScenarioId;
     }
 
     public List<StepRo> getSteps() {

@@ -10,14 +10,12 @@ basePath: /autotester/rest
 tags:
   - name: Project
     description: Autotes project, contains Scenario list
-  - name: Stand
-    description: Stand of project
   - name: Scenario
     description: Scenario of Project, contains Step list
-  - name: ScenarioGroup
-    description: Group of Scenarios
   - name: Step
     description: Step of Scenario, contains details about one request to service
+  - name: Test executing
+    description: ''
 schemes:
   - http
 paths:
@@ -70,7 +68,7 @@ paths:
     put:
       tags:
         - Project
-      summary: Update project details
+      summary: Update project details with stands and scenario groups
       description: ''
       operationId: saveProject
       consumes:
@@ -99,168 +97,6 @@ paths:
           description: 'Updated project-object'
           schema:
             $ref: '#/definitions/Project'
-  '/projects/{projectId}/stands':
-    get:
-      tags:
-        - Project
-        - Stand
-      summary: Get Stand list of project
-      description: ''
-      operationId: getStandList
-      parameters:
-        - name: projectId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        200:
-          description: Stand list of Project
-        404:
-          description: Project not found
-    post:
-      tags:
-        - Project
-        - Stand
-      summary: Create Stand
-      description: ''
-      operationId: createStand
-      parameters:
-        - name: projectId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        200:
-          description: Stand list of Project
-        404:
-          description: Project not found
-  '/stands/{standId}':
-    put:
-      tags:
-        - Stand
-      summary: Update Stand details
-      description: ''
-      operationId: saveStand
-      parameters:
-        - name: standId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-        - name: body
-          in: body
-          description: Update stand details
-          required: true
-          schema:
-            $ref: '#/definitions/Stand'
-      responses:
-        '200':
-          description: Stand updated
-          schema:
-            $ref: '#/definitions/Stand'
-    delete:
-      tags:
-        - Stand
-      summary: Delete Stand
-      description: ''
-      operationId: deleteStand
-      parameters:
-        - name: standId
-          in: path
-          description: ID of Project
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Stand deleted
-        '404':
-          description: Stand not found
-  '/projects/{projectId}/scenario-groups':
-    get:
-      summary: Get ScenarioGroup list
-      tags:
-        - ScenarioGroup
-        - Project
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          type: integer
-          description: Project id
-      responses:
-        '404':
-          description: Project not found
-        '200':
-          description: ScenarioGroup list
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ScenarioGroup'
-    post:
-      summary: Create ScenarioGroup list
-      tags:
-        - ScenarioGroup
-        - Project
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          type: integer
-          description: Project id
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
-      responses:
-        '404':
-          description: Project not found
-        '200':
-          description: Created scenario group
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
-  '/scenario-groups/{scenarioGroupId}':
-    put:
-      summary: Update ScenarioGroup details
-      tags:
-        - ScenarioGroup
-      parameters:
-        - name: scenarioGroupId
-          in: path
-          required: true
-          type: integer
-          description: Stand id
-        - name: body
-          in: body
-          required: true
-          description: Scenario object
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
-      responses:
-        200:
-          description: ScenarioGroup details updated
-          schema:
-            $ref: '#/definitions/ScenarioGroup'
-        404:
-          description: ScenarioGroup not found
-    delete:
-      summary: Delete ScenarioGroup
-      tags:
-        - ScenarioGroup
-      operationId: deleteScenarioGroup
-      parameters:
-        - name: scenarioGroupId
-          in: path
-          type: integer
-          required: true
-          description: Stand id
-      responses:
-        200:
-          description: ScenarioGroup successful deleted
-        404:
-          description: ScenarioGroup not found
   '/projects/{projectId}/scenarios':
     get:
       tags:
@@ -308,6 +144,29 @@ paths:
           description: Scenario created
           schema:
             $ref: '#/definitions/Scenario'
+  '/projects/{projectId}/export-selected-to-yaml':
+    post:
+      tags:
+        - Project
+      summary: Download YAML
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: projectId
+          in: path
+          type: integer
+          required: true
+          description: Project id
+        - name: selectedScenarios
+          in: formData
+          type: array
+          items:
+            type: integer
+      responses:
+        404:
+          description: Project not found
+        200:
+          description: Project YAML
   '/scenarios/{scenarioId}':
     get:
       tags:
@@ -412,23 +271,77 @@ paths:
           description: Step created
           schema:
             $ref: '#/definitions/Step'
-  '/steps/{stepId}':
-    delete:
+    put:
       tags:
         - Step
-      summary: Delete Step
-      operationId: deleteStep
+        - Scenario
+      summary: Save step list
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Step list saved
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+  '/steps/{stepId}':
+    put:
+      tags:
+        - Step
+      summary: Update Step details
+      operationId: updateStep
       parameters:
         - name: stepId
           in: path
           required: true
           description: Step id
           type: integer
+        - name: body
+          in: body
+          required: true
+          description: Step to update
+          schema:
+            $ref: '#/definitions/Step'
       responses:
         404:
           description: Step not found
         200:
-          description: Step deleted
+          description: Step updated
+          schema:
+            $ref: '#/definitions/Step'
+  '/scenarios/{scenarioId}/exec':
+    post:
+      tags:
+        - Test executing
+      summary: Start executing
+      parameters:
+        - name: scenarioId
+          in: path
+          required: true
+          type: integer
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Test finished
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StepResult'
 definitions:
   Project:
     type: object
@@ -464,6 +377,15 @@ definitions:
       id:
         type: integer
       url:
+        type: string
+  StepResult:
+    type: object
+    properties:
+      step:
+        $ref: '#/definitions/Step'
+      actual:
+        type: string
+      expected:
         type: string
 externalDocs:
   description: Find out more about Swagger

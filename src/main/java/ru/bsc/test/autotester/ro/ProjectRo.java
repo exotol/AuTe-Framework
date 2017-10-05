@@ -12,8 +12,8 @@ public class ProjectRo extends AbstractRo {
 
     private Long id;
     private String name;
-    private ScenarioRo beforeScenario;
-    private ScenarioRo afterScenario;
+    private Long beforeScenarioId;
+    private Long afterScenarioId;
     private String projectCode;
     private List<ScenarioGroupRo> scenarioGroups;
     private List<StandRo> standList;
@@ -37,20 +37,20 @@ public class ProjectRo extends AbstractRo {
         this.name = name;
     }
 
-    public ScenarioRo getBeforeScenario() {
-        return beforeScenario;
+    public Long getBeforeScenarioId() {
+        return beforeScenarioId;
     }
 
-    public void setBeforeScenario(ScenarioRo beforeScenario) {
-        this.beforeScenario = beforeScenario;
+    public void setBeforeScenarioId(Long beforeScenarioId) {
+        this.beforeScenarioId = beforeScenarioId;
     }
 
-    public ScenarioRo getAfterScenario() {
-        return afterScenario;
+    public Long getAfterScenarioId() {
+        return afterScenarioId;
     }
 
-    public void setAfterScenario(ScenarioRo afterScenario) {
-        this.afterScenario = afterScenario;
+    public void setAfterScenarioId(Long afterScenarioId) {
+        this.afterScenarioId = afterScenarioId;
     }
 
     public String getProjectCode() {

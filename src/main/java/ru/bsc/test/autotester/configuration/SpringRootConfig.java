@@ -42,6 +42,8 @@ public class SpringRootConfig {
     private String password;
     @Value("${database}")
     private String database;
+    @Value("${hibernate.showSql:#{null}}")
+    private Boolean showSql;
 
     @Bean
     public DataSource dataSource() {
@@ -69,7 +71,7 @@ public class SpringRootConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(true);
+        vendorAdapter.setShowSql(showSql != null && showSql);
         vendorAdapter.setDatabase(DATABASE_HSQL.equals(database) ? Database.HSQL : Database.ORACLE);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();

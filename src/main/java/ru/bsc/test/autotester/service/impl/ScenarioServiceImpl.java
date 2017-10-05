@@ -10,7 +10,6 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.service.AtExecutor;
 
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.repository.impl.ScenarioRepositoryWrapper;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
@@ -22,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ import java.util.List;
  *
  */
 @Service
-public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
+public class ScenarioServiceImpl implements ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
@@ -37,7 +37,6 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
 
     @Autowired
     public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
-        super(new ScenarioRepositoryWrapper(scenarioRepository));
         this.scenarioRepository = scenarioRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.stepService = stepService;
@@ -55,7 +54,8 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
 
     @Override
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList) {
-        return super.executeScenarioList(project, scenarioList);
+        AtExecutor atExecutor = new AtExecutor();
+        return atExecutor.executeScenarioList(project, scenarioList);
     }
 
     public Scenario save(Scenario scenario) {
@@ -68,6 +68,43 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
 
     public void delete(Scenario scenario) {
         scenarioRepository.delete(scenario);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected class ServiceNameResponsePair {
+        private String serviceName;
+        private String response;
+
+        ServiceNameResponsePair(String serviceName, String response) {
+            this.serviceName = serviceName;
+            this.response = response;
+        }
+
+        public String getServiceName() {
+            return serviceName;
+        }
+
+        String getResponse() {
+            return response;
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected List<ServiceNameResponsePair> parseServiceResponsesString(String responses) {
+        List<ServiceNameResponsePair> result = new LinkedList<>();
+        if (responses != null) {
+            for (String service : responses.split(";")) {
+                String[] serviceData = service.split(":");
+                // TODO что-то сделать с неправильным форматом
+                if (serviceData.length == 2) {
+                    String serviceName = serviceData[0].trim();
+                    for (String response : serviceData[1].split(",")) {
+                        result.add(new ServiceNameResponsePair(serviceName, response.trim()));
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -111,13 +148,15 @@ public class ScenarioServiceImpl extends AtExecutor implements ScenarioService {
     }
 
     @Override
-    public Step cloneStep(Long stepId) {
-        Step step = stepService.findOne(stepId);
-        Scenario scenario = step.getScenario();
-        Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
-        Step newStep = step.clone();
-        newStep.setSort(maxSortStep + 50);
-        newStep.setScenario(scenario);
-        return stepService.save(newStep);
+    public Step cloneStep(Step step) {
+        if (step != null) {
+            Scenario scenario = step.getScenario();
+            Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
+            Step newStep = step.clone();
+            newStep.setSort(maxSortStep + 50);
+            newStep.setScenario(scenario);
+            return stepService.save(newStep);
+        }
+        return null;
     }
 }
