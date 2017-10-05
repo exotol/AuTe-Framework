@@ -5,6 +5,7 @@ import {ScenarioService} from '../service/scenario.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
+import {StepService} from '../service/step.service';
 
 @Component({
   selector: 'app-scenario-detail',
@@ -18,6 +19,7 @@ export class ScenarioDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
+    private stepService: StepService,
     private toastyService: ToastyService
   ) { }
 
@@ -104,6 +106,25 @@ export class ScenarioDetailComponent implements OnInit {
       const tmpStep = this.stepList[index];
       this.stepList[index] = this.stepList[index + 1];
       this.stepList[index + 1] = tmpStep;
+    }
+  }
+
+  onCloneClick(step: Step) {
+    if (confirm('Confirm: Clone step')) {
+      this.stepService.cloneStep(step)
+        .subscribe(clonedStep => {
+          const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
+          clonedStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
+          this.stepList.push(clonedStep);
+          const toastOptions: ToastOptions = {
+            title: 'Cloned',
+            msg: 'Step cloned and appended to the end',
+            showClose: true,
+            timeout: 15000,
+            theme: 'bootstrap'
+          };
+          this.toastyService.success(toastOptions);
+        });
     }
   }
 }

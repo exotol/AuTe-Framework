@@ -23,10 +23,17 @@
     </div>
 
     <div *ngFor="let step of stepList">
-      <div style="margin-bottom: 15px;" class="col-sm-offset-10 col-sm-2 text-right">
-        <button class="btn btn-xs btn-default" (click)="addStepBefore(step)"><span class="glyphicon glyphicon-hand-left"></span> Insert step</button>
+      <div style="margin-bottom: 15px;" class="col-sm-offset-11 col-sm-1 text-right">
+        <button style="white-space: normal;" class="btn btn-xs btn-block btn-default" (click)="addStepBefore(step)"><span class="glyphicon glyphicon-hand-left"></span> Insert step</button>
       </div>
-      <app-step-item [step]="step" [showUpDownDeleteButtons]="true" (onDeleteClick)="onDeleteClick(step)" (onUpClick)="onUpClick(step)" (onDownClick)="onDownClick(step)"></app-step-item>
+      <app-step-item
+        [step]="step"
+        [showUpDownDeleteCloneButtons]="true"
+        (onDeleteClick)="onDeleteClick(step)"
+        (onUpClick)="onUpClick(step)"
+        (onDownClick)="onDownClick(step)"
+        (onCloneClick)="onCloneClick(step)"
+      ></app-step-item>
     </div>
 
     <div class="container-fluid" style="margin-bottom: 20px;">

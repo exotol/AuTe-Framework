@@ -3,7 +3,7 @@
     <div class="col-sm-11">
       <input style="font-weight: bold; border-width: 0; box-shadow: none;" placeholder="Step description" class="form-control" title="" [(ngModel)]="step.stepComment" />
     </div>
-    <div class="col-sm-1 text-right" *ngIf="showUpDownDeleteButtons">
+    <div class="col-sm-1 text-right" *ngIf="showUpDownDeleteCloneButtons">
       <button class="btn btn-xs btn-block btn-default" (click)="upStep()"><span class="glyphicon glyphicon-hand-up"></span> Up</button>
       <div class="clearfix"></div>
       <button class="btn btn-xs btn-block btn-default" (click)="downStep()"><span class="glyphicon glyphicon-hand-down"></span> Down</button>
@@ -23,9 +23,10 @@
         </div>
         <input placeholder="Relative url. Example: /relative/url?parameter=value" class="form-control" title="" [(ngModel)]="step.relativeUrl" />
         <div class="input-group-btn">
-          <button class="btn btn-default" title="Delete" *ngIf="showUpDownDeleteButtons" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete step</button>
+          <button class="btn btn-default" title="Delete" *ngIf="showUpDownDeleteCloneButtons" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete</button>
           <button class="btn btn-default" title="Disabled toggle" *ngIf="!step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disable</button>
           <button class="btn btn-default" title="Disabled toggle" style="color: red;" *ngIf="step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disabled</button>
+          <button class="btn btn-success" title="Clone" *ngIf="showUpDownDeleteCloneButtons && step.id" (click)="cloneStep()"><span class="glyphicon glyphicon-paste"></span> Clone</button>
         </div>
       </div>
     </div>
@@ -159,7 +160,7 @@
               <label>Check saved values</label>
             </div>
           </div>
-          <div class="row" *ngFor="let checkedValueName of getObjectKeys(step.savedValuesCheck)">
+          <div class="row" *ngFor="let checkedValueName of StepItemComponent.getObjectKeys(step.savedValuesCheck)">
             <div class="col-sm-4" style="text-align: right;">
               <label>
                 <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>

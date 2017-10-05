@@ -19,11 +19,14 @@ export class StepItemComponent implements OnInit {
   @Input()
   step: Step;
   @Input()
-  showUpDownDeleteButtons: Boolean;
+  showUpDownDeleteCloneButtons: Boolean;
 
-  @Output() onDeleteClick? = new EventEmitter<any>();
-  @Output() onUpClick? = new EventEmitter<any>();
-  @Output() onDownClick? = new EventEmitter<any>();
+  @Output() onDeleteClick = new EventEmitter<any>();
+  @Output() onUpClick = new EventEmitter<any>();
+  @Output() onDownClick = new EventEmitter<any>();
+  @Output() onCloneClick = new EventEmitter<any>();
+
+  StepItemComponent = StepItemComponent;
 
   tab = 'summary';
   toastOptions: ToastOptions = {
@@ -33,6 +36,10 @@ export class StepItemComponent implements OnInit {
     timeout: 15000,
     theme: 'bootstrap'
   };
+
+  static getObjectKeys(savedValuesCheck: any): string[] {
+    return Object.keys(savedValuesCheck);
+  }
 
   constructor(
     private toastyService: ToastyService
@@ -57,10 +64,6 @@ export class StepItemComponent implements OnInit {
         this.step.mockServiceResponseList.splice(indexToRemove, 1);
       }
     }
-  }
-
-  getObjectKeys(savedValuesCheck: any): string[] {
-    return Object.keys(savedValuesCheck);
   }
 
   updateCheckedValueName(oldCheckedValueName: string): boolean {
@@ -121,5 +124,9 @@ export class StepItemComponent implements OnInit {
 
   downStep() {
     this.onDownClick.emit();
+  }
+
+  cloneStep() {
+    this.onCloneClick.emit();
   }
 }

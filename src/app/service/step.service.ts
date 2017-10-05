@@ -23,4 +23,12 @@ export class StepService {
       {headers: this.headers}
     ).map(value => value.json() as Step);
   }
+
+  cloneStep(step: Step): Observable<Step> {
+    return this.http.post(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.id + '/clone',
+      {},
+      {headers: this.headers}
+    ).map(value => value.json() as Step);
+  }
 }
