@@ -112,4 +112,15 @@ public class RestProjectController {
         // TODO: return 404
         return null;
     }
+
+    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
+    @ResponseBody
+    public String getYaml(
+            @PathVariable long projectId,
+            HttpServletResponse response
+    ) throws IOException {
+        Project project = projectService.findOne(projectId);
+        response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() +".yml\"");
+        return projectService.findOneAsYaml(projectId);
+    }
 }
