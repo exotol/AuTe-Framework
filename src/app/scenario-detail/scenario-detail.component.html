@@ -22,7 +22,12 @@
       <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
     </div>
 
-    <app-step-item [step]="step" *ngFor="let step of stepList" (onDeleteClick)="onDeleteClick(step)"></app-step-item>
+    <div *ngFor="let step of stepList">
+      <div class="col-sm-offset-10 col-sm-2 text-right">
+        <button class="btn btn-xs btn-default" (click)="addStepBefore(step)"><span class="glyphicon glyphicon-hand-left"></span> Add step</button>
+      </div>
+      <app-step-item [step]="step" (onDeleteClick)="onDeleteClick(step)"></app-step-item>
+    </div>
 
     <div class="container-fluid" style="margin-bottom: 20px;">
       <button class="btn btn-default" (click)="addStep()"><span class="glyphicon glyphicon-plus"></span> Add step</button>

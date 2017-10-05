@@ -66,4 +66,18 @@ export class ScenarioDetailComponent implements OnInit {
       }
     }
   }
+
+  addStepBefore(step: Step) {
+    const addAfterIndex = this.stepList.indexOf(step);
+    if (addAfterIndex > -1) {
+      const newStep = new Step();
+      newStep.sort = step.sort;
+
+      this.stepList
+        .filter(value => value.sort >= step.sort)
+        .forEach(value => value.sort += 50);
+
+      this.stepList.splice(addAfterIndex, 0, newStep);
+    }
+  }
 }
