@@ -1,5 +1,9 @@
 <h4>Projects</h4>
+<div class="help-block" *ngIf="!projectList">
+  Loading...
+</div>
 <table class="table table-condensed" *ngIf="projectList">
+  <tbody>
     <tr *ngFor="let project of projectList">
       <td>
         <a [routerLink]="['/project', project.id]">{{project.name}}</a>
@@ -10,4 +14,5 @@
         </ng-container>
       </td>
     </tr>
+  </tbody>
 </table>

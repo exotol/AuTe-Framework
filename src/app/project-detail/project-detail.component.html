@@ -39,9 +39,7 @@
             {{Math.round(executingStateFinished / (executingStateExecuting + executingStateFinished) * 100)}} %
             {{executingStateExecuting > 0 ? '(left: ' + executingStateExecuting + ')' : ''}}
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
@@ -52,7 +50,7 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/project/' + project.id + '/get-yaml'">Download project as YAML</a>
+        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.id + '/get-yaml'">Download project as YAML</a>
         <button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button>
       </div>
     </div>
