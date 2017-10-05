@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
@@ -48,10 +49,8 @@ public class RestProjectController {
         Project project = projectService.findOne(projectId);
         if (project != null) {
             return projectRoMapper.projectToProjectRo(project);
-        } else {
-            // TODO: Return 404 error
-            return null;
         }
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{projectId}", method = RequestMethod.PUT)
@@ -71,10 +70,8 @@ public class RestProjectController {
         Project project = projectService.findOne(projectId);
         if (project != null) {
             return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarios());
-        } else {
-            // TODO: Return 404 error
-            return null;
         }
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.POST)
@@ -90,10 +87,8 @@ public class RestProjectController {
             return projectRoMapper.scenarioToScenarioRo(
                     project.getScenarios().stream().max((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1).orElse(null)
             );
-        } else {
-            // TODO: Return 404 error
-            return null;
         }
+        throw new ResourceNotFoundException();
     }
 
     @SuppressWarnings("Duplicates")
@@ -109,8 +104,7 @@ public class RestProjectController {
             response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getProjectCode() + ".yml\"");
             return projectService.getSelectedAsYaml(projectId, selectedScenarios);
         }
-        // TODO: return 404
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
@@ -120,7 +114,10 @@ public class RestProjectController {
             HttpServletResponse response
     ) throws IOException {
         Project project = projectService.findOne(projectId);
-        response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() +".yml\"");
-        return projectService.findOneAsYaml(projectId);
+        if (project != null) {
+            response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() + ".yml\"");
+            return projectService.findOneAsYaml(projectId);
+        }
+        throw new ResourceNotFoundException();
     }
 }

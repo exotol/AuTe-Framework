@@ -148,13 +148,15 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public Step cloneStep(Long stepId) {
-        Step step = stepService.findOne(stepId);
-        Scenario scenario = step.getScenario();
-        Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
-        Step newStep = step.clone();
-        newStep.setSort(maxSortStep + 50);
-        newStep.setScenario(scenario);
-        return stepService.save(newStep);
+    public Step cloneStep(Step step) {
+        if (step != null) {
+            Scenario scenario = step.getScenario();
+            Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
+            Step newStep = step.clone();
+            newStep.setSort(maxSortStep + 50);
+            newStep.setScenario(scenario);
+            return stepService.save(newStep);
+        }
+        return null;
     }
 }

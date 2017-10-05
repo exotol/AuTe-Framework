@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
@@ -45,8 +46,7 @@ public class RestScenarioController {
         if (scenario != null) {
             return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
         }
-        // TODO: return 404 error
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.GET)
@@ -55,8 +55,7 @@ public class RestScenarioController {
         if (scenario != null) {
             return projectRoMapper.scenarioToScenarioRo(scenario);
         }
-        // TODO: return 404
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.PUT)
@@ -67,8 +66,7 @@ public class RestScenarioController {
             scenario = scenarioService.save(scenario);
             return projectRoMapper.scenarioToScenarioRo(scenario);
         }
-        // TODO: return 404
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.DELETE)
@@ -79,7 +77,7 @@ public class RestScenarioController {
             project.setScenarios(project.getScenarios().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
             projectService.save(project);
         }
-        // TODO: return 404
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.POST)
@@ -96,8 +94,7 @@ public class RestScenarioController {
 
             return stepRoMapper.stepToStepRo(scenario.getSteps().stream().max(Comparator.comparingLong(Step::getId)).orElse(newStep));
         }
-        // TODO: return 404 error
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
@@ -108,8 +105,7 @@ public class RestScenarioController {
             scenario = scenarioService.save(scenario);
             return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
         }
-        // TODO: return 404 error
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
@@ -126,7 +122,6 @@ public class RestScenarioController {
                 return stepRoMapper.convertStepResultListToStepResultRo(executedScenario.getStepResults());
             }
         }
-        // TODO: return 404 error
-        return null;
+        throw new ResourceNotFoundException();
     }
 }

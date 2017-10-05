@@ -108,7 +108,11 @@ public class RestTestController {
     @RequestMapping(value = "step/clone", method = RequestMethod.POST)
     @ResponseBody
     public Step cloneStep(@RequestParam Long stepId) {
-        return scenarioService.cloneStep(stepId);
+        Step step = stepService.findOne(stepId);
+        if (step != null) {
+            return scenarioService.cloneStep(step);
+        }
+        return null;
     }
 
     @RequestMapping(value = "project/save-scenario-groups", method = RequestMethod.POST)
