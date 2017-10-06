@@ -26,7 +26,7 @@ export class StepItemComponent implements OnInit {
   @Output() onDownClick = new EventEmitter<any>();
   @Output() onCloneClick = new EventEmitter<any>();
 
-  StepItemComponent = StepItemComponent;
+  Object = Object;
 
   tab = 'summary';
   toastOptions: ToastOptions = {
@@ -36,10 +36,6 @@ export class StepItemComponent implements OnInit {
     timeout: 15000,
     theme: 'bootstrap'
   };
-
-  static getObjectKeys(savedValuesCheck: any): string[] {
-    return Object.keys(savedValuesCheck);
-  }
 
   constructor(
     private toastyService: ToastyService
