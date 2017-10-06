@@ -36,14 +36,27 @@
       <ul class="nav nav-tabs">
         <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">Summary</a></li>
         <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
-        <li [class.active]="tab == 'savedValues'"><a href="#" (click)="selectTab('savedValues')">Saved values</a></li>
-        <li [class.active]="tab == 'headers'"><a href="#" (click)="selectTab('headers')">Headers</a></li>
-        <li [class.active]="tab == 'sql'"><a href="#" (click)="selectTab('sql')">Sql</a></li>
-        <li [class.active]="tab == 'mockServiceResponse'"><a href="#" (click)="selectTab('mockServiceResponse')">Mock responses</a></li>
-        <li [class.active]="tab == 'expectedServiceRequestList'"><a href="#" (click)="selectTab('expectedServiceRequestList')">Expected mock requests</a></li>
-        <li [class.active]="tab == 'polling'"><a href="#" (click)="selectTab('polling')">Polling</a></li>
-        <li [class.active]="tab == 'parameterSet'"><a href="#" (click)="selectTab('parameterSet')">Test cases</a></li>
-        <li [class.active]="tab == 'all'"><a href="#" (click)="selectTab('all')">All</a></li>
+        <li [class.active]="tab == 'savedValues'">
+          <a href="#" (click)="selectTab('savedValues')">Saved values <span *ngIf="step.jsonXPath || Object.keys(step.savedValuesCheck).length" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'headers'">
+          <a href="#" (click)="selectTab('headers')">Headers <span *ngIf="step.requestHeaders" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'sql'">
+          <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sql || step.sqlSavedParameter" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'mockServiceResponse'">
+          <a href="#" (click)="selectTab('mockServiceResponse')">Mock responses <span *ngIf="step.mockServiceResponseList && step.mockServiceResponseList.length != 0" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'expectedServiceRequestList'">
+          <a href="#" (click)="selectTab('expectedServiceRequestList')">Expected mock requests <span *ngIf="step.expectedServiceRequestList && step.expectedServiceRequestList.length != 0" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'polling'">
+          <a href="#" (click)="selectTab('polling')">Polling <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'parameterSet'">
+          <a href="#" (click)="selectTab('parameterSet')">Test cases <span *ngIf="step.stepParameterSetList && step.stepParameterSetList.length != 0" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
@@ -160,7 +173,7 @@
               <label>Check saved values</label>
             </div>
           </div>
-          <div class="row" *ngFor="let checkedValueName of StepItemComponent.getObjectKeys(step.savedValuesCheck)">
+          <div class="row" *ngFor="let checkedValueName of Object.keys(step.savedValuesCheck)">
             <div class="col-sm-4" style="text-align: right;">
               <label>
                 <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>

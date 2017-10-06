@@ -16,7 +16,10 @@
     <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
   </div>
 
-  <div class="help-block" *ngIf="!stepList">Loading...</div>
+  <div class="help-block" *ngIf="!stepList">
+    <span class="glyphicon glyphicon-time"></span>
+    Loading...
+  </div>
   <div *ngIf="scenario && stepList">
     <div class="container-fluid" style="margin-bottom: 20px;">
       <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
