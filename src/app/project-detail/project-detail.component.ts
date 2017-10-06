@@ -18,7 +18,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   project: Project;
   scenarioList: Scenario[];
-  filter = new Scenario();
+  filter: Scenario;
   selectAllFlag = false;
   failCount = 0;
   Math: any;
@@ -69,7 +69,19 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.filter.scenarioGroup = scenarioGroup;
 
     this.router
-      .navigate([], scenarioGroup != null ? {queryParams: {scenarioGroupId: scenarioGroup.id}} : {})
+      .navigate([], {queryParams: {scenarioGroupId: scenarioGroup == null ? -1 : scenarioGroup.id}})
+      .then(() => {});
+
+    this.updateFailCountSum();
+
+    return false;
+  }
+
+  selectAllGroups(): boolean {
+    this.filter = null;
+
+    this.router
+      .navigate([])
       .then(() => {});
 
     this.updateFailCountSum();
@@ -90,8 +102,9 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   }
 
   isDisplayScenario(scenario: Scenario) {
-    return this.filter == null || this.filter.scenarioGroup == null ||
-      (scenario != null && scenario.scenarioGroup != null &&
+    return this.filter == null ||
+      (this.filter.scenarioGroup == null && scenario.scenarioGroup == null) ||
+      (this.filter.scenarioGroup != null && scenario != null && scenario.scenarioGroup != null &&
           scenario.scenarioGroup.id === this.filter.scenarioGroup.id
       );
   }
