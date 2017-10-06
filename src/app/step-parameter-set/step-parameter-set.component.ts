@@ -34,6 +34,7 @@ export class StepParameterSetComponent implements OnInit {
       .forEach(parameterSet => parameterSet.stepParameterList
         .filter(parameter => !this.parameterNameList.find(value => value === parameter.name) && parameter.name != null)
         .forEach(parameter => this.parameterNameList.push(parameter.name)));
+    this.parameterNameList = this.parameterNameList.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0))
   }
 
   findParameter(stepParameterSet: StepParameterSet, parameterName: string): StepParameter {
@@ -58,6 +59,7 @@ export class StepParameterSetComponent implements OnInit {
       } else {
         this.stepParameterSetList.forEach(value => value.stepParameterList.push(new StepParameter(newName)));
         this.parameterNameList.push(newName);
+        this.parameterNameList = this.parameterNameList.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0))
       }
     }
   }
