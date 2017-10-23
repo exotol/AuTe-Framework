@@ -23,5 +23,5 @@ public interface ScenarioService {
 
     List<Scenario> findAll(List<Long> scenarioIdList);
 
-    Step cloneStep(Long stepId);
+    Step cloneStep(Step stepId);
 }
