@@ -1,0 +1,392 @@
+swagger: '2.0'
+info:
+  description: AutoTester-UI REST API
+  version: 1.0.0
+  title: AutoTester-UI REST API
+  contact:
+    email: Stanislav.Doroshin@bsc-ideas.com
+host: piphagor.bscmsc.ru
+basePath: /autotester/rest
+tags:
+  - name: Project
+    description: Autotes project, contains Scenario list
+  - name: Scenario
+    description: Scenario of Project, contains Step list
+  - name: Step
+    description: Step of Scenario, contains details about one request to service
+  - name: Test executing
+    description: ''
+schemes:
+  - http
+paths:
+  /projects:
+    get:
+      tags:
+        - Project
+      summary: Get project list
+      description: ''
+      operationId: getProjects
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+  '/projects/{projectId}':
+    get:
+      tags:
+        - Project
+      summary: Get project details
+      description: ''
+      operationId: getProjectDetail
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of Project
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Project not found
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Project'
+    put:
+      tags:
+        - Project
+      summary: Update project details with stands and scenario groups
+      description: ''
+      operationId: saveProject
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: ID of Project
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: body
+          description: Project details
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Project not found
+        '200':
+          description: 'Updated project-object'
+          schema:
+            $ref: '#/definitions/Project'
+  '/projects/{projectId}/scenarios':
+    get:
+      tags:
+        - Scenario
+        - Project
+      summary: Get Scenario
+      operationId: getScenarioList
+      parameters:
+        - name: projectId
+          in: path
+          type: integer
+          required: true
+          description: Project id
+      responses:
+        200:
+          description: Scenario list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Scenario'
+        404:
+          description: Project not found
+    post:
+      tags:
+        - Scenario
+        - Project
+      summary: Create new Scenario
+      operationId: createScenario
+      parameters:
+        - name: projectId
+          in: path
+          type: integer
+          required: true
+          description: Project id
+        - name: body
+          in: body
+          required: true
+          description: Scenario object to create
+          schema:
+            $ref: '#/definitions/Scenario'
+      responses:
+        404:
+          description: Project not found
+        200:
+          description: Scenario created
+          schema:
+            $ref: '#/definitions/Scenario'
+  '/projects/{projectId}/export-selected-to-yaml':
+    post:
+      tags:
+        - Project
+      summary: Download YAML
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: projectId
+          in: path
+          type: integer
+          required: true
+          description: Project id
+        - name: selectedScenarios
+          in: formData
+          type: array
+          items:
+            type: integer
+      responses:
+        404:
+          description: Project not found
+        200:
+          description: Project YAML
+  '/scenarios/{scenarioId}':
+    get:
+      tags:
+        - Scenario
+      summary: Get Scenario details
+      operationId: getScenarioDetail
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Scenario details
+          schema:
+            $ref: '#/definitions/Scenario'
+    put:
+      tags:
+        - Scenario
+      summary: Update Scenario details
+      operationId: saveScenarioDetails
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Scenario'
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Scenario saved
+          schema:
+            $ref: '#/definitions/Scenario'
+    delete:
+      tags:
+        - Scenario
+      summary: Delete Scenario
+      operationId: deleteScenario
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Scenario deleted
+  '/scenarios/{scenarioId}/steps':
+    get:
+      tags:
+        - Step
+        - Scenario
+      summary: Get Step list
+      operationId: getSteps
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+      responses:
+        200:
+          description: Step list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+        404:
+          description: Scenario not found
+    post:
+      tags:
+        - Step
+        - Scenario
+      summary: Create new step
+      operationId: createStep
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Step'
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Step created
+          schema:
+            $ref: '#/definitions/Step'
+    put:
+      tags:
+        - Step
+        - Scenario
+      summary: Save step list
+      parameters:
+        - name: scenarioId
+          in: path
+          type: integer
+          required: true
+          description: Scenario id
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Step list saved
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Step'
+  '/steps/{stepId}':
+    put:
+      tags:
+        - Step
+      summary: Update Step details
+      operationId: updateStep
+      parameters:
+        - name: stepId
+          in: path
+          required: true
+          description: Step id
+          type: integer
+        - name: body
+          in: body
+          required: true
+          description: Step to update
+          schema:
+            $ref: '#/definitions/Step'
+      responses:
+        404:
+          description: Step not found
+        200:
+          description: Step updated
+          schema:
+            $ref: '#/definitions/Step'
+  '/scenarios/{scenarioId}/exec':
+    post:
+      tags:
+        - Test executing
+      summary: Start executing
+      parameters:
+        - name: scenarioId
+          in: path
+          required: true
+          type: integer
+      responses:
+        404:
+          description: Scenario not found
+        200:
+          description: Test finished
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StepResult'
+definitions:
+  Project:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Stand:
+    type: object
+    properties:
+      id:
+        type: integer
+      url:
+        type: string
+  ScenarioGroup:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Scenario:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Step:
+    type: object
+    properties:
+      id:
+        type: integer
+      url:
+        type: string
+  StepResult:
+    type: object
+    properties:
+      step:
+        $ref: '#/definitions/Step'
+      actual:
+        type: string
+      expected:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'

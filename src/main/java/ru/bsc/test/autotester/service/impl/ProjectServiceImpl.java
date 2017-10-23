@@ -12,6 +12,7 @@ import ru.bsc.test.autotester.service.ScenarioGroupService;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -69,5 +70,17 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios) {
+        Project project = findOne(projectId);
+        if (project != null) {
+            project.setScenarios(project.getScenarios().stream()
+                    .filter(scenario -> selectedScenarios.contains(scenario.getId()))
+                    .collect(Collectors.toList()));
+            return new Yaml().dump(project);
+        }
+        return null;
     }
 }

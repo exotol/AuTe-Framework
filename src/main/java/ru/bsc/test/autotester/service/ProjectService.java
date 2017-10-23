@@ -20,4 +20,6 @@ public interface ProjectService {
     Project save(Project project);
 
     Scenario addNewScenario(String name, long projectId, Long scenarioGroupId);
+
+    String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios);
 }
