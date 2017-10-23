@@ -3,6 +3,6 @@
     "_target": "http://localhost:7774/autotester-ui",
     "target": "http://localhost:8085",
     "secure": false,
-    "pathRewrite": {"^/autotester-rest" : ""}
+    "pathRewrite": {"^/autotester-next" : ""}
   }
 }
