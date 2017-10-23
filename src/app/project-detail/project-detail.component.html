@@ -9,10 +9,13 @@
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
-      <li [class.active]="filter == null || filter.scenarioGroup == null">
-        <a href="#" (click)="selectGroup(null)">All</a>
+      <li [class.active]="!filter">
+        <a href="#" (click)="selectAllGroups()">All</a>
       </li>
-      <li [class.active]="filter != null && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of project.scenarioGroups">
+      <li [class.active]="filter && !filter.scenarioGroup">
+        <a href="#" (click)="selectGroup()">Without group</a>
+      </li>
+      <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of project.scenarioGroups">
         <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
       </li>
     </ul>
