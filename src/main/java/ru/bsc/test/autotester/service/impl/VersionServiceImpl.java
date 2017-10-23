@@ -42,7 +42,7 @@ public class VersionServiceImpl implements VersionService {
 		return new Version(Version.UNKNOWN, Version.UNKNOWN);
 	}
 
-	private Optional<Version> findVersionInManifest(Manifest manifest) throws Exception {
+	private Optional<Version> findVersionInManifest(Manifest manifest) {
 		String implVer = findKey(manifest, BUILD_IMPL_VERSION);
 		String dateStr = findKey(manifest, BUILD_DATE);
 		if (StringUtils.isNotBlank(implVer) && StringUtils.isNotBlank(dateStr)) {
@@ -52,7 +52,7 @@ public class VersionServiceImpl implements VersionService {
 		}
 	}
 
-	private String findKey(Manifest manifest, String key) throws Exception {
+	private String findKey(Manifest manifest, String key) {
 		for (Map.Entry<String, Attributes> entry : manifest.getEntries().entrySet()) {
 			String value = entry.getValue().getValue(key);
 			if (value != null) {
