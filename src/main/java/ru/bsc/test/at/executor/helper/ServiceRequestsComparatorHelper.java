@@ -60,7 +60,7 @@ public class ServiceRequestsComparatorHelper {
         for (ExpectedServiceRequest expectedRequest: expectedRequestList) {
             WireMockRequest actualRequest = actualRequestList.stream()
                     .filter(wireMockRequest -> wireMockRequest.getUrl().equals(expectedRequest.getServiceName()))
-                    .findAny().orElseGet(null);
+                    .findAny().orElse(null);
             if (actualRequest != null) {
                 compareWSRequest(
                         expectedRequest.getExpectedServiceRequest(),
