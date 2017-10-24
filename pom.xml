@@ -73,7 +73,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <warName>${project.name}</warName>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
