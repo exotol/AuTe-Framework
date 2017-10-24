@@ -66,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
             project.getScenarios().add(scenario);
             project = save(project);
             projectRepository.flush();
-            return project.getScenarios().stream().max(Comparator.comparing(Scenario::getId)).orElseGet(null);
+            return project.getScenarios().stream().max(Comparator.comparing(Scenario::getId)).orElse(null);
         } else {
             return null;
         }
