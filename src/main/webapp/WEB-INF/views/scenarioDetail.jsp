@@ -153,7 +153,7 @@
                         <div class="form-horizontal">
                             <div class="col-sm-11">
                                 <label>Comment:</label>
-                                <input name="step[${status.index}][stepComment]" type="text" class="form-control" value="${step.stepComment}" placeholder="Comment" />
+                                <input name="step[${status.index}][stepComment]" type="text" class="form-control" value="<c:out value="${step.stepComment}"/>" placeholder="Comment" />
                                 <label class="help-block">Check saved values:</label>
                                 <div class="help-block">${step.savedValuesCheck}</div>
                             </div>

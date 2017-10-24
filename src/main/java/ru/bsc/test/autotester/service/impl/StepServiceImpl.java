@@ -38,7 +38,7 @@ public class StepServiceImpl implements StepService {
             scenario.getSteps().forEach(step -> {
                 StepDto stepDto = stepDtoList.stream()
                         .filter(stepDtoItem -> Objects.equals(stepDtoItem.getId(), step.getId()))
-                        .findFirst().orElseGet(() -> null);
+                        .findFirst().orElse(null);
                 if (stepDto != null) {
                     stepDto.copyProperties(step);
                 }
