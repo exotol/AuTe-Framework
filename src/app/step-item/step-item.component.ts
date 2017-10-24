@@ -50,6 +50,9 @@ export class StepItemComponent implements OnInit {
   }
 
   addMockServiceResponse() {
+    if (!this.step.mockServiceResponseList) {
+      this.step.mockServiceResponseList = [];
+    }
     this.step.mockServiceResponseList.push(new MockServiceResponse());
   }
 
@@ -81,6 +84,9 @@ export class StepItemComponent implements OnInit {
   addCheckedValue() {
     let newName: string;
     if (newName = prompt('New parameter name')) {
+      if (!this.step.savedValuesCheck) {
+        this.step.savedValuesCheck = {};
+      }
       if (!this.step.savedValuesCheck[newName]) {
         this.step.savedValuesCheck[newName] = '';
       } else {
@@ -94,7 +100,14 @@ export class StepItemComponent implements OnInit {
   }
 
   addExpectedServiceRequest() {
-    this.step.expectedServiceRequestList.push(new ExpectedServiceRequest());
+    if (!this.step.expectedServiceRequestList) {
+      this.step.expectedServiceRequestList = [];
+    }
+    const newItem = new ExpectedServiceRequest();
+    const maxSort = Math.max.apply(null, this.step.expectedServiceRequestList.map(value => value.sort));
+    newItem.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
+
+    this.step.expectedServiceRequestList.push(newItem);
   }
 
   removeExpectedServiceRequest(expectedServiceRequest: ExpectedServiceRequest) {
