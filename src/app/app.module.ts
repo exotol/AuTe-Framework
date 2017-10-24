@@ -20,6 +20,7 @@ import { StepParameterSetComponent } from './step-parameter-set/step-parameter-s
 import {Globals} from './globals';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ScenarioSettingsComponent } from './scenario-settings/scenario-settings.component';
+import {VersionService} from './service/version.service';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -50,7 +51,7 @@ const routes: Routes = [
     ToastyModule.forRoot(),
     FormsModule
   ],
-  providers: [ProjectService, ScenarioService, StepService, Globals],
+  providers: [ProjectService, ScenarioService, StepService, VersionService, Globals],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
