@@ -60,14 +60,14 @@ public abstract class ProjectRoMapper {
                 projectRo.getBeforeScenarioId() == null ? null :
                         project.getScenarios().stream()
                                 .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getBeforeScenarioId()))
-                                .findAny().orElseGet(null)
+                                .findAny().orElse(null)
         );
 
         project.setAfterScenario(
                 projectRo.getAfterScenarioId() == null ? null :
                         project.getScenarios().stream()
                                 .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getAfterScenarioId()))
-                                .findAny().orElseGet(null)
+                                .findAny().orElse(null)
         );
 
         project.setStand(
