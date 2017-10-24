@@ -8,6 +8,7 @@ import ru.bsc.test.autotester.service.impl.Version;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.jar.Manifest;
 
 /**
  * @author Pavel Golovkin
@@ -20,7 +21,7 @@ public class VersionInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		Version version = versionService.getVersion();
 		modelAndView.addObject("version", version);
-		request.getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
+		new Manifest(request.getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF"));
 		super.postHandle(request, response, handler, modelAndView);
 	}
 
