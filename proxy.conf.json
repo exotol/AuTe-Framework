@@ -1,8 +1,7 @@
 {
-  "/autotester-rest": {
-    "_target": "http://localhost:7774/autotester-ui",
+  "/autotester-rest-next": {
     "target": "http://localhost:8085",
     "secure": false,
-    "pathRewrite": {"^/autotester-next" : ""}
+    "pathRewrite": {"^/autotester-rest-next" : ""}
   }
 }

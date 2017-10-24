@@ -26,6 +26,6 @@ export class Step {
   mockServiceResponseList: MockServiceResponse[];
   disabled: boolean;
   stepComment: string;
-  savedValuesCheck: any;
-  stepParameterSetList: StepParameterSet[];
+  savedValuesCheck: any = {};
+  stepParameterSetList: StepParameterSet[] = [];
 }
