@@ -62,6 +62,8 @@ public class ServiceRequestsComparatorHelper {
                     .filter(wireMockRequest -> wireMockRequest.getUrl().equals(expectedRequest.getServiceName()))
                     .findAny().orElse(null);
             if (actualRequest != null) {
+                actualRequestList.remove(actualRequest);
+
                 compareWSRequest(
                         expectedRequest.getExpectedServiceRequest(),
                         actualRequest.getBody(),
@@ -72,7 +74,7 @@ public class ServiceRequestsComparatorHelper {
                                         .collect(Collectors.toList())) : null
                 );
             } else {
-                throw new Exception("Service " + expectedRequest.getServiceName() + " not called");
+                throw new Exception("Service " + expectedRequest.getServiceName() + " is not called");
             }
         }
     }
