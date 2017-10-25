@@ -59,40 +59,26 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <warName>${project.name}</warName>
-                    <archive>
-                        <manifestSections>
-                            <manifestSection>
-                                <name>${project.artifactId}</name>
-                                <manifestEntries>
-                                    <Specification-Version>${project.version}.${buildNumber}</Specification-Version>
-                                    <Implementation-Version>${project.version}.${buildNumber}</Implementation-Version>
-                                    <Implementation-Build>${buildNumber}</Implementation-Build>
-                                    <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                </manifestEntries>
-                            </manifestSection>
-                        </manifestSections>
-                    </archive>
-                </configuration>
-            </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources/</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
     <packaging>war</packaging>
 
     <properties>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <spring-framework-version>4.3.7.RELEASE</spring-framework-version>
         <hibernate.version>5.1.0.Final</hibernate.version>
         <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
         <commons-collections.version>3.2.1</commons-collections.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
-        <buildNumber>${git.commitsCount}.${git.revision}</buildNumber>
         <mapstruct.version>1.0.0.Final</mapstruct.version>
     </properties>
 
