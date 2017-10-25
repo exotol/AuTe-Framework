@@ -1,7 +1,7 @@
 {
-  "/autotester-rest-next": {
+  "/autotester-rest-master": {
     "target": "http://localhost:8085",
     "secure": false,
-    "pathRewrite": {"^/autotester-rest-next" : ""}
+    "pathRewrite": {"^/autotester-rest-master" : ""}
   }
 }
