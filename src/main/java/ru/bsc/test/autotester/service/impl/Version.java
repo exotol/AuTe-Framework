@@ -8,11 +8,11 @@ public class Version {
 	public static final String UNKNOWN = "UNKNOWN";
 
 	private String implementationVersion;
-	private String implemetationDate;
+	private String implementationDate;
 
-	public Version(String implementationVersion, String implemetationDate) {
+	public Version(String implementationVersion, String implementationDate) {
 		this.implementationVersion = implementationVersion;
-		this.implemetationDate = implemetationDate;
+		this.implementationDate = implementationDate;
 	}
 
 	public String getImplementationVersion() {
@@ -23,11 +23,11 @@ public class Version {
 		this.implementationVersion = implementationVersion;
 	}
 
-	public String getImplemetationDate() {
-		return implemetationDate;
+	public String getImplementationDate() {
+		return implementationDate;
 	}
 
-	public void setImplemetationDate(String implemetationDate) {
-		this.implemetationDate = implemetationDate;
+	public void setImplementationDate(String implementationDate) {
+		this.implementationDate = implementationDate;
 	}
 }

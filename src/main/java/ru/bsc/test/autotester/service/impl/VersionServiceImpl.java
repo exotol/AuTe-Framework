@@ -3,6 +3,8 @@ package ru.bsc.test.autotester.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.autotester.service.VersionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -13,6 +15,8 @@ import java.util.Properties;
 public class VersionServiceImpl implements VersionService {
 	private static final String BUILD_IMPL_VERSION = "buildnumber";
 	private static final String BUILD_DATE = "builddate";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionServiceImpl.class);
 
 	@Override
 	public Version getVersion() {
@@ -30,7 +34,7 @@ public class VersionServiceImpl implements VersionService {
 				return new Version(implVer, dateStr);
 			}
 		} catch (Exception e) {
-			//TODO LOGGING
+			LOGGER.error(e.getLocalizedMessage());
 		}
 		return new Version(Version.UNKNOWN, Version.UNKNOWN);
 	}

@@ -17,6 +17,5 @@
 </head>
 <body>
     <jsp:doBody/>
-    ${version.implementationVersion}
 </body>
 </html>
