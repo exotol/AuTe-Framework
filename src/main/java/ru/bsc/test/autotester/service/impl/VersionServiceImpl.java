@@ -26,7 +26,7 @@ public class VersionServiceImpl implements VersionService {
 	private Version findVersion() {
 		try {
 			Properties prop = new Properties();
-			prop.load(VersionServiceImpl.class.getClassLoader().getResourceAsStream("version.properties"));
+			prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("version.properties"));
 
 			String implVer = prop.getProperty(BUILD_IMPL_VERSION);
 			String dateStr = prop.getProperty(BUILD_DATE);
