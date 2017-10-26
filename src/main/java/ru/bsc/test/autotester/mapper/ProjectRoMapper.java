@@ -14,6 +14,7 @@ import ru.bsc.test.autotester.ro.ScenarioGroupRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StandRo;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -77,8 +78,10 @@ public abstract class ProjectRoMapper {
                                 .findAny().orElse(null)
         );
 
-        project.setStandList(projectRo.getStandList().stream()
-                .map(standRo -> project.getStandList().stream()
+        List<Stand> projectStandList = new LinkedList<>(project.getStandList());
+        project.getStandList().clear();
+        project.getStandList().addAll(projectRo.getStandList().stream()
+                .map(standRo -> projectStandList.stream()
                         .filter(projectStand -> Objects.equals(projectStand.getId(), standRo.getId()))
                         .map(stand -> updateStandFromRo(standRo, stand))
                         .findAny()
@@ -91,11 +94,14 @@ public abstract class ProjectRoMapper {
                 .collect(Collectors.toList())
         );
 
-        project.setScenarioGroups(projectRo.getScenarioGroups().stream()
-                .map(scenarioGroupRo -> project.getScenarioGroups().stream()
+        List<ScenarioGroup> projectScenarioGroupList = new LinkedList<>(project.getScenarioGroups());
+        project.getScenarioGroups().clear();
+        project.getScenarioGroups().addAll(projectRo.getScenarioGroups().stream()
+                .map(scenarioGroupRo -> projectScenarioGroupList.stream()
                         .filter(projectScenarioGroup -> Objects.equals(projectScenarioGroup.getId(), scenarioGroupRo.getId()))
-                        .map(scenarioGroup1 -> updateScenarioGroupFromRo(scenarioGroupRo, scenarioGroup1))
-                        .findAny().orElseGet(() -> {
+                        .map(scenarioGroup -> updateScenarioGroupFromRo(scenarioGroupRo, scenarioGroup))
+                        .findAny()
+                        .orElseGet(() -> {
                             ScenarioGroup newScenarioGroup = new ScenarioGroup();
                             updateScenarioGroupFromRo(scenarioGroupRo, newScenarioGroup);
                             newScenarioGroup.setProject(project);
