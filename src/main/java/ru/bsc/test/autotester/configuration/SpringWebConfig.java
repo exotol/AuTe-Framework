@@ -38,5 +38,4 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     public InternalResourceViewResolver viewResolver() {
         return new InternalResourceViewResolver();
     }
-
 }

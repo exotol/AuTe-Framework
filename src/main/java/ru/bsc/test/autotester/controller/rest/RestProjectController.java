@@ -55,14 +55,7 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectId}", method = RequestMethod.PUT)
     public ProjectRo saveOne(@PathVariable Long projectId, @RequestBody ProjectRo projectRo) {
-
-        Project project = projectService.findOne(projectId);
-        if (project != null) {
-            projectRoMapper.updateProject(projectRo, project);
-            project = projectService.save(project);
-        }
-
-        return projectRoMapper.projectToProjectRo(project);
+        return projectService.updateFromRo(projectId, projectRo);
     }
 
     @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.GET)

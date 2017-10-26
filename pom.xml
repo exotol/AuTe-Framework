@@ -5,7 +5,7 @@
 
     <groupId>ru.bsc.test</groupId>
     <artifactId>autotester</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
 
     <!-- Inherit defaults from Spring Boot -->
@@ -75,6 +75,13 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources/</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
     <packaging>jar</packaging>
 
@@ -83,6 +90,8 @@
         <start-class>ru.bsc.test.autotester.configuration.Application</start-class>
         <java.version>1.8</java.version>
 
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <spring-framework-version>4.3.7.RELEASE</spring-framework-version>
 
         <hibernate.version>5.1.0.Final</hibernate.version>
@@ -94,7 +103,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

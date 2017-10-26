@@ -124,8 +124,10 @@ public abstract class StepRoMapper {
         if (stepParameterSetRo.getStepParameterList() == null) {
             stepParameterSetRo.setStepParameterList(new LinkedList<>());
         }
-        stepParameterSet.setStepParameterList(stepParameterSetRo.getStepParameterList().stream()
-                .map(stepParameterRo -> stepParameterSet.getStepParameterList().stream()
+        List<StepParameter> setStepParameterList = new LinkedList<>(stepParameterSet.getStepParameterList());
+        stepParameterSet.getStepParameterList().clear();
+        stepParameterSet.getStepParameterList().addAll(stepParameterSetRo.getStepParameterList().stream()
+                .map(stepParameterRo -> setStepParameterList.stream()
                         .filter(stepParameter -> Objects.equals(stepParameter.getId(), stepParameterRo.getId()))
                         .map(stepParameter -> updateStepParameterFromRo(stepParameterRo, stepParameter))
                         .findAny()
@@ -199,8 +201,10 @@ public abstract class StepRoMapper {
         if (stepRo.getMockServiceResponseList() == null) {
             stepRo.setMockServiceResponseList(new LinkedList<>());
         }
-        step.setMockServiceResponseList(stepRo.getMockServiceResponseList().stream()
-                .map(mockServiceResponseRo -> step.getMockServiceResponseList().stream()
+        List<MockServiceResponse> stepMockServiceResponseList = new LinkedList<>(step.getMockServiceResponseList());
+        step.getMockServiceResponseList().clear();
+        step.getMockServiceResponseList().addAll(stepRo.getMockServiceResponseList().stream()
+                .map(mockServiceResponseRo -> stepMockServiceResponseList.stream()
                         .filter(mockServiceResponse -> Objects.equals(mockServiceResponse.getId(), mockServiceResponseRo.getId()))
                         .map(mockServiceResponse -> updateMockServiceResponseFromRo(mockServiceResponseRo, mockServiceResponse))
                         .findAny()
@@ -219,8 +223,10 @@ public abstract class StepRoMapper {
         if (stepRo.getStepParameterSetList() == null) {
             stepRo.setStepParameterSetList(new LinkedList<>());
         }
-        step.setStepParameterSetList(stepRo.getStepParameterSetList().stream()
-                .map(stepParameterSetRo -> step.getStepParameterSetList().stream()
+        List<StepParameterSet> stepParameterSetList = new LinkedList<>(step.getStepParameterSetList());
+        step.getStepParameterSetList().clear();
+        step.getStepParameterSetList().addAll(stepRo.getStepParameterSetList().stream()
+                .map(stepParameterSetRo -> stepParameterSetList.stream()
                         .filter(stepParameterSet -> Objects.equals(stepParameterSet.getId(), stepParameterSetRo.getId()))
                         .map(stepParameterSet -> updateStepParameterSet(stepParameterSetRo, stepParameterSet))
                         .findAny()
@@ -239,8 +245,10 @@ public abstract class StepRoMapper {
         if (stepRo.getExpectedServiceRequestList() == null) {
             stepRo.setExpectedServiceRequestList(new LinkedList<>());
         }
-        step.setExpectedServiceRequests(stepRo.getExpectedServiceRequestList().stream()
-                .map(expectedServiceRequestRo -> step.getExpectedServiceRequests().stream()
+        List<ExpectedServiceRequest> stepExpectedServiceRequestList = new LinkedList<>(step.getExpectedServiceRequests());
+        step.getExpectedServiceRequests().clear();
+        step.getExpectedServiceRequests().addAll(stepRo.getExpectedServiceRequestList().stream()
+                .map(expectedServiceRequestRo -> stepExpectedServiceRequestList.stream()
                         .filter(expectedServiceRequest -> Objects.equals(expectedServiceRequest.getId(), expectedServiceRequestRo.getId()))
                         .map(expectedServiceRequest -> updateExpectedServiceRequest(expectedServiceRequestRo, expectedServiceRequest))
                         .findAny()
@@ -270,9 +278,11 @@ public abstract class StepRoMapper {
         return expectedServiceRequest;
     }
 
-    public List<Step> updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
-        return stepRoList.stream()
-                .map(stepRo -> scenario.getSteps().stream()
+    public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
+        List<Step> scenarioSteps = new LinkedList<>(scenario.getSteps());
+        scenario.getSteps().clear();
+        scenario.getSteps().addAll(stepRoList.stream()
+                .map(stepRo -> scenarioSteps.stream()
                         .filter(step -> Objects.equals(step.getId(), stepRo.getId()))
                         .map(step -> updateStep(stepRo, step))
                         .findAny()
@@ -282,6 +292,7 @@ public abstract class StepRoMapper {
                             newStep.setScenario(scenario);
                             return newStep;
                         }))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        return scenario;
     }
 }

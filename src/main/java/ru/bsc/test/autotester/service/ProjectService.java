@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.autotester.ro.ProjectRo;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface ProjectService {
     Scenario addNewScenario(String name, long projectId, Long scenarioGroupId);
 
     String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios);
+
+    ProjectRo updateFromRo(Long project, ProjectRo projectRo);
 }
