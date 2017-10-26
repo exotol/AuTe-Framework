@@ -36,7 +36,7 @@ import java.util.List;
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
 
-    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
+    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;

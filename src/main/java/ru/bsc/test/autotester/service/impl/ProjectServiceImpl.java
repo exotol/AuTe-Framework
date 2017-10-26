@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProjectServiceImpl implements ProjectService {
 
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ProjectRepository projectRepository;
     private final ScenarioGroupService scenarioGroupService;
