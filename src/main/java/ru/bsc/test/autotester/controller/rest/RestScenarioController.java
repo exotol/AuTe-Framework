@@ -99,13 +99,7 @@ public class RestScenarioController {
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
     public List<StepRo> saveStepList(@PathVariable Long scenarioId, @RequestBody List<StepRo> stepRoList) {
-        Scenario scenario = scenarioService.findOne(scenarioId);
-        if (scenario != null) {
-            scenario.setSteps(stepRoMapper.updateScenarioStepList(stepRoList, scenario));
-            scenario = scenarioService.save(scenario);
-            return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
-        }
-        throw new ResourceNotFoundException();
+        return scenarioService.updateScenarioListFromRo(scenarioId, stepRoList);
     }
 
     @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
