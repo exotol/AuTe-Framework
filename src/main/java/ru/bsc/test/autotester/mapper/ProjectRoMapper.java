@@ -99,8 +99,9 @@ public abstract class ProjectRoMapper {
         project.getScenarioGroups().addAll(projectRo.getScenarioGroups().stream()
                 .map(scenarioGroupRo -> projectScenarioGroupList.stream()
                         .filter(projectScenarioGroup -> Objects.equals(projectScenarioGroup.getId(), scenarioGroupRo.getId()))
-                        .map(scenarioGroup1 -> updateScenarioGroupFromRo(scenarioGroupRo, scenarioGroup1))
-                        .findAny().orElseGet(() -> {
+                        .map(scenarioGroup -> updateScenarioGroupFromRo(scenarioGroupRo, scenarioGroup))
+                        .findAny()
+                        .orElseGet(() -> {
                             ScenarioGroup newScenarioGroup = new ScenarioGroup();
                             updateScenarioGroupFromRo(scenarioGroupRo, newScenarioGroup);
                             newScenarioGroup.setProject(project);

@@ -1,15 +1,20 @@
 package ru.bsc.test.autotester.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.service.AtExecutor;
 
+import ru.bsc.test.autotester.exception.ResourceNotFoundException;
+import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
@@ -30,6 +35,8 @@ import java.util.List;
  */
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
+
+    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
@@ -158,5 +165,16 @@ public class ScenarioServiceImpl implements ScenarioService {
             return stepService.save(newStep);
         }
         return null;
+    }
+
+    @Override
+    @Transactional
+    public List<StepRo> updateScenarioListFromRo(Long scenarioId, List<StepRo> stepRoList) {
+        Scenario scenario = findOne(scenarioId);
+        if (scenario != null) {
+            stepRoMapper.updateScenarioStepList(stepRoList, scenario);
+            return stepRoMapper.convertStepRoListToStepList(save(scenario).getSteps());
+        }
+        throw new ResourceNotFoundException();
     }
 }
