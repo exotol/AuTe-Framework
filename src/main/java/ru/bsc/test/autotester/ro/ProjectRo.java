@@ -1,7 +1,5 @@
 package ru.bsc.test.autotester.ro;
 
-import ru.bsc.test.autotester.dto.AbstractRo;
-
 import java.util.List;
 
 /**

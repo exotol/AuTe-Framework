@@ -174,7 +174,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 var Globals = (function () {
     function Globals() {
-        this.serviceBaseUrl = '/autotester-rest-master';
+        this.serviceBaseUrl = '';
     }
     return Globals;
 }());

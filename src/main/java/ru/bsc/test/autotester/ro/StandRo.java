@@ -1,7 +1,5 @@
 package ru.bsc.test.autotester.ro;
 
-import ru.bsc.test.autotester.dto.AbstractRo;
-
 /**
  * Created by sdoroshin on 14.09.2017.
  *

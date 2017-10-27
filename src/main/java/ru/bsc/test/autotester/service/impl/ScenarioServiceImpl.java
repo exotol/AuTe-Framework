@@ -14,12 +14,12 @@ import ru.bsc.test.at.executor.service.AtExecutor;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.repository.impl.ScenarioRepositoryWrapper;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -49,11 +49,6 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.stepService = stepService;
     }
 
-    @PostConstruct
-    public void init() {
-        stepService.setScenarioService(this);
-    }
-
     @Override
     public List<Scenario> findAllByProjectIdAndScenarioGroupId(Long projectId, Long scenarioGroupId) {
         return scenarioRepository.findAllByProjectIdAndScenarioGroupIdOrderByScenarioGroupIdDescNameAsc(projectId, scenarioGroupId);
@@ -61,7 +56,11 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList) {
-        AtExecutor atExecutor = new AtExecutor();
+        // TODO: Избавиться от ScenarioRepositoryWrapper.
+        // executeScenarioList должен вернуть результат с количеством ошибок,
+        // записать в сценарий количество ошибок и время последнего запуска,
+        // сохранить обновленные сценаии
+        AtExecutor atExecutor = new AtExecutor(new ScenarioRepositoryWrapper(scenarioRepository));
         return atExecutor.executeScenarioList(project, scenarioList);
     }
 
