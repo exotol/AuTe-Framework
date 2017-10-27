@@ -12,17 +12,11 @@ import java.util.List;
  *
  */
 public interface ScenarioService {
-    List<Scenario> findAllByProjectIdAndScenarioGroupId(Long projectId, Long scenarioGroupId);
-
     List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList);
 
     Scenario save(Scenario scenario);
     Scenario findOne(long scenarioId);
     void delete(Scenario scenario);
-
-    void parseExpectedServiceRequestsJmba(String expectedRequestsBaseDir, Scenario scenario);
-
-    List<Scenario> findAll(List<Long> scenarioIdList);
 
     Step cloneStep(Step stepId);
 
