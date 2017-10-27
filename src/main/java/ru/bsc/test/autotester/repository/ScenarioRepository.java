@@ -12,5 +12,4 @@ import java.util.List;
  */
 @Repository
 public interface ScenarioRepository extends JpaRepository<Scenario, Long> {
-    List<Scenario> findAllByProjectIdAndScenarioGroupIdOrderByScenarioGroupIdDescNameAsc(Long projectId, Long scenarioGroupId);
 }

@@ -21,11 +21,6 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public void deleteStep(Long stepId) {
-        stepRepository.delete(stepId);
-    }
-
-    @Override
     public Step findOne(Long stepId) {
         return stepRepository.findOne(stepId);
     }

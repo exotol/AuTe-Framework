@@ -48,16 +48,14 @@ public class ScenarioServiceImpl implements ScenarioService {
         return atExecutor.executeScenarioList(project, scenarioList);
     }
 
+    @Override
     public Scenario save(Scenario scenario) {
         return scenarioRepository.save(scenario);
     }
 
+    @Override
     public Scenario findOne(long scenarioId) {
         return scenarioRepository.findOne(scenarioId);
-    }
-
-    public void delete(Scenario scenario) {
-        scenarioRepository.delete(scenario);
     }
 
     @Override

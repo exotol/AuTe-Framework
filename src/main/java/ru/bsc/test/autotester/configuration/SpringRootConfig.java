@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,6 +17,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import ru.bsc.test.autotester.component.ProjectsSource;
 
 import javax.sql.DataSource;
 
@@ -25,7 +27,10 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan("ru.bsc.test.autotester")
-@PropertySource("classpath:database.properties")
+@PropertySources({
+        @PropertySource("classpath:database.properties"),
+        @PropertySource("classpath:environment.properties")
+})
 @EnableJpaRepositories("ru.bsc.test.autotester")
 @EnableTransactionManagement
 public class SpringRootConfig {
@@ -44,6 +49,9 @@ public class SpringRootConfig {
     private String database;
     @Value("${hibernate.showSql:#{null}}")
     private Boolean showSql;
+
+    @Value("${projects.directory.path:.}")
+    private String projectsDirectoryPath;
 
     @Bean
     public DataSource dataSource() {
@@ -98,5 +106,12 @@ public class SpringRootConfig {
         commonsMultipartResolver.setMaxUploadSize(50 * 1024 * 1024);
         commonsMultipartResolver.setMaxInMemorySize(1024 * 1024);
         return commonsMultipartResolver;
+    }
+
+    @Bean
+    public ProjectsSource projectsSource() {
+        ProjectsSource projectsSource = new ProjectsSource();
+        projectsSource.setDirectoryPath(projectsDirectoryPath);
+        return projectsSource;
     }
 }

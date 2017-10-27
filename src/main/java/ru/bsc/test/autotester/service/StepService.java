@@ -7,7 +7,6 @@ import ru.bsc.test.at.executor.model.Step;
  *
  */
 public interface StepService {
-    void deleteStep(Long stepId);
     Step findOne(Long stepId);
     Step save(Step step);
 }

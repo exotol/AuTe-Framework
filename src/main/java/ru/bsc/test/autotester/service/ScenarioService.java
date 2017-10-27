@@ -12,13 +12,12 @@ import java.util.List;
  *
  */
 public interface ScenarioService {
-    List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList);
+
+    Scenario findOne(long scenarioId);
 
     Scenario save(Scenario scenario);
-    Scenario findOne(long scenarioId);
-    void delete(Scenario scenario);
-
     Step cloneStep(Step stepId);
-
     List<StepRo> updateScenarioListFromRo(Long scenarioId, List<StepRo> stepRoList);
+
+    List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList);
 }
