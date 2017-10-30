@@ -12,7 +12,7 @@ import ru.bsc.test.at.executor.service.AtExecutor;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.repository.impl.ScenarioRepositoryWrapper;
+import ru.bsc.test.autotester.repository.wrapper.ScenarioRepositoryWrapper;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
@@ -50,12 +50,12 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public Scenario save(Scenario scenario) {
-        return scenarioRepository.save(scenario);
+        return scenarioRepository.saveScenario(scenario);
     }
 
     @Override
     public Scenario findOne(long scenarioId) {
-        return scenarioRepository.findOne(scenarioId);
+        return scenarioRepository.findScenario(scenarioId);
     }
 
     @Override

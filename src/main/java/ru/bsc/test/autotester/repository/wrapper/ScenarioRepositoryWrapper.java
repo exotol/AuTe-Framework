@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.repository.impl;
+package ru.bsc.test.autotester.repository.wrapper;
 
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.service.ScenarioRepository;
@@ -16,6 +16,6 @@ public class ScenarioRepositoryWrapper implements ScenarioRepository {
 
     @Override
     public Scenario save(Scenario scenario) {
-        return scenarioRepository.save(scenario);
+        return scenarioRepository.saveScenario(scenario);
     }
 }

@@ -1,25 +1,21 @@
 package ru.bsc.test.autotester.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import ru.bsc.test.autotester.component.ProjectsSource;
-
-import javax.sql.DataSource;
+import ru.bsc.test.autotester.repository.ProjectRepository;
+import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.repository.StepRepository;
+import ru.bsc.test.autotester.repository.yaml.YamlProjectRepositoryImpl;
+import ru.bsc.test.autotester.repository.yaml.YamlScenarioRepositoryImpl;
+import ru.bsc.test.autotester.repository.yaml.YamlStepRepositoryImpl;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -27,77 +23,20 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan("ru.bsc.test.autotester")
-@PropertySources({
-        @PropertySource("classpath:database.properties"),
-        @PropertySource("classpath:environment.properties")
-})
-@EnableJpaRepositories("ru.bsc.test.autotester")
-@EnableTransactionManagement
+@PropertySource("file:environment.properties")
 public class SpringRootConfig {
 
-    private final static String DATABASE_HSQL = "HSQL";
+    private final ApplicationContext applicationContext;
 
-    @Value("${jdbc.driverClassName}")
-    private String driverClassName;
-    @Value("${jdbc.url}")
-    private String url;
-    @Value("${jdbc.username}")
-    private String username;
-    @Value("${jdbc.password}")
-    private String password;
-    @Value("${database}")
-    private String database;
-    @Value("${hibernate.showSql:#{null}}")
-    private Boolean showSql;
-
-    @Value("${projects.directory.path:.}")
-    private String projectsDirectoryPath;
-
-    @Bean
-    public DataSource dataSource() {
-        if (DATABASE_HSQL.equals(database)) {
-            return new EmbeddedDatabaseBuilder()
-                    .setType(EmbeddedDatabaseType.HSQL)
-                    .build();
-        } else {
-            DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-            driverManagerDataSource.setDriverClassName(driverClassName);
-            driverManagerDataSource.setUrl(url);
-            driverManagerDataSource.setUsername(username);
-            driverManagerDataSource.setPassword(password);
-            return driverManagerDataSource;
-        }
+    @Autowired
+    public SpringRootConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     //To resolve ${} in @Value
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(showSql != null && showSql);
-        vendorAdapter.setDatabase(DATABASE_HSQL.equals(database) ? Database.HSQL : Database.ORACLE);
-
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.getJpaPropertyMap().put("hibernate.enable_lazy_load_no_trans", true);
-        // For clone scenarios - https://stackoverflow.com/questions/26591521/java-lang-illegalstateexception-multiple-representations-of-the-same-entity-wit
-        factory.getJpaPropertyMap().put("hibernate.event.merge.entity_copy_observer", "allow");
-        factory.setPackagesToScan("ru.bsc.test.autotester", "ru.bsc.test.at.executor.model");
-        factory.setDataSource(dataSource());
-        return factory;
-    }
-
-    @Bean
-    public JpaTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
-        return transactionManager;
     }
 
     @Bean
@@ -109,9 +48,24 @@ public class SpringRootConfig {
     }
 
     @Bean
-    public ProjectsSource projectsSource() {
+    public ProjectsSource projectsSource(@Value("${projects.directory.path:.}") String projectsDirectoryPath) {
         ProjectsSource projectsSource = new ProjectsSource();
         projectsSource.setDirectoryPath(projectsDirectoryPath);
         return projectsSource;
+    }
+
+    @Bean
+    public ProjectRepository projectRepository() {
+        return new YamlProjectRepositoryImpl(applicationContext.getBean(ProjectsSource.class));
+    }
+
+    @Bean
+    public ScenarioRepository scenarioRepository() {
+        return new YamlScenarioRepositoryImpl(applicationContext.getBean(ProjectsSource.class));
+    }
+
+    @Bean
+    public StepRepository stepRepository() {
+        return new YamlStepRepositoryImpl(applicationContext.getBean(ProjectsSource.class));
     }
 }

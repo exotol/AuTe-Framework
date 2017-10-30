@@ -22,11 +22,11 @@ public class StepServiceImpl implements StepService {
 
     @Override
     public Step findOne(Long stepId) {
-        return stepRepository.findOne(stepId);
+        return stepRepository.findStep(stepId);
     }
 
     @Override
     public Step save(Step step) {
-        return stepRepository.save(step);
+        return stepRepository.saveStep(step);
     }
 }

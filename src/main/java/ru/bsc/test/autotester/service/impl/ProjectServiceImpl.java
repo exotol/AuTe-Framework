@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.ro.ProjectRo;
@@ -26,34 +25,31 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ProjectRepository projectRepository;
-    private final ProjectsSource projectsSource;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectsSource projectsSource) {
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
-        this.projectsSource = projectsSource;
     }
 
     @Override
     public List<Project> findAll() {
-        return projectsSource.getProjectList();
-        // return projectRepository.findAllByOrderByNameAsc();
+        return projectRepository.findAllProjects();
     }
 
     @Override
     public Project findOne(Long projectId) {
-        return projectRepository.findOne(projectId);
+        return projectRepository.findProject(projectId);
     }
 
     @Override
     @Transactional
     public String findOneAsYaml(Long projectId) {
-        return new Yaml().dump(projectRepository.findOne(projectId));
+        return new Yaml().dump(projectRepository.findProject(projectId));
     }
 
     @Override
     public Project save(Project project) {
-        return projectRepository.save(project);
+        return projectRepository.saveProject(project);
     }
 
     @Override
