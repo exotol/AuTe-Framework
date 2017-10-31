@@ -1,0 +1,1 @@
+java -Dfile.encoding=UTF-8 -jar autotester-3.0.0-SNAPSHOT.jar --server.port=8080
