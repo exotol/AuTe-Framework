@@ -24,8 +24,7 @@ public class IgnoringComparator extends DefaultComparator {
             if (expectedValue instanceof String && actualValue instanceof String) {
                 String expected = expectedValue.toString();
                 String actual = actualValue.toString();
-                String[] expectedParts = expected.split("\\*ignore\\*");
-                if (!containsValues(expectedParts, actual)) {
+                if (!containsValues(expected, actual)) {
                     result.fail(prefix, expectedValue, actualValue);
                 }
             }
@@ -35,9 +34,10 @@ public class IgnoringComparator extends DefaultComparator {
         }
     }
 
-    private boolean containsValues(String[] values, String actual) {
+    private boolean containsValues(String expected, String actual) {
+        String[] expectedParts = expected.split("\\*ignore\\*");
         int position = actual.indexOf(IGNORE);
-        for (String value : values) {
+        for (String value : expectedParts) {
             int valuePos = actual.indexOf(value, position);
             if (valuePos < 0 || valuePos < position) {
                 return false;
