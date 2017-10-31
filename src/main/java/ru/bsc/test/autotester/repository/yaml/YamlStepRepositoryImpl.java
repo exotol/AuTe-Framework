@@ -32,7 +32,6 @@ public class YamlStepRepositoryImpl implements StepRepository {
 
     @Override
     public Step saveStep(Step step) {
-        // TODO: if (step.getId() == null) {
         projectsSource.save();
         return step;
     }

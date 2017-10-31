@@ -35,7 +35,6 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Project saveProject(Project project) {
-        // TODO: if (project.getId() == null) {
         projectsSource.save();
         return project;
     }

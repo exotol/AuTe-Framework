@@ -31,7 +31,6 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
 
     @Override
     public Scenario saveScenario(Scenario scenario) {
-        // TODO: if (scenario.getId() == null) {
         projectsSource.save();
         return scenario;
     }
