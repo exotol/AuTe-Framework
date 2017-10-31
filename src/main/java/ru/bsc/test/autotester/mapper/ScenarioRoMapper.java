@@ -11,6 +11,7 @@ public abstract class ScenarioRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "project", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", ignore = true),

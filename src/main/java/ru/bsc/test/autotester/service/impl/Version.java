@@ -5,7 +5,7 @@ package ru.bsc.test.autotester.service.impl;
  */
 public class Version {
 
-	public static final String UNKNOWN = "UNKNOWN";
+	static final String UNKNOWN = "UNKNOWN";
 
 	private String implementationVersion;
 	private String implementationDate;

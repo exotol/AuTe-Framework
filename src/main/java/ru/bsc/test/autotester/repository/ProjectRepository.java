@@ -1,17 +1,18 @@
 package ru.bsc.test.autotester.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Project;
 
 import java.util.List;
 
 /**
- * Created by sdoroshin on 21.03.2017.
+ * Created by sdoroshin on 27.10.2017.
  *
  */
-@Repository
-public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    List<Project> findAllByOrderByNameAsc();
+public interface ProjectRepository {
+
+    List<Project> findAllProjects();
+    Project findProject(Long projectId);
+
+    Project saveProject(Project project);
 }
