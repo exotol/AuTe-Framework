@@ -1,21 +1,5 @@
 package ru.bsc.test.at.executor.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -26,59 +10,21 @@ import java.util.List;
  *
  */
 @SuppressWarnings("WeakerAccess")
-@Entity
-@Table(name = "AT_SCENARIO")
-public class Scenario implements Serializable, Cloneable {
+public class Scenario extends AbstractModel implements Serializable, Cloneable {
 
-    @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    @Column(name = "ID", nullable = false)
-    private Long id;
-    @Column(name = "NAME", length = 500)
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "PROJECT_ID")
-    @JsonBackReference
     private Project project;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "SCENARIO_GROUP_ID")
     private ScenarioGroup scenarioGroup;
-    @Transient
     private List<StepResult> stepResults = null;
-    @Column(name = "LAST_RUN_AT")
     private Date lastRunAt;
-    @Column(name = "LAST_RUN_FAILURES")
     private Integer lastRunFailures;
-
-    @ManyToOne
-    @JoinColumn(name = "BEFORE_SCENARIO_ID")
     private Scenario beforeScenario;
-
-    @ManyToOne
-    @JoinColumn(name = "AFTER_SCENARIO_ID")
     private Scenario afterScenario;
-    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("SORT ASC")
-    @JsonManagedReference
     private List<Step> steps;
-    @Column(name = "BEFORE_SCENARIO_IGNORE")
     private Boolean beforeScenarioIgnore;
-    @Column(name = "AFTER_SCENARIO_IGNORE")
     private Boolean afterScenarioIgnore;
-
-    @ManyToOne
-    @JoinColumn(name = "STAND_ID")
-    /* null - default (from project settings) */
     private Stand stand;
 
-    @SuppressWarnings("unused")
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }

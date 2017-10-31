@@ -1,20 +1,5 @@
 package ru.bsc.test.at.executor.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,61 +11,19 @@ import java.util.Map;
  *
  */
 @SuppressWarnings("WeakerAccess")
-@Entity
-@Table(name = "AT_PROJECT")
-public class Project implements Serializable, Cloneable {
+public class Project extends AbstractModel implements Serializable, Cloneable {
 
-    @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_PROJECT", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    @Column(name = "ID", nullable = false)
-    private Long id;
-
-    @Column(name = "NAME", length = 100)
     private String name;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "BEFORE_SCENARIO_ID")
-    private Scenario beforeScenario;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "AFTER_SCENARIO_ID")
-    private Scenario afterScenario;
-
-    @Column(name = "PROJECT_CODE", length = 200)
     private String projectCode;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @OrderBy("SCENARIO_GROUP_ID ASC, NAME ASC")
-    @JsonManagedReference
     private List<Scenario> scenarios;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("NAME ASC")
-    @JsonManagedReference
     private List<ScenarioGroup> scenarioGroups;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Stand> standList;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "STAND_ID")
-    @JsonBackReference
+    private Scenario beforeScenario;
+    private Scenario afterScenario;
     private Stand stand;
-
-    @Column(name = "USE_RANDOM_TEST_ID")
     private Boolean useRandomTestId;
-    @Column(name = "TEST_ID_HEADER_NAME")
     private String testIdHeaderName;
 
-    @SuppressWarnings("unused")
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }
