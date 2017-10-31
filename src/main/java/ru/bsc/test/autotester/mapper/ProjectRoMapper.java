@@ -43,6 +43,7 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "name", source = "name"),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "projectCode", source = "projectCode"),
             @Mapping(target = "beforeScenario", ignore = true),
             @Mapping(target = "afterScenario", ignore = true),
@@ -121,6 +122,7 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "project", ignore = true),
             @Mapping(target = "dbUrl", source = "dbUrl"),
@@ -157,6 +159,7 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "project", ignore = true)
     })

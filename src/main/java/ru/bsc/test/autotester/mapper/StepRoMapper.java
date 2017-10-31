@@ -148,6 +148,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "stepParameterSet", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "value", source = "value")
