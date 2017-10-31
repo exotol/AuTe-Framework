@@ -12,7 +12,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
     private Step step;
     private String serviceName;
     private String expectedServiceRequest;
-    private Long sort;
     private String ignoredTags;
 
     public Step getStep() {
@@ -32,12 +31,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
     }
     public void setExpectedServiceRequest(String expectedServiceRequest) {
         this.expectedServiceRequest = expectedServiceRequest;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getIgnoredTags() {
         return ignoredTags;

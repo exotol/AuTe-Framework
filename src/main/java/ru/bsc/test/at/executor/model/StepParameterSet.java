@@ -11,7 +11,6 @@ import java.util.List;
 public class StepParameterSet extends AbstractModel {
 
     private Step step;
-    private Long sort;
     private List<StepParameter> stepParameterList;
     private String description;
 
@@ -20,12 +19,6 @@ public class StepParameterSet extends AbstractModel {
     }
     public void setStep(Step step) {
         this.step = step;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public List<StepParameter> getStepParameterList() {
         return stepParameterList;

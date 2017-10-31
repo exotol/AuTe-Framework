@@ -8,7 +8,6 @@ package ru.bsc.test.at.executor.model;
 public class MockServiceResponse extends AbstractModel {
 
     private Step step;
-    private Long sort;
     private String serviceUrl;
     private String responseBody;
     private Integer httpStatus;
@@ -18,12 +17,6 @@ public class MockServiceResponse extends AbstractModel {
     }
     public void setStep(Step step) {
         this.step = step;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getServiceUrl() {
         return serviceUrl;

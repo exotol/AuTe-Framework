@@ -21,7 +21,6 @@ public class Step extends AbstractModel implements Serializable {
 
     private Scenario scenario;
     private List<ExpectedServiceRequest> expectedServiceRequests;
-    private Long sort;
     private String relativeUrl;
     private String requestMethod;
     private String request;
@@ -48,12 +47,6 @@ public class Step extends AbstractModel implements Serializable {
     public Step() {
     }
 
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
-    }
     public String getRelativeUrl() {
         return relativeUrl;
     }
