@@ -21,8 +21,7 @@ public class IgnoringComparator extends DefaultComparator {
     @Override
     public void compareValues(String prefix, Object expectedValue, Object actualValue, JSONCompareResult result) throws JSONException {
         if (!expectedValue.equals(IGNORE)) {
-            if (expectedValue instanceof JSONObject && actualValue instanceof JSONObject ||
-                    expectedValue instanceof String && actualValue instanceof String) {
+            if (expectedValue instanceof String && actualValue instanceof String) {
                 String expected = expectedValue.toString();
                 String actual = actualValue.toString();
                 String[] expectedParts = expected.split("\\*ignore\\*");
@@ -39,11 +38,8 @@ public class IgnoringComparator extends DefaultComparator {
     private boolean containsValues(String[] values, String actual) {
         int position = actual.indexOf(IGNORE);
         for (String value : values) {
-            if (!actual.contains(value)) {
-                return false;
-            }
             int valuePos = actual.indexOf(value, position);
-            if (valuePos < position) {
+            if (valuePos < 0 || valuePos < position) {
                 return false;
             }
             position = valuePos + value.length();
