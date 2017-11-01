@@ -24,8 +24,10 @@ public class Step extends AbstractModel implements Serializable {
     private String relativeUrl;
     private String requestMethod;
     private String request;
+    private String requestFile;
     private String requestHeaders;
     private String expectedResponse;
+    private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
     private String savingValues;
     private String responses;
@@ -68,11 +70,23 @@ public class Step extends AbstractModel implements Serializable {
     public void setRequest(String request) {
         this.request = request;
     }
+    public String getRequestFile() {
+        return requestFile;
+    }
+    public void setRequestFile(String requestFile) {
+        this.requestFile = requestFile;
+    }
     public String getExpectedResponse() {
         return expectedResponse;
     }
     public void setExpectedResponse(String expectedResponse) {
         this.expectedResponse = expectedResponse;
+    }
+    public String getExpectedResponseFile() {
+        return expectedResponseFile;
+    }
+    public void setExpectedResponseFile(String expectedResponseFile) {
+        this.expectedResponseFile = expectedResponseFile;
     }
     public String getSavingValues() {
         return savingValues;
