@@ -14,8 +14,10 @@ public class StepRo extends AbstractRo {
     private String relativeUrl;
     private String requestMethod;
     private String request;
+    private String requestFile;
     private String requestHeaders;
     private String expectedResponse;
+    private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
     private String savingValues;
     private String responses;
@@ -75,6 +77,14 @@ public class StepRo extends AbstractRo {
         this.request = request;
     }
 
+    public String getRequestFile() {
+        return requestFile;
+    }
+
+    public void setRequestFile(String requestFile) {
+        this.requestFile = requestFile;
+    }
+
     public String getRequestHeaders() {
         return requestHeaders;
     }
@@ -89,6 +99,14 @@ public class StepRo extends AbstractRo {
 
     public void setExpectedResponse(String expectedResponse) {
         this.expectedResponse = expectedResponse;
+    }
+
+    public String getExpectedResponseFile() {
+        return expectedResponseFile;
+    }
+
+    public void setExpectedResponseFile(String expectedResponseFile) {
+        this.expectedResponseFile = expectedResponseFile;
     }
 
     public Boolean getExpectedResponseIgnore() {

@@ -10,6 +10,7 @@ public class MockServiceResponseRo extends AbstractRo {
     private Long sort;
     private String serviceUrl;
     private String responseBody;
+    private String responseBodyFile;
     private Integer httpStatus;
 
     public Long getId() {
@@ -42,6 +43,14 @@ public class MockServiceResponseRo extends AbstractRo {
 
     public void setResponseBody(String responseBody) {
         this.responseBody = responseBody;
+    }
+
+    public String getResponseBodyFile() {
+        return responseBodyFile;
+    }
+
+    public void setResponseBodyFile(String responseBodyFile) {
+        this.responseBodyFile = responseBodyFile;
     }
 
     public Integer getHttpStatus() {
