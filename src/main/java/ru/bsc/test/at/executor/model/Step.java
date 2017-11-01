@@ -44,9 +44,6 @@ public class Step extends AbstractModel implements Serializable {
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSet> stepParameterSetList;
 
-    public Step() {
-    }
-
     public String getRelativeUrl() {
         return relativeUrl;
     }

@@ -9,15 +9,14 @@ import java.util.List;
  * Created by sdoroshin on 10.05.2017.
  *
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Scenario extends AbstractModel implements Serializable, Cloneable {
 
     private String name;
     private Project project;
     private ScenarioGroup scenarioGroup;
-    private List<StepResult> stepResults = null;
     private Date lastRunAt;
-    private Integer lastRunFailures;
+    private Long lastRunFailures;
     private Scenario beforeScenario;
     private Scenario afterScenario;
     private List<Step> steps;
@@ -37,22 +36,17 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     public void setScenarioGroup(ScenarioGroup scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
     }
-    public List<StepResult> getStepResults() {
-        return stepResults;
-    }
     public void setLastRunAt(Date lastRunAt) {
         this.lastRunAt = lastRunAt;
     }
-    @SuppressWarnings("unused")
     public Date getLastRunAt() {
         return lastRunAt;
     }
-    public void setLastRunFailures(Integer lastRunFailures) {
-        this.lastRunFailures = lastRunFailures;
-    }
-    @SuppressWarnings("unused")
-    public Integer getLastRunFailures() {
+    public Long getLastRunFailures() {
         return lastRunFailures;
+    }
+    public void setLastRunFailures(Long lastRunFailures) {
+        this.lastRunFailures = lastRunFailures;
     }
     public Scenario getBeforeScenario() {
         return beforeScenario;
@@ -81,14 +75,23 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     public void setProject(Project project) {
         this.project = project;
     }
-    public void setStepResults(List<StepResult> stepResults) {
-        this.stepResults = stepResults;
-    }
     public Stand getStand() {
         return stand;
     }
     public void setStand(Stand stand) {
         this.stand = stand;
+    }
+    public Boolean getBeforeScenarioIgnore() {
+        return beforeScenarioIgnore == null ? false : beforeScenarioIgnore;
+    }
+    public void setBeforeScenarioIgnore(Boolean beforeScenarioIgnore) {
+        this.beforeScenarioIgnore = beforeScenarioIgnore;
+    }
+    public Boolean getAfterScenarioIgnore() {
+        return afterScenarioIgnore == null ? false : afterScenarioIgnore;
+    }
+    public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
+        this.afterScenarioIgnore = afterScenarioIgnore;
     }
 
     @Override
@@ -113,21 +116,5 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         }
 
         return cloned;
-    }
-
-    public Boolean getBeforeScenarioIgnore() {
-        return beforeScenarioIgnore == null ? false : beforeScenarioIgnore;
-    }
-    @SuppressWarnings("unused")
-    public void setBeforeScenarioIgnore(Boolean beforeScenarioIgnore) {
-        this.beforeScenarioIgnore = beforeScenarioIgnore;
-    }
-
-    public Boolean getAfterScenarioIgnore() {
-        return afterScenarioIgnore == null ? false : afterScenarioIgnore;
-    }
-    @SuppressWarnings("unused")
-    public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
-        this.afterScenarioIgnore = afterScenarioIgnore;
     }
 }

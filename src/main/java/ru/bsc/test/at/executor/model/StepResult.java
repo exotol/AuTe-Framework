@@ -5,6 +5,10 @@ package ru.bsc.test.at.executor.model;
  *
  */
 public class StepResult {
+
+    public final static String RESULT_OK = "OK";
+    public final static String RESULT_FAIL = "Fail";
+
     private String testId;
     private Step step;
     private String result;
@@ -17,14 +21,15 @@ public class StepResult {
     private String savedParameters;
     private String description;
 
+    public StepResult(Step step) {
+        this.step = step;
+    }
+
     public String getTestId() {
         return testId;
     }
     public void setTestId(String testId) {
         this.testId = testId;
-    }
-    public StepResult(Step step) {
-        this.step = step;
     }
     public Step getStep() {
         return step;

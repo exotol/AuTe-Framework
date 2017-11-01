@@ -43,23 +43,15 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 21.03.2017.
  *
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class AtExecutor {
 
     private final static int POLLING_RETRY_COUNT = 50;
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
-    private ScenarioRepository scenarioRepository;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
 
-    public AtExecutor() {
-    }
-
-    public AtExecutor(ScenarioRepository scenarioRepository) {
-        this.scenarioRepository = scenarioRepository;
-    }
-
-    public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
+    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
@@ -85,11 +77,14 @@ public class AtExecutor {
             standConnectionMap.put(stand, connection);
         }
 
-        List<Scenario> scenarioResultList = new LinkedList<>();
+        Map<Scenario, List<StepResult>> scenarioResultList = new HashMap<>();
         try {
             for (Scenario scenario : scenarioExecuteList) {
                 Stand currentStand = scenario.getStand() != null ? scenario.getStand() : project.getStand();
-                scenarioResultList.add(executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand)));
+                scenarioResultList.put(
+                        scenario,
+                        executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand))
+                );
             }
         } finally {
             standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
@@ -104,84 +99,76 @@ public class AtExecutor {
         return scenarioResultList;
     }
 
-    private Scenario executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
+    private List<StepResult> executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
+        List<StepResult> stepResultList = new LinkedList<>();
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
 
-        scenario.setStepResults(new LinkedList<>());
         // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
         Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
         if (beforeScenario != null) {
-            beforeScenario.setStepResults(new LinkedList<>());
-            executeSteps(connection, stand, beforeScenario, project, httpHelper, savedValues);
-            scenario.getStepResults().addAll(beforeScenario.getStepResults());
+            stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getSteps(), project, httpHelper, savedValues));
         }
 
-        Scenario scenarioResult = executeSteps(connection, stand, scenario, project, httpHelper, savedValues);
+        stepResultList.addAll(executeSteps(connection, stand, scenario.getSteps(), project, httpHelper, savedValues));
 
         // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
         Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
         if (afterScenario != null) {
-            afterScenario.setStepResults(new LinkedList<>());
-            executeSteps(connection, stand, afterScenario, project, httpHelper, savedValues);
-            scenario.getStepResults().addAll(afterScenario.getStepResults());
+            stepResultList.addAll(executeSteps(connection, stand, afterScenario.getSteps(), project, httpHelper, savedValues));
         }
 
         httpHelper.closeHttpConnection();
 
-        return scenarioResult;
+        return stepResultList;
     }
 
-    private Scenario executeSteps(Connection connection, Stand stand, Scenario scenario, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {
-        if (scenario != null) {
-            int failures = 0;
-            for (Step step: scenario.getSteps()) {
-                if (!step.getDisabled()) {
-                    List<StepParameterSet> parametersEnvironment;
-                    if (step.getStepParameterSetList() != null && !step.getStepParameterSetList().isEmpty()) {
-                        parametersEnvironment = step.getStepParameterSetList();
-                    } else {
-                        parametersEnvironment = new LinkedList<>();
-                        parametersEnvironment.add(new StepParameterSet());
+    private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {
+        List<StepResult> stepResultList = new LinkedList<>();
+        if (stepList == null) {
+            return null;
+        }
+        int failures = 0;
+        for (Step step: stepList) {
+            if (!step.getDisabled()) {
+                List<StepParameterSet> parametersEnvironment;
+                if (step.getStepParameterSetList() != null && !step.getStepParameterSetList().isEmpty()) {
+                    parametersEnvironment = step.getStepParameterSetList();
+                } else {
+                    parametersEnvironment = new LinkedList<>();
+                    parametersEnvironment.add(new StepParameterSet());
+                }
+                for (StepParameterSet stepParameterSet: parametersEnvironment) {
+                    StepResult stepResult = new StepResult(step);
+                    stepResultList.add(stepResult);
+
+                    if (stepParameterSet.getStepParameterList() != null) {
+                        stepParameterSet.getStepParameterList()
+                                .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
+                        stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    for (StepParameterSet stepParameterSet: parametersEnvironment) {
-                        StepResult stepResult = new StepResult(step);
-                        scenario.getStepResults().add(stepResult);
+                    try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                        String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
+                        stepResult.setTestId(testId);
+                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
 
-                        if (stepParameterSet.getStepParameterList() != null) {
-                            stepParameterSet.getStepParameterList()
-                                    .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
-                            stepResult.setDescription(stepParameterSet.getDescription());
-                        }
-                        try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
-                            String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
-                            stepResult.setTestId(testId);
-                            executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                        // После выполнения шага необходимо проверить запросы к веб-сервисам
+                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                            // После выполнения шага необходимо проверить запросы к веб-сервисам
-                            serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
+                        stepResult.setResult(StepResult.RESULT_OK);
+                    } catch (Exception e) {
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
 
-                            stepResult.setResult("OK");
-                        } catch (Exception e) {
-                            StringWriter sw = new StringWriter();
-                            e.printStackTrace(new PrintWriter(sw));
-
-                            stepResult.setResult("Fail");
-                            stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
-                            failures++;
-                        }
+                        stepResult.setResult(StepResult.RESULT_FAIL);
+                        stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
+                        failures++;
                     }
                 }
             }
-
-            scenario.setLastRunAt(Calendar.getInstance().getTime());
-            scenario.setLastRunFailures(failures);
-            if (scenarioRepository != null) {
-                scenarioRepository.save(scenario);
-            }
         }
-        return scenario;
+        return stepResultList;
     }
 
     private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
