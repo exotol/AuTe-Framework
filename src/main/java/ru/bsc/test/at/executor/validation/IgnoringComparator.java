@@ -1,7 +1,6 @@
 package ru.bsc.test.at.executor.validation;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.comparator.DefaultComparator;
