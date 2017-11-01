@@ -15,7 +15,6 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "project", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", ignore = true),
-            @Mapping(target = "stepResults", ignore = true),
             @Mapping(target = "lastRunAt", source = "lastRunAt"),
             @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
             @Mapping(target = "beforeScenario", ignore = true),

@@ -9,6 +9,7 @@ import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
+import org.yaml.snakeyaml.representer.Representer;
 import org.yaml.snakeyaml.serializer.AnchorGenerator;
 import ru.bsc.test.at.executor.model.AbstractModel;
 import ru.bsc.test.at.executor.model.Project;
@@ -48,7 +49,9 @@ public class ProjectsSource {
                 File mainYaml = new File(fileEntry.getAbsolutePath() + "/" + MAIN_YAML_FILENAME);
                 if (mainYaml.exists()) {
                     try {
-                        Project loadedProject = new Yaml().loadAs(new FileReader(mainYaml), Project.class);
+                        Representer representer = new Representer();
+                        representer.getPropertyUtils().setSkipMissingProperties(true);
+                        Project loadedProject = new Yaml(representer).loadAs(new FileReader(mainYaml), Project.class);
                         loadedProject.setProjectCode(fileEntry.getName());
                         projectList.add(loadedProject);
                     } catch (FileNotFoundException e) {

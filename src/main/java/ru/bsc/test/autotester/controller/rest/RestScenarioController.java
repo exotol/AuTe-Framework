@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
@@ -106,14 +107,10 @@ public class RestScenarioController {
     public List<StepResultRo> executing(@PathVariable Long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
         if (scenario != null) {
-
-            List<Scenario> scenarioExecuteList = Collections.singletonList(scenario);
-            List<Scenario> scenarioResultList = scenarioService.executeScenarioList(scenario.getProject(), scenarioExecuteList);
-
-            if (!scenarioResultList.isEmpty()) {
-                Scenario executedScenario = scenarioResultList.get(0);
-
-                return stepRoMapper.convertStepResultListToStepResultRo(executedScenario.getStepResults());
+            Map<Scenario, List<StepResult>> scenarioResultMap =
+                    scenarioService.executeScenarioList(scenario.getProject(), Collections.singletonList(scenario));
+            if (scenarioResultMap.containsKey(scenario)) {
+                return stepRoMapper.convertStepResultListToStepResultRo(scenarioResultMap.get(scenario));
             }
         }
         throw new ResourceNotFoundException();

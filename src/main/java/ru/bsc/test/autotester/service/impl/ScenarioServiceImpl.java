@@ -7,18 +7,21 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
 
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.repository.wrapper.ScenarioRepositoryWrapper;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -39,13 +42,16 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList) {
-        // TODO: Избавиться от ScenarioRepositoryWrapper.
-        // executeScenarioList должен вернуть результат с количеством ошибок,
-        // записать в сценарий количество ошибок и время последнего запуска,
-        // сохранить обновленные сценаии
-        AtExecutor atExecutor = new AtExecutor(new ScenarioRepositoryWrapper(scenarioRepository));
-        return atExecutor.executeScenarioList(project, scenarioList);
+    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
+        AtExecutor atExecutor = new AtExecutor();
+        Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
+        Date time = Calendar.getInstance().getTime();
+        map.forEach((scenario, stepResults) -> {
+            scenario.setLastRunAt(time);
+            scenario.setLastRunFailures(stepResults.stream().filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult())).count());
+            save(scenario);
+        });
+        return map;
     }
 
     @Override

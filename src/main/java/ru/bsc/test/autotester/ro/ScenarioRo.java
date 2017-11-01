@@ -15,7 +15,6 @@ public class ScenarioRo extends AbstractRo {
     private String name;
 
     private ScenarioGroupRo scenarioGroup;
-    private List<StepResultRo> stepResults = null;
     private Date lastRunAt;
     private Integer lastRunFailures;
     private Long beforeScenarioId;
@@ -71,14 +70,6 @@ public class ScenarioRo extends AbstractRo {
 
     public void setScenarioGroup(ScenarioGroupRo scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
-    }
-
-    public List<StepResultRo> getStepResults() {
-        return stepResults;
-    }
-
-    public void setStepResults(List<StepResultRo> stepResults) {
-        this.stepResults = stepResults;
     }
 
     public Date getLastRunAt() {
