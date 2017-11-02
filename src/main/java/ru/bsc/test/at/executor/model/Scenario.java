@@ -19,7 +19,8 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     private Long lastRunFailures;
     private Scenario beforeScenario;
     private Scenario afterScenario;
-    private List<Step> steps;
+    private List<Step> stepList;
+    private String stepListYamlFile;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
     private Stand stand;
@@ -60,14 +61,20 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     public void setAfterScenario(Scenario afterScenario) {
         this.afterScenario = afterScenario;
     }
-    public List<Step> getSteps() {
-        if (steps == null) {
-            steps = new LinkedList<>();
+    public List<Step> getStepList() {
+        if (stepList == null) {
+            stepList = new LinkedList<>();
         }
-        return steps;
+        return stepList;
     }
-    public void setSteps(List<Step> steps) {
-        this.steps = steps;
+    public void setStepList(List<Step> stepList) {
+        this.stepList = stepList;
+    }
+    public String getStepListYamlFile() {
+        return stepListYamlFile;
+    }
+    public void setStepListYamlFile(String stepListYamlFile) {
+        this.stepListYamlFile = stepListYamlFile;
     }
     public Project getProject() {
         return project;
@@ -108,11 +115,12 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         cloned.setAfterScenario(getAfterScenario());
         cloned.setStand(getStand());
 
-        cloned.setSteps(new LinkedList<>());
-        for (Step step: getSteps()) {
+        cloned.setStepListYamlFile(getStepListYamlFile());
+        cloned.setStepList(new LinkedList<>());
+        for (Step step: getStepList()) {
             Step clonedStep = step.clone();
             clonedStep.setScenario(cloned);
-            cloned.getSteps().add(clonedStep);
+            cloned.getStepList().add(clonedStep);
         }
 
         return cloned;

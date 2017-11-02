@@ -108,15 +108,15 @@ public class AtExecutor {
         // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
         Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
         if (beforeScenario != null) {
-            stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getSteps(), project, httpHelper, savedValues));
+            stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues));
         }
 
-        stepResultList.addAll(executeSteps(connection, stand, scenario.getSteps(), project, httpHelper, savedValues));
+        stepResultList.addAll(executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues));
 
         // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
         Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
         if (afterScenario != null) {
-            stepResultList.addAll(executeSteps(connection, stand, afterScenario.getSteps(), project, httpHelper, savedValues));
+            stepResultList.addAll(executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues));
         }
 
         httpHelper.closeHttpConnection();

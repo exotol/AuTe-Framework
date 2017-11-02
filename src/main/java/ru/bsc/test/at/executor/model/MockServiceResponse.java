@@ -49,6 +49,7 @@ public class MockServiceResponse extends AbstractModel {
         cloned.setSort(getSort());
         cloned.setServiceUrl(getServiceUrl());
         cloned.setResponseBody(getResponseBody());
+        cloned.setResponseBodyFile(getResponseBodyFile());
         cloned.setHttpStatus(getHttpStatus());
         return cloned;
     }

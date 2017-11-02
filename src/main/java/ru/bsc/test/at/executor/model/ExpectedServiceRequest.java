@@ -51,6 +51,7 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
         cloned.setId(null);
         cloned.setServiceName(getServiceName());
         cloned.setExpectedServiceRequest(getExpectedServiceRequest());
+        cloned.setExpectedServiceRequestFile(getExpectedServiceRequestFile());
         cloned.setSort(getSort());
         cloned.setIgnoredTags(getIgnoredTags());
 

@@ -218,7 +218,9 @@ public class Step extends AbstractModel implements Serializable {
         cloned.setRequestMethod(getRequestMethod());
         cloned.setRequestHeaders(getRequestHeaders());
         cloned.setRequest(getRequest());
+        cloned.setRequestFile(getRequestFile());
         cloned.setExpectedResponse(getExpectedResponse());
+        cloned.setExpectedResponseFile(getExpectedResponseFile());
         cloned.setSavingValues(getSavingValues());
         cloned.setResponses(getResponses());
         cloned.setDbParams(getDbParams());
