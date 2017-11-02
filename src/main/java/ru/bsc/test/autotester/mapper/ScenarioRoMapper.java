@@ -19,7 +19,8 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
             @Mapping(target = "beforeScenario", ignore = true),
             @Mapping(target = "afterScenario", ignore = true),
-            @Mapping(target = "steps", ignore = true),
+            @Mapping(target = "stepList", ignore = true),
+            @Mapping(target = "stepListYamlFile", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore"),
             @Mapping(target = "stand", ignore = true)
@@ -35,12 +36,12 @@ public abstract class ScenarioRoMapper {
                         .findAny()
                         .orElse(null));
 
-        scenario.setBeforeScenario(scenario.getProject().getScenarios().stream()
+        scenario.setBeforeScenario(scenario.getProject().getScenarioList().stream()
                 .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getBeforeScenarioId()))
                 .findAny()
                 .orElse(null));
 
-        scenario.setAfterScenario(scenario.getProject().getScenarios().stream()
+        scenario.setAfterScenario(scenario.getProject().getScenarioList().stream()
                 .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getAfterScenarioId()))
                 .findAny()
                 .orElse(null));

@@ -25,7 +25,7 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     public Scenario findScenario(Long scenarioId) {
         return projectsSource.getProjectList()
                 .stream()
-                .flatMap(project -> project.getScenarios().stream())
+                .flatMap(project -> project.getScenarioList().stream())
                 .filter(scenario -> Objects.equals(scenario.getId(), scenarioId))
                 .findAny()
                 .orElse(null);

@@ -73,7 +73,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         if (scenario != null) {
             Step newStep = new Step();
             newStep.setScenario(scenario);
-            scenario.getSteps().add(newStep);
+            scenario.getStepList().add(newStep);
 
             stepRoMapper.updateStep(stepRo, newStep);
 
@@ -89,7 +89,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         Scenario scenario = findOne(projectList, scenarioId);
         if (scenario != null) {
             Project project = scenario.getProject();
-            project.setScenarios(project.getScenarios().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
+            project.setScenarioList(project.getScenarioList().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
             scenarioRepository.saveScenario(scenario, projectList);
         } else {
             throw new ResourceNotFoundException();
@@ -110,7 +110,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     private Scenario findOne(List<Project> projectList, Long scenarioId) {
         return projectList.stream()
-                .flatMap(project -> project.getScenarios().stream())
+                .flatMap(project -> project.getScenarioList().stream())
                 .filter(scenario -> Objects.equals(scenario.getId(), scenarioId))
                 .findAny()
                 .orElse(null);
@@ -126,7 +126,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         List<Project> projectList = projectService.findAll();
         if (step != null) {
             Scenario scenario = step.getScenario();
-            Long maxSortStep = scenario.getSteps().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
+            Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step newStep = step.clone();
             newStep.setSort(maxSortStep + 50);
             newStep.setScenario(scenario);
@@ -143,7 +143,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         if (scenario != null) {
             stepRoMapper.updateScenarioStepList(stepRoList, scenario);
             scenario = scenarioRepository.saveScenario(scenario, projectList);
-            return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
+            return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
         }
         throw new ResourceNotFoundException();
     }

@@ -71,7 +71,25 @@ public class ProjectsSource {
     }
 
     private void readExternalFiles(Project project) {
-        // Чтение дополнительных файлов
+        // Чтение внешних файлов списков шагов
+        project.getScenarioList().forEach(scenario -> {
+            if (scenario.getStepListYamlFile() != null && (scenario.getStepList() == null || scenario.getStepList().isEmpty())) {
+                File stepListYamlFile = new File(directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile());
+                try {
+                    if (stepListYamlFile.exists()) {
+                        Representer representer = new Representer();
+                        representer.getPropertyUtils().setSkipMissingProperties(true);
+                        List<Step> loadedStepList = new Yaml(representer).loadAs(new FileReader(stepListYamlFile), List.class);
+                        scenario.getStepList().clear();
+                        scenario.getStepList().addAll(loadedStepList);
+                    }
+                } catch (FileNotFoundException e) {
+                    LOGGER.error("Read step list yaml", e);
+                }
+            }
+        });
+
+        // Чтение внешних файлов для вложенных моделей
         applyToProjectModels(project, model -> {
             if (model instanceof Step) {
                 Step step = ((Step) model);
@@ -203,6 +221,26 @@ public class ProjectsSource {
                 }
             }
         }, modelList -> {});
+
+        project.getScenarioList().forEach(scenario -> {
+            if (scenario.getStepList() != null && !scenario.getStepList().isEmpty()) {
+                try {
+                    if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
+                        scenario.setStepListYamlFile("scenarios/" + scenario.getId() + "/steps.yml");
+                    }
+                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
+
+                    DumperOptions dumperOptions = new DumperOptions();
+                    dumperOptions.setAnchorGenerator(new AutotesterAnchorGenerator());
+                    new Yaml(dumperOptions).dump(scenario.getStepList(), new FileWriter(filePath));
+
+                    scenario.getStepList().clear();
+                } catch (IOException e) {
+                    LOGGER.error("", e);
+                }
+            }
+        });
+
     }
 
     private void checkAndRepairSort(List<Project> projectList) {
@@ -243,13 +281,13 @@ public class ProjectsSource {
 
     private void applyToProjectModels(Project project, IMethodToModel methodToModel, IMethodToList methodToList) {
         methodToModel.method(project);
-        if (project.getScenarios() != null) {
-            methodToList.method(project.getScenarios());
-            project.getScenarios().forEach(scenario -> {
+        if (project.getScenarioList() != null) {
+            methodToList.method(project.getScenarioList());
+            project.getScenarioList().forEach(scenario -> {
                 methodToModel.method(scenario);
-                if (scenario.getSteps() != null) {
-                    methodToList.method(scenario.getSteps());
-                    scenario.getSteps().forEach(step -> {
+                if (scenario.getStepList() != null) {
+                    methodToList.method(scenario.getStepList());
+                    scenario.getStepList().forEach(step -> {
                         methodToModel.method(step);
                         if (step.getExpectedServiceRequests() != null) {
                             methodToList.method(step.getExpectedServiceRequests());

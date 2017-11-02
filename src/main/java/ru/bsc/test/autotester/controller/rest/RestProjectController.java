@@ -59,7 +59,7 @@ public class RestProjectController {
     public List<ScenarioRo> getScenarios(@PathVariable Long projectId) {
         Project project = projectService.findOne(projectId);
         if (project != null) {
-            return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarios());
+            return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarioList());
         }
         throw new ResourceNotFoundException();
     }

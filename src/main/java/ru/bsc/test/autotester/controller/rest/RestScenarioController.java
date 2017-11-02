@@ -37,7 +37,7 @@ public class RestScenarioController {
     public List<StepRo> findSteps(@PathVariable Long scenarioId) {
         Scenario scenario = scenarioService.findOne(scenarioId);
         if (scenario != null) {
-            return stepRoMapper.convertStepRoListToStepList(scenario.getSteps());
+            return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
         }
         throw new ResourceNotFoundException();
     }

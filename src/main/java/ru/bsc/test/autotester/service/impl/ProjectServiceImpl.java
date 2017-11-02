@@ -53,7 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
     public String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios) {
         Project project = findOne(projectId);
         if (project != null) {
-            project.setScenarios(project.getScenarios().stream()
+            project.setScenarioList(project.getScenarioList().stream()
                     .filter(scenario -> selectedScenarios.contains(scenario.getId()))
                     .collect(Collectors.toList()));
             return new Yaml().dump(project);
@@ -80,7 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (project != null) {
             Scenario newScenario = new Scenario();
             newScenario.setProject(project);
-            project.getScenarios().add(newScenario);
+            project.getScenarioList().add(newScenario);
 
             scenarioRoMapper.updateScenario(scenarioRo, newScenario);
 

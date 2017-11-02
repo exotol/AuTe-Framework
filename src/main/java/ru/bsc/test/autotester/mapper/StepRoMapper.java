@@ -284,9 +284,9 @@ public abstract class StepRoMapper {
     }
 
     public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
-        List<Step> scenarioSteps = new LinkedList<>(scenario.getSteps());
-        scenario.getSteps().clear();
-        scenario.getSteps().addAll(stepRoList.stream()
+        List<Step> scenarioSteps = new LinkedList<>(scenario.getStepList());
+        scenario.getStepList().clear();
+        scenario.getStepList().addAll(stepRoList.stream()
                 .map(stepRo -> scenarioSteps.stream()
                         .filter(step -> Objects.equals(step.getId(), stepRo.getId()))
                         .map(step -> updateStep(stepRo, step))

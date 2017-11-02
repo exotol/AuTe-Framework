@@ -25,8 +25,8 @@ public class YamlStepRepositoryImpl implements StepRepository {
     public Step findStep(Long stepId) {
         return projectsSource.getProjectList()
                 .stream()
-                .flatMap(project -> project.getScenarios().stream())
-                .flatMap(scenario -> scenario.getSteps().stream())
+                .flatMap(project -> project.getScenarioList().stream())
+                .flatMap(scenario -> scenario.getStepList().stream())
                 .filter(scenario -> Objects.equals(scenario.getId(), stepId))
                 .findAny()
                 .orElse(null);

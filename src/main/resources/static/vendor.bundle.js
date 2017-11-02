@@ -1233,7 +1233,7 @@ var Observable = (function () {
             }
         }
         if (!PromiseCtor) {
-            throw new Error('no Promise wrapper found');
+            throw new Error('no Promise impl found');
         }
         return new PromiseCtor(function (resolve, reject) {
             // Must be declared in a separate statement to avoid a RefernceError when
