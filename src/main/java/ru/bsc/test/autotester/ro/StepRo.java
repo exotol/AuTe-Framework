@@ -10,8 +10,10 @@ import java.util.Map;
  *
  */
 public class StepRo extends AbstractRo {
-    private Long id;
 
+    private static final long serialVersionUID = -4795596079038167133L;
+
+    private Long id;
     private Long sort;
     private String relativeUrl;
     private String requestMethod;

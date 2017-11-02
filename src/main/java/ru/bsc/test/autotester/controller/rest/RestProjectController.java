@@ -14,12 +14,17 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sdoroshin on 12.09.2017.
@@ -80,6 +85,23 @@ public class RestProjectController {
             return projectRoMapper.scenarioToScenarioRo(
                     project.getScenarios().stream().max((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1).orElse(null)
             );
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @RequestMapping(value = "{projectId}/search", method = RequestMethod.POST)
+    public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @Valid @RequestBody ProjectSearchRo projectSearchRo) {
+        Project project = projectService.findOne(projectId);
+        if (project != null) {
+            List<Scenario> scenarios = project.getScenarios();
+            Set<Scenario> result = new HashSet<>();
+            scenarios.forEach(scenario ->
+                    scenario.getSteps().forEach(step -> {
+                        if (step.getRelativeUrl().contains(projectSearchRo.getRelativeUrl())) {
+                            result.add(scenario);
+                        }
+                    }));
+            return projectRoMapper.convertScenarioListToScenarioRoList(new ArrayList<>(result));
         }
         throw new ResourceNotFoundException();
     }
