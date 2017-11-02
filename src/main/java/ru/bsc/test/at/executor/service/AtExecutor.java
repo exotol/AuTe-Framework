@@ -283,40 +283,38 @@ public class AtExecutor {
 
         }
 
-        if (step.getResponseCompareMode() == null) {
-            JSONcomparing(step, expectedResponse, responseData);
-        } else {
-            switch (step.getResponseCompareMode()) {
-                case FULL_MATHCH:
-                    Assert.assertEquals(expectedResponse, responseData.getContent());
-                    break;
-                case IGNORE_MASK:
-                    MaskComparator comparator = new MaskComparator();
-                    if (comparator.compare(expectedResponse, responseData.getContent()) < 0) {
-                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                    }
-                    break;
-                default:
-                    JSONcomparing(step, expectedResponse, responseData);
-                    break;
+        if (!step.getExpectedResponseIgnore() &&
+                (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
+                (!responseData.getContent().equals(expectedResponse))) {
+            if (step.getResponseCompareMode() == null) {
+                JSONcomparing(step, expectedResponse, responseData);
+            } else {
+                switch (step.getResponseCompareMode()) {
+                    case FULL_MATHCH:
+                        Assert.assertEquals(expectedResponse, responseData.getContent());
+                        break;
+                    case IGNORE_MASK:
+                        if (MaskComparator.compare(expectedResponse, responseData.getContent()) < 0) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                        }
+                        break;
+                    default:
+                        JSONcomparing(step, expectedResponse, responseData);
+                        break;
+                }
             }
         }
     }
 
     private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
-        if (!step.getExpectedResponseIgnore() &&
-                (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
-                (!responseData.getContent().equals(expectedResponse))) {
-            // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
-            try {
-                JSONAssert.assertEquals(
-                        expectedResponse.replaceAll(" ", " "),
-                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                        new IgnoringComparator(JSONCompareMode.LENIENT)
-                );
-            } catch (Error assertionError) {
-                throw new Exception(assertionError);
-            }
+        try {
+            JSONAssert.assertEquals(
+                    expectedResponse.replaceAll(" ", " "),
+                    responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                    new IgnoringComparator(JSONCompareMode.LENIENT)
+            );
+        } catch (Error assertionError) {
+            throw new Exception(assertionError);
         }
     }
 

@@ -1,13 +1,10 @@
 package ru.bsc.test.at.executor.validation;
 
-import java.util.Comparator;
-
-public class MaskComparator implements Comparator {
+public class MaskComparator {
 
     private static final String IGNORE = "*ignore*";
 
-    @Override
-    public int compare(Object expectedValue, Object actualValue) {
+    public static int compare(Object expectedValue, Object actualValue) {
         String expected = expectedValue.toString();
         String actual = actualValue.toString();
         String[] expectedParts = expected.split("\\*ignore\\*");
