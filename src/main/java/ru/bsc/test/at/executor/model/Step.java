@@ -8,6 +8,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -105,6 +106,7 @@ public class Step implements Serializable {
     @CollectionTable(name = "AT_STEP_SAVED_VALUES_CHECK", joinColumns = @JoinColumn(name = "STEP_ID"))
     private Map<String, String> savedValuesCheck;
     @Column(name = "RESPONSE_COMPARE_MODE")
+    @Enumerated
     private ResponseCompareMode responseCompareMode;
 
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
