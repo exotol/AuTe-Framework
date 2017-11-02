@@ -6,7 +6,7 @@ public class MaskComparator {
 
     private static final String IGNORE = "*ignore*";
 
-    public static int compare(Object expectedValue, Object actualValue) {
+    public static boolean compare(Object expectedValue, Object actualValue) {
         String expected = expectedValue.toString();
         String actual = actualValue.toString();
         String[] expectedParts = expected.split(Pattern.quote(IGNORE));
@@ -14,10 +14,10 @@ public class MaskComparator {
         for (String value : expectedParts) {
             int valuePos = actual.indexOf(value, position);
             if (valuePos < 0 || valuePos < position) {
-                return -1;
+                return false;
             }
             position = valuePos + value.length();
         }
-        return 1;
+        return true;
     }
 }

@@ -292,7 +292,7 @@ public class AtExecutor {
                         Assert.assertEquals(expectedResponse, responseData.getContent());
                         break;
                     case IGNORE_MASK:
-                        if (MaskComparator.compare(expectedResponse, responseData.getContent()) < 0) {
+                        if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
                             throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
                         }
                         break;
