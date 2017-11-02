@@ -76,54 +76,40 @@ public class ProjectsSource {
             if (model instanceof Step) {
                 Step step = ((Step) model);
                 if (step.getRequestFile() != null && step.getRequest() == null) {
-                    try {
-                        File responseFile = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
-                        step.setRequest(FileUtils.readFileToString(responseFile, FILE_ENCODING));
-                    } catch (IOException e) {
-                        if (LOGGER.isErrorEnabled()) {
-                            LOGGER.error("Reading response file", e);
-                        }
-                    }
+                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile();
+                    step.setRequest(readFile(filePath));
                 }
                 if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
-                    try {
-                        File expectedResponseFile = new File(directoryPath + "/" + step.getScenario().getProject().getProjectCode() + "/" + step.getExpectedResponseFile());
-                        step.setExpectedResponse(FileUtils.readFileToString(expectedResponseFile, FILE_ENCODING));
-                    } catch (IOException e) {
-                        if (LOGGER.isErrorEnabled()) {
-                            LOGGER.error("Reading expected response file", e);
-                        }
-                    }
+                    String filePath = directoryPath + "/" + step.getScenario().getProject().getProjectCode() + "/" + step.getExpectedResponseFile();
+                    step.setExpectedResponse(readFile(filePath));
                 }
 
             } else if (model instanceof MockServiceResponse) {
                 MockServiceResponse mockServiceResponse = (MockServiceResponse) model;
                 if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
-                    try {
-                        File responseBodyFile = new File(directoryPath + "/" + mockServiceResponse.getStep().getScenario().getProject().getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile());
-                        mockServiceResponse.setResponseBody(FileUtils.readFileToString(responseBodyFile, FILE_ENCODING));
-                    } catch (IOException e) {
-                        if (LOGGER.isErrorEnabled()) {
-                            LOGGER.error("Reading responseBodyFile file", e);
-                        }
-                    }
-
+                    String filePath = directoryPath + "/" + mockServiceResponse.getStep().getScenario().getProject().getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile();
+                    mockServiceResponse.setResponseBody(readFile(filePath));
                 }
             } else if (model instanceof ExpectedServiceRequest) {
                 ExpectedServiceRequest expectedServiceRequest = (ExpectedServiceRequest) model;
                 if (expectedServiceRequest.getExpectedServiceRequestFile() != null && expectedServiceRequest.getExpectedServiceRequest() == null) {
-                    try {
-                        File expectedServiceRequestFile = new File(directoryPath + "/" + expectedServiceRequest.getStep().getScenario().getProject().getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
-                        expectedServiceRequest.setExpectedServiceRequest(FileUtils.readFileToString(expectedServiceRequestFile, FILE_ENCODING));
-                    } catch (IOException e) {
-                        if (LOGGER.isErrorEnabled()) {
-                            LOGGER.error("Reading expectedServiceRequest file", e);
-                        }
-                    }
-
+                    String filePath = directoryPath + "/" + expectedServiceRequest.getStep().getScenario().getProject().getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile();
+                    expectedServiceRequest.setExpectedServiceRequest(readFile(filePath));
                 }
             }
         }, modelList -> {});
+    }
+
+    private String readFile(String path) {
+        try {
+            File file = new File(path);
+            return FileUtils.readFileToString(file, FILE_ENCODING);
+        } catch (IOException e) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Reading file " + path, e);
+            }
+        }
+        return null;
     }
 
     public void setDirectoryPath(String directoryPath) {
