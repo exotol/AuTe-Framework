@@ -292,7 +292,9 @@ public class AtExecutor {
                     break;
                 case IGNORE_MASK:
                     MaskComparator comparator = new MaskComparator();
-                    comparator.compare(expectedResponse, responseData.getContent());
+                    if (comparator.compare(expectedResponse, responseData.getContent()) < 0) {
+                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                    }
                     break;
                 default:
                     JSONcomparing(step, expectedResponse, responseData);
