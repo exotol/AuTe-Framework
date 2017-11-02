@@ -36,6 +36,7 @@ public class StepRo extends AbstractRo {
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSetRo> stepParameterSetList;
     private List<ExpectedServiceRequestRo> expectedServiceRequestList;
+    private String responseCompareMode;
 
     public Long getId() {
         return id;
@@ -235,5 +236,13 @@ public class StepRo extends AbstractRo {
 
     public void setExpectedServiceRequestList(List<ExpectedServiceRequestRo> expectedServiceRequestList) {
         this.expectedServiceRequestList = expectedServiceRequestList;
+    }
+
+    public String getResponseCompareMode() {
+        return responseCompareMode;
+    }
+
+    public void setResponseCompareMode(String responseCompareMode) {
+        this.responseCompareMode = responseCompareMode;
     }
 }
