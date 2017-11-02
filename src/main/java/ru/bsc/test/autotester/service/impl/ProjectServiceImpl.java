@@ -3,15 +3,18 @@ package ru.bsc.test.autotester.service.impl;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
+import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.ro.ProjectRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -19,10 +22,10 @@ import java.util.stream.Collectors;
  *
  */
 @Service
-@Transactional
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
 
     private final ProjectRepository projectRepository;
 
@@ -42,14 +45,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
     public String findOneAsYaml(Long projectId) {
         return new Yaml().dump(projectRepository.findProject(projectId));
-    }
-
-    @Override
-    public Project save(Project project) {
-        return projectRepository.saveProject(project);
     }
 
     @Override
@@ -65,13 +62,44 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Transactional
     public ProjectRo updateFromRo(Long projectId, ProjectRo projectRo) {
-        Project project = findOne(projectId);
+        List<Project> projectList = findAll();
+        Project project = findOne(projectList, projectId);
         if (project != null) {
             projectRoMapper.updateProject(projectRo, project);
-            return projectRoMapper.projectToProjectRo(save(project));
+            project = projectRepository.saveProject(project, projectList);
+            return projectRoMapper.projectToProjectRo(project);
         }
         return null;
+    }
+
+    @Override
+    public ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo) {
+        List<Project> projectList = findAll();
+        Project project = findOne(projectList, projectId);
+        if (project != null) {
+            Scenario newScenario = new Scenario();
+            newScenario.setProject(project);
+            project.getScenarios().add(newScenario);
+
+            scenarioRoMapper.updateScenario(scenarioRo, newScenario);
+
+            projectRepository.saveProject(project, projectList);
+            return projectRoMapper.scenarioToScenarioRo(newScenario);
+        }
+        return null;
+    }
+
+    @Override
+    public Project saveProject(Project project, List<Project> projectList) {
+        projectRepository.saveProject(project, projectList);
+        return project;
+    }
+
+    private Project findOne(List<Project> projectList, Long projectId) {
+        return projectList.stream()
+                .filter(project -> Objects.equals(project.getId(), projectId))
+                .findAny()
+                .orElse(null);
     }
 }

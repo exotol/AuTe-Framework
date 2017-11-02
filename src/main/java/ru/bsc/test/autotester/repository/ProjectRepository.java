@@ -14,5 +14,5 @@ public interface ProjectRepository {
     List<Project> findAllProjects();
     Project findProject(Long projectId);
 
-    Project saveProject(Project project);
+    Project saveProject(Project project, List<Project> projectList);
 }

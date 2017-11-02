@@ -40,10 +40,10 @@ public abstract class StepRoMapper {
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
             @Mapping(target = "request", source = "request"),
-            @Mapping(target = "requestFile", source = "requestFile"),
+            @Mapping(target = "requestFile", ignore = true),
             @Mapping(target = "requestHeaders", source = "requestHeaders"),
             @Mapping(target = "expectedResponse", source = "expectedResponse"),
-            @Mapping(target = "expectedResponseFile", source = "expectedResponseFile"),
+            @Mapping(target = "expectedResponseFile", ignore = true),
             @Mapping(target = "expectedResponseIgnore", source = "expectedResponseIgnore"),
             @Mapping(target = "savingValues", source = "savingValues"),
             @Mapping(target = "responses", source = "responses"),
@@ -191,7 +191,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
-            @Mapping(target = "responseBodyFile", source = "responseBodyFile"),
+            @Mapping(target = "responseBodyFile", ignore = true),
             @Mapping(target = "httpStatus", source = "httpStatus")
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo, @MappingTarget MockServiceResponse mockServiceResponse);
@@ -274,7 +274,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
-            @Mapping(target = "expectedServiceRequestFile", source = "expectedServiceRequestFile"),
+            @Mapping(target = "expectedServiceRequestFile", ignore = true),
             @Mapping(target = "ignoredTags", source = "ignoredTags")
     })
     abstract void updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest);

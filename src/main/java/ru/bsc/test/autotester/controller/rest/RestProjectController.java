@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
-import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -31,7 +29,6 @@ import java.util.List;
 public class RestProjectController {
 
     private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
-    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectService projectService;
 
     @Autowired
@@ -69,17 +66,9 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.POST)
     public ScenarioRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
-        Project project = projectService.findOne(projectId);
-        if (project != null) {
-            Scenario newScenario = new Scenario();
-            newScenario.setProject(project);
-            newScenario = scenarioRoMapper.updateScenario(scenarioRo, newScenario);
-            project.getScenarios().add(newScenario);
-            project = projectService.save(project);
-
-            return projectRoMapper.scenarioToScenarioRo(
-                    project.getScenarios().stream().max((o1, o2) -> o1.getId() > o2.getId() ? 1 : -1).orElse(null)
-            );
+        scenarioRo = projectService.addScenarioToProject(projectId, scenarioRo);
+        if (scenarioRo != null) {
+            return scenarioRo;
         }
         throw new ResourceNotFoundException();
     }

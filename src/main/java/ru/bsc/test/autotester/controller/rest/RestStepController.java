@@ -30,11 +30,9 @@ public class RestStepController {
 
     @RequestMapping(value = "{stepId}", method = RequestMethod.PUT)
     public StepRo updateOne(@PathVariable Long stepId, @RequestBody StepRo stepRo) {
-        Step step = stepService.findOne(stepId);
-        if (step != null) {
-            stepRoMapper.updateStep(stepRo, step);
-            step = stepService.save(step);
-            return stepRoMapper.stepToStepRo(step);
+        stepRo = stepService.updateFromRo(stepId, stepRo);
+        if (stepRo != null) {
+            return stepRo;
         }
         throw new ResourceNotFoundException();
     }

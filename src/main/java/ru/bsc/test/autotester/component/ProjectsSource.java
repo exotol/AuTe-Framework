@@ -6,19 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.MappingNode;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.representer.Representer;
-import org.yaml.snakeyaml.serializer.AnchorGenerator;
 import ru.bsc.test.at.executor.model.AbstractModel;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -42,10 +36,10 @@ public class ProjectsSource {
     private static final String FILE_ENCODING = "UTF-8";
 
     private String directoryPath;
-    private List<Project> projectList = new LinkedList<>();
 
-    @PostConstruct
-    public void loadProjects() {
+    private List<Project> loadProjects() {
+        List<Project> projectList = new LinkedList<>();
+        projectList.clear();
         LOGGER.debug("Load projects from: {}", directoryPath);
         File[] fileList = new File(directoryPath).listFiles(File::isDirectory);
         if (fileList != null) {
@@ -71,7 +65,9 @@ public class ProjectsSource {
         // Проверка и восстановление id:
         // - исправляются повторения id
         // - исправляются неназначенные id (id == null)
-        checkAndRepairId();
+        checkAndRepairId(projectList);
+
+        return projectList;
     }
 
     private void readExternalFiles(Project project) {
@@ -80,7 +76,6 @@ public class ProjectsSource {
             if (model instanceof Step) {
                 Step step = ((Step) model);
                 if (step.getRequestFile() != null && step.getRequest() == null) {
-                    // File responseFile = new File(projectDirectory.getAbsolutePath() + "/scenarios/" + step.getScenario().getId() + "/steps/" + step.getId() + "/" + step.getRequestFile());
                     try {
                         File responseFile = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
                         step.setRequest(FileUtils.readFileToString(responseFile, FILE_ENCODING));
@@ -136,16 +131,17 @@ public class ProjectsSource {
     }
 
     public List<Project> getProjectList() {
-        return projectList;
+        return loadProjects();
     }
 
-    public void save() {
-        checkAndRepairSort();
-        checkAndRepairId();
-        saveToFiles();
+    public void save(List<Project> projectList) {
+        checkAndRepairSort(projectList);
+        checkAndRepairId(projectList);
+        saveToFiles(projectList);
+        projectList.forEach(this::readExternalFiles);
     }
 
-    private void saveToFiles() {
+    private void saveToFiles(List<Project> projectList) {
         projectList.forEach(projectItem -> {
             try {
                 FileWriter writer = new FileWriter(directoryPath + "/" + projectItem.getProjectCode() + "/" + MAIN_YAML_FILENAME);
@@ -223,16 +219,17 @@ public class ProjectsSource {
         }, modelList -> {});
     }
 
-    private void checkAndRepairSort() {
+    private void checkAndRepairSort(List<Project> projectList) {
         applyToAllProjects(
+                projectList,
                 model -> {},
                 modelList -> modelList.sort((o1, o2) -> Long.compare(o1.getSort() != null ? o1.getSort() : 0L, o2.getSort() != null ? o2.getSort() : 0L)));
     }
 
-    private void checkAndRepairId() {
+    private void checkAndRepairId(List<Project> projectList) {
         Set<Long> idSet = new LinkedHashSet<>();
-        applyToAllProjects(model -> collectAndReplaceRepeatsId(idSet, model), modelList -> {});
-        applyToAllProjects(model -> newIdToModel(idSet, model), modelList -> {});
+        applyToAllProjects(projectList, model -> collectAndReplaceRepeatsId(idSet, model), modelList -> {});
+        applyToAllProjects(projectList, model -> newIdToModel(idSet, model), modelList -> {});
     }
 
     private void collectAndReplaceRepeatsId(Set<Long> idSet, AbstractModel model) {
@@ -300,7 +297,7 @@ public class ProjectsSource {
         }
     }
 
-    private void applyToAllProjects(IMethodToModel methodToModel, IMethodToList methodToList) {
+    private void applyToAllProjects(List<Project> projectList, IMethodToModel methodToModel, IMethodToList methodToList) {
         projectList.forEach(project -> applyToProjectModels(project, methodToModel, methodToList));
     }
 
@@ -312,29 +309,5 @@ public class ProjectsSource {
     @FunctionalInterface
     interface IMethodToList {
         void method(List<? extends AbstractModel> modelList);
-    }
-
-    private class AutotesterAnchorGenerator implements AnchorGenerator {
-
-        private long lastAnchorId = 0;
-
-        @Override
-        public String nextAnchor(Node node) {
-            if (node instanceof MappingNode) {
-                NodeTuple idNode = ((MappingNode) node).getValue()
-                        .stream()
-                        .filter(nodeTuple -> nodeTuple.getKeyNode() instanceof ScalarNode)
-                        .filter(nodeTuple -> "id".equals(((ScalarNode) nodeTuple.getKeyNode()).getValue()))
-                        .findAny()
-                        .orElse(null);
-                if (idNode != null && idNode.getValueNode() instanceof ScalarNode) {
-                    String idValue = ((ScalarNode) idNode.getValueNode()).getValue();
-                    if (idValue != null) {
-                        return "objId" + idValue;
-                    }
-                }
-            }
-            return "id" + (lastAnchorId++);
-        }
     }
 }
