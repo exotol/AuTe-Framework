@@ -5,6 +5,7 @@ import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
@@ -19,6 +20,7 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
+import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 
@@ -275,27 +277,43 @@ public class AtExecutor {
         stepResult.setExpected(expectedResponse);
 
         // 6. Проверить код статуса ответа
-        if (step.getExpectedStatusCode() != null) {
-            if (step.getExpectedStatusCode() != responseData.getStatusCode()) {
-                throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
-            }
+        if ((step.getExpectedStatusCode() != null)
+                && (step.getExpectedStatusCode() != responseData.getStatusCode())) {
+            throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
+
         }
 
-        // 7. Сравнить JSON ответ с ожидаемым
-        if (!step.getExpectedResponseIgnore()) {
-            if (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) {
-                // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
-                if (!responseData.getContent().equals(expectedResponse)) {
-                    try {
-                        JSONAssert.assertEquals(
-                                expectedResponse.replaceAll(" ", " "),
-                                responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                                new IgnoringComparator(JSONCompareMode.LENIENT)
-                        );
-                    } catch (Error assertionError) {
-                        throw new Exception(assertionError);
-                    }
-                }
+        if (step.getResponseCompareMode() == null) {
+            JSONcomparing(step, expectedResponse, responseData);
+        } else {
+            switch (step.getResponseCompareMode()) {
+                case FULL_MATHCH:
+                    Assert.assertEquals(expectedResponse, responseData.getContent());
+                    break;
+                case IGNORE_MASK:
+                    MaskComparator comparator = new MaskComparator();
+                    comparator.compare(expectedResponse, responseData.getContent());
+                    break;
+                default:
+                    JSONcomparing(step, expectedResponse, responseData);
+                    break;
+            }
+        }
+    }
+
+    private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+        if (!step.getExpectedResponseIgnore() &&
+                (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
+                (!responseData.getContent().equals(expectedResponse))) {
+            // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
+            try {
+                JSONAssert.assertEquals(
+                        expectedResponse.replaceAll(" ", " "),
+                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                        new IgnoringComparator(JSONCompareMode.LENIENT)
+                );
+            } catch (Error assertionError) {
+                throw new Exception(assertionError);
             }
         }
     }

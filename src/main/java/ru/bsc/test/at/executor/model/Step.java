@@ -39,6 +39,12 @@ public class Step implements Serializable {
         FORM
     }
 
+    public enum ResponseCompareMode {
+        JSON,
+        FULL_MATHCH,
+        IGNORE_MASK
+    }
+
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
@@ -98,6 +104,8 @@ public class Step implements Serializable {
     @MapKeyColumn(name = "savedValueName")
     @CollectionTable(name = "AT_STEP_SAVED_VALUES_CHECK", joinColumns = @JoinColumn(name = "STEP_ID"))
     private Map<String, String> savedValuesCheck;
+    @Column(name = "RESPONSE_COMPARE_MODE")
+    private ResponseCompareMode responseCompareMode;
 
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ID ASC")
@@ -283,6 +291,14 @@ public class Step implements Serializable {
         this.stepParameterSetList = stepParameterSetList;
     }
 
+    public ResponseCompareMode getResponseCompareMode() {
+        return responseCompareMode;
+    }
+
+    public void setResponseCompareMode(ResponseCompareMode responseCompareMode) {
+        this.responseCompareMode = responseCompareMode;
+    }
+
     public Step clone() {
         Step cloned = new Step();
         cloned.setId(null);
@@ -307,6 +323,7 @@ public class Step implements Serializable {
         cloned.setDisabled(getDisabled());
         cloned.setStepComment(getStepComment());
         cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        cloned.setResponseCompareMode(getResponseCompareMode());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
