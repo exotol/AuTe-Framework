@@ -283,9 +283,7 @@ public class AtExecutor {
 
         }
 
-        if (!step.getExpectedResponseIgnore() &&
-                (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
-                (!responseData.getContent().equals(expectedResponse))) {
+        if (!step.getExpectedResponseIgnore()) {
             if (step.getResponseCompareMode() == null) {
                 JSONcomparing(step, expectedResponse, responseData);
             } else {
@@ -307,14 +305,17 @@ public class AtExecutor {
     }
 
     private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
-        try {
-            JSONAssert.assertEquals(
-                    expectedResponse.replaceAll(" ", " "),
-                    responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                    new IgnoringComparator(JSONCompareMode.LENIENT)
-            );
-        } catch (Error assertionError) {
-            throw new Exception(assertionError);
+        if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
+                (!responseData.getContent().equals(expectedResponse))) {
+            try {
+                JSONAssert.assertEquals(
+                        expectedResponse.replaceAll(" ", " "),
+                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                        new IgnoringComparator(JSONCompareMode.LENIENT)
+                );
+            } catch (Error assertionError) {
+                throw new Exception(assertionError);
+            }
         }
     }
 
