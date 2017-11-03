@@ -39,12 +39,12 @@ public class RestProjectController {
     private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectService projectService;
-    @Autowired
     private ScenarioService scenarioService;
 
     @Autowired
-    public RestProjectController(ProjectService projectService) {
+    public RestProjectController(ProjectService projectService, ScenarioService scenarioService) {
         this.projectService = projectService;
+        this.scenarioService = scenarioService;
     }
 
     @RequestMapping("")
@@ -94,7 +94,7 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectId}/search", method = RequestMethod.POST)
     public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @Valid @RequestBody ProjectSearchRo projectSearchRo) {
-        return scenarioService.findScenarioByStepRelativeUrl(projectId, projectSearchRo.getRelativeUrl());
+        return scenarioService.findScenarioByStepRelativeUrl(projectId, projectSearchRo);
     }
 
     @SuppressWarnings("Duplicates")

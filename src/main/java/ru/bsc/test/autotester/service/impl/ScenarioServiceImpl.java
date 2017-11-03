@@ -16,10 +16,10 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
-import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
@@ -187,8 +187,8 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     @Transactional
     @ReadOnlyProperty
-    public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, String relativeUrl) {
-        List<Scenario> scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + relativeUrl + "%"));
+    public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo) {
+        List<Scenario> scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + projectSearchRo.getRelativeUrl() + "%"));
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
 }
