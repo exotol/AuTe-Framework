@@ -119,7 +119,6 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         cloned.setStepList(new LinkedList<>());
         for (Step step: getStepList()) {
             Step clonedStep = step.clone();
-            clonedStep.setScenario(cloned);
             cloned.getStepList().add(clonedStep);
         }
 

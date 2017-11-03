@@ -19,7 +19,6 @@ public class Step extends AbstractModel implements Serializable {
         FORM
     }
 
-    private Scenario scenario;
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
@@ -135,12 +134,6 @@ public class Step extends AbstractModel implements Serializable {
     }
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
-    }
-    public Scenario getScenario() {
-        return scenario;
-    }
-    public void setScenario(Scenario scenario) {
-        this.scenario = scenario;
     }
 
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
