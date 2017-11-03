@@ -8,11 +8,11 @@ import ru.bsc.test.at.executor.model.AbstractModel;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -50,7 +50,7 @@ public class ProjectsSource {
                         readExternalFiles(loadedProject);
 
                         projectList.add(loadedProject);
-                    } catch (FileNotFoundException e) {
+                    } catch (IOException e) {
                         LOGGER.error("Main project file not found", e);
                     }
                 }
@@ -76,7 +76,7 @@ public class ProjectsSource {
                         scenario.getStepList().clear();
                         scenario.getStepList().addAll(loadedStepList);
                     }
-                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
                     LOGGER.error("Read step list yaml", e);
                 }
             }
@@ -93,7 +93,6 @@ public class ProjectsSource {
                 if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
                     step.setExpectedResponse(readFile(projectPath + step.getExpectedResponseFile()));
                 }
-
             } else if (model instanceof MockServiceResponse) {
                 MockServiceResponse mockServiceResponse = (MockServiceResponse) model;
                 if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
@@ -147,15 +146,48 @@ public class ProjectsSource {
         });
     }
 
+    private String scenarioPath(Scenario scenario) {
+        String result;
+        if (scenario != null) {
+            result = "";
+            if (scenario.getScenarioGroup() != null) {
+                result += "group-" + scenario.getScenarioGroup().getId() + "/";
+            }
+
+            result += String.valueOf(scenario.getId()) + "/";
+        } else {
+            result = "0/";
+        }
+        return result;
+    }
+
+    private String stepRequestFile(Step step, Scenario scenario) {
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/request.json";
+    }
+
+    private String stepExpectedResponseFile(Step step, Scenario scenario) {
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/expected-response.json";
+    }
+
+    private String mockResponseBodyFile(MockServiceResponse mockServiceResponse, Scenario scenario) {
+        String ext = mockServiceResponse.getResponseBody() != null && mockServiceResponse.getResponseBody().indexOf('<') == 0 ? "xml" : "json";
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + mockServiceResponse.getStep().getId() + "/mock-response-" + mockServiceResponse.getId() + "." + ext;
+    }
+
+    private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest, Scenario scenario) {
+        String ext = expectedServiceRequest.getExpectedServiceRequest() != null && expectedServiceRequest.getExpectedServiceRequest().indexOf('<') == 0 ? "xml" : "json";
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
+    }
+
     private void saveToExternalFiles(Project project) {
         applyToProjectModels(project, model -> {
             if (model instanceof Step) {
                 Step step = (Step)model;
-                Long stepScenarioId = findScenarioIdByStep(step, project);
+                Scenario stepScenario = findScenarioByStep(step, project);
                 if (step.getRequest() != null) {
                     try {
                         if (step.getRequestFile() == null) {
-                            step.setRequestFile("scenarios/" + stepScenarioId + "/steps/" + step.getId() + "/request.json");
+                            step.setRequestFile(stepRequestFile(step, stepScenario));
                         }
                         File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
                         FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
@@ -167,7 +199,7 @@ public class ProjectsSource {
                 if (step.getExpectedResponse() != null) {
                     try {
                         if (step.getExpectedResponseFile() == null) {
-                            step.setExpectedResponseFile("scenarios/" + stepScenarioId + "/steps/" + step.getId() + "/expected-response.json");
+                            step.setExpectedResponseFile(stepExpectedResponseFile(step, stepScenario));
                         }
                         File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile());
                         FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
@@ -178,11 +210,11 @@ public class ProjectsSource {
                 }
             } else if (model instanceof MockServiceResponse) {
                 MockServiceResponse mockServiceResponse = (MockServiceResponse)model;
-                Long stepScenarioId = findScenarioIdByStep(mockServiceResponse.getStep(), project);
+                Scenario stepScenario = findScenarioByStep(mockServiceResponse.getStep(), project);
                 if (mockServiceResponse.getResponseBody() != null) {
                     try {
                         if (mockServiceResponse.getResponseBodyFile() == null) {
-                            mockServiceResponse.setResponseBodyFile("scenarios/" + stepScenarioId + "/steps/" + mockServiceResponse.getStep().getId() + "/mock-response-" + mockServiceResponse.getId() + ".json");
+                            mockServiceResponse.setResponseBodyFile(mockResponseBodyFile(mockServiceResponse, stepScenario));
                         }
                         File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile());
                         FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
@@ -193,11 +225,11 @@ public class ProjectsSource {
                 }
             } else if (model instanceof ExpectedServiceRequest) {
                 ExpectedServiceRequest expectedServiceRequest = (ExpectedServiceRequest)model;
-                Long stepScenarioId = findScenarioIdByStep(expectedServiceRequest.getStep(), project);
+                Scenario stepScenario = findScenarioByStep(expectedServiceRequest.getStep(), project);
                 if (expectedServiceRequest.getExpectedServiceRequest() != null) {
                     try {
                         if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
-                            expectedServiceRequest.setExpectedServiceRequestFile("scenarios/" + stepScenarioId + "/steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-response-" + expectedServiceRequest.getId() + ".json");
+                            expectedServiceRequest.setExpectedServiceRequestFile(expectedServiceRequestFile(expectedServiceRequest, stepScenario));
                         }
                         File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
                         FileUtils.writeStringToFile(file, expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
@@ -213,7 +245,7 @@ public class ProjectsSource {
             if (scenario.getStepList() != null && !scenario.getStepList().isEmpty()) {
                 try {
                     if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
-                        scenario.setStepListYamlFile("scenarios/" + scenario.getId() + "/steps.yml");
+                        scenario.setStepListYamlFile("scenarios/" + scenarioPath(scenario) + "stepList.yml");
                     }
                     String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
                     YamlUtils.dumpToFile(scenario.getStepList(), fileName);
@@ -226,14 +258,13 @@ public class ProjectsSource {
 
     }
 
-    private Long findScenarioIdByStep(Step step, Project project) {
+    private Scenario findScenarioByStep(Step step, Project project) {
         return project.getScenarioList()
                 .stream()
                 .filter(scenario1 ->
                         scenario1.getStepList().stream().filter(step1 -> Objects.equals(step1.getId(), step.getId())).count() == 1
                 )
-                .map(AbstractModel::getId)
-                .findAny().orElse(0L);
+                .findAny().orElse(null);
     }
 
     private void checkAndRepairSort(List<Project> projectList) {
