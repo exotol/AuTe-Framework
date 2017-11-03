@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.representer.Representer;
 import ru.bsc.test.at.executor.model.AbstractModel;
@@ -12,11 +11,11 @@ import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -148,18 +147,12 @@ public class ProjectsSource {
 
     private void saveToFiles(List<Project> projectList) {
         projectList.forEach(projectItem -> {
+            String fileName = directoryPath + "/" + projectItem.getProjectCode() + "/" + MAIN_YAML_FILENAME;
             try {
-                FileWriter writer = new FileWriter(directoryPath + "/" + projectItem.getProjectCode() + "/" + MAIN_YAML_FILENAME);
-                DumperOptions dumperOptions = new DumperOptions();
-                dumperOptions.setAnchorGenerator(new AutotesterAnchorGenerator());
-
                 saveToExternalFiles(projectItem);
-
-                new Yaml(dumperOptions).dump(projectItem, writer);
-                writer.flush();
-                writer.close();
+                YamlUtils.dumpToFile(projectItem, fileName);
             } catch (IOException e) {
-                LOGGER.error("Save file " + directoryPath + "/" + projectItem.getProjectCode() + "/" + MAIN_YAML_FILENAME, e);
+                LOGGER.error("Save file " + fileName, e);
             }
         });
     }
@@ -232,12 +225,8 @@ public class ProjectsSource {
                     if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
                         scenario.setStepListYamlFile("scenarios/" + scenario.getId() + "/steps.yml");
                     }
-                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
-
-                    DumperOptions dumperOptions = new DumperOptions();
-                    dumperOptions.setAnchorGenerator(new AutotesterAnchorGenerator());
-                    new Yaml(dumperOptions).dump(scenario.getStepList(), new FileWriter(filePath));
-
+                    String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
+                    YamlUtils.dumpToFile(scenario.getStepList(), fileName);
                     scenario.getStepList().clear();
                 } catch (IOException e) {
                     LOGGER.error("", e);

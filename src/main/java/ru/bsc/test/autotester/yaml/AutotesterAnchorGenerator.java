@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.component;
+package ru.bsc.test.autotester.yaml;
 
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
