@@ -84,28 +84,25 @@ public class ProjectsSource {
 
         // Чтение внешних файлов для вложенных моделей
         applyToProjectModels(project, model -> {
+            String projectPath = directoryPath + "/" + project.getProjectCode() + "/";
             if (model instanceof Step) {
                 Step step = ((Step) model);
                 if (step.getRequestFile() != null && step.getRequest() == null) {
-                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile();
-                    step.setRequest(readFile(filePath));
+                    step.setRequest(readFile(projectPath + step.getRequestFile()));
                 }
                 if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
-                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile();
-                    step.setExpectedResponse(readFile(filePath));
+                    step.setExpectedResponse(readFile(projectPath + step.getExpectedResponseFile()));
                 }
 
             } else if (model instanceof MockServiceResponse) {
                 MockServiceResponse mockServiceResponse = (MockServiceResponse) model;
                 if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
-                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile();
-                    mockServiceResponse.setResponseBody(readFile(filePath));
+                    mockServiceResponse.setResponseBody(readFile(projectPath + mockServiceResponse.getResponseBodyFile()));
                 }
             } else if (model instanceof ExpectedServiceRequest) {
                 ExpectedServiceRequest expectedServiceRequest = (ExpectedServiceRequest) model;
                 if (expectedServiceRequest.getExpectedServiceRequestFile() != null && expectedServiceRequest.getExpectedServiceRequest() == null) {
-                    String filePath = directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile();
-                    expectedServiceRequest.setExpectedServiceRequest(readFile(filePath));
+                    expectedServiceRequest.setExpectedServiceRequest(readFile(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()));
                 }
             }
         }, modelList -> {});

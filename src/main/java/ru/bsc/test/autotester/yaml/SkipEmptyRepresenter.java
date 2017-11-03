@@ -12,7 +12,7 @@ import java.util.List;
  *
  */
 
-public class SkipEmptyRepresenter extends Representer {
+class SkipEmptyRepresenter extends Representer {
     @Override
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
         // if value of property is null, ignore it.
