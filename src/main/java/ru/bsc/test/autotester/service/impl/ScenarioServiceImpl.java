@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,14 +47,12 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
     private final StepService stepService;
-    private final ProjectService projectService;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService, ProjectService projectService) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
         this.scenarioRepository = scenarioRepository;
         this.expectedServiceRequestService = expectedServiceRequestService;
         this.stepService = stepService;
-        this.projectService = projectService;
     }
 
     @PostConstruct
@@ -189,7 +188,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Transactional
     @ReadOnlyProperty
     public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, String relativeUrl) {
-        List<Scenario> scenarios = scenarioRepository.findByRelativeUrl(projectId, "%" + relativeUrl);
+        List<Scenario> scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + relativeUrl + "%"));
         if (scenarios.isEmpty()) throw new ResourceNotFoundException();
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }

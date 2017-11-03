@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -17,5 +18,5 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Long> {
     List<Scenario> findAllByProjectIdAndScenarioGroupIdOrderByScenarioGroupIdDescNameAsc(Long projectId, Long scenarioGroupId);
 
     @Query("SELECT s FROM Scenario s JOIN s.steps st JOIN s.project p where p.id=:projectId and st.relativeUrl like :relativeUrl")
-    List<Scenario> findByRelativeUrl(@Param("projectId") Long projectId, @Param("relativeUrl") String relativeUrl);
+    Set<Scenario> findByRelativeUrl(@Param("projectId") Long projectId, @Param("relativeUrl") String relativeUrl);
 }
