@@ -64,4 +64,9 @@ public class StepServiceImpl implements StepService {
     public Step save(Step step) {
         return stepRepository.save(step);
     }
+
+    @Override
+    public List<Step> findByRelativeUrl(Long scenarioId, String relativeUrl) {
+        return stepRepository.findAllByScenarioIdAndRelativeUrlContaining(scenarioId, relativeUrl);
+    }
 }
