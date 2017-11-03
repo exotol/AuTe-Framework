@@ -189,7 +189,6 @@ public class ScenarioServiceImpl implements ScenarioService {
     @ReadOnlyProperty
     public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, String relativeUrl) {
         List<Scenario> scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + relativeUrl + "%"));
-        if (scenarios.isEmpty()) throw new ResourceNotFoundException();
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
 }
