@@ -162,7 +162,7 @@ paths:
             required: true
             description: Search object
             schema:
-              $ref: '#/definitions/Scenario'
+              $ref: '#/definitions/ProjectSearchRo'
         responses:
           200:
             description: Returns list of found scenarios
@@ -411,6 +411,11 @@ definitions:
         type: string
       expected:
         type: string
+  ProjectSearchRo:
+   type: object
+      properties:
+        relativeUrl:
+          type: string
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
