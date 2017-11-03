@@ -14,6 +14,7 @@ import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.RequestBodyType;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
@@ -217,8 +218,8 @@ public class AtExecutor {
             responseData = http.request(
                     step.getRequestMethod(),
                     requestUrl,
-                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
-                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
+                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                     step.getRequestHeaders(),
                     project.getTestIdHeaderName(),
                     testId);

@@ -34,18 +34,6 @@ import java.util.Map;
 @Table(name = "AT_STEP")
 public class Step implements Serializable {
 
-    public enum RequestBodyType {
-        @SuppressWarnings("unused")
-        JSON,
-        FORM
-    }
-
-    public enum ResponseCompareMode {
-        JSON,
-        FULL_MATHCH,
-        IGNORE_MASK
-    }
-
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
@@ -90,6 +78,7 @@ public class Step implements Serializable {
     @Column(name = "JSON_XPATH", length = 500)
     private String jsonXPath;
     @Column(name = "REQUEST_BODY_TYPE")
+    @Enumerated
     private RequestBodyType requestBodyType;
     @Column(name = "USE_POLLING")
     private Boolean usePolling;
