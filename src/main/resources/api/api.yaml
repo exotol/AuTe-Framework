@@ -167,7 +167,10 @@ paths:
           200:
             description: Returns list of found scenarios
             schema:
-              $ref: '#/definitions/Scenario'
+              schema:
+                type: array
+                items:
+                  $ref: '#/definitions/Scenario'
   '/projects/{projectId}/export-selected-to-yaml':
     post:
       tags:
