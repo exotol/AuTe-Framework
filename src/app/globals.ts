@@ -2,5 +2,5 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class Globals {
-  serviceBaseUrl = '';
+  serviceBaseUrl = '/autotester-rest-next';
 }

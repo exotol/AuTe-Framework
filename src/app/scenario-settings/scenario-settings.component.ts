@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {Scenario} from '../model/scenario';
-import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {ScenarioService} from '../service/scenario.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
 import {ScenarioGroup} from '../model/scenario-group';
+import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-scenario-settings',
@@ -22,14 +22,6 @@ export class ScenarioSettingsComponent implements OnInit {
   scenarioList: Scenario[];
   ScenarioSettingsComponent = ScenarioSettingsComponent;
 
-  toastOptions: ToastOptions = {
-    title: 'Updated',
-    msg: 'Scenario updated',
-    showClose: true,
-    timeout: 5000,
-    theme: 'bootstrap'
-  };
-
   static scenarioGroupCompareFn(c1: ScenarioGroup, c2: ScenarioGroup): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
@@ -38,7 +30,7 @@ export class ScenarioSettingsComponent implements OnInit {
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private projectService: ProjectService,
-    private toastyService: ToastyService
+    private customToastyService: CustomToastyService
   ) { }
 
   ngOnInit() {
@@ -58,10 +50,11 @@ export class ScenarioSettingsComponent implements OnInit {
   }
 
   save(): void {
+    const toasty = this.customToastyService.saving();
     this.scenarioService.saveOne(this.scenario)
       .subscribe(value => {
         this.scenario = value;
-        this.toastyService.success(this.toastOptions);
-      });
+        this.customToastyService.success('Сохранено', 'Сценарий сохранен');
+      }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 }

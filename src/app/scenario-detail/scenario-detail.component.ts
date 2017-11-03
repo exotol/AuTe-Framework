@@ -4,8 +4,8 @@ import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
-import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {StepService} from '../service/step.service';
+import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-scenario-detail',
@@ -20,7 +20,7 @@ export class ScenarioDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private stepService: StepService,
-    private toastyService: ToastyService
+    private customToastyService: CustomToastyService
   ) { }
 
   ngOnInit() {
@@ -35,18 +35,12 @@ export class ScenarioDetailComponent implements OnInit {
 
   saveSteps() {
     if (this.scenario && this.stepList) {
+      const toasty = this.customToastyService.saving();
       this.scenarioService.saveStepList(this.scenario, this.stepList)
         .subscribe(savedStepList => {
-          const toastOptions: ToastOptions = {
-            title: 'Updated',
-            msg: 'Steps updated',
-            showClose: true,
-            timeout: 5000,
-            theme: 'bootstrap'
-          };
-          this.toastyService.success(toastOptions);
+          this.customToastyService.success('Сохранено', 'Шаги сохранены');
           this.stepList = savedStepList;
-        });
+        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
   }
 
@@ -111,20 +105,14 @@ export class ScenarioDetailComponent implements OnInit {
 
   onCloneClick(step: Step) {
     if (confirm('Confirm: Clone step')) {
+      const toasty = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
       this.stepService.cloneStep(step)
         .subscribe(clonedStep => {
           const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
           clonedStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
           this.stepList.push(clonedStep);
-          const toastOptions: ToastOptions = {
-            title: 'Cloned',
-            msg: 'Step cloned and appended to the end',
-            showClose: true,
-            timeout: 15000,
-            theme: 'bootstrap'
-          };
-          this.toastyService.success(toastOptions);
-        });
+          this.customToastyService.success('Сохранено', 'Шаг склонирован');
+        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
   }
 }

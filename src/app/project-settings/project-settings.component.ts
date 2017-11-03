@@ -5,7 +5,7 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ScenarioGroup} from '../model/scenario-group';
 import {Stand} from '../model/stand';
 import {Scenario} from '../model/scenario';
-import {ToastOptions, ToastyService} from 'ng2-toasty';
+import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -23,18 +23,10 @@ export class ProjectSettingsComponent implements OnInit {
   tab = 'details';
   scenarioList: Scenario[];
 
-  private toastOptions: ToastOptions = {
-    title: 'Updated',
-    msg: 'Project settings updated',
-    showClose: true,
-    timeout: 5000,
-    theme: 'bootstrap'
-  };
-
   constructor(
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private toastyService: ToastyService
+    private customToastyService: CustomToastyService
   ) { }
 
   ngOnInit() {
@@ -49,11 +41,16 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   save(): void {
+    const toasty = this.customToastyService.saving('Сохранение...', 'Сохранение может занять некоторое время...');
     this.projectService.save(this.project)
-      .subscribe(value => {
-        this.project = value;
-        this.toastyService.success(this.toastOptions)
-      });
+      .subscribe(
+        value => {
+          this.project = value;
+          this.customToastyService.success('Сохранено', 'Параметры проекта сохранены');
+        },
+        error => this.customToastyService.error('Ошибка', error),
+        () => this.customToastyService.clear(toasty)
+        );
   }
 
   selectTab(tabName: string): boolean {

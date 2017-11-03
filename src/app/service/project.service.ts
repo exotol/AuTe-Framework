@@ -26,7 +26,7 @@ export class ProjectService {
     return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id,
       project,
-      this.headers
+      { headers: this.headers }
     ).map(value => value.json() as Project);
   }
 
