@@ -78,6 +78,7 @@ public class AtExecutor {
                 try {
                     connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
                     connection.setAutoCommit(false);
+                    connection.setReadOnly(true);
                 } catch (SQLException e) {
                     connection = null;
                 }
