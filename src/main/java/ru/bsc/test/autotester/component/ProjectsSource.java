@@ -4,8 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.representer.Representer;
 import ru.bsc.test.at.executor.model.AbstractModel;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
@@ -15,7 +13,6 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -48,9 +45,7 @@ public class ProjectsSource {
                 File mainYaml = new File(projectDirectory.getAbsolutePath() + "/" + MAIN_YAML_FILENAME);
                 if (mainYaml.exists()) {
                     try {
-                        Representer representer = new Representer();
-                        representer.getPropertyUtils().setSkipMissingProperties(true);
-                        Project loadedProject = new Yaml(representer).loadAs(new FileReader(mainYaml), Project.class);
+                        Project loadedProject = YamlUtils.loadAs(mainYaml, Project.class);
                         loadedProject.setProjectCode(projectDirectory.getName());
                         readExternalFiles(loadedProject);
 
@@ -77,9 +72,7 @@ public class ProjectsSource {
                 File stepListYamlFile = new File(directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile());
                 try {
                     if (stepListYamlFile.exists()) {
-                        Representer representer = new Representer();
-                        representer.getPropertyUtils().setSkipMissingProperties(true);
-                        List<Step> loadedStepList = new Yaml(representer).loadAs(new FileReader(stepListYamlFile), List.class);
+                        List<Step> loadedStepList = YamlUtils.loadAs(stepListYamlFile, List.class);
                         scenario.getStepList().clear();
                         scenario.getStepList().addAll(loadedStepList);
                     }

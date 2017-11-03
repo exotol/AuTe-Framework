@@ -2,7 +2,11 @@ package ru.bsc.test.autotester.yaml;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -23,7 +27,9 @@ public class YamlUtils {
         }
     }
 
-    public static void loadAs() {
-        // TODO
+    public static <T> T loadAs(File fileName, Class<T> type) throws FileNotFoundException {
+        Representer representer = new Representer();
+        representer.getPropertyUtils().setSkipMissingProperties(true);
+        return new Yaml(representer).loadAs(new FileReader(fileName), type);
     }
 }
