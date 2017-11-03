@@ -29,12 +29,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -192,18 +189,8 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Transactional
     @ReadOnlyProperty
     public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, String relativeUrl) {
-        Project project = projectService.findOne(projectId);
-        if (project != null) {
-            List<Scenario> scenarios = project.getScenarios();
-            Set<Scenario> result = new HashSet<>();
-            scenarios.forEach(scenario ->
-                    scenario.getSteps().forEach(step -> {
-                        if (!stepService.findByRelativeUrl(scenario.getId(), relativeUrl).isEmpty()) {
-                            result.add(scenario);
-                        }
-                    }));
-            return projectRoMapper.convertScenarioListToScenarioRoList(new ArrayList<>(result));
-        }
-        throw new ResourceNotFoundException();
+        List<Scenario> scenarios = scenarioRepository.findByRelativeUrl(projectId, "%" + relativeUrl);
+        if (scenarios.isEmpty()) throw new ResourceNotFoundException();
+        return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
 }

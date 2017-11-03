@@ -18,6 +18,4 @@ public interface StepService {
     Step save(Step step);
 
     void setScenarioService(ScenarioService scenarioService);
-
-    List<Step> findByRelativeUrl(Long scenarioId, String relativeUrl);
 }
