@@ -58,12 +58,18 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
         this.scenarioList = scenarioList;
     }
     public List<ScenarioGroup> getScenarioGroups() {
+        if (scenarioGroups == null) {
+            scenarioGroups = new LinkedList<>();
+        }
         return scenarioGroups;
     }
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
     }
     public List<Stand> getStandList() {
+        if (standList == null) {
+            standList = new LinkedList<>();
+        }
         return standList;
     }
     public void setStandList(List<Stand> standList) {

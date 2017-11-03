@@ -170,9 +170,15 @@ public class Step extends AbstractModel implements Serializable {
         this.pollingJsonXPath = pollingJsonXPath;
     }
     public List<MockServiceResponse> getMockServiceResponseList() {
+        if (mockServiceResponseList == null) {
+            mockServiceResponseList = new LinkedList<>();
+        }
         return mockServiceResponseList;
     }
     public void setMockServiceResponseList(List<MockServiceResponse> mockServiceResponseList) {
+        if (mockServiceResponseList == null) {
+            mockServiceResponseList = new LinkedList<>();
+        }
         this.mockServiceResponseList = mockServiceResponseList;
     }
     public Boolean getDisabled() {
@@ -197,6 +203,9 @@ public class Step extends AbstractModel implements Serializable {
         this.savedValuesCheck = savedValuesCheck;
     }
     public List<StepParameterSet> getStepParameterSetList() {
+        if (stepParameterSetList == null) {
+            stepParameterSetList = new LinkedList<>();
+        }
         return stepParameterSetList;
     }
     public void setStepParameterSetList(List<StepParameterSet> stepParameterSetList) {
