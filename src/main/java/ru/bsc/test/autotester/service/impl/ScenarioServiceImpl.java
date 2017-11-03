@@ -72,7 +72,6 @@ public class ScenarioServiceImpl implements ScenarioService {
         Scenario scenario = findOne(projectList, scenarioId);
         if (scenario != null) {
             Step newStep = new Step();
-            newStep.setScenario(scenario);
             scenario.getStepList().add(newStep);
 
             stepRoMapper.updateStep(stepRo, newStep);
@@ -125,14 +124,25 @@ public class ScenarioServiceImpl implements ScenarioService {
     public Step cloneStep(Step step) {
         List<Project> projectList = projectService.findAll();
         if (step != null) {
-            Scenario scenario = step.getScenario();
+            Scenario scenario = findScenarioIdByStep(step, projectList);
             Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step newStep = step.clone();
             newStep.setSort(maxSortStep + 50);
-            newStep.setScenario(scenario);
             return stepService.save(newStep, projectList);
         }
         return null;
+    }
+
+    private Scenario findScenarioIdByStep(Step step, List<Project> projectList) {
+        return projectList.stream()
+                .map(Project::getScenarioList)
+                .flatMap(List::stream)
+                .collect(Collectors.toList())
+                .stream()
+                .filter(scenario1 ->
+                        scenario1.getStepList().stream().filter(step1 -> Objects.equals(step1.getId(), step.getId())).count() == 1
+                )
+                .findAny().orElse(null);
     }
 
     @Override

@@ -34,7 +34,6 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "scenario", ignore = true),
             @Mapping(target = "expectedServiceRequests", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
@@ -294,7 +293,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             Step newStep = new Step();
                             updateStep(stepRo, newStep);
-                            newStep.setScenario(scenario);
                             return newStep;
                         }))
                 .collect(Collectors.toList()));
