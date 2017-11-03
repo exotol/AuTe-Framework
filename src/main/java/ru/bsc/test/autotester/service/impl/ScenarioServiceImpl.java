@@ -128,6 +128,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
             Step newStep = step.clone();
             newStep.setSort(maxSortStep + 50);
+            scenario.getStepList().add(newStep);
             return stepService.save(newStep, projectList);
         }
         return null;
