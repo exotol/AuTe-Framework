@@ -142,7 +142,6 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
             }
         }
 
-        // TODO Проверить правильность "перекидывания" ссылок
         for (Scenario scenario: cloned.getScenarioList()) {
             scenario.setBeforeScenario(scenarioToClonedScenarioMap.get(scenario.getBeforeScenario()));
             scenario.setAfterScenario(scenarioToClonedScenarioMap.get(scenario.getAfterScenario()));
