@@ -165,8 +165,7 @@ paths:
               $ref: '#/definitions/ProjectSearchRo'
         responses:
           200:
-            description: Returns list of found scenarios
-            schema:
+              description: Returns list of found scenarios
               schema:
                 type: array
                 items:
@@ -415,10 +414,10 @@ definitions:
       expected:
         type: string
   ProjectSearchRo:
-   type: object
-      properties:
-        relativeUrl:
-          type: string
+    type: object
+    properties:
+      relativeUrl:
+        type: string
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
