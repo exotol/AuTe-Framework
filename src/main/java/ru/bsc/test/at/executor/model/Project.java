@@ -15,7 +15,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
 
     private String name;
     private String projectCode;
-    private List<Scenario> scenarios;
+    private List<Scenario> scenarioList;
     private List<ScenarioGroup> scenarioGroups;
     private List<Stand> standList;
     private Scenario beforeScenario;
@@ -48,22 +48,28 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
     }
-    public List<Scenario> getScenarios() {
-        if (scenarios == null) {
-            scenarios = new LinkedList<>();
+    public List<Scenario> getScenarioList() {
+        if (scenarioList == null) {
+            scenarioList = new LinkedList<>();
         }
-        return scenarios;
+        return scenarioList;
     }
-    public void setScenarios(List<Scenario> scenarios) {
-        this.scenarios = scenarios;
+    public void setScenarioList(List<Scenario> scenarioList) {
+        this.scenarioList = scenarioList;
     }
     public List<ScenarioGroup> getScenarioGroups() {
+        if (scenarioGroups == null) {
+            scenarioGroups = new LinkedList<>();
+        }
         return scenarioGroups;
     }
     public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
         this.scenarioGroups = scenarioGroups;
     }
     public List<Stand> getStandList() {
+        if (standList == null) {
+            standList = new LinkedList<>();
+        }
         return standList;
     }
     public void setStandList(List<Stand> standList) {
@@ -112,8 +118,8 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
         cloned.setStand(standToClonedMap.get(getStand()));
 
         Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
-        cloned.setScenarios(new LinkedList<>());
-        for (Scenario scenario: getScenarios()) {
+        cloned.setScenarioList(new LinkedList<>());
+        for (Scenario scenario: getScenarioList()) {
             Scenario clonedScenario = scenario.clone();
             clonedScenario.setProject(cloned);
             clonedScenario.setStand(standToClonedMap.get(scenario.getStand()));
@@ -125,7 +131,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
             clonedScenario.setScenarioGroup(scenario.getScenarioGroup());
 
             // Добавить склонированный сценарий в склонированный проект
-            cloned.getScenarios().add(clonedScenario);
+            cloned.getScenarioList().add(clonedScenario);
 
             // Правильная привязка сценариев
             if (scenario.equals(getBeforeScenario())) {
@@ -136,8 +142,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
             }
         }
 
-        // TODO Проверить правильность "перекидывания" ссылок
-        for (Scenario scenario: cloned.getScenarios()) {
+        for (Scenario scenario: cloned.getScenarioList()) {
             scenario.setBeforeScenario(scenarioToClonedScenarioMap.get(scenario.getBeforeScenario()));
             scenario.setAfterScenario(scenarioToClonedScenarioMap.get(scenario.getAfterScenario()));
         }
@@ -149,7 +154,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
             cloned.getScenarioGroups().add(clonedScenarioGroup);
 
             // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
-            cloned.getScenarios().stream()
+            cloned.getScenarioList().stream()
                     .filter(scenario -> scenarioGroup.equals(scenario.getScenarioGroup()))
                     .forEach(scenario -> scenario.setScenarioGroup(clonedScenarioGroup));
         }

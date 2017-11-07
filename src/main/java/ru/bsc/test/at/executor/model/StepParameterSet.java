@@ -21,6 +21,9 @@ public class StepParameterSet extends AbstractModel {
         this.step = step;
     }
     public List<StepParameter> getStepParameterList() {
+        if (stepParameterList == null) {
+            stepParameterList = new LinkedList<>();
+        }
         return stepParameterList;
     }
     public void setStepParameterList(List<StepParameter> stepParameterList) {

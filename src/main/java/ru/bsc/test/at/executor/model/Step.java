@@ -19,13 +19,14 @@ public class Step extends AbstractModel implements Serializable {
         FORM
     }
 
-    private Scenario scenario;
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
     private String request;
+    private String requestFile;
     private String requestHeaders;
     private String expectedResponse;
+    private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
     private String savingValues;
     private String responses;
@@ -68,11 +69,23 @@ public class Step extends AbstractModel implements Serializable {
     public void setRequest(String request) {
         this.request = request;
     }
+    public String getRequestFile() {
+        return requestFile;
+    }
+    public void setRequestFile(String requestFile) {
+        this.requestFile = requestFile;
+    }
     public String getExpectedResponse() {
         return expectedResponse;
     }
     public void setExpectedResponse(String expectedResponse) {
         this.expectedResponse = expectedResponse;
+    }
+    public String getExpectedResponseFile() {
+        return expectedResponseFile;
+    }
+    public void setExpectedResponseFile(String expectedResponseFile) {
+        this.expectedResponseFile = expectedResponseFile;
     }
     public String getSavingValues() {
         return savingValues;
@@ -122,12 +135,6 @@ public class Step extends AbstractModel implements Serializable {
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
-    public Scenario getScenario() {
-        return scenario;
-    }
-    public void setScenario(Scenario scenario) {
-        this.scenario = scenario;
-    }
 
     public List<ExpectedServiceRequest> getExpectedServiceRequests() {
         if (expectedServiceRequests == null) {
@@ -163,9 +170,15 @@ public class Step extends AbstractModel implements Serializable {
         this.pollingJsonXPath = pollingJsonXPath;
     }
     public List<MockServiceResponse> getMockServiceResponseList() {
+        if (mockServiceResponseList == null) {
+            mockServiceResponseList = new LinkedList<>();
+        }
         return mockServiceResponseList;
     }
     public void setMockServiceResponseList(List<MockServiceResponse> mockServiceResponseList) {
+        if (mockServiceResponseList == null) {
+            mockServiceResponseList = new LinkedList<>();
+        }
         this.mockServiceResponseList = mockServiceResponseList;
     }
     public Boolean getDisabled() {
@@ -190,6 +203,9 @@ public class Step extends AbstractModel implements Serializable {
         this.savedValuesCheck = savedValuesCheck;
     }
     public List<StepParameterSet> getStepParameterSetList() {
+        if (stepParameterSetList == null) {
+            stepParameterSetList = new LinkedList<>();
+        }
         return stepParameterSetList;
     }
     public void setStepParameterSetList(List<StepParameterSet> stepParameterSetList) {
@@ -204,7 +220,9 @@ public class Step extends AbstractModel implements Serializable {
         cloned.setRequestMethod(getRequestMethod());
         cloned.setRequestHeaders(getRequestHeaders());
         cloned.setRequest(getRequest());
+        cloned.setRequestFile(getRequestFile());
         cloned.setExpectedResponse(getExpectedResponse());
+        cloned.setExpectedResponseFile(getExpectedResponseFile());
         cloned.setSavingValues(getSavingValues());
         cloned.setResponses(getResponses());
         cloned.setDbParams(getDbParams());

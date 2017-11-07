@@ -12,6 +12,7 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
     private Step step;
     private String serviceName;
     private String expectedServiceRequest;
+    private String expectedServiceRequestFile;
     private String ignoredTags;
 
     public Step getStep() {
@@ -32,6 +33,12 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
     public void setExpectedServiceRequest(String expectedServiceRequest) {
         this.expectedServiceRequest = expectedServiceRequest;
     }
+    public String getExpectedServiceRequestFile() {
+        return expectedServiceRequestFile;
+    }
+    public void setExpectedServiceRequestFile(String expectedServiceRequestFile) {
+        this.expectedServiceRequestFile = expectedServiceRequestFile;
+    }
     public String getIgnoredTags() {
         return ignoredTags;
     }
@@ -44,6 +51,7 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
         cloned.setId(null);
         cloned.setServiceName(getServiceName());
         cloned.setExpectedServiceRequest(getExpectedServiceRequest());
+        cloned.setExpectedServiceRequestFile(getExpectedServiceRequestFile());
         cloned.setSort(getSort());
         cloned.setIgnoredTags(getIgnoredTags());
 

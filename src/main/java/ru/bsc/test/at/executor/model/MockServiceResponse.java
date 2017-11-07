@@ -10,6 +10,7 @@ public class MockServiceResponse extends AbstractModel {
     private Step step;
     private String serviceUrl;
     private String responseBody;
+    private String responseBodyFile;
     private Integer httpStatus;
 
     public Step getStep() {
@@ -30,6 +31,12 @@ public class MockServiceResponse extends AbstractModel {
     public void setResponseBody(String responseBody) {
         this.responseBody = responseBody;
     }
+    public String getResponseBodyFile() {
+        return responseBodyFile;
+    }
+    public void setResponseBodyFile(String responseBodyFile) {
+        this.responseBodyFile = responseBodyFile;
+    }
     public Integer getHttpStatus() {
         return httpStatus;
     }
@@ -42,6 +49,7 @@ public class MockServiceResponse extends AbstractModel {
         cloned.setSort(getSort());
         cloned.setServiceUrl(getServiceUrl());
         cloned.setResponseBody(getResponseBody());
+        cloned.setResponseBodyFile(getResponseBodyFile());
         cloned.setHttpStatus(getHttpStatus());
         return cloned;
     }
