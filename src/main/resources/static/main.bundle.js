@@ -49,7 +49,7 @@ var AppComponent = (function () {
     return AppComponent;
 }());
 AppComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-root',
         template: __webpack_require__("../../../../../src/app/app.component.html")
     }),
@@ -87,6 +87,7 @@ var _a;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__project_settings_project_settings_component__ = __webpack_require__("../../../../../src/app/project-settings/project-settings.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__scenario_settings_scenario_settings_component__ = __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__service_version_service__ = __webpack_require__("../../../../../src/app/service/version.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -94,6 +95,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -150,7 +152,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["a" /* ToastyModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_15__angular_forms__["a" /* FormsModule */]
         ],
-        providers: [__WEBPACK_IMPORTED_MODULE_8__service_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_11__service_scenario_service__["a" /* ScenarioService */], __WEBPACK_IMPORTED_MODULE_12__service_step_service__["a" /* StepService */], __WEBPACK_IMPORTED_MODULE_21__service_version_service__["a" /* VersionService */], __WEBPACK_IMPORTED_MODULE_18__globals__["a" /* Globals */]],
+        providers: [__WEBPACK_IMPORTED_MODULE_8__service_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_11__service_scenario_service__["a" /* ScenarioService */], __WEBPACK_IMPORTED_MODULE_12__service_step_service__["a" /* StepService */], __WEBPACK_IMPORTED_MODULE_22__service_custom_toasty_service__["a" /* CustomToastyService */], __WEBPACK_IMPORTED_MODULE_21__service_version_service__["a" /* VersionService */], __WEBPACK_IMPORTED_MODULE_18__globals__["a" /* Globals */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_2__app_component__["a" /* AppComponent */]]
     })
 ], AppModule);
@@ -223,7 +225,7 @@ __decorate([
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */]) === "function" && _a || Object)
 ], MockServiceResponseComponent.prototype, "mockServiceResponse", void 0);
 MockServiceResponseComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-mock-service-response',
         template: __webpack_require__("../../../../../src/app/mock-service-response/mock-service-response.component.html")
     }),
@@ -397,6 +399,7 @@ module.exports = "<ng-container *ngIf=\"project\">\r\n  <ol class=\"breadcrumb\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scenario_list_item_scenario_list_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__ = __webpack_require__("../../../../file-saver/FileSaver.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -415,12 +418,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ProjectDetailComponent = (function () {
-    function ProjectDetailComponent(globals, route, router, projectService) {
+    function ProjectDetailComponent(globals, route, router, projectService, customToastyService) {
         this.globals = globals;
         this.route = route;
         this.router = router;
         this.projectService = projectService;
+        this.customToastyService = customToastyService;
         this.selectAllFlag = false;
         this.failCount = 0;
         this.newScenarioName = '';
@@ -522,11 +527,13 @@ var ProjectDetailComponent = (function () {
         var _this = this;
         var newScenario = new __WEBPACK_IMPORTED_MODULE_4__model_scenario__["a" /* Scenario */]();
         newScenario.name = this.newScenarioName;
+        var toasty = this.customToastyService.saving('Сохранение сценария...', 'Сохранение может занять некоторое время...');
         this.projectService.createScenario(this.project, newScenario)
             .subscribe(function (savedScenario) {
             _this.scenarioList.push(savedScenario);
             _this.newScenarioName = '';
-        });
+            _this.customToastyService.success('Сохранено', 'Сценарий создан');
+        }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
     return ProjectDetailComponent;
 }());
@@ -535,15 +542,15 @@ __decorate([
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* QueryList */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* QueryList */]) === "function" && _a || Object)
 ], ProjectDetailComponent.prototype, "scenarioComponentList", void 0);
 ProjectDetailComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-project-detail',
         template: __webpack_require__("../../../../../src/app/project-detail/project-detail.component.html"),
         styles: ['input.select-all { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object])
 ], ProjectDetailComponent);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=project-detail.component.js.map
 
 /***/ }),
@@ -584,7 +591,7 @@ var ProjectListComponent = (function () {
     return ProjectListComponent;
 }());
 ProjectListComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-project-list',
         template: __webpack_require__("../../../../../src/app/project-list/project-list.component.html")
     }),
@@ -612,7 +619,7 @@ module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__model_scenario_group__ = __webpack_require__("../../../../../src/app/model/scenario-group.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_stand__ = __webpack_require__("../../../../../src/app/model/stand.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -630,18 +637,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ProjectSettingsComponent = (function () {
-    function ProjectSettingsComponent(projectService, route, toastyService) {
+    function ProjectSettingsComponent(projectService, route, customToastyService) {
         this.projectService = projectService;
         this.route = route;
-        this.toastyService = toastyService;
+        this.customToastyService = customToastyService;
         this.tab = 'details';
-        this.toastOptions = {
-            title: 'Updated',
-            msg: 'Project settings updated',
-            showClose: true,
-            timeout: 5000,
-            theme: 'bootstrap'
-        };
     }
     ProjectSettingsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -655,11 +655,12 @@ var ProjectSettingsComponent = (function () {
     };
     ProjectSettingsComponent.prototype.save = function () {
         var _this = this;
+        var toasty = this.customToastyService.saving('Сохранение...', 'Сохранение может занять некоторое время...');
         this.projectService.save(this.project)
             .subscribe(function (value) {
             _this.project = value;
-            _this.toastyService.success(_this.toastOptions);
-        });
+            _this.customToastyService.success('Сохранено', 'Параметры проекта сохранены');
+        }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
     ProjectSettingsComponent.prototype.selectTab = function (tabName) {
         this.tab = tabName;
@@ -695,7 +696,7 @@ var ProjectSettingsComponent = (function () {
     return ProjectSettingsComponent;
 }());
 ProjectSettingsComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-project-settings',
         template: __webpack_require__("../../../../../src/app/project-settings/project-settings.component.html"),
         styles: [
@@ -704,7 +705,7 @@ ProjectSettingsComponent = __decorate([
             'input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__["b" /* ToastyService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object])
 ], ProjectSettingsComponent);
 
 var _a, _b, _c;
@@ -729,8 +730,8 @@ module.exports = "<div>\r\n  <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n   
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap__ = __webpack_require__("../../../../rxjs/add/operator/switchMap.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -749,11 +750,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ScenarioDetailComponent = (function () {
-    function ScenarioDetailComponent(route, scenarioService, stepService, toastyService) {
+    function ScenarioDetailComponent(route, scenarioService, stepService, customToastyService) {
         this.route = route;
         this.scenarioService = scenarioService;
         this.stepService = stepService;
-        this.toastyService = toastyService;
+        this.customToastyService = customToastyService;
     }
     ScenarioDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -767,18 +768,12 @@ var ScenarioDetailComponent = (function () {
     ScenarioDetailComponent.prototype.saveSteps = function () {
         var _this = this;
         if (this.scenario && this.stepList) {
+            var toasty_1 = this.customToastyService.saving();
             this.scenarioService.saveStepList(this.scenario, this.stepList)
                 .subscribe(function (savedStepList) {
-                var toastOptions = {
-                    title: 'Updated',
-                    msg: 'Steps updated',
-                    showClose: true,
-                    timeout: 5000,
-                    theme: 'bootstrap'
-                };
-                _this.toastyService.success(toastOptions);
+                _this.customToastyService.success('Сохранено', 'Шаги сохранены');
                 _this.stepList = savedStepList;
-            });
+            }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty_1); });
         }
     };
     ScenarioDetailComponent.prototype.addStep = function () {
@@ -834,30 +829,24 @@ var ScenarioDetailComponent = (function () {
     ScenarioDetailComponent.prototype.onCloneClick = function (step) {
         var _this = this;
         if (confirm('Confirm: Clone step')) {
+            var toasty_2 = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
             this.stepService.cloneStep(step)
                 .subscribe(function (clonedStep) {
                 var maxSort = Math.max.apply(null, _this.stepList.map(function (value) { return value.sort; }));
                 clonedStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
                 _this.stepList.push(clonedStep);
-                var toastOptions = {
-                    title: 'Cloned',
-                    msg: 'Step cloned and appended to the end',
-                    showClose: true,
-                    timeout: 15000,
-                    theme: 'bootstrap'
-                };
-                _this.toastyService.success(toastOptions);
-            });
+                _this.customToastyService.success('Сохранено', 'Шаг склонирован');
+            }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty_2); });
         }
     };
     return ScenarioDetailComponent;
 }());
 ScenarioDetailComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-scenario-detail',
         template: __webpack_require__("../../../../../src/app/scenario-detail/scenario-detail.component.html")
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_ng2_toasty__["b" /* ToastyService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _d || Object])
 ], ScenarioDetailComponent);
 
 var _a, _b, _c, _d;
@@ -924,11 +913,11 @@ __decorate([
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_scenario__["a" /* Scenario */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_scenario__["a" /* Scenario */]) === "function" && _a || Object)
 ], ScenarioListItemComponent.prototype, "scenario", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Output */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], ScenarioListItemComponent.prototype, "onStateChange", void 0);
 ScenarioListItemComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-scenario-list-item',
         template: __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.html"),
         styles: [' input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
@@ -953,10 +942,10 @@ module.exports = "<ol class=\"breadcrumb\">\n  <li class=\"breadcrumb-item\"><a 
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -973,19 +962,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ScenarioSettingsComponent = ScenarioSettingsComponent_1 = (function () {
-    function ScenarioSettingsComponent(route, scenarioService, projectService, toastyService) {
+    function ScenarioSettingsComponent(route, scenarioService, projectService, customToastyService) {
         this.route = route;
         this.scenarioService = scenarioService;
         this.projectService = projectService;
-        this.toastyService = toastyService;
+        this.customToastyService = customToastyService;
         this.ScenarioSettingsComponent = ScenarioSettingsComponent_1;
-        this.toastOptions = {
-            title: 'Updated',
-            msg: 'Scenario updated',
-            showClose: true,
-            timeout: 5000,
-            theme: 'bootstrap'
-        };
     }
     ScenarioSettingsComponent.scenarioGroupCompareFn = function (c1, c2) {
         return c1 && c2 ? c1.id === c2.id : c1 === c2;
@@ -1006,16 +988,17 @@ var ScenarioSettingsComponent = ScenarioSettingsComponent_1 = (function () {
     };
     ScenarioSettingsComponent.prototype.save = function () {
         var _this = this;
+        var toasty = this.customToastyService.saving();
         this.scenarioService.saveOne(this.scenario)
             .subscribe(function (value) {
             _this.scenario = value;
-            _this.toastyService.success(_this.toastOptions);
-        });
+            _this.customToastyService.success('Сохранено', 'Сценарий сохранен');
+        }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
     return ScenarioSettingsComponent;
 }());
 ScenarioSettingsComponent = ScenarioSettingsComponent_1 = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-scenario-settings',
         template: __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.html"),
         styles: [
@@ -1023,11 +1006,79 @@ ScenarioSettingsComponent = ScenarioSettingsComponent_1 = __decorate([
             '.row { margin-bottom: 7px; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_project_service__["a" /* ProjectService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__["b" /* ToastyService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _d || Object])
 ], ScenarioSettingsComponent);
 
 var ScenarioSettingsComponent_1, _a, _b, _c, _d;
 //# sourceMappingURL=scenario-settings.component.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/service/custom-toasty.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CustomToastyService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var CustomToastyService = (function () {
+    function CustomToastyService(toastyService) {
+        this.toastyService = toastyService;
+    }
+    CustomToastyService.prototype.saving = function (title, msg) {
+        this.toastyService.clearAll();
+        this.toastyService.warning({
+            title: title ? title : 'Сохранение',
+            msg: msg ? msg : 'Сохранение может занять некоторое время...',
+            timeout: 100000,
+            showClose: true,
+            theme: 'bootstrap'
+        });
+        return this.toastyService.uniqueCounter;
+    };
+    CustomToastyService.prototype.success = function (title, msg) {
+        this.toastyService.success({
+            title: title,
+            msg: msg,
+            showClose: true,
+            timeout: 5000,
+            theme: 'bootstrap'
+        });
+        return this.toastyService.uniqueCounter;
+    };
+    CustomToastyService.prototype.error = function (title, msg) {
+        this.toastyService.error({
+            title: title,
+            msg: msg,
+            timeout: 500000,
+            showClose: true,
+            theme: 'bootstrap'
+        });
+        return this.toastyService.uniqueCounter;
+    };
+    CustomToastyService.prototype.clear = function (id) {
+        this.toastyService.clear(id);
+    };
+    return CustomToastyService;
+}());
+CustomToastyService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ng2_toasty__["b" /* ToastyService */]) === "function" && _a || Object])
+], CustomToastyService);
+
+var _a;
+//# sourceMappingURL=custom-toasty.service.js.map
 
 /***/ }),
 
@@ -1066,7 +1117,7 @@ var ProjectService = (function () {
             .map(function (value) { return value.json(); });
     };
     ProjectService.prototype.save = function (project) {
-        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id, project, this.headers).map(function (value) { return value.json(); });
+        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id, project, { headers: this.headers }).map(function (value) { return value.json(); });
     };
     ProjectService.prototype.findOne = function (projectId) {
         return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId)
@@ -1386,23 +1437,23 @@ __decorate([
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "showUpDownDeleteCloneButtons", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Output */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "onDeleteClick", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Output */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "onUpClick", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Output */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "onDownClick", void 0);
 __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_4" /* Output */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "onCloneClick", void 0);
 StepItemComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-item',
         template: __webpack_require__("../../../../../src/app/step-item/step-item.component.html"),
         styles: [
@@ -1529,7 +1580,7 @@ __decorate([
     __metadata("design:type", Array)
 ], StepParameterSetComponent.prototype, "stepParameterSetList", void 0);
 StepParameterSetComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-parameter-set',
         template: __webpack_require__("../../../../../src/app/step-parameter-set/step-parameter-set.component.html"),
         styles: [
@@ -1558,7 +1609,7 @@ module.exports = "<div class=\"form-group\" >\n  <div class=\"col-sm-1\">\n    <
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_step_result__ = __webpack_require__("../../../../../src/app/model/step-result.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepResultItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1574,9 +1625,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var StepResultItemComponent = (function () {
-    function StepResultItemComponent(stepService, toastyService) {
+    function StepResultItemComponent(stepService, customToastyService) {
         this.stepService = stepService;
-        this.toastyService = toastyService;
+        this.customToastyService = customToastyService;
         this.tab = 'summary';
     }
     StepResultItemComponent.prototype.ngOnInit = function () {
@@ -1587,17 +1638,11 @@ var StepResultItemComponent = (function () {
     };
     StepResultItemComponent.prototype.saveStep = function () {
         var _this = this;
+        var toasty = this.customToastyService.saving();
         this.stepService.saveStep(this.stepResult.step)
             .subscribe(function () {
-            var toastOptions = {
-                title: 'Updated',
-                msg: 'Step updated',
-                showClose: true,
-                timeout: 5000,
-                theme: 'bootstrap'
-            };
-            _this.toastyService.success(toastOptions);
-        });
+            _this.customToastyService.success('Сохранено', 'Шаг сохранен');
+        }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
     return StepResultItemComponent;
 }());
@@ -1606,7 +1651,7 @@ __decorate([
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_step_result__["a" /* StepResult */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_step_result__["a" /* StepResult */]) === "function" && _a || Object)
 ], StepResultItemComponent.prototype, "stepResult", void 0);
 StepResultItemComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_5" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-result-item',
         template: __webpack_require__("../../../../../src/app/step-result-item/step-result-item.component.html"),
         styles: [
@@ -1616,7 +1661,7 @@ StepResultItemComponent = __decorate([
             '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object])
 ], StepResultItemComponent);
 
 var _a, _b, _c;
