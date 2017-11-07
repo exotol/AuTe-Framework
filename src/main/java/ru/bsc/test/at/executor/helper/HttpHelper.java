@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -28,9 +29,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -45,6 +49,7 @@ public class HttpHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
     private final CloseableHttpClient httpClient;
     private HttpClientContext context;
+    private static String UPLOADED_FOLDER = "C:/BSC/";
 
     public HttpHelper() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
@@ -53,7 +58,7 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException {
+    public ResponseHelper request(String method, String url, String downloadUrl, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException {
         URI uri = new URIBuilder(url).build();
 
         HttpRequestBase httpRequest;
@@ -79,7 +84,17 @@ public class HttpHelper {
             HttpEntity httpEntity = null;
             if (jsonRequestBody != null) {
                 httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
-            } else if (formDataPostParameters != null) {
+            }
+            if (!StringUtils.isEmpty(downloadUrl)) {
+                try {
+                    URL discUrl = this.getClass().getResource(UPLOADED_FOLDER + downloadUrl);
+                    File file = new File(discUrl.toURI());
+                    httpEntity = new FileEntity(file);
+                } catch (Exception e) {
+                    throw new FileNotFoundException();
+                }
+            }
+            if (formDataPostParameters != null) {
                 List<NameValuePair> pairList = formDataPostParameters.entrySet()
                         .stream()
                         .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))

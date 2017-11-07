@@ -84,6 +84,8 @@ public class Step implements Serializable {
     private Boolean usePolling;
     @Column(name = "POLLING_JSON_XPATH")
     private String pollingJsonXPath;
+    @Column(name = "DOWNLOAD_FILE_PATH", length = 500)
+    private String downloadFilePath;
     @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("SORT ASC")
     @JsonManagedReference
@@ -288,6 +290,14 @@ public class Step implements Serializable {
 
     public void setResponseCompareMode(ResponseCompareMode responseCompareMode) {
         this.responseCompareMode = responseCompareMode;
+    }
+
+    public String getDownloadFilePath() {
+        return downloadFilePath;
+    }
+
+    public void setDownloadFilePath(String downloadFilePath) {
+        this.downloadFilePath = downloadFilePath;
     }
 
     public Step clone() {
