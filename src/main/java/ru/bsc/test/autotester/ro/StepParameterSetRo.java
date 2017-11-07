@@ -9,8 +9,10 @@ import java.util.List;
  *
  */
 public class StepParameterSetRo extends AbstractRo {
-    private Long id;
 
+    private static final long serialVersionUID = -8505680675142636322L;
+
+    private Long id;
     private Long sort;
     private List<StepParameterRo> stepParameterList;
     private String description;

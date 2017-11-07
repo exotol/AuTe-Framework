@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class ProjectRo extends AbstractRo {
 
+    private static final long serialVersionUID = 3953325934454830833L;
+
     private Long id;
     private String name;
     private Long beforeScenarioId;

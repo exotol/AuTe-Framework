@@ -3,6 +3,8 @@ package ru.bsc.test.autotester.service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
 import java.util.List;
@@ -27,4 +29,6 @@ public interface ScenarioService {
     Step cloneStep(Step stepId);
 
     List<StepRo> updateScenarioListFromRo(Long scenarioId, List<StepRo> stepRoList);
+
+    List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo);
 }

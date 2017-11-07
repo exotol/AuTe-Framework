@@ -10,8 +10,10 @@ import java.util.Map;
  *
  */
 public class StepRo extends AbstractRo {
-    private Long id;
 
+    private static final long serialVersionUID = -4795596079038167133L;
+
+    private Long id;
     private Long sort;
     private String relativeUrl;
     private String requestMethod;
@@ -36,6 +38,7 @@ public class StepRo extends AbstractRo {
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSetRo> stepParameterSetList;
     private List<ExpectedServiceRequestRo> expectedServiceRequestList;
+    private String responseCompareMode;
 
     public Long getId() {
         return id;
@@ -235,5 +238,13 @@ public class StepRo extends AbstractRo {
 
     public void setExpectedServiceRequestList(List<ExpectedServiceRequestRo> expectedServiceRequestList) {
         this.expectedServiceRequestList = expectedServiceRequestList;
+    }
+
+    public String getResponseCompareMode() {
+        return responseCompareMode;
+    }
+
+    public void setResponseCompareMode(String responseCompareMode) {
+        this.responseCompareMode = responseCompareMode;
     }
 }

@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
@@ -12,8 +13,11 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.service.AtExecutor;
 
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
+import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ExpectedServiceRequestService;
 import ru.bsc.test.autotester.service.ScenarioService;
@@ -25,6 +29,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +42,7 @@ import java.util.List;
 public class ScenarioServiceImpl implements ScenarioService {
 
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
+    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
     private final ExpectedServiceRequestService expectedServiceRequestService;
@@ -117,7 +123,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void parseExpectedServiceRequestsJmba(String expectedRequestsBaseDir, Scenario scenario) {
         // Костыли для импорта запросов к сервису из конкретного проекта (jbma)
-        for (Step step: scenario.getSteps()) {
+        for (Step step : scenario.getSteps()) {
             Long i = 0L;
             String testCaseDir = step.getTmpServiceRequestsDirectory();
             if (StringUtils.isNotEmpty(testCaseDir)) {
@@ -176,5 +182,16 @@ public class ScenarioServiceImpl implements ScenarioService {
             return stepRoMapper.convertStepRoListToStepList(save(scenario).getSteps());
         }
         throw new ResourceNotFoundException();
+    }
+
+    @Override
+    @Transactional
+    @ReadOnlyProperty
+    public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo) {
+        List<Scenario> scenarios = new ArrayList<>();
+        if (!StringUtils.isEmpty(projectSearchRo.getRelativeUrl())) {
+            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + projectSearchRo.getRelativeUrl() + "%"));
+        }
+        return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
 }

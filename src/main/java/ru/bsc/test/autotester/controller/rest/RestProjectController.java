@@ -14,12 +14,18 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.ro.ProjectRo;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
+import ru.bsc.test.autotester.service.ScenarioService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sdoroshin on 12.09.2017.
@@ -33,10 +39,12 @@ public class RestProjectController {
     private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectService projectService;
+    private ScenarioService scenarioService;
 
     @Autowired
-    public RestProjectController(ProjectService projectService) {
+    public RestProjectController(ProjectService projectService, ScenarioService scenarioService) {
         this.projectService = projectService;
+        this.scenarioService = scenarioService;
     }
 
     @RequestMapping("")
@@ -82,6 +90,11 @@ public class RestProjectController {
             );
         }
         throw new ResourceNotFoundException();
+    }
+
+    @RequestMapping(value = "{projectId}/search", method = RequestMethod.POST)
+    public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @RequestBody ProjectSearchRo projectSearchRo) {
+        return scenarioService.findScenarioByStepRelativeUrl(projectId, projectSearchRo);
     }
 
     @SuppressWarnings("Duplicates")

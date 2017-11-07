@@ -144,6 +144,33 @@ paths:
           description: Scenario created
           schema:
             $ref: '#/definitions/Scenario'
+  '/projects/{projectId}/search':
+      post:
+        tags:
+          - Scenario
+          - Project
+        summary: Search scenario by StepRelativeUrl
+        operationId: searchScenario
+        parameters:
+          - name: projectId
+            in: path
+            type: integer
+            required: true
+            description: Project id
+          - name: body
+            in: body
+            required: true
+            description: Search object
+            schema:
+              $ref: '#/definitions/ProjectSearchRo'
+        responses:
+          200:
+            description: Returns list of found scenarios
+            schema:
+              schema:
+                type: array
+                items:
+                  $ref: '#/definitions/Scenario'
   '/projects/{projectId}/export-selected-to-yaml':
     post:
       tags:
@@ -387,6 +414,11 @@ definitions:
         type: string
       expected:
         type: string
+  ProjectSearchRo:
+   type: object
+      properties:
+        relativeUrl:
+          type: string
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
