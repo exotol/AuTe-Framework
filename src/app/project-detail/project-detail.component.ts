@@ -8,6 +8,7 @@ import {ScenarioGroup} from '../model/scenario-group';
 import {Globals} from '../globals';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import { saveAs } from 'file-saver/FileSaver';
+import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-project-detail',
@@ -32,7 +33,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     public globals: Globals,
     private route: ActivatedRoute,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private customToastyService: CustomToastyService
   ) {
     this.Math = Math;
   }
@@ -144,10 +146,12 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     const newScenario = new Scenario();
     newScenario.name = this.newScenarioName;
 
+    const toasty = this.customToastyService.saving('Сохранение сценария...', 'Сохранение может занять некоторое время...');
     this.projectService.createScenario(this.project, newScenario)
       .subscribe(savedScenario => {
         this.scenarioList.push(savedScenario);
         this.newScenarioName = '';
-      });
+        this.customToastyService.success('Сохранено', 'Сценарий создан');
+      }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 }

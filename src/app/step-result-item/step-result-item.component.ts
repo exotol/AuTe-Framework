@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
-import {ToastOptions, ToastyService} from 'ng2-toasty';
+import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-step-result-item',
@@ -22,7 +22,7 @@ export class StepResultItemComponent implements OnInit {
 
   constructor(
     private stepService: StepService,
-    private toastyService: ToastyService
+    private customToastyService: CustomToastyService
   ) { }
 
   ngOnInit() {
@@ -34,16 +34,10 @@ export class StepResultItemComponent implements OnInit {
   }
 
   saveStep() {
+    const toasty = this.customToastyService.saving();
     this.stepService.saveStep(this.stepResult.step)
       .subscribe(() => {
-        const toastOptions: ToastOptions = {
-          title: 'Updated',
-          msg: 'Step updated',
-          showClose: true,
-          timeout: 5000,
-          theme: 'bootstrap'
-        };
-        this.toastyService.success(toastOptions);
-      });
+        this.customToastyService.success('Сохранено', 'Шаг сохранен');
+      }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 }

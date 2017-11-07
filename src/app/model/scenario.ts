@@ -19,7 +19,7 @@ export class Scenario {
   afterScenarioIgnore: boolean;
   afterScenarioId: Number;
 
-  steps: Step[];
+  stepList: Step[];
   stand: Stand;
 
   _selected = false;

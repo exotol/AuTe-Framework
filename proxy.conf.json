@@ -1,6 +1,6 @@
 {
   "/autotester-rest-next": {
-    "target": "http://localhost:8085",
+    "target": "http://localhost:8080",
     "secure": false,
     "pathRewrite": {"^/autotester-rest-next" : ""}
   }

@@ -21,6 +21,7 @@ import {Globals} from './globals';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ScenarioSettingsComponent } from './scenario-settings/scenario-settings.component';
 import {VersionService} from './service/version.service';
+import {CustomToastyService} from "./service/custom-toasty.service";
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -51,7 +52,7 @@ const routes: Routes = [
     ToastyModule.forRoot(),
     FormsModule
   ],
-  providers: [ProjectService, ScenarioService, StepService, VersionService, Globals],
+  providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

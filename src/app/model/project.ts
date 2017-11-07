@@ -8,7 +8,7 @@ export class Project {
   beforeScenarioId: Number;
   afterScenarioId: Number;
   projectCode: string;
-  scenarios: Scenario[];
+  scenarioList: Scenario[];
   scenarioGroups: ScenarioGroup[];
   standList: Stand[];
   stand: Stand;
