@@ -51,7 +51,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "standList", ignore = true),
 
-            @Mapping(target = "scenarios", ignore = true)
+            @Mapping(target = "scenarioList", ignore = true)
     })
     abstract void updateProjectFromRo(ProjectRo projectRo, @MappingTarget Project project);
 
@@ -60,14 +60,14 @@ public abstract class ProjectRoMapper {
 
         project.setBeforeScenario(
                 projectRo.getBeforeScenarioId() == null ? null :
-                        project.getScenarios().stream()
+                        project.getScenarioList().stream()
                                 .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getBeforeScenarioId()))
                                 .findAny().orElse(null)
         );
 
         project.setAfterScenario(
                 projectRo.getAfterScenarioId() == null ? null :
-                        project.getScenarios().stream()
+                        project.getScenarioList().stream()
                                 .filter(scenario -> Objects.equals(scenario.getId(), projectRo.getAfterScenarioId()))
                                 .findAny().orElse(null)
         );
@@ -143,7 +143,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
             @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
             @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
-            @Mapping(target = "steps", ignore = true),
+            @Mapping(target = "stepList", ignore = true),
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")

@@ -1,8 +1,8 @@
 package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.ro.ProjectRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 
 import java.util.List;
 
@@ -18,9 +18,11 @@ public interface ProjectService {
 
     String findOneAsYaml(Long projectId);
 
-    Project save(Project project);
-
     String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios);
 
     ProjectRo updateFromRo(Long project, ProjectRo projectRo);
+
+    ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo);
+
+    Project saveProject(Project project, List<Project> projectList);
 }

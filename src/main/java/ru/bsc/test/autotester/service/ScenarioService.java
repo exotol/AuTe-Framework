@@ -4,6 +4,7 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
 import java.util.List;
@@ -17,9 +18,13 @@ public interface ScenarioService {
 
     Scenario findOne(long scenarioId);
 
-    Scenario save(Scenario scenario);
+    ScenarioRo updateScenarioFormRo(Long scenarioId, ScenarioRo scenarioRo);
     Step cloneStep(Step stepId);
-    List<StepRo> updateScenarioListFromRo(Long scenarioId, List<StepRo> stepRoList);
+    List<StepRo> updateStepListFromRo(Long scenarioId, List<StepRo> stepRoList);
 
     Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList);
+
+    StepRo addStepToScenario(Long scenarioId, StepRo stepRo);
+
+    void deleteOne(Long project);
 }

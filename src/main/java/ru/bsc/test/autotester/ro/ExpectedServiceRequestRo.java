@@ -10,6 +10,7 @@ public class ExpectedServiceRequestRo extends AbstractRo {
     private Long sort;
     private String serviceName;
     private String expectedServiceRequest;
+    private String expectedServiceRequestFile;
     private String ignoredTags;
 
     public Long getId() {
@@ -42,6 +43,14 @@ public class ExpectedServiceRequestRo extends AbstractRo {
 
     public void setExpectedServiceRequest(String expectedServiceRequest) {
         this.expectedServiceRequest = expectedServiceRequest;
+    }
+
+    public String getExpectedServiceRequestFile() {
+        return expectedServiceRequestFile;
+    }
+
+    public void setExpectedServiceRequestFile(String expectedServiceRequestFile) {
+        this.expectedServiceRequestFile = expectedServiceRequestFile;
     }
 
     public String getIgnoredTags() {

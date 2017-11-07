@@ -34,14 +34,15 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "scenario", ignore = true),
             @Mapping(target = "expectedServiceRequests", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
             @Mapping(target = "request", source = "request"),
+            @Mapping(target = "requestFile", ignore = true),
             @Mapping(target = "requestHeaders", source = "requestHeaders"),
             @Mapping(target = "expectedResponse", source = "expectedResponse"),
+            @Mapping(target = "expectedResponseFile", ignore = true),
             @Mapping(target = "expectedResponseIgnore", source = "expectedResponseIgnore"),
             @Mapping(target = "savingValues", source = "savingValues"),
             @Mapping(target = "responses", source = "responses"),
@@ -189,6 +190,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
+            @Mapping(target = "responseBodyFile", ignore = true),
             @Mapping(target = "httpStatus", source = "httpStatus")
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo, @MappingTarget MockServiceResponse mockServiceResponse);
@@ -271,6 +273,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
+            @Mapping(target = "expectedServiceRequestFile", ignore = true),
             @Mapping(target = "ignoredTags", source = "ignoredTags")
     })
     abstract void updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest);
@@ -280,9 +283,9 @@ public abstract class StepRoMapper {
     }
 
     public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
-        List<Step> scenarioSteps = new LinkedList<>(scenario.getSteps());
-        scenario.getSteps().clear();
-        scenario.getSteps().addAll(stepRoList.stream()
+        List<Step> scenarioSteps = new LinkedList<>(scenario.getStepList());
+        scenario.getStepList().clear();
+        scenario.getStepList().addAll(stepRoList.stream()
                 .map(stepRo -> scenarioSteps.stream()
                         .filter(step -> Objects.equals(step.getId(), stepRo.getId()))
                         .map(step -> updateStep(stepRo, step))
@@ -290,7 +293,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             Step newStep = new Step();
                             updateStep(stepRo, newStep);
-                            newStep.setScenario(scenario);
                             return newStep;
                         }))
                 .collect(Collectors.toList()));
