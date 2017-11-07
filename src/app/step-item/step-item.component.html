@@ -84,14 +84,22 @@
           </div>
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-sm-6" style="text-align: center; padding-top: 10px;">
+              <div class="col-sm-4" style="text-align: center; padding-top: 10px;">
                 <label>
                   <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
                   Ignore response
                 </label>
               </div>
-              <div class="col-sm-6">
-                <label>Expected status code</label>
+              <div class="col-sm-4">
+                <label>Compare mode</label>
+                <select class="form-control" title="Request body type" [(ngModel)]="step.responseCompareMode">
+                  <option [ngValue]="'JSON'">JSON (default)</option>
+                  <option [ngValue]="'FULL_MATCH'">Full match</option>
+                  <option [ngValue]="'IGNORE_MASK'">Mask *ignore*</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <label>Expected status</label>
                 <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
               </div>
             </div>

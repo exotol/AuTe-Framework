@@ -28,4 +28,5 @@ export class Step {
   stepComment: string;
   savedValuesCheck: any = {};
   stepParameterSetList: StepParameterSet[] = [];
+  responseCompareMode: string;
 }
