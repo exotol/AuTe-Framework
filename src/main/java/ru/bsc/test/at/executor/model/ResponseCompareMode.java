@@ -2,6 +2,6 @@ package ru.bsc.test.at.executor.model;
 
 public enum ResponseCompareMode {
     JSON,
-    FULL_MATHCH,
+    FULL_MATCH,
     IGNORE_MASK
 }

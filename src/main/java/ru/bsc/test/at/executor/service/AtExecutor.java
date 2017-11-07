@@ -289,7 +289,7 @@ public class AtExecutor {
                 JSONcomparing(step, expectedResponse, responseData);
             } else {
                 switch (step.getResponseCompareMode()) {
-                    case FULL_MATHCH:
+                    case FULL_MATCH:
                         Assert.assertEquals(expectedResponse, responseData.getContent());
                         break;
                     case IGNORE_MASK:
