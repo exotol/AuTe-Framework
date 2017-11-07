@@ -93,7 +93,7 @@ public class RestProjectController {
     }
 
     @RequestMapping(value = "{projectId}/search", method = RequestMethod.POST)
-    public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @Valid @RequestBody ProjectSearchRo projectSearchRo) {
+    public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @RequestBody ProjectSearchRo projectSearchRo) {
         return scenarioService.findScenarioByStepRelativeUrl(projectId, projectSearchRo);
     }
 
