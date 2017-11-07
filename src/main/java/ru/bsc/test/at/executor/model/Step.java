@@ -8,6 +8,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,12 +33,6 @@ import java.util.Map;
 @Entity
 @Table(name = "AT_STEP")
 public class Step implements Serializable {
-
-    public enum RequestBodyType {
-        @SuppressWarnings("unused")
-        JSON,
-        FORM
-    }
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
@@ -83,6 +78,7 @@ public class Step implements Serializable {
     @Column(name = "JSON_XPATH", length = 500)
     private String jsonXPath;
     @Column(name = "REQUEST_BODY_TYPE")
+    @Enumerated
     private RequestBodyType requestBodyType;
     @Column(name = "USE_POLLING")
     private Boolean usePolling;
@@ -98,6 +94,9 @@ public class Step implements Serializable {
     @MapKeyColumn(name = "savedValueName")
     @CollectionTable(name = "AT_STEP_SAVED_VALUES_CHECK", joinColumns = @JoinColumn(name = "STEP_ID"))
     private Map<String, String> savedValuesCheck;
+    @Column(name = "RESPONSE_COMPARE_MODE")
+    @Enumerated
+    private ResponseCompareMode responseCompareMode;
 
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ID ASC")
@@ -283,6 +282,14 @@ public class Step implements Serializable {
         this.stepParameterSetList = stepParameterSetList;
     }
 
+    public ResponseCompareMode getResponseCompareMode() {
+        return responseCompareMode;
+    }
+
+    public void setResponseCompareMode(ResponseCompareMode responseCompareMode) {
+        this.responseCompareMode = responseCompareMode;
+    }
+
     public Step clone() {
         Step cloned = new Step();
         cloned.setId(null);
@@ -307,6 +314,7 @@ public class Step implements Serializable {
         cloned.setDisabled(getDisabled());
         cloned.setStepComment(getStepComment());
         cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        cloned.setResponseCompareMode(getResponseCompareMode());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
