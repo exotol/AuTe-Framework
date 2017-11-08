@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.dto;
 
 import org.springframework.beans.BeanUtils;
+import ru.bsc.test.at.executor.model.RequestBodyType;
 import ru.bsc.test.at.executor.model.Step;
 
 /**
@@ -26,7 +27,7 @@ public class StepDto {
     private String sql;
     private String sqlSavedParameter;
     private String jsonXPath;
-    private Step.RequestBodyType requestBodyType;
+    private RequestBodyType requestBodyType;
     private Boolean usePolling;
     private String pollingJsonXPath;
     private Boolean disabled;
@@ -173,11 +174,11 @@ public class StepDto {
         this.jsonXPath = jsonXPath;
     }
 
-    public Step.RequestBodyType getRequestBodyType() {
+    public RequestBodyType getRequestBodyType() {
         return requestBodyType;
     }
 
-    public void setRequestBodyType(Step.RequestBodyType requestBodyType) {
+    public void setRequestBodyType(RequestBodyType requestBodyType) {
         this.requestBodyType = requestBodyType;
     }
 
