@@ -219,7 +219,7 @@ public class AtExecutor {
             responseData = http.request(
                     step.getRequestMethod(),
                     requestUrl,
-                    step.getDownloadFilePath(),
+                    StringUtils.isEmpty(step.getProjectPath()) || StringUtils.isEmpty(step.getDownloadFilePath()) ? null : step.getProjectPath() + step.getDownloadFilePath(),
                     RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
                     RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                     step.getRequestHeaders(),

@@ -20,8 +20,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -49,7 +50,6 @@ public class HttpHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
     private final CloseableHttpClient httpClient;
     private HttpClientContext context;
-    private static String UPLOADED_FOLDER = "C:/BSC/";
 
     public HttpHelper() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
@@ -58,7 +58,7 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String downloadUrl, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException {
+    public ResponseHelper request(String method, String url, String downloadUrl, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, FileNotFoundException {
         URI uri = new URIBuilder(url).build();
 
         HttpRequestBase httpRequest;
@@ -82,26 +82,22 @@ public class HttpHelper {
         }
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
             HttpEntity httpEntity = null;
-            if (jsonRequestBody != null) {
-                httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
-            }
             if (!StringUtils.isEmpty(downloadUrl)) {
-                try {
-                    URL discUrl = this.getClass().getResource(UPLOADED_FOLDER + downloadUrl);
-                    File file = new File(discUrl.toURI());
-                    httpEntity = new FileEntity(file);
-                } catch (Exception e) {
-                    throw new FileNotFoundException();
-                }
-            }
-            if (formDataPostParameters != null) {
+                URL discUrl = this.getClass().getResource(downloadUrl);
+                File downloadFile = new File(discUrl.toURI());
+                httpEntity = MultipartEntityBuilder.create()
+                        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                        .addBinaryBody("file", downloadFile)
+                        .build();
+            } else if (jsonRequestBody != null) {
+                httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
+            } else if (formDataPostParameters != null) {
                 List<NameValuePair> pairList = formDataPostParameters.entrySet()
                         .stream()
                         .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
                         .collect(Collectors.toList());
                 httpEntity = new UrlEncodedFormEntity(pairList, Consts.UTF_8);
             }
-
             if (httpEntity != null) {
                 ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
             }
