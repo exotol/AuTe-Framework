@@ -93,6 +93,9 @@ public class ProjectsSource {
                 if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
                     step.setExpectedResponse(readFile(projectPath + step.getExpectedResponseFile()));
                 }
+                if (step.getMqMessageFile() != null && step.getMqMessage() == null) {
+                    step.setMqMessage(readFile(projectPath + step.getMqMessageFile()));
+                }
             } else if (model instanceof MockServiceResponse) {
                 MockServiceResponse mockServiceResponse = (MockServiceResponse) model;
                 if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
@@ -179,6 +182,11 @@ public class ProjectsSource {
         return "scenarios/" + scenarioPath(scenario) + "steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
     }
 
+    private String stepMqMessageFile(Step step, Scenario scenario) {
+        String ext = step.getMqMessage() != null && step.getMqMessage().indexOf('<') == 0 ? "xml" : ( step.getMqMessage().indexOf('{') == 0 ? "json" : "txt");
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/mq-message." + ext;
+    }
+
     private void saveToExternalFiles(Project project) {
         applyToProjectModels(project, model -> {
             if (model instanceof Step) {
@@ -206,6 +214,18 @@ public class ProjectsSource {
                         step.setExpectedResponse(null);
                     } catch (IOException e) {
                         LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile(), e);
+                    }
+                }
+                if (step.getMqMessage() != null) {
+                    try {
+                        if (step.getMqMessageFile() == null) {
+                            step.setMqMessageFile(stepMqMessageFile(step, stepScenario));
+                        }
+                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getMqMessageFile());
+                        FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
+                        step.setMqMessage(null);
+                    } catch (IOException e) {
+                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getMqMessageFile(), e);
                     }
                 }
             } else if (model instanceof MockServiceResponse) {
@@ -305,6 +325,7 @@ public class ProjectsSource {
 
     private void applyToProjectModels(Project project, IMethodToModel methodToModel, IMethodToList methodToList) {
         methodToModel.method(project);
+        methodToModel.method(project.getAmqpBroker());
         if (project.getScenarioList() != null) {
             methodToList.method(project.getScenarioList());
             project.getScenarioList().forEach(scenario -> {
