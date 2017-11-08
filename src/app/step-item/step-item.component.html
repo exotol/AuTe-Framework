@@ -51,6 +51,9 @@
         <li [class.active]="tab == 'expectedServiceRequestList'">
           <a href="#" (click)="selectTab('expectedServiceRequestList')">Expected mock requests <span *ngIf="step.expectedServiceRequestList && step.expectedServiceRequestList.length != 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
+        <li [class.active]="tab == 'mq'">
+          <a href="#" (click)="selectTab('mq')">Message Queue <span *ngIf="step.mqName || step.mqMessage" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'polling'">
           <a href="#" (click)="selectTab('polling')">Polling <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
         </li>
@@ -153,6 +156,18 @@
             </div>
           </div>
           <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> Add expected mock request</button>
+        </div>
+        <div *ngIf="tab == 'mq' || tab == 'all'">
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Queue name</label>
+              <input title="Queue name" class="form-control" [(ngModel)]="step.mqName"/>
+            </div>
+            <div class="col-sm-12">
+              <label>Queue message</label>
+              <textarea class="form-control" placeholder="Queue message" title="" rows="7" [(ngModel)]="step.mqMessage"></textarea>
+            </div>
+          </div>
         </div>
         <div *ngIf="tab == 'polling' || tab == 'all'">
           <div class="row">

@@ -28,4 +28,6 @@ export class Step {
   stepComment: string;
   savedValuesCheck: any = {};
   stepParameterSetList: StepParameterSet[] = [];
+  mqName: string;
+  mqMessage: string;
 }

@@ -34,6 +34,7 @@
         <label>Project code</label>
         <input class="form-control" title="" [(ngModel)]="project.projectCode"/>
 
+        <hr/>
         <label style="margin-top: 8px;">
           <input type="checkbox" style="height: 25px;" title="" [(ngModel)]="project.useRandomTestId"/>
           Use random testId
@@ -42,6 +43,36 @@
 
         <label>testId header name</label>
         <input class="form-control" title="" [(ngModel)]="project.testIdHeaderName"/>
+
+        <hr/>
+        <label>AMQP broker</label>
+        <div *ngIf="project.amqpBroker">
+          <label>Broker type</label>
+          <div class="input-group-btn">
+            <select class="form-control" title="AMQP broker type" [(ngModel)]="project.amqpBroker.mqService">
+              <option [ngValue]="null"></option>
+              <option [ngValue]="'ACTIVE_MQ'">Active MQ</option>
+              <option [ngValue]="'RABBIT_MQ'">Rabbit MQ</option>
+            </select>
+          </div>
+
+          <label>Host</label>
+          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.host"/>
+
+          <label>Port</label>
+          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.port"/>
+
+          <label>Username</label>
+          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.username"/>
+
+          <label>Password</label>
+          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.password"/>
+
+          <button class="btn btn-default" (click)="removeAmqpBroker()"><span class="glyphicon glyphicon-minus"></span> Remove broker</button>
+        </div>
+        <div *ngIf="!project.amqpBroker">
+          <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span> Add broker</button>
+        </div>
       </div>
       <div [style.display]="tab == 'groups' ? '' : 'none'">
         <div *ngFor="let scenarioGroup of project.scenarioGroups">

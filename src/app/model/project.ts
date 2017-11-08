@@ -1,6 +1,7 @@
 import {Scenario} from './scenario';
 import {ScenarioGroup} from './scenario-group';
 import {Stand} from './stand';
+import {AmqpBroker} from './amqp-broker';
 
 export class Project {
   id: number;
@@ -14,4 +15,5 @@ export class Project {
   stand: Stand;
   useRandomTestId: boolean;
   testIdHeaderName: string;
+  amqpBroker: AmqpBroker;
 }

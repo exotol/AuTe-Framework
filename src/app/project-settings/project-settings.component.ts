@@ -6,6 +6,7 @@ import {ScenarioGroup} from '../model/scenario-group';
 import {Stand} from '../model/stand';
 import {Scenario} from '../model/scenario';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {AmqpBroker} from '../model/amqp-broker';
 
 @Component({
   selector: 'app-project-settings',
@@ -87,6 +88,16 @@ export class ProjectSettingsComponent implements OnInit {
     const indexToRemove = this.project.standList.indexOf(stand);
     if (indexToRemove > -1) {
       this.project.standList.splice(indexToRemove, 1);
+    }
+  }
+
+  addAmqpBroker() {
+    this.project.amqpBroker = new AmqpBroker();
+  }
+
+  removeAmqpBroker() {
+    if (confirm('Confirm: remove AMQP broker')) {
+      this.project.amqpBroker = null;
     }
   }
 }
