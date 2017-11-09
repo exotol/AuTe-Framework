@@ -264,4 +264,71 @@ public class Step extends AbstractModel implements Serializable {
 
         return cloned;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Step step = (Step) o;
+
+        if (relativeUrl != null ? !relativeUrl.equals(step.relativeUrl) : step.relativeUrl != null) return false;
+        if (requestMethod != null ? !requestMethod.equals(step.requestMethod) : step.requestMethod != null)
+            return false;
+        if (request != null ? !request.equals(step.request) : step.request != null) return false;
+        if (requestFile != null ? !requestFile.equals(step.requestFile) : step.requestFile != null) return false;
+        if (requestHeaders != null ? !requestHeaders.equals(step.requestHeaders) : step.requestHeaders != null)
+            return false;
+        if (expectedResponse != null ? !expectedResponse.equals(step.expectedResponse) : step.expectedResponse != null)
+            return false;
+        if (expectedResponseFile != null ? !expectedResponseFile.equals(step.expectedResponseFile) : step.expectedResponseFile != null)
+            return false;
+        if (expectedResponseIgnore != null ? !expectedResponseIgnore.equals(step.expectedResponseIgnore) : step.expectedResponseIgnore != null)
+            return false;
+        if (savingValues != null ? !savingValues.equals(step.savingValues) : step.savingValues != null) return false;
+        if (responses != null ? !responses.equals(step.responses) : step.responses != null) return false;
+        if (dbParams != null ? !dbParams.equals(step.dbParams) : step.dbParams != null) return false;
+        if (tmpServiceRequestsDirectory != null ? !tmpServiceRequestsDirectory.equals(step.tmpServiceRequestsDirectory) : step.tmpServiceRequestsDirectory != null)
+            return false;
+        if (expectedStatusCode != null ? !expectedStatusCode.equals(step.expectedStatusCode) : step.expectedStatusCode != null)
+            return false;
+        if (sql != null ? !sql.equals(step.sql) : step.sql != null) return false;
+        if (sqlSavedParameter != null ? !sqlSavedParameter.equals(step.sqlSavedParameter) : step.sqlSavedParameter != null)
+            return false;
+        if (jsonXPath != null ? !jsonXPath.equals(step.jsonXPath) : step.jsonXPath != null) return false;
+        if (requestBodyType != step.requestBodyType) return false;
+        if (usePolling != null ? !usePolling.equals(step.usePolling) : step.usePolling != null) return false;
+        if (pollingJsonXPath != null ? !pollingJsonXPath.equals(step.pollingJsonXPath) : step.pollingJsonXPath != null)
+            return false;
+        if (disabled != null ? !disabled.equals(step.disabled) : step.disabled != null) return false;
+        if (stepComment != null ? !stepComment.equals(step.stepComment) : step.stepComment != null) return false;
+        return savedValuesCheck != null ? savedValuesCheck.equals(step.savedValuesCheck) : step.savedValuesCheck == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = relativeUrl != null ? relativeUrl.hashCode() : 0;
+        result = 31 * result + (requestMethod != null ? requestMethod.hashCode() : 0);
+        result = 31 * result + (request != null ? request.hashCode() : 0);
+        result = 31 * result + (requestFile != null ? requestFile.hashCode() : 0);
+        result = 31 * result + (requestHeaders != null ? requestHeaders.hashCode() : 0);
+        result = 31 * result + (expectedResponse != null ? expectedResponse.hashCode() : 0);
+        result = 31 * result + (expectedResponseFile != null ? expectedResponseFile.hashCode() : 0);
+        result = 31 * result + (expectedResponseIgnore != null ? expectedResponseIgnore.hashCode() : 0);
+        result = 31 * result + (savingValues != null ? savingValues.hashCode() : 0);
+        result = 31 * result + (responses != null ? responses.hashCode() : 0);
+        result = 31 * result + (dbParams != null ? dbParams.hashCode() : 0);
+        result = 31 * result + (tmpServiceRequestsDirectory != null ? tmpServiceRequestsDirectory.hashCode() : 0);
+        result = 31 * result + (expectedStatusCode != null ? expectedStatusCode.hashCode() : 0);
+        result = 31 * result + (sql != null ? sql.hashCode() : 0);
+        result = 31 * result + (sqlSavedParameter != null ? sqlSavedParameter.hashCode() : 0);
+        result = 31 * result + (jsonXPath != null ? jsonXPath.hashCode() : 0);
+        result = 31 * result + (requestBodyType != null ? requestBodyType.hashCode() : 0);
+        result = 31 * result + (usePolling != null ? usePolling.hashCode() : 0);
+        result = 31 * result + (pollingJsonXPath != null ? pollingJsonXPath.hashCode() : 0);
+        result = 31 * result + (disabled != null ? disabled.hashCode() : 0);
+        result = 31 * result + (stepComment != null ? stepComment.hashCode() : 0);
+        result = 31 * result + (savedValuesCheck != null ? savedValuesCheck.hashCode() : 0);
+        return result;
+    }
 }
