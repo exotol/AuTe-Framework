@@ -35,17 +35,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> findAll() {
+    public synchronized List<Project> findAll() {
         return projectRepository.findAllProjects();
     }
 
     @Override
-    public Project findOne(Long projectId) {
+    public synchronized Project findOne(Long projectId) {
         return projectRepository.findProject(projectId);
     }
 
     @Override
-    public String findOneAsYaml(Long projectId) {
+    public synchronized String findOneAsYaml(Long projectId) {
         return new Yaml().dump(projectRepository.findProject(projectId));
     }
 
@@ -62,7 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectRo updateFromRo(Long projectId, ProjectRo projectRo) {
+    public synchronized ProjectRo updateFromRo(Long projectId, ProjectRo projectRo) {
         List<Project> projectList = findAll();
         Project project = findOne(projectList, projectId);
         if (project != null) {
@@ -74,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo) {
+    public synchronized ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo) {
         List<Project> projectList = findAll();
         Project project = findOne(projectList, projectId);
         if (project != null) {
@@ -91,12 +91,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project saveProject(Project project, List<Project> projectList) {
+    public synchronized Project saveProject(Project project, List<Project> projectList) {
         projectRepository.saveProject(project, projectList);
         return project;
     }
 
-    private Project findOne(List<Project> projectList, Long projectId) {
+    private synchronized Project findOne(List<Project> projectList, Long projectId) {
         return projectList.stream()
                 .filter(project -> Objects.equals(project.getId(), projectId))
                 .findAny()

@@ -14,6 +14,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -104,6 +105,7 @@ public class ProjectsSource {
                     expectedServiceRequest.setExpectedServiceRequest(readFile(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()));
                 }
             }
+            idToHashCode.put(model.getId(), model.hashCode());
         }, modelList -> {});
     }
 
@@ -123,11 +125,11 @@ public class ProjectsSource {
         this.directoryPath = directoryPath;
     }
 
-    public List<Project> getProjectList() {
+    public synchronized List<Project> getProjectList() {
         return loadProjects();
     }
 
-    public void save(List<Project> projectList) {
+    public synchronized void save(List<Project> projectList) {
         checkAndRepairSort(projectList);
         checkAndRepairId(projectList);
         saveToFiles(projectList);
@@ -179,8 +181,39 @@ public class ProjectsSource {
         return "scenarios/" + scenarioPath(scenario) + "steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
     }
 
+    private HashMap<Long, Integer> idToHashCode = new HashMap<>();
+    private boolean isModelWasChanged(AbstractModel model) {
+        if (model == null) {
+            return true;
+        }
+        Integer lastHashCode = idToHashCode.get(model.getId());
+        if (lastHashCode == null || lastHashCode != model.hashCode()) {
+            idToHashCode.put(model.getId(), model.hashCode());
+            return true;
+        } else {
+            // The model did not change
+            return false;
+        }
+    }
+
+    private boolean isModelListWasChanged(List<? extends AbstractModel> modelList) {
+        if (modelList == null) {
+            return true;
+        }
+        for (AbstractModel model: modelList) {
+            if (isModelWasChanged(model)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void saveToExternalFiles(Project project) {
         applyToProjectModels(project, model -> {
+            if (!isModelWasChanged(model)) {
+                return;
+            }
+
             if (model instanceof Step) {
                 Step step = (Step)model;
                 Scenario stepScenario = findScenarioByStep(step, project);
@@ -243,6 +276,9 @@ public class ProjectsSource {
 
         project.getScenarioList().forEach(scenario -> {
             if (scenario.getStepList() != null && !scenario.getStepList().isEmpty()) {
+                if (!isModelListWasChanged(scenario.getStepList())) {
+                    return;
+                }
                 try {
                     if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
                         scenario.setStepListYamlFile("scenarios/" + scenarioPath(scenario) + "stepList.yml");
