@@ -84,10 +84,6 @@ public class Step implements Serializable {
     private Boolean usePolling;
     @Column(name = "POLLING_JSON_XPATH")
     private String pollingJsonXPath;
-    @Column(name = "DOWNLOAD_FILE_PATH", length = 500)
-    private String downloadFilePath;
-    @Column(name = "PROJECT_PATH", length = 500)
-    private String projectPath;
     @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("SORT ASC")
     @JsonManagedReference
@@ -101,11 +97,14 @@ public class Step implements Serializable {
     @Column(name = "RESPONSE_COMPARE_MODE")
     @Enumerated
     private ResponseCompareMode responseCompareMode;
-
     @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ID ASC")
     @JsonManagedReference
     private List<StepParameterSet> stepParameterSetList;
+    @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("ID ASC")
+    @JsonManagedReference
+    private List<FormData> formDataList;
 
     public Step() {
     }
@@ -294,20 +293,12 @@ public class Step implements Serializable {
         this.responseCompareMode = responseCompareMode;
     }
 
-    public String getDownloadFilePath() {
-        return downloadFilePath;
+    public List<FormData> getFormDataList() {
+        return formDataList;
     }
 
-    public void setDownloadFilePath(String downloadFilePath) {
-        this.downloadFilePath = downloadFilePath;
-    }
-
-    public String getProjectPath() {
-        return projectPath;
-    }
-
-    public void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
+    public void setFormDataList(List<FormData> formDataList) {
+        this.formDataList = formDataList;
     }
 
     public Step clone() {
@@ -335,6 +326,7 @@ public class Step implements Serializable {
         cloned.setStepComment(getStepComment());
         cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
         cloned.setResponseCompareMode(getResponseCompareMode());
+        cloned.setFormDataList(getFormDataList());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
