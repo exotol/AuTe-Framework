@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,9 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ExpectedServiceRequestService expectedServiceRequestService;
     private final StepService stepService;
 
+    @Value("${projectPath}")
+    private String path;
+
     @Autowired
     public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
         this.scenarioRepository = scenarioRepository;
@@ -68,6 +72,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
+        atExecutor.setProjectPath(path);
         return atExecutor.executeScenarioList(project, scenarioList);
     }
 

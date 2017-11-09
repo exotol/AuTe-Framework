@@ -60,8 +60,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
             @Mapping(target = "stepParameterSetList", ignore = true),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "downloadFilePath", source = "downloadFilePath"),
-            @Mapping(target = "projectPath", source = "projectPath")
+            @Mapping(target = "formDataList", ignore = true)
     })
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 
@@ -92,8 +91,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
             @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests"),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "downloadFilePath", source = "downloadFilePath"),
-            @Mapping(target = "projectPath", source = "projectPath")
+            @Mapping(target = "formDataList", ignore = true)
     })
     public abstract StepRo stepToStepRo(Step step);
 
