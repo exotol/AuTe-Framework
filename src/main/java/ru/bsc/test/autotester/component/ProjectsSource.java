@@ -34,6 +34,7 @@ public class ProjectsSource {
     private static final String FILE_ENCODING = "UTF-8";
 
     private String directoryPath;
+    private final HashMap<Long, Integer> idToHashCode = new HashMap<>();
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
@@ -125,15 +126,19 @@ public class ProjectsSource {
         this.directoryPath = directoryPath;
     }
 
-    public synchronized List<Project> getProjectList() {
-        return loadProjects();
+    public List<Project> getProjectList() {
+        synchronized (this) {
+            return loadProjects();
+        }
     }
 
-    public synchronized void save(List<Project> projectList) {
-        checkAndRepairSort(projectList);
-        checkAndRepairId(projectList);
-        saveToFiles(projectList);
-        projectList.forEach(this::readExternalFiles);
+    public void save(List<Project> projectList) {
+        synchronized (this) {
+            checkAndRepairSort(projectList);
+            checkAndRepairId(projectList);
+            saveToFiles(projectList);
+            projectList.forEach(this::readExternalFiles);
+        }
     }
 
     private void saveToFiles(List<Project> projectList) {
@@ -181,7 +186,6 @@ public class ProjectsSource {
         return "scenarios/" + scenarioPath(scenario) + "steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
     }
 
-    private HashMap<Long, Integer> idToHashCode = new HashMap<>();
     private boolean isModelWasChanged(AbstractModel model) {
         if (model == null) {
             return true;
