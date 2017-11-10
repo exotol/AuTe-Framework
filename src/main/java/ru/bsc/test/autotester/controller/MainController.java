@@ -47,7 +47,7 @@ public class MainController {
         Project object = (Project)new Yaml().load(yamlFile.getInputStream());
 
         // Клонирование необходимо, чтобы почистить все связи по ID
-        Project cloned = object.clone();
+        Project cloned = object;
 
         // сохранить проект в БД (in memory)
         cloned.setName(cloned.getName() + " (импортировано из yaml)");
