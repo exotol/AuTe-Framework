@@ -92,7 +92,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
             @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests"),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataRoList", source = "formDataList")
+            @Mapping(target = "formDataList", source = "formDataList")
     })
     public abstract StepRo stepToStepRo(Step step);
 
@@ -272,12 +272,12 @@ public abstract class StepRoMapper {
         if (step.getFormDataList() == null) {
             step.setFormDataList(new LinkedList<>());
         }
-        if (stepRo.getFormDataRoList() == null) {
-            stepRo.setFormDataRoList(new LinkedList<>());
+        if (stepRo.getFormDataList() == null) {
+            stepRo.setFormDataList(new LinkedList<>());
         }
         List<FormData> formDataList = new LinkedList<>(step.getFormDataList());
         step.getFormDataList().clear();
-        step.getFormDataList().addAll(stepRo.getFormDataRoList().stream()
+        step.getFormDataList().addAll(stepRo.getFormDataList().stream()
                 .map(formDataRo -> formDataList.stream()
                         .filter(formData -> Objects.equals(formData.getId(), formDataRo.getId()))
                         .map(formData -> updateFormData(formDataRo, formData))

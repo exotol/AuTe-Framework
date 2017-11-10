@@ -40,7 +40,7 @@ public class StepRo extends AbstractRo {
     private List<StepParameterSetRo> stepParameterSetList;
     private List<ExpectedServiceRequestRo> expectedServiceRequestList;
     private String responseCompareMode;
-    private List<FormDataRo> formDataRoList;
+    private List<FormDataRo> formDataList;
 
     public Long getId() {
         return id;
@@ -250,11 +250,11 @@ public class StepRo extends AbstractRo {
         this.responseCompareMode = responseCompareMode;
     }
 
-    public List<FormDataRo> getFormDataRoList() {
-        return formDataRoList;
+    public List<FormDataRo> getFormDataList() {
+        return formDataList;
     }
 
-    public void setFormDataRoList(List<FormDataRo> formDataRoList) {
-        this.formDataRoList = formDataRoList;
+    public void setFormDataList(List<FormDataRo> formDataList) {
+        this.formDataList = formDataList;
     }
 }
