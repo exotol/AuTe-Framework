@@ -418,6 +418,21 @@ definitions:
     properties:
       relativeUrl:
         type: string
+  FormData:
+    type: object
+    properties:
+      id:
+        type: integer
+      fieldName:
+        type: string
+      fieldType:
+        type: string
+      value:
+        type: string
+      filePath:
+        type: string
+      step:
+        $ref: '#/definitions/Step'
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'

@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 14.09.2017.
- *
  */
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -100,13 +99,14 @@ public abstract class StepRoMapper {
     abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
 
     @Mappings({
-        @Mapping(target = "id", source = "id"),
-        @Mapping(target = "sort", source = "sort"),
-        @Mapping(target = "serviceName", source = "serviceName"),
-        @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
-        @Mapping(target = "ignoredTags", source = "ignoredTags"),
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "sort", source = "sort"),
+            @Mapping(target = "serviceName", source = "serviceName"),
+            @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
+            @Mapping(target = "ignoredTags", source = "ignoredTags"),
     })
     abstract ExpectedServiceRequestRo expectedServiceRequestToRo(ExpectedServiceRequest expectedServiceRequest);
+
     abstract List<ExpectedServiceRequestRo> convertExpectedServiceRequestListToRoList(List<ExpectedServiceRequest> expectedServiceRequests);
 
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
@@ -119,6 +119,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "description", source = "description")
     })
     abstract void updateStepParameterSetFromRo(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet);
+
     abstract StepParameterSetRo stepParameterSetToStepParameterSetRo(StepParameterSet stepParameterSet);
 
     private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet) {
@@ -159,9 +160,11 @@ public abstract class StepRoMapper {
             @Mapping(target = "value", source = "value")
     })
     abstract StepParameter updateStepParameterFromRo(StepParameterRo stepParameterRo, @MappingTarget StepParameter stepParameter);
+
     abstract StepParameterRo stepParameterToStepParameterRo(StepParameter stepParameter);
 
     public abstract List<StepResultRo> convertStepResultListToStepResultRo(List<StepResult> stepResultList);
+
     @Mappings({
             @Mapping(target = "testId", source = "testId"),
             @Mapping(target = "step", source = "step"),
@@ -298,6 +301,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "ignoredTags", source = "ignoredTags")
     })
     abstract void updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest);
+
     private ExpectedServiceRequest updateExpectedServiceRequest(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest) {
         updateExpectedServiceRequestFromRo(expectedServiceRequestRo, expectedServiceRequest);
         return expectedServiceRequest;
@@ -313,6 +317,8 @@ public abstract class StepRoMapper {
     })
     abstract void updateFormDataFromRo(FormDataRo formDataRo, @MappingTarget FormData formData);
 
+    abstract List<FormDataRo> convertFormDataListToRo(List<FormData> formDataList);
+
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "stepRo", source = "step"),
@@ -321,13 +327,12 @@ public abstract class StepRoMapper {
             @Mapping(target = "value", source = "value"),
             @Mapping(target = "filePath", source = "filePath")
     })
-    abstract FormDataRo FormDataToFormDataRo(FormData formData);
+    abstract FormDataRo FormDataToRo(FormData formData);
 
     private FormData updateFormData(FormDataRo formDataRo, @MappingTarget FormData formData) {
         updateFormDataFromRo(formDataRo, formData);
         return formData;
     }
-    abstract List<FormDataRo> convertFormDataListToFormDataRoList(List<FormData> formDataList);
 
     public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
         List<Step> scenarioSteps = new LinkedList<>(scenario.getSteps());
