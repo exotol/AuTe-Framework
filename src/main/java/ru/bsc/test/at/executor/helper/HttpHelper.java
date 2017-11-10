@@ -107,8 +107,7 @@ public class HttpHelper {
             if (StringUtils.isEmpty(data.getFilePath()) || StringUtils.isEmpty(projectPath)) {
                 throw new IllegalArgumentException("Wrong path to file");
             }
-            URL discUrl = this.getClass().getResource(projectPath + data.getFilePath());
-            ContentBody body = new FileBody(new File(discUrl.toURI()));
+            ContentBody body = new FileBody(new File(projectPath + data.getFilePath()));
             entity.addPart(data.getFieldName(), body);
         }
         if (formDataPostParameters != null) {

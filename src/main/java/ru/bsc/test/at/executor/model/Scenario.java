@@ -28,7 +28,7 @@ import java.util.List;
 @SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_SCENARIO")
-public class Scenario implements Serializable, Cloneable {
+public class Scenario {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO", allocationSize = 1)
@@ -145,28 +145,26 @@ public class Scenario implements Serializable, Cloneable {
         this.stand = stand;
     }
 
-    @Override
-    public Scenario clone() throws CloneNotSupportedException {
-        super.clone();
-        Scenario cloned = new Scenario();
-        cloned.setId(null);
-        cloned.setProject(getProject());
-        cloned.setName(getName());
-        cloned.setScenarioGroup(getScenarioGroup());
-        cloned.setLastRunAt(null);
-        cloned.setLastRunFailures(null);
-        cloned.setBeforeScenario(getBeforeScenario());
-        cloned.setAfterScenario(getAfterScenario());
-        cloned.setStand(getStand());
+    public Scenario copy() {
+        Scenario scenario = new Scenario();
+        scenario.setId(null);
+        scenario.setProject(getProject());
+        scenario.setName(getName());
+        scenario.setScenarioGroup(getScenarioGroup());
+        scenario.setLastRunAt(null);
+        scenario.setLastRunFailures(null);
+        scenario.setBeforeScenario(getBeforeScenario());
+        scenario.setAfterScenario(getAfterScenario());
+        scenario.setStand(getStand());
 
-        cloned.setSteps(new LinkedList<>());
+        scenario.setSteps(new LinkedList<>());
         for (Step step: getSteps()) {
-            Step clonedStep = step.clone();
-            clonedStep.setScenario(cloned);
-            cloned.getSteps().add(clonedStep);
+            Step scenarioStep = step.copy();
+            scenarioStep.setScenario(scenario);
+            scenario.getSteps().add(scenarioStep);
         }
 
-        return cloned;
+        return scenario;
     }
 
     public Boolean getBeforeScenarioIgnore() {

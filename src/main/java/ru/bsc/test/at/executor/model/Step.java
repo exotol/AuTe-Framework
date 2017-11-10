@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_STEP")
-public class Step implements Serializable {
+public class Step {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
@@ -301,56 +300,58 @@ public class Step implements Serializable {
         this.formDataList = formDataList;
     }
 
-    public Step clone() {
-        Step cloned = new Step();
-        cloned.setId(null);
-        cloned.setSort(getSort());
-        cloned.setRelativeUrl(getRelativeUrl());
-        cloned.setRequestMethod(getRequestMethod());
-        cloned.setRequestHeaders(getRequestHeaders());
-        cloned.setRequest(getRequest());
-        cloned.setExpectedResponse(getExpectedResponse());
-        cloned.setSavingValues(getSavingValues());
-        cloned.setResponses(getResponses());
-        cloned.setDbParams(getDbParams());
-        cloned.setTmpServiceRequestsDirectory(getTmpServiceRequestsDirectory());
-        cloned.setExpectedStatusCode(getExpectedStatusCode());
-        cloned.setSql(getSql());
-        cloned.setSqlSavedParameter(getSqlSavedParameter());
-        cloned.setJsonXPath(getJsonXPath());
-        cloned.setRequestBodyType(getRequestBodyType());
-        cloned.setExpectedResponseIgnore(getExpectedResponseIgnore());
-        cloned.setUsePolling(getUsePolling());
-        cloned.setPollingJsonXPath(getPollingJsonXPath());
-        cloned.setDisabled(getDisabled());
-        cloned.setStepComment(getStepComment());
-        cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
-        cloned.setResponseCompareMode(getResponseCompareMode());
-        cloned.setFormDataList(getFormDataList());
-
-        cloned.setExpectedServiceRequests(new LinkedList<>());
+    public Step copy() {
+        Step step = new Step();
+        step.setId(null);
+        step.setSort(getSort());
+        step.setRelativeUrl(getRelativeUrl());
+        step.setRequestMethod(getRequestMethod());
+        step.setRequestHeaders(getRequestHeaders());
+        step.setRequest(getRequest());
+        step.setExpectedResponse(getExpectedResponse());
+        step.setSavingValues(getSavingValues());
+        step.setResponses(getResponses());
+        step.setDbParams(getDbParams());
+        step.setTmpServiceRequestsDirectory(getTmpServiceRequestsDirectory());
+        step.setExpectedStatusCode(getExpectedStatusCode());
+        step.setSql(getSql());
+        step.setSqlSavedParameter(getSqlSavedParameter());
+        step.setJsonXPath(getJsonXPath());
+        step.setRequestBodyType(getRequestBodyType());
+        step.setExpectedResponseIgnore(getExpectedResponseIgnore());
+        step.setUsePolling(getUsePolling());
+        step.setPollingJsonXPath(getPollingJsonXPath());
+        step.setDisabled(getDisabled());
+        step.setStepComment(getStepComment());
+        step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        step.setResponseCompareMode(getResponseCompareMode());
+        step.setFormDataList(getFormDataList());
+        step.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
-            ExpectedServiceRequest clonedExpectedServiceRequest = expectedServiceRequest.clone();
-            clonedExpectedServiceRequest.setStep(cloned);
-            cloned.getExpectedServiceRequests().add(clonedExpectedServiceRequest);
+            ExpectedServiceRequest stepExpectedServiceRequest = expectedServiceRequest.copy();
+            stepExpectedServiceRequest.setStep(step);
+            step.getExpectedServiceRequests().add(stepExpectedServiceRequest);
         }
-
-        cloned.setMockServiceResponseList(new LinkedList<>());
+        step.setMockServiceResponseList(new LinkedList<>());
         for (MockServiceResponse mockServiceResponse: getMockServiceResponseList()) {
-            MockServiceResponse clonedMockServiceResponse = mockServiceResponse.clone();
-            clonedMockServiceResponse.setStep(cloned);
-            cloned.getMockServiceResponseList().add(clonedMockServiceResponse);
+            MockServiceResponse stepMockServiceResponse = mockServiceResponse.copy();
+            stepMockServiceResponse.setStep(step);
+            step.getMockServiceResponseList().add(stepMockServiceResponse);
         }
-
-        cloned.setStepParameterSetList(new LinkedList<>());
+        step.setStepParameterSetList(new LinkedList<>());
         if (getStepParameterSetList() != null) {
             for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
-                StepParameterSet clonedStepParameterSet = stepParameterSet.copy();
-                clonedStepParameterSet.setStep(cloned);
-                cloned.getStepParameterSetList().add(clonedStepParameterSet);
+                StepParameterSet stepStepParameterSet = stepParameterSet.copy();
+                stepStepParameterSet.setStep(step);
+                step.getStepParameterSetList().add(stepStepParameterSet);
             }
         }
-
-        return cloned;
+        step.setFormDataList(new LinkedList<>());
+        for (FormData formData : getFormDataList()) {
+            FormData stepFormData = formData.copy();
+            stepFormData.setStep(step);
+            step.getFormDataList().add(stepFormData);
+        }
+        return step;
     }
 }

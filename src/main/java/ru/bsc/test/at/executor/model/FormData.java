@@ -28,7 +28,7 @@ public class FormData {
     private String fieldType;
     @Column(name = "VALUE", length = 500)
     private String value;
-    @Column(name = "DOWNLOAD_FILE_PATH", length = 500)
+    @Column(name = "FILE_PATH", length = 500)
     private String filePath;
     @ManyToOne
     @JoinColumn(name = "STEP_ID")
@@ -91,5 +91,14 @@ public class FormData {
 
     public void setStep(Step step) {
         this.step = step;
+    }
+
+    protected FormData copy() {
+        FormData formData = new FormData();
+        formData.setFieldName(getFieldName());
+        formData.setFieldType(getFieldType());
+        formData.setFilePath(getFilePath());
+        formData.setValue(getValue());
+        return formData;
     }
 }

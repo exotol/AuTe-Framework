@@ -146,20 +146,17 @@ public class Project implements Serializable, Cloneable {
     }
 
     @Override
-    public Project clone() throws CloneNotSupportedException {
-        super.clone();
+    public Project clone() {
         Project cloned = new Project();
         cloned.setId(null);
         cloned.setName(getName());
         cloned.setProjectCode(getProjectCode() + "_COPY");
         cloned.setUseRandomTestId(getUseRandomTestId());
         cloned.setTestIdHeaderName(getTestIdHeaderName());
-
         Map<Stand, Stand> standToClonedMap = new HashMap<>();
-
         cloned.setStandList(new LinkedList<>());
         for (Stand stand: getStandList()) {
-            Stand clonedStand = stand.clone();
+            Stand clonedStand = stand.copy();
             clonedStand.setProject(cloned);
             standToClonedMap.put(stand, clonedStand);
 
@@ -171,7 +168,7 @@ public class Project implements Serializable, Cloneable {
         Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
         cloned.setScenarios(new LinkedList<>());
         for (Scenario scenario: getScenarios()) {
-            Scenario clonedScenario = scenario.clone();
+            Scenario clonedScenario = scenario.copy();
             clonedScenario.setProject(cloned);
             clonedScenario.setStand(standToClonedMap.get(scenario.getStand()));
             scenarioToClonedScenarioMap.put(scenario, clonedScenario);
@@ -201,7 +198,7 @@ public class Project implements Serializable, Cloneable {
 
         cloned.setScenarioGroups(new LinkedList<>());
         for (ScenarioGroup scenarioGroup: getScenarioGroups()) {
-            ScenarioGroup clonedScenarioGroup = scenarioGroup.clone();
+            ScenarioGroup clonedScenarioGroup = scenarioGroup.copy();
             clonedScenarioGroup.setProject(cloned);
             cloned.getScenarioGroups().add(clonedScenarioGroup);
 
