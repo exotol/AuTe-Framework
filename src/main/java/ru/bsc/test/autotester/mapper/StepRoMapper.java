@@ -6,6 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
@@ -13,6 +14,7 @@ import ru.bsc.test.at.executor.model.StepParameter;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.ro.ExpectedServiceRequestRo;
+import ru.bsc.test.autotester.ro.FormDataRo;
 import ru.bsc.test.autotester.ro.MockServiceResponseRo;
 import ru.bsc.test.autotester.ro.StepParameterRo;
 import ru.bsc.test.autotester.ro.StepParameterSetRo;
@@ -60,7 +62,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
             @Mapping(target = "stepParameterSetList", ignore = true),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataList", ignore = true)
+            @Mapping(target = "formDataList", source = "formDataRoList")
     })
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 
@@ -91,7 +93,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
             @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests"),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataList", ignore = true)
+            @Mapping(target = "formDataRoList", source = "formDataList")
     })
     public abstract StepRo stepToStepRo(Step step);
 
@@ -264,7 +266,26 @@ public abstract class StepRoMapper {
                         }))
                 .collect(Collectors.toList())
         );
-
+        if (step.getFormDataList() == null) {
+            step.setFormDataList(new LinkedList<>());
+        }
+        if (stepRo.getFormDataRoList() == null) {
+            stepRo.setFormDataRoList(new LinkedList<>());
+        }
+        List<FormData> formDataList = new LinkedList<>(step.getFormDataList());
+        step.getFormDataList().clear();
+        step.getFormDataList().addAll(stepRo.getFormDataRoList().stream()
+                .map(formDataRo -> formDataList.stream()
+                        .filter(formData -> Objects.equals(formData.getId(), formDataRo.getId()))
+                        .map(formData -> updateFormData(formDataRo, formData))
+                        .findAny()
+                        .orElseGet(() -> {
+                            FormData formData = new FormData();
+                            updateFormData(formDataRo, formData);
+                            formData.setStep(step);
+                            return formData;
+                        })
+                ).collect(Collectors.toList()));
         return step;
     }
 
@@ -281,6 +302,24 @@ public abstract class StepRoMapper {
         updateExpectedServiceRequestFromRo(expectedServiceRequestRo, expectedServiceRequest);
         return expectedServiceRequest;
     }
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "step", ignore = true),
+            @Mapping(target = "fieldName", source = "fieldName"),
+            @Mapping(target = "fieldType", source = "fieldType"),
+            @Mapping(target = "value", source = "value"),
+            @Mapping(target = "filePath", source = "filePath")
+    })
+    abstract void updateFormDataFromRo(FormDataRo formDataRo, @MappingTarget FormData formData);
+
+    abstract FormDataRo FormDataToFormDataRo(FormData formData);
+
+    private FormData updateFormData(FormDataRo formDataRo, @MappingTarget FormData formData) {
+        updateFormDataFromRo(formDataRo, formData);
+        return formData;
+    }
+    abstract List<FormDataRo> convertFormDataListToFormDataRoList(List<FormData> formDataList);
 
     public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
         List<Step> scenarioSteps = new LinkedList<>(scenario.getSteps());
