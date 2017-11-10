@@ -313,6 +313,14 @@ public abstract class StepRoMapper {
     })
     abstract void updateFormDataFromRo(FormDataRo formDataRo, @MappingTarget FormData formData);
 
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "stepRo", source = "step"),
+            @Mapping(target = "fieldName", source = "fieldName"),
+            @Mapping(target = "fieldType", source = "fieldType"),
+            @Mapping(target = "value", source = "value"),
+            @Mapping(target = "filePath", source = "filePath")
+    })
     abstract FormDataRo FormDataToFormDataRo(FormData formData);
 
     private FormData updateFormData(FormDataRo formDataRo, @MappingTarget FormData formData) {
