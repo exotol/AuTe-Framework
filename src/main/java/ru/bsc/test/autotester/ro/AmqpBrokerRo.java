@@ -1,6 +1,8 @@
 package ru.bsc.test.autotester.ro;
 
-public class AmqpBrokerRo {
+public class AmqpBrokerRo extends AbstractRo {
+
+    private static final long serialVersionUID = -6295730897412089910L;
     private Long id;
     private String mqService;
     private String host;
