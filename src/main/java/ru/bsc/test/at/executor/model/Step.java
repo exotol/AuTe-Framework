@@ -325,7 +325,6 @@ public class Step {
         step.setStepComment(getStepComment());
         step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
         step.setResponseCompareMode(getResponseCompareMode());
-        step.setFormDataList(getFormDataList());
         step.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
             ExpectedServiceRequest stepExpectedServiceRequest = expectedServiceRequest.copy();
