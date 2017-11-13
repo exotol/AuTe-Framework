@@ -36,25 +36,14 @@ class ActiveMqManager implements IMqManager {
     public void sendTextMessage(String queueName, String message) throws Exception {
         Connection connection = connectionFactory.createConnection();
         connection.start();
-
-        // Create a Session
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        // Create the destination (Topic or Queue)
         Destination destination = session.createQueue(queueName);
-
-        // Create a MessageProducer from the Session to the Topic or Queue
         MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-        // Create a messages
         TextMessage textMessage = session.createTextMessage(message);
-
-        // Tell the producer to send the message
         System.out.println("Sent message: "+ message.hashCode() + " : " + Thread.currentThread().getName());
         producer.send(textMessage);
 
-        // Clean up
         session.close();
         connection.close();
     }

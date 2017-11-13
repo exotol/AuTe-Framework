@@ -25,14 +25,8 @@ class RabbitMqManager implements IMqManager {
     }
 
     public void sendTextMessage(String queueName, String message) throws Exception {
-        //getting a connection
         Connection connection = connectionFactory.newConnection();
-
-        //creating a channel
         Channel channel = connection.createChannel();
-
-        //declaring a queue for this channel. If queue does not exist,
-        //it will be created on the server.
         channel.queueDeclare(queueName, false, false, false, null);
         channel.basicPublish("",queueName, null, message.getBytes());
 
