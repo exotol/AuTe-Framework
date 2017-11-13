@@ -13,24 +13,6 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class Step extends AbstractModel implements Serializable {
 
-    public enum RequestBodyType {
-        @SuppressWarnings("unused")
-        JSON,
-        FORM
-    }
-
-    @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    @Column(name = "ID", nullable = false)
-    private Long id;
-    @ManyToOne
-    @JoinColumn(name = "SCENARIO_ID")
-    @JsonBackReference
-    private Scenario scenario;
-    @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
-    @OrderBy("SORT ASC")
-    @JsonManagedReference
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
