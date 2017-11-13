@@ -14,6 +14,8 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class ProjectsSource {
     private static final String FILE_ENCODING = "UTF-8";
 
     private String directoryPath;
+    private final HashMap<Long, Integer> idToHashCode = new HashMap<>();
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
@@ -107,6 +110,7 @@ public class ProjectsSource {
                     expectedServiceRequest.setExpectedServiceRequest(readFile(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()));
                 }
             }
+            idToHashCode.put(model.getId(), model.hashCode());
         }, modelList -> {});
     }
 
@@ -127,14 +131,18 @@ public class ProjectsSource {
     }
 
     public List<Project> getProjectList() {
-        return loadProjects();
+        synchronized (this) {
+            return loadProjects();
+        }
     }
 
     public void save(List<Project> projectList) {
-        checkAndRepairSort(projectList);
-        checkAndRepairId(projectList);
-        saveToFiles(projectList);
-        projectList.forEach(this::readExternalFiles);
+        synchronized (this) {
+            checkAndRepairSort(projectList);
+            checkAndRepairId(projectList);
+            saveToFiles(projectList);
+            projectList.forEach(this::readExternalFiles);
+        }
     }
 
     private void saveToFiles(List<Project> projectList) {
@@ -187,6 +195,32 @@ public class ProjectsSource {
         return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/mq-message." + ext;
     }
 
+    private boolean isModelWasChanged(AbstractModel model) {
+        if (model == null) {
+            return true;
+        }
+        Integer lastHashCode = idToHashCode.get(model.getId());
+        if (lastHashCode == null || lastHashCode != model.hashCode()) {
+            idToHashCode.put(model.getId(), model.hashCode());
+            return true;
+        } else {
+            // The model did not change
+            return false;
+        }
+    }
+
+    private boolean isModelListWasChanged(List<? extends AbstractModel> modelList) {
+        if (modelList == null) {
+            return true;
+        }
+        for (AbstractModel model: modelList) {
+            if (isModelWasChanged(model)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void saveToExternalFiles(Project project) {
         applyToProjectModels(project, model -> {
             if (model instanceof Step) {
@@ -197,8 +231,10 @@ public class ProjectsSource {
                         if (step.getRequestFile() == null) {
                             step.setRequestFile(stepRequestFile(step, stepScenario));
                         }
-                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
-                        FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
+                        if (isModelWasChanged(model)) {
+                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
+                            FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
+                        }
                         step.setRequest(null);
                     } catch (IOException e) {
                         LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile(), e);
@@ -209,8 +245,10 @@ public class ProjectsSource {
                         if (step.getExpectedResponseFile() == null) {
                             step.setExpectedResponseFile(stepExpectedResponseFile(step, stepScenario));
                         }
-                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile());
-                        FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
+                        if (isModelWasChanged(model)) {
+                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile());
+                            FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
+                        }
                         step.setExpectedResponse(null);
                     } catch (IOException e) {
                         LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile(), e);
@@ -236,8 +274,10 @@ public class ProjectsSource {
                         if (mockServiceResponse.getResponseBodyFile() == null) {
                             mockServiceResponse.setResponseBodyFile(mockResponseBodyFile(mockServiceResponse, stepScenario));
                         }
-                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile());
-                        FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
+                        if (isModelWasChanged(model)) {
+                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile());
+                            FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
+                        }
                         mockServiceResponse.setResponseBody(null);
                     } catch (IOException e) {
                         LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile(), e);
@@ -251,8 +291,10 @@ public class ProjectsSource {
                         if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
                             expectedServiceRequest.setExpectedServiceRequestFile(expectedServiceRequestFile(expectedServiceRequest, stepScenario));
                         }
-                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
-                        FileUtils.writeStringToFile(file, expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
+                        if (isModelWasChanged(model)) {
+                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
+                            FileUtils.writeStringToFile(file, expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
+                        }
                         expectedServiceRequest.setExpectedServiceRequest(null);
                     } catch (IOException e) {
                         LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile(), e);
@@ -267,8 +309,10 @@ public class ProjectsSource {
                     if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
                         scenario.setStepListYamlFile("scenarios/" + scenarioPath(scenario) + "stepList.yml");
                     }
-                    String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
-                    YamlUtils.dumpToFile(scenario.getStepList(), fileName);
+                    if (!isModelListWasChanged(scenario.getStepList())) {
+                        String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
+                        YamlUtils.dumpToFile(scenario.getStepList(), fileName);
+                    }
                     scenario.getStepList().clear();
                 } catch (IOException e) {
                     LOGGER.error("", e);
@@ -291,7 +335,7 @@ public class ProjectsSource {
         applyToAllProjects(
                 projectList,
                 model -> {},
-                modelList -> modelList.sort((o1, o2) -> Long.compare(o1.getSort() != null ? o1.getSort() : 0L, o2.getSort() != null ? o2.getSort() : 0L)));
+                modelList -> modelList.sort(Comparator.comparingLong(o -> o.getSort() != null ? o.getSort() : 0L)));
     }
 
     private void checkAndRepairId(List<Project> projectList) {

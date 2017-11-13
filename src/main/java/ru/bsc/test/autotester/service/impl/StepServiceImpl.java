@@ -33,23 +33,29 @@ public class StepServiceImpl implements StepService {
 
     @Override
     public Step findOne(Long stepId) {
-        return stepRepository.findStep(stepId);
+        synchronized (projectService) {
+            return stepRepository.findStep(stepId);
+        }
     }
 
     @Override
     public Step save(Step step, List<Project> projectList) {
-        return stepRepository.saveStep(step, projectList);
+        synchronized (projectService) {
+            return stepRepository.saveStep(step, projectList);
+        }
     }
 
     @Override
     public StepRo updateFromRo(Long stepId, StepRo stepRo) {
-        List<Project> projectList = projectService.findAll();
-        Step step = findOne(stepId);
-        if (step != null) {
-            stepRoMapper.updateStep(stepRo, step);
-            stepRepository.saveStep(step, projectList);
-            return stepRoMapper.stepToStepRo(step);
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            Step step = findOne(stepId);
+            if (step != null) {
+                stepRoMapper.updateStep(stepRo, step);
+                stepRepository.saveStep(step, projectList);
+                return stepRoMapper.stepToStepRo(step);
+            }
+            return null;
         }
-        return null;
     }
 }
