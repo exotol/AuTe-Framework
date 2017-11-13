@@ -3,7 +3,6 @@ package ru.bsc.test.autotester.service.impl;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
@@ -55,56 +54,64 @@ public class ScenarioServiceImpl implements ScenarioService {
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
-        Date time = Calendar.getInstance().getTime();
-        List<Project> projectList = projectService.findAll();
-        map.forEach((scenario, stepResults) -> {
-            Scenario scenarioToUpdate = findOne(projectList, scenario.getId());
-            scenarioToUpdate.setLastRunAt(time);
-            scenarioToUpdate.setLastRunFailures(stepResults.stream().filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult())).count());
-        });
-        projectService.saveProject(project, projectList);
+        synchronized (projectService) {
+            Date time = Calendar.getInstance().getTime();
+            List<Project> projectList = projectService.findAll();
+            map.forEach((scenario, stepResults) -> {
+                Scenario scenarioToUpdate = findOne(projectList, scenario.getId());
+                scenarioToUpdate.setLastRunAt(time);
+                scenarioToUpdate.setLastRunFailures(stepResults.stream().filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult())).count());
+            });
+            projectService.saveProject(project, projectList);
+        }
         return map;
     }
 
     @Override
     public StepRo addStepToScenario(Long scenarioId, StepRo stepRo) {
-        List<Project> projectList = projectService.findAll();
-        Scenario scenario = findOne(projectList, scenarioId);
-        if (scenario != null) {
-            Step newStep = new Step();
-            scenario.getStepList().add(newStep);
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            Scenario scenario = findOne(projectList, scenarioId);
+            if (scenario != null) {
+                Step newStep = new Step();
+                scenario.getStepList().add(newStep);
 
-            stepRoMapper.updateStep(stepRo, newStep);
+                stepRoMapper.updateStep(stepRo, newStep);
 
-            scenarioRepository.saveScenario(scenario, projectList);
-            return stepRoMapper.stepToStepRo(newStep);
+                scenarioRepository.saveScenario(scenario, projectList);
+                return stepRoMapper.stepToStepRo(newStep);
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
     public void deleteOne(Long scenarioId) {
-        List<Project> projectList = projectService.findAll();
-        Scenario scenario = findOne(projectList, scenarioId);
-        if (scenario != null) {
-            Project project = scenario.getProject();
-            project.setScenarioList(project.getScenarioList().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
-            scenarioRepository.saveScenario(scenario, projectList);
-        } else {
-            throw new ResourceNotFoundException();
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            Scenario scenario = findOne(projectList, scenarioId);
+            if (scenario != null) {
+                Project project = scenario.getProject();
+                project.setScenarioList(project.getScenarioList().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
+                scenarioRepository.saveScenario(scenario, projectList);
+            } else {
+                throw new ResourceNotFoundException();
+            }
         }
     }
 
     @Override
     public ScenarioRo updateScenarioFormRo(Long scenarioId, ScenarioRo scenarioRo) {
-        List<Project> projectList = projectService.findAll();
-        Scenario scenario = findOne(projectList, scenarioId);
-        if (scenario != null) {
-            scenarioRoMapper.updateScenario(scenarioRo, scenario);
-            scenario = scenarioRepository.saveScenario(scenario, projectList);
-            return projectRoMapper.scenarioToScenarioRo(scenario);
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            Scenario scenario = findOne(projectList, scenarioId);
+            if (scenario != null) {
+                scenarioRoMapper.updateScenario(scenarioRo, scenario);
+                scenario = scenarioRepository.saveScenario(scenario, projectList);
+                return projectRoMapper.scenarioToScenarioRo(scenario);
+            }
+            return null;
         }
-        return null;
     }
 
     private Scenario findOne(List<Project> projectList, Long scenarioId) {
@@ -117,21 +124,25 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public Scenario findOne(long scenarioId) {
-        return scenarioRepository.findScenario(scenarioId);
+        synchronized (projectService) {
+            return scenarioRepository.findScenario(scenarioId);
+        }
     }
 
     @Override
     public Step cloneStep(Step step) {
-        List<Project> projectList = projectService.findAll();
-        if (step != null) {
-            Scenario scenario = findScenarioIdByStep(step, projectList);
-            Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
-            Step newStep = step.clone();
-            newStep.setSort(maxSortStep + 50);
-            scenario.getStepList().add(newStep);
-            return stepService.save(newStep, projectList);
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            if (step != null) {
+                Scenario scenario = findScenarioIdByStep(step, projectList);
+                Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
+                Step newStep = step.clone();
+                newStep.setSort(maxSortStep + 50);
+                scenario.getStepList().add(newStep);
+                return stepService.save(newStep, projectList);
+            }
+            return null;
         }
-        return null;
     }
 
     private Scenario findScenarioIdByStep(Step step, List<Project> projectList) {
@@ -147,15 +158,16 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    @Transactional
     public List<StepRo> updateStepListFromRo(Long scenarioId, List<StepRo> stepRoList) {
-        List<Project> projectList = projectService.findAll();
-        Scenario scenario = findOne(projectList, scenarioId);
-        if (scenario != null) {
-            stepRoMapper.updateScenarioStepList(stepRoList, scenario);
-            scenario = scenarioRepository.saveScenario(scenario, projectList);
-            return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
+        synchronized (projectService) {
+            List<Project> projectList = projectService.findAll();
+            Scenario scenario = findOne(projectList, scenarioId);
+            if (scenario != null) {
+                stepRoMapper.updateScenarioStepList(stepRoList, scenario);
+                scenario = scenarioRepository.saveScenario(scenario, projectList);
+                return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
+            }
+            throw new ResourceNotFoundException();
         }
-        throw new ResourceNotFoundException();
     }
 }
