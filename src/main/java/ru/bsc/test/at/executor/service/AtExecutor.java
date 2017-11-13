@@ -215,7 +215,6 @@ public class AtExecutor {
         ResponseHelper responseData;
         do {
             retryCounter++;
-            // 3. Выполнить запрос
             responseData = http.request(
                     step.getRequestMethod(),
                     requestUrl,
@@ -224,29 +223,7 @@ public class AtExecutor {
                     step.getRequestHeaders(),
                     project.getTestIdHeaderName(),
                     testId);
-
-            // 3.1. Polling
-            // TODO Вынести поллиг в отдельный метод
-            retry = false;
-            if (step.getUsePolling()) {
-                try {
-                    Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-                    if (pollingParameter == null) {
-                        retry = true;
-                    } else if (pollingParameter instanceof String && StringUtils.isEmpty((String)pollingParameter)) {
-                        retry = true;
-                    } else if (pollingParameter instanceof Map && ((Map) pollingParameter).size() == 0) {
-                        retry = true;
-                    } else if (pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).size() == 0) {
-                        retry = true;
-                    }
-                } catch (PathNotFoundException e) {
-                    retry = true;
-                }
-                if (retry) {
-                    Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
-                }
-            }
+            retry = tryUsePolling(step, responseData);
         } while (retry && retryCounter <= POLLING_RETRY_COUNT);
 
         stepResult.setPollingRetryCount(retryCounter);
@@ -365,6 +342,27 @@ public class AtExecutor {
                 wireMockAdmin.addMapping(mockDefinition);
             }
         }
+    }
+
+    private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
+        boolean retry = true;
+        if (step.getUsePolling()) {
+            try {
+                Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
+                if (pollingParameter == null
+                        || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
+                        || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
+                        || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
+                    retry = false;
+                }
+            } catch (PathNotFoundException e) {
+                retry = true;
+            }
+            if (retry) {
+                Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
+            }
+        }
+        return retry;
     }
 
     @SuppressWarnings("WeakerAccess")
