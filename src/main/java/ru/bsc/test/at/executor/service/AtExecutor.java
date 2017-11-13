@@ -167,7 +167,7 @@ public class AtExecutor {
                             serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
                             stepResult.setResult("OK");
-                        } catch (Exception e) {
+                        } catch (Exception | AssertionError e) {
                             StringWriter sw = new StringWriter();
                             e.printStackTrace(new PrintWriter(sw));
 
