@@ -11,7 +11,6 @@ public class FormDataRo extends AbstractRo {
     private String fieldType;
     private String value;
     private String filePath;
-    private StepRo stepRo;
 
     public Long getId() {
         return id;
@@ -51,13 +50,5 @@ public class FormDataRo extends AbstractRo {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public StepRo getStepRo() {
-        return stepRo;
-    }
-
-    public void setStepRo(StepRo stepRo) {
-        this.stepRo = stepRo;
     }
 }

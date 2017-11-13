@@ -183,8 +183,8 @@ public abstract class StepRoMapper {
     abstract List<MockServiceResponseRo> convertMockServiceResponseListToMockServiceResponseRoList(List<MockServiceResponse> mockServiceResponseList);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "sort", source = "sort"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "httpStatus", source = "httpStatus")

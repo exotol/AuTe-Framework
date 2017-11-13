@@ -431,8 +431,6 @@ definitions:
         type: string
       filePath:
         type: string
-      step:
-        $ref: '#/definitions/Step'
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
