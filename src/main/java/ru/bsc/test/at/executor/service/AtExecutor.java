@@ -5,6 +5,7 @@ import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
@@ -13,6 +14,7 @@ import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.RequestBodyType;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
@@ -21,6 +23,7 @@ import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
+import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 
@@ -72,6 +75,7 @@ public class AtExecutor {
                 try {
                     connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
                     connection.setAutoCommit(false);
+                    connection.setReadOnly(true);
                 } catch (SQLException e) {
                     connection = null;
                 }
@@ -207,8 +211,8 @@ public class AtExecutor {
             responseData = http.request(
                     step.getRequestMethod(),
                     requestUrl,
-                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
-                    Step.RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
+                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
                     step.getRequestHeaders(),
                     project.getTestIdHeaderName(),
                     testId);
@@ -267,27 +271,44 @@ public class AtExecutor {
         stepResult.setExpected(expectedResponse);
 
         // 6. Проверить код статуса ответа
-        if (step.getExpectedStatusCode() != null) {
-            if (step.getExpectedStatusCode() != responseData.getStatusCode()) {
-                throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
-            }
+        if ((step.getExpectedStatusCode() != null)
+                && (step.getExpectedStatusCode() != responseData.getStatusCode())) {
+            throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
+
         }
 
-        // 7. Сравнить JSON ответ с ожидаемым
         if (!step.getExpectedResponseIgnore()) {
-            if (StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) {
-                // Если содержимое ответов не совпадает, то выявить разницу с помощью JSONAssert
-                if (!responseData.getContent().equals(expectedResponse)) {
-                    try {
-                        JSONAssert.assertEquals(
-                                expectedResponse.replaceAll(" ", " "),
-                                responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                                new IgnoringComparator(JSONCompareMode.LENIENT)
-                        );
-                    } catch (Error assertionError) {
-                        throw new Exception(assertionError);
-                    }
+            if (step.getResponseCompareMode() == null) {
+                JSONcomparing(step, expectedResponse, responseData);
+            } else {
+                switch (step.getResponseCompareMode()) {
+                    case FULL_MATCH:
+                        Assert.assertEquals(expectedResponse, responseData.getContent());
+                        break;
+                    case IGNORE_MASK:
+                        if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                        }
+                        break;
+                    default:
+                        JSONcomparing(step, expectedResponse, responseData);
+                        break;
                 }
+            }
+        }
+    }
+
+    private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+        if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
+                (!responseData.getContent().equals(expectedResponse))) {
+            try {
+                JSONAssert.assertEquals(
+                        expectedResponse.replaceAll(" ", " "),
+                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                        new IgnoringComparator(JSONCompareMode.LENIENT)
+                );
+            } catch (Error assertionError) {
+                throw new Exception(assertionError);
             }
         }
     }

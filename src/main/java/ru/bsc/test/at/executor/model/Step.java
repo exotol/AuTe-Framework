@@ -19,6 +19,18 @@ public class Step extends AbstractModel implements Serializable {
         FORM
     }
 
+    @Id
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_STEP", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @Column(name = "ID", nullable = false)
+    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "SCENARIO_ID")
+    @JsonBackReference
+    private Scenario scenario;
+    @OneToMany(mappedBy = "step", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
+    @OrderBy("SORT ASC")
+    @JsonManagedReference
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
@@ -43,6 +55,7 @@ public class Step extends AbstractModel implements Serializable {
     private Boolean disabled;
     private String stepComment;
     private Map<String, String> savedValuesCheck;
+    private ResponseCompareMode responseCompareMode;
     private List<StepParameterSet> stepParameterSetList;
     private String mqName;
     private String mqMessage;
@@ -233,6 +246,14 @@ public class Step extends AbstractModel implements Serializable {
         this.mqMessageFile = mqMessageFile;
     }
 
+    public ResponseCompareMode getResponseCompareMode() {
+        return responseCompareMode;
+    }
+
+    public void setResponseCompareMode(ResponseCompareMode responseCompareMode) {
+        this.responseCompareMode = responseCompareMode;
+    }
+
     public Step clone() {
         Step cloned = new Step();
         cloned.setId(null);
@@ -262,6 +283,7 @@ public class Step extends AbstractModel implements Serializable {
         cloned.setMqName(getMqName());
         cloned.setMqMessage(getMqMessage());
         cloned.setMqMessageFile(getMqMessageFile());
+        cloned.setResponseCompareMode(getResponseCompareMode());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
