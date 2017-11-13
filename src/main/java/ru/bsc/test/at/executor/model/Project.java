@@ -23,6 +23,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
     private Stand stand;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
+    private AmqpBroker amqpBroker;
 
     public String getName() {
         return name;
@@ -93,6 +94,12 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
     public void setTestIdHeaderName(String testIdHeaderName) {
         this.testIdHeaderName = testIdHeaderName;
     }
+    public AmqpBroker getAmqpBroker() {
+        return amqpBroker;
+    }
+    public void setAmqpBroker(AmqpBroker amqpBroker) {
+        this.amqpBroker = amqpBroker;
+    }
 
     @Override
     public Project clone() throws CloneNotSupportedException {
@@ -158,6 +165,8 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
                     .filter(scenario -> scenarioGroup.equals(scenario.getScenarioGroup()))
                     .forEach(scenario -> scenario.setScenarioGroup(clonedScenarioGroup));
         }
+
+        cloned.setAmqpBroker(getAmqpBroker().copy());
 
         return cloned;
     }

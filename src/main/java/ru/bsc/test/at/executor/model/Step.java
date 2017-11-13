@@ -44,6 +44,9 @@ public class Step extends AbstractModel implements Serializable {
     private String stepComment;
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSet> stepParameterSetList;
+    private String mqName;
+    private String mqMessage;
+    private String mqMessageFile;
 
     public String getRelativeUrl() {
         return relativeUrl;
@@ -211,6 +214,24 @@ public class Step extends AbstractModel implements Serializable {
     public void setStepParameterSetList(List<StepParameterSet> stepParameterSetList) {
         this.stepParameterSetList = stepParameterSetList;
     }
+    public String getMqName() {
+        return mqName;
+    }
+    public void setMqName(String mqName) {
+        this.mqName = mqName;
+    }
+    public String getMqMessage() {
+        return mqMessage;
+    }
+    public void setMqMessage(String mqMessage) {
+        this.mqMessage = mqMessage;
+    }
+    public String getMqMessageFile() {
+        return mqMessageFile;
+    }
+    public void setMqMessageFile(String mqMessageFile) {
+        this.mqMessageFile = mqMessageFile;
+    }
 
     public Step clone() {
         Step cloned = new Step();
@@ -238,6 +259,9 @@ public class Step extends AbstractModel implements Serializable {
         cloned.setDisabled(getDisabled());
         cloned.setStepComment(getStepComment());
         cloned.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        cloned.setMqName(getMqName());
+        cloned.setMqMessage(getMqMessage());
+        cloned.setMqMessageFile(getMqMessageFile());
 
         cloned.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {

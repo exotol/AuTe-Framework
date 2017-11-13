@@ -18,6 +18,8 @@ import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.at.executor.mq.IMqManager;
+import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
@@ -182,6 +184,9 @@ public class AtExecutor {
         executeSql(connection, step, savedValues);
         stepResult.setSavedParameters(savedValues.toString());
 
+        // 1.1 Отправить сообщение в очередь
+        sendMessageToQuery(project, step);
+
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
         stepResult.setRequestUrl(requestUrl);
@@ -285,6 +290,17 @@ public class AtExecutor {
                 }
             }
         }
+    }
+
+    private void sendMessageToQuery(Project project, Step step) throws Exception {
+        IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService());
+
+        mqManager.setHost(project.getAmqpBroker().getHost());
+        mqManager.setPort(project.getAmqpBroker().getPort());
+        mqManager.setUsername(project.getAmqpBroker().getUsername());
+        mqManager.setPassword(project.getAmqpBroker().getPassword());
+
+        mqManager.sendTextMessage(step.getMqName(), step.getMqMessage());
     }
 
     private Map<String, String> parseFormData(String formDataString) {
