@@ -110,7 +110,9 @@ public class ProjectsSource {
                     expectedServiceRequest.setExpectedServiceRequest(readFile(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()));
                 }
             }
-            idToHashCode.put(model.getId(), model.hashCode());
+            if (model != null) {
+                idToHashCode.put(model.getId(), model.hashCode());
+            }
         }, modelList -> {});
     }
 
@@ -201,7 +203,6 @@ public class ProjectsSource {
         }
         Integer lastHashCode = idToHashCode.get(model.getId());
         if (lastHashCode == null || lastHashCode != model.hashCode()) {
-            idToHashCode.put(model.getId(), model.hashCode());
             return true;
         } else {
             // The model did not change
@@ -309,7 +310,7 @@ public class ProjectsSource {
                     if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
                         scenario.setStepListYamlFile("scenarios/" + scenarioPath(scenario) + "stepList.yml");
                     }
-                    if (!isModelListWasChanged(scenario.getStepList())) {
+                    if (isModelListWasChanged(scenario.getStepList())) {
                         String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
                         YamlUtils.dumpToFile(scenario.getStepList(), fileName);
                     }
