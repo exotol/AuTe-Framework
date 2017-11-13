@@ -5,10 +5,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
+import ru.bsc.test.at.executor.model.AmqpBroker;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
+import ru.bsc.test.autotester.ro.AmqpBrokerRo;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ScenarioGroupRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
@@ -165,4 +167,26 @@ public abstract class ProjectRoMapper {
     abstract ScenarioGroup updateScenarioGroupFromRo(ScenarioGroupRo scenarioGroupRo, @MappingTarget ScenarioGroup scenarioGroup);
 
     public abstract List<ScenarioRo> convertScenarioListToScenarioRoList(List<Scenario> scenarioList);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "sort", ignore = true),
+            @Mapping(target = "mqService", source = "mqService"),
+            @Mapping(target = "host", source = "host"),
+            @Mapping(target = "port", source = "port"),
+            @Mapping(target = "username", source = "username"),
+            @Mapping(target = "password", source = "password"),
+
+    })
+    public abstract AmqpBroker updateAmqpBrokerFromRo(AmqpBrokerRo amqpBrokerRo, @MappingTarget AmqpBroker amqpBroker);
+
+    @Mappings({
+            @Mapping(target = "id", source = "id"),
+            @Mapping(target = "mqService", source = "mqService"),
+            @Mapping(target = "host", source = "host"),
+            @Mapping(target = "port", source = "port"),
+            @Mapping(target = "username", source = "username"),
+            @Mapping(target = "password", source = "password")
+    })
+    public abstract AmqpBrokerRo convertAmqpBrokerToRo(AmqpBroker amqpBroker);
 }

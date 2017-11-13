@@ -18,6 +18,7 @@ public class ProjectRo extends AbstractRo {
     private StandRo stand;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
+    private AmqpBrokerRo amqpBroker;
 
     public Long getId() {
         return id;
@@ -97,5 +98,13 @@ public class ProjectRo extends AbstractRo {
 
     public void setTestIdHeaderName(String testIdHeaderName) {
         this.testIdHeaderName = testIdHeaderName;
+    }
+
+    public AmqpBrokerRo getAmqpBroker() {
+        return amqpBroker;
+    }
+
+    public void setAmqpBroker(AmqpBrokerRo amqpBroker) {
+        this.amqpBroker = amqpBroker;
     }
 }

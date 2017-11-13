@@ -59,7 +59,10 @@ public abstract class StepRoMapper {
             @Mapping(target = "disabled", source = "disabled"),
             @Mapping(target = "stepComment", source = "stepComment"),
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
-            @Mapping(target = "stepParameterSetList", ignore = true)
+            @Mapping(target = "stepParameterSetList", ignore = true),
+            @Mapping(target = "mqName", source = "mqName"),
+            @Mapping(target = "mqMessage", source = "mqMessage"),
+            @Mapping(target = "mqMessageFile", ignore = true)
     })
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 

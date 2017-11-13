@@ -36,6 +36,9 @@ public class StepRo extends AbstractRo {
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSetRo> stepParameterSetList;
     private List<ExpectedServiceRequestRo> expectedServiceRequestList;
+    private String mqName;
+    private String mqMessage;
+    private String mqMessageFile;
 
     public Long getId() {
         return id;
@@ -251,5 +254,29 @@ public class StepRo extends AbstractRo {
 
     public void setExpectedServiceRequestList(List<ExpectedServiceRequestRo> expectedServiceRequestList) {
         this.expectedServiceRequestList = expectedServiceRequestList;
+    }
+
+    public String getMqName() {
+        return mqName;
+    }
+
+    public void setMqName(String mqName) {
+        this.mqName = mqName;
+    }
+
+    public String getMqMessage() {
+        return mqMessage;
+    }
+
+    public void setMqMessage(String mqMessage) {
+        this.mqMessage = mqMessage;
+    }
+
+    public String getMqMessageFile() {
+        return mqMessageFile;
+    }
+
+    public void setMqMessageFile(String mqMessageFile) {
+        this.mqMessageFile = mqMessageFile;
     }
 }
