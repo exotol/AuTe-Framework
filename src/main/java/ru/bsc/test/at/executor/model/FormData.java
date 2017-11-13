@@ -35,16 +35,6 @@ public class FormData {
     @JsonBackReference
     private Step step;
 
-    public FormData() {}
-
-    public FormData(String fieldName, String fieldType, String value, String filePath, Step step) {
-        this.fieldName = fieldName;
-        this.fieldType = fieldType;
-        this.value = value;
-        this.filePath = filePath;
-        this.step = step;
-    }
-
     public Long getId() {
         return id;
     }
