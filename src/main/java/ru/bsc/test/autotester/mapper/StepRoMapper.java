@@ -62,9 +62,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", ignore = true),
             @Mapping(target = "mqName", source = "mqName"),
             @Mapping(target = "mqMessage", source = "mqMessage"),
-            @Mapping(target = "mqMessageFile", ignore = true)
-            @Mapping(target = "stepParameterSetList", ignore = true),
-            @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
+            @Mapping(target = "mqMessageFile", ignore = true),
+            @Mapping(target = "responseCompareMode", source = "responseCompareMode")
     })
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 

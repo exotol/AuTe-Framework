@@ -1,8 +1,8 @@
 package ru.bsc.test.autotester.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -13,11 +13,9 @@ import ru.bsc.test.at.executor.service.AtExecutor;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
-import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
-import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -176,8 +174,6 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    @Transactional
-    @ReadOnlyProperty
     public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo) {
         List<Scenario> scenarios = new ArrayList<>();
         if (!StringUtils.isEmpty(projectSearchRo.getRelativeUrl())) {

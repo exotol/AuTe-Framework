@@ -28,7 +28,6 @@ public interface ScenarioService {
     StepRo addStepToScenario(Long scenarioId, StepRo stepRo);
 
     void deleteOne(Long project);
-    List<StepRo> updateScenarioListFromRo(Long scenarioId, List<StepRo> stepRoList);
 
     List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo);
 }
