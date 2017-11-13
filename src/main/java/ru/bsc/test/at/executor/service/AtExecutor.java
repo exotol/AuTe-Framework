@@ -293,14 +293,19 @@ public class AtExecutor {
     }
 
     private void sendMessageToQuery(Project project, Step step) throws Exception {
-        IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService());
+        if (step.getMqName() != null && step.getMqMessage() != null) {
+            if (project.getAmqpBroker() == null) {
+                throw new Exception("AMQP broker is not configured in Project settings.");
+            }
+            IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService());
 
-        mqManager.setHost(project.getAmqpBroker().getHost());
-        mqManager.setPort(project.getAmqpBroker().getPort());
-        mqManager.setUsername(project.getAmqpBroker().getUsername());
-        mqManager.setPassword(project.getAmqpBroker().getPassword());
+            mqManager.setHost(project.getAmqpBroker().getHost());
+            mqManager.setPort(project.getAmqpBroker().getPort());
+            mqManager.setUsername(project.getAmqpBroker().getUsername());
+            mqManager.setPassword(project.getAmqpBroker().getPassword());
 
-        mqManager.sendTextMessage(step.getMqName(), step.getMqMessage());
+            mqManager.sendTextMessage(step.getMqName(), step.getMqMessage());
+        }
     }
 
     private Map<String, String> parseFormData(String formDataString) {
