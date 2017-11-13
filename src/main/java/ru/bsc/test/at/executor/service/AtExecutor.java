@@ -5,7 +5,6 @@ import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
@@ -37,7 +36,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -167,10 +175,9 @@ public class AtExecutor {
                             serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
                             stepResult.setResult("OK");
-                        } catch (Exception | AssertionError e) {
+                        } catch (Exception e) {
                             StringWriter sw = new StringWriter();
                             e.printStackTrace(new PrintWriter(sw));
-
                             stepResult.setResult("Fail");
                             stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                             failures++;
@@ -291,7 +298,9 @@ public class AtExecutor {
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
-                        Assert.assertEquals(expectedResponse, responseData.getContent());
+                        if (StringUtils.equals(expectedResponse, responseData.getContent())) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                        }
                         break;
                     case IGNORE_MASK:
                         if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
