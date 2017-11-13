@@ -6,6 +6,8 @@ package ru.bsc.test.autotester.ro;
  */
 public class ExpectedServiceRequestRo extends AbstractRo {
 
+    private static final long serialVersionUID = -5748544019274406969L;
+
     private Long id;
     private Long sort;
     private String serviceName;

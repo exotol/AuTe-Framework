@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -12,8 +13,11 @@ import ru.bsc.test.at.executor.service.AtExecutor;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
+import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
@@ -21,6 +25,7 @@ import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +42,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
     private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
     private final StepService stepService;
@@ -70,11 +75,10 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public StepRo addStepToScenario(Long scenarioId, StepRo stepRo) {
         synchronized (projectService) {
-            List<Project> projectList = projectService.findAll();
-            Scenario scenario = findOne(projectList, scenarioId);
-            if (scenario != null) {
-                Step newStep = new Step();
-                scenario.getStepList().add(newStep);
+            List<Project> projectList = projectService.findAll(); Scenario scenario= findOne(projectList, scenarioId) ;
+        if (scenario != null){
+        Step newStep = new Step();
+            scenario.getStepList().add(newStep);
 
                 stepRoMapper.updateStep(stepRo, newStep);
 
@@ -169,5 +173,16 @@ public class ScenarioServiceImpl implements ScenarioService {
             }
             throw new ResourceNotFoundException();
         }
+    }
+
+    @Override
+    @Transactional
+    @ReadOnlyProperty
+    public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo) {
+        List<Scenario> scenarios = new ArrayList<>();
+        if (!StringUtils.isEmpty(projectSearchRo.getRelativeUrl())) {
+            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + projectSearchRo.getRelativeUrl() + "%"));
+        }
+        return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
 }

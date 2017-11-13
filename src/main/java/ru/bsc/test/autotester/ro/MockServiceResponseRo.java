@@ -5,8 +5,10 @@ package ru.bsc.test.autotester.ro;
  *
  */
 public class MockServiceResponseRo extends AbstractRo {
-    private Long id;
 
+    private static final long serialVersionUID = -7918346254164488513L;
+
+    private Long id;
     private Long sort;
     private String serviceUrl;
     private String responseBody;

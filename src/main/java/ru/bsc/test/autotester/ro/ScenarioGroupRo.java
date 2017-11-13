@@ -5,6 +5,9 @@ package ru.bsc.test.autotester.ro;
  *
  */
 public class ScenarioGroupRo extends AbstractRo {
+
+    private static final long serialVersionUID = 4101737950860012431L;
+
     private Long id;
     private String name;
 

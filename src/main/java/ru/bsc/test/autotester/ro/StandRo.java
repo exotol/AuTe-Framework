@@ -5,6 +5,9 @@ package ru.bsc.test.autotester.ro;
  *
  */
 public class StandRo extends AbstractRo {
+
+    private static final long serialVersionUID = 4390819697062478918L;
+
     private Long id;
     private String serviceUrl;
     private String dbUrl;
