@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.ro;
 
+import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.autotester.dto.AbstractRo;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class StepRo extends AbstractRo {
     private List<StepParameterSetRo> stepParameterSetList;
     private List<ExpectedServiceRequestRo> expectedServiceRequestList;
     private String responseCompareMode;
+    private List<FormDataRo> formDataList;
 
     public Long getId() {
         return id;
@@ -246,5 +248,13 @@ public class StepRo extends AbstractRo {
 
     public void setResponseCompareMode(String responseCompareMode) {
         this.responseCompareMode = responseCompareMode;
+    }
+
+    public List<FormDataRo> getFormDataList() {
+        return formDataList;
+    }
+
+    public void setFormDataList(List<FormDataRo> formDataList) {
+        this.formDataList = formDataList;
     }
 }

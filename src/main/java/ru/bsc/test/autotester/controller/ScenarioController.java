@@ -121,7 +121,7 @@ public class ScenarioController {
         Scenario scenario = scenarioService.findOne(scenarioId);
         Project project = scenario.getProject();
 
-        Scenario cloned = scenario.clone();
+        Scenario cloned = scenario.copy();
         project.getScenarios().add(cloned);
         cloned.setName(cloned.getName() + " (копия)");
         project = projectService.save(project);
