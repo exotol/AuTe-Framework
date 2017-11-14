@@ -215,6 +215,7 @@ public class AtExecutor {
         ResponseHelper responseData;
         do {
             retryCounter++;
+            // 3. Выполнить запрос
             responseData = http.request(
                     step.getRequestMethod(),
                     requestUrl,
@@ -223,7 +224,6 @@ public class AtExecutor {
                     step.getRequestHeaders(),
                     project.getTestIdHeaderName(),
                     testId);
-            // 3. Выполнить запрос
             // 3.1. Polling
             retry = tryUsePolling(step, responseData);
         } while (retry && retryCounter <= POLLING_RETRY_COUNT);
