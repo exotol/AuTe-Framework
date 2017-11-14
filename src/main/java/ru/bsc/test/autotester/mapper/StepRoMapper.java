@@ -326,7 +326,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "value", source = "value"),
             @Mapping(target = "filePath", source = "filePath")
     })
-    abstract FormDataRo FormDataToRo(FormData formData);
+    abstract FormDataRo formDataToRo(FormData formData);
 
     private FormData updateFormData(FormDataRo formDataRo, @MappingTarget FormData formData) {
         updateFormDataFromRo(formDataRo, formData);
