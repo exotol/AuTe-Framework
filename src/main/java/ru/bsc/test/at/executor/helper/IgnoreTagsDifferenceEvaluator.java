@@ -51,8 +51,15 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
 
     @Override
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-        if (outcome == ComparisonResult.EQUAL) return outcome;
+        if (outcome == ComparisonResult.EQUAL) {
+            return outcome;
+        }
         if (outcome == ComparisonResult.DIFFERENT) {
+            String parentNodeName = comparison.getControlDetails().getTarget().getOwnerDocument().getDocumentElement().getLocalName();
+            if (ignoredTags.contains(parentNodeName)) {
+                outcome = ComparisonResult.EQUAL;
+                return outcome;
+            }
             switch (comparison.getType()) {
                 case NAMESPACE_PREFIX:
                 case NAMESPACE_URI:

@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "AT_SERVICE_RESPONSE")
-public class ServiceResponse implements Serializable {
+public class ServiceResponse {
 
     public ServiceResponse() {
     }
