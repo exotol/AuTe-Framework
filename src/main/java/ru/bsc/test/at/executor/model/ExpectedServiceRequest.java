@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -20,7 +19,7 @@ import java.io.Serializable;
 @SuppressWarnings("WeakerAccess")
 @Entity
 @Table(name = "AT_EXPECTED_SERVICE_REQUEST")
-public class ExpectedServiceRequest implements Serializable {
+public class ExpectedServiceRequest {
 
     public ExpectedServiceRequest() {
     }
@@ -89,14 +88,13 @@ public class ExpectedServiceRequest implements Serializable {
         this.ignoredTags = ignoredTags;
     }
 
-    protected ExpectedServiceRequest clone() {
-        ExpectedServiceRequest cloned = new ExpectedServiceRequest();
-        cloned.setId(null);
-        cloned.setServiceName(getServiceName());
-        cloned.setExpectedServiceRequest(getExpectedServiceRequest());
-        cloned.setSort(getSort());
-        cloned.setIgnoredTags(getIgnoredTags());
-
-        return cloned;
+    protected ExpectedServiceRequest copy() {
+        ExpectedServiceRequest request = new ExpectedServiceRequest();
+        request.setId(null);
+        request.setServiceName(getServiceName());
+        request.setExpectedServiceRequest(getExpectedServiceRequest());
+        request.setSort(getSort());
+        request.setIgnoredTags(getIgnoredTags());
+        return request;
     }
 }
