@@ -298,7 +298,7 @@ public class AtExecutor {
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
-                        if (StringUtils.equals(expectedResponse, responseData.getContent())) {
+                        if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
                             throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
                         }
                         break;
