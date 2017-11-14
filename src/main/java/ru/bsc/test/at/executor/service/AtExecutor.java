@@ -352,9 +352,7 @@ public class AtExecutor {
         boolean retry = true;
         try {
             Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-            if (pollingParameter == null
-                    || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
-                    || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
+            if (pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
                     || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
                 retry = false;
             }
