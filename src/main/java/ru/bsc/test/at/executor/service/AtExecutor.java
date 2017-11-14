@@ -211,7 +211,7 @@ public class AtExecutor {
         stepResult.setRequestBody(requestBody);
 
         int retryCounter = 0;
-        boolean retry;
+        boolean retry = false;
         ResponseHelper responseData;
         do {
             retryCounter++;
@@ -225,7 +225,9 @@ public class AtExecutor {
                     project.getTestIdHeaderName(),
                     testId);
             // 3.1. Polling
-            retry = tryUsePolling(step, responseData);
+            if (step.getUsePolling()) {
+                retry = tryUsePolling(step, responseData);
+            }
         } while (retry && retryCounter <= POLLING_RETRY_COUNT);
 
         stepResult.setPollingRetryCount(retryCounter);
@@ -348,21 +350,19 @@ public class AtExecutor {
 
     private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
         boolean retry = true;
-        if (step.getUsePolling()) {
-            try {
-                Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-                if (pollingParameter == null
-                        || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
-                        || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
-                        || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
-                    retry = false;
-                }
-            } catch (PathNotFoundException e) {
-                retry = true;
+        try {
+            Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
+            if (pollingParameter == null
+                    || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
+                    || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
+                    || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
+                retry = false;
             }
-            if (retry) {
-                Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
-            }
+        } catch (PathNotFoundException e) {
+            retry = true;
+        }
+        if (retry) {
+            Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
         }
         return retry;
     }
