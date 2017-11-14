@@ -62,6 +62,7 @@ public class AtExecutor {
 
     private ScenarioRepository scenarioRepository;
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
+    private String projectPath;
 
     public AtExecutor() {
     }
@@ -223,28 +224,35 @@ public class AtExecutor {
         do {
             retryCounter++;
             // 3. Выполнить запрос
-            responseData = http.request(
-                    step.getRequestMethod(),
-                    requestUrl,
-                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
-                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
-                    step.getRequestHeaders(),
-                    project.getTestIdHeaderName(),
-                    testId);
-
+            if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
+                responseData = http.request(
+                        step.getRequestMethod(),
+                        requestUrl,
+                        RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                        step.getRequestHeaders(),
+                        project.getTestIdHeaderName(),
+                        testId);
+            } else {
+                responseData = http.request(
+                        step.getRequestMethod(),
+                        projectPath,
+                        requestUrl,
+                        step.getFormDataList().isEmpty() ? null : step.getFormDataList(),
+                        RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
+                        step.getRequestHeaders(),
+                        project.getTestIdHeaderName(),
+                        testId);
+            }
             // 3.1. Polling
             // TODO Вынести поллиг в отдельный метод
             retry = false;
             if (step.getUsePolling()) {
                 try {
                     Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-                    if (pollingParameter == null) {
-                        retry = true;
-                    } else if (pollingParameter instanceof String && StringUtils.isEmpty((String)pollingParameter)) {
-                        retry = true;
-                    } else if (pollingParameter instanceof Map && ((Map) pollingParameter).size() == 0) {
-                        retry = true;
-                    } else if (pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).size() == 0) {
+                    if (pollingParameter == null
+                            || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
+                            || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
+                            || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
                         retry = true;
                     }
                 } catch (PathNotFoundException e) {
@@ -490,5 +498,13 @@ public class AtExecutor {
             }
         }
         return template;
+    }
+
+    public String getProjectPath() {
+        return projectPath;
+    }
+
+    public void setProjectPath(String projectPath) {
+        this.projectPath = projectPath;
     }
 }

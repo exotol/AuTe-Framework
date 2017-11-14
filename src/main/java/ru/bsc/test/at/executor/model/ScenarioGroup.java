@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -19,7 +18,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "AT_SCENARIO_GROUP")
-public class ScenarioGroup implements Serializable, Cloneable {
+public class ScenarioGroup {
 
     @Id
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_SCENARIO_GROUP", allocationSize = 1)
@@ -54,12 +53,9 @@ public class ScenarioGroup implements Serializable, Cloneable {
         this.project = project;
     }
 
-    @Override
-    public ScenarioGroup clone() throws CloneNotSupportedException {
-        super.clone();
-        ScenarioGroup cloned = new ScenarioGroup();
-        cloned.setName(getName());
-
-        return cloned;
+    public ScenarioGroup copy() {
+        ScenarioGroup scenarioGroup = new ScenarioGroup();
+        scenarioGroup.setName(getName());
+        return scenarioGroup;
     }
 }
