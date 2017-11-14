@@ -351,9 +351,7 @@ public class AtExecutor {
     private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
         boolean retry = true;
         try {
-            Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-            if (pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
-                    || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
+            if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
         } catch (PathNotFoundException e) {
