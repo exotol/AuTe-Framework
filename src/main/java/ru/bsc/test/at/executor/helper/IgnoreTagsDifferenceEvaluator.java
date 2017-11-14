@@ -1,7 +1,7 @@
 package ru.bsc.test.at.executor.helper;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xmlunit.diff.Comparison;
@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
 
     private Set<String> ignoredTags = new HashSet<>();
-    private Set<NamedNodeMap> ignoreNodes = new HashSet<>();
 
     IgnoreTagsDifferenceEvaluator(Set<String> ignoredTags) {
         if (ignoredTags != null)
@@ -54,13 +53,11 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
     @Override
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
         if (outcome == ComparisonResult.EQUAL) {
-            if (ignoredTags.contains(comparison.getControlDetails().getTarget().getLocalName())) {
-                ignoreNodes.add(comparison.getControlDetails().getTarget().getAttributes());
-            }
             return outcome;
         }
         if (outcome == ComparisonResult.DIFFERENT) {
-            if (containsInNodeMap(comparison.getControlDetails().getTarget())) {
+            String parentNodeName = ((Attr)comparison.getControlDetails().getTarget()).getOwnerElement().getLocalName();
+            if (ignoredTags.contains(parentNodeName)) {
                 outcome = ComparisonResult.EQUAL;
                 return outcome;
             }
@@ -137,14 +134,5 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
                 }
             }
         return outcome;
-    }
-
-    private boolean containsInNodeMap(Node node) {
-        for (NamedNodeMap map : ignoreNodes) {
-            if (map.getNamedItemNS(node.getNamespaceURI(), node.getLocalName()) != null) {
-                return true;
-            }
-        }
-        return false;
     }
 }
