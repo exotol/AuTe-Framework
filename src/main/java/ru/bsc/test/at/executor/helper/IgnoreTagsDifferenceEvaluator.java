@@ -56,7 +56,7 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
             return outcome;
         }
         if (outcome == ComparisonResult.DIFFERENT) {
-            String parentNodeName = ((Attr)comparison.getControlDetails().getTarget()).getOwnerElement().getLocalName();
+            String parentNodeName = comparison.getControlDetails().getTarget().getOwnerDocument().getDocumentElement().getLocalName();
             if (ignoredTags.contains(parentNodeName)) {
                 outcome = ComparisonResult.EQUAL;
                 return outcome;
