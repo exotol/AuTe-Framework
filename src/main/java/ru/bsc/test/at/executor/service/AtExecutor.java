@@ -2,7 +2,6 @@ package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -219,7 +218,7 @@ public class AtExecutor {
         stepResult.setRequestBody(requestBody);
 
         int retryCounter = 0;
-        boolean retry;
+        boolean retry = false;
         ResponseHelper responseData;
         do {
             retryCounter++;
@@ -244,23 +243,8 @@ public class AtExecutor {
                         testId);
             }
             // 3.1. Polling
-            // TODO Вынести поллиг в отдельный метод
-            retry = false;
             if (step.getUsePolling()) {
-                try {
-                    Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-                    if (pollingParameter == null
-                            || pollingParameter instanceof String && StringUtils.isEmpty((String) pollingParameter)
-                            || pollingParameter instanceof Map && ((Map) pollingParameter).isEmpty()
-                            || pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).isEmpty()) {
-                        retry = true;
-                    }
-                } catch (PathNotFoundException e) {
-                    retry = true;
-                }
-                if (retry) {
-                    Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
-                }
+                retry = tryUsePolling(step, responseData);
             }
         } while (retry && retryCounter <= POLLING_RETRY_COUNT);
 
@@ -382,6 +366,21 @@ public class AtExecutor {
                 wireMockAdmin.addMapping(mockDefinition);
             }
         }
+    }
+
+    private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
+        boolean retry = true;
+        try {
+            if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
+                retry = false;
+            }
+        } catch (PathNotFoundException e) {
+            retry = true;
+        }
+        if (retry) {
+            Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
+        }
+        return retry;
     }
 
     @SuppressWarnings("WeakerAccess")
