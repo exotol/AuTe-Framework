@@ -5,7 +5,6 @@ import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
@@ -180,7 +179,6 @@ public class AtExecutor {
                         } catch (Exception e) {
                             StringWriter sw = new StringWriter();
                             e.printStackTrace(new PrintWriter(sw));
-
                             stepResult.setResult("Fail");
                             stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                             failures++;
@@ -308,7 +306,9 @@ public class AtExecutor {
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
-                        Assert.assertEquals(expectedResponse, responseData.getContent());
+                        if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                        }
                         break;
                     case IGNORE_MASK:
                         if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
