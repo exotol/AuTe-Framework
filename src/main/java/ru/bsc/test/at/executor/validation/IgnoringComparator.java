@@ -20,7 +20,7 @@ public class IgnoringComparator extends DefaultComparator {
     @Override
     public void compareValues(String prefix, Object expectedValue, Object actualValue, JSONCompareResult result) throws JSONException {
         if (!expectedValue.equals(IGNORE)) {
-            if (expectedValue instanceof String && actualValue instanceof String) {
+            if (expectedValue instanceof String && actualValue instanceof String && ((String) expectedValue).contains(IGNORE)) {
                 if (!MaskComparator.compare(expectedValue, actualValue)) {
                     result.fail(prefix, expectedValue, actualValue);
                 }
