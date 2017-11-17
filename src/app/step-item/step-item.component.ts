@@ -3,6 +3,7 @@ import {Step} from '../model/step';
 import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {ExpectedServiceRequest} from '../model/expected-service-request';
+import {FormData} from '../model/form-data';
 
 @Component({
   selector: 'app-step-item',
@@ -137,5 +138,16 @@ export class StepItemComponent implements OnInit {
 
   cloneStep() {
     this.onCloneClick.emit();
+  }
+
+  removeFormData(formData: FormData) {
+    const indexToRemove = this.step.formDataList.indexOf(formData);
+    if (indexToRemove > -1) {
+      this.step.formDataList.splice(indexToRemove, 1);
+    }
+  }
+
+  addFormData() {
+    this.step.formDataList.push(new FormData());
   }
 }

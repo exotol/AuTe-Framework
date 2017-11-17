@@ -1,6 +1,7 @@
 import {ExpectedServiceRequest} from './expected-service-request';
 import {MockServiceResponse} from './mock-service-response';
 import {StepParameterSet} from './step-parameter-set';
+import {FormData} from './form-data';
 
 export class Step {
   id: number;
@@ -29,4 +30,5 @@ export class Step {
   savedValuesCheck: any = {};
   stepParameterSetList: StepParameterSet[] = [];
   responseCompareMode: string;
+  formDataList: FormData[] = [];
 }
