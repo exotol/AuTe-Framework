@@ -8,3 +8,5 @@ jdbc.password=a
 
 # Hibernate logging enabled/disabled. Remove this parameter for disabled logging.
 # hibernate.showSql=false
+
+projects.path=c:/work/autotester/

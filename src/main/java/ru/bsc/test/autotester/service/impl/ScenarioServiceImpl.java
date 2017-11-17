@@ -49,8 +49,8 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ExpectedServiceRequestService expectedServiceRequestService;
     private final StepService stepService;
 
-    @Value("${projectPath}")
-    private String path;
+    @Value("${projects.path:}")
+    private String projectsPath;
 
     @Autowired
     public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ExpectedServiceRequestService expectedServiceRequestService, StepService stepService) {
@@ -72,7 +72,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public List<Scenario> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
-        atExecutor.setProjectPath(path);
+        atExecutor.setProjectPath(projectsPath);
         return atExecutor.executeScenarioList(project, scenarioList);
     }
 
