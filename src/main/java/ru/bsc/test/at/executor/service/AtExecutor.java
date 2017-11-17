@@ -299,7 +299,7 @@ public class AtExecutor {
 
         if (!step.getExpectedResponseIgnore()) {
             if (step.getResponseCompareMode() == null) {
-                JSONcomparing(step, expectedResponse, responseData);
+                JSONComparing(expectedResponse, responseData);
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
@@ -313,14 +313,14 @@ public class AtExecutor {
                         }
                         break;
                     default:
-                        JSONcomparing(step, expectedResponse, responseData);
+                        JSONComparing(expectedResponse, responseData);
                         break;
                 }
             }
         }
     }
 
-    private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+    private void JSONComparing(String expectedResponse, ResponseHelper responseData) throws Exception {
         if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
@@ -333,17 +333,6 @@ public class AtExecutor {
                 throw new Exception(assertionError);
             }
         }
-    }
-
-    private Map<String, String> parseFormData(String formDataString) {
-        Map<String, String> formDataMap = new HashMap<>();
-        if (StringUtils.isNotEmpty(formDataString)) {
-            for (String line : formDataString.split("\\r?\\n")) {
-                String[] lineParts = line.split("=", 2);
-                formDataMap.put(lineParts[0].trim(), lineParts[1].trim());
-            }
-        }
-        return formDataMap;
     }
 
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
@@ -394,43 +383,6 @@ public class AtExecutor {
             Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
         }
         return retry;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected class ServiceNameResponsePair {
-        private String serviceName;
-        private String response;
-
-        ServiceNameResponsePair(String serviceName, String response) {
-            this.serviceName = serviceName;
-            this.response = response;
-        }
-
-        public String getServiceName() {
-            return serviceName;
-        }
-
-        String getResponse() {
-            return response;
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected List<ServiceNameResponsePair> parseServiceResponsesString(String responses) {
-        List<ServiceNameResponsePair> result = new LinkedList<>();
-        if (responses != null) {
-            for (String service : responses.split(";")) {
-                String[] serviceData = service.split(":");
-                // TODO что-то сделать с неправильным форматом
-                if (serviceData.length == 2) {
-                    String serviceName = serviceData[0].trim();
-                    for (String response : serviceData[1].split(",")) {
-                        result.add(new ServiceNameResponsePair(serviceName, response.trim()));
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     private void saveValuesFromResponse(String values, String response, Map<String, String> savedValues) {
