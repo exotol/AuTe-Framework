@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +26,8 @@ public class FormData {
     @Column(name = "FIELD_NAME")
     private String fieldName;
     @Column(name = "FIELD_TYPE", length = 500)
-    private String fieldType;
+    @Enumerated
+    private FieldType fieldType;
     @Column(name = "VALUE", length = 500)
     private String value;
     @Column(name = "FILE_PATH", length = 500)
@@ -51,11 +53,11 @@ public class FormData {
         this.fieldName = fieldName;
     }
 
-    public String getFieldType() {
+    public FieldType getFieldType() {
         return fieldType;
     }
 
-    public void setFieldType(String fieldType) {
+    public void setFieldType(FieldType fieldType) {
         this.fieldType = fieldType;
     }
 
@@ -90,5 +92,16 @@ public class FormData {
         formData.setFilePath(getFilePath());
         formData.setValue(getValue());
         return formData;
+    }
+
+    @Override
+    public String toString() {
+        return "FormData{" +
+                "id=" + id +
+                ", fieldName='" + fieldName + '\'' +
+                ", fieldType=" + fieldType +
+                ", value='" + value + '\'' +
+                ", filePath='" + filePath + '\'' +
+                '}';
     }
 }

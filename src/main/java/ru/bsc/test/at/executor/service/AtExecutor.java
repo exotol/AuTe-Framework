@@ -10,6 +10,7 @@ import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
+import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.RequestBodyType;
@@ -227,17 +228,29 @@ public class AtExecutor {
                 responseData = http.request(
                         step.getRequestMethod(),
                         requestUrl,
-                        RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
+                        requestBody,
                         step.getRequestHeaders(),
                         project.getTestIdHeaderName(),
                         testId);
             } else {
+                stepResult.setRequestBody(
+                        step.getFormDataList()
+                                .stream()
+                                .map(formData -> {
+                                    String result = formData.getFieldName() + " = ";
+                                    if (FieldType.TEXT.equals(formData.getFieldType()) || formData.getFieldType() == null) {
+                                        result += formData.getValue();
+                                    } else {
+                                        result += (projectPath == null ? "" : projectPath) + formData.getFilePath();
+                                    }
+                                    return result;
+                                })
+                                .collect(Collectors.joining("\r\n")));
                 responseData = http.request(
                         step.getRequestMethod(),
                         projectPath,
                         requestUrl,
-                        step.getFormDataList().isEmpty() ? null : step.getFormDataList(),
-                        RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
+                        step.getFormDataList(),
                         step.getRequestHeaders(),
                         project.getTestIdHeaderName(),
                         testId);

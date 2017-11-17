@@ -20,22 +20,20 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -65,11 +63,11 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, List<FormData> formData, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+    public ResponseHelper request(String method, String projectPath, String url, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
-            HttpEntity httpEntity = setEntity(formData, formDataPostParameters, projectPath).build();
+            HttpEntity httpEntity = setEntity(formData, projectPath).build();
             ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
         }
         return execute(httpRequest, headers);
@@ -101,17 +99,14 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formData, Map<String, String> formDataPostParameters, String projectPath) throws URISyntaxException {
+    private MultipartEntityBuilder setEntity(List<FormData> formData, String projectPath) throws URISyntaxException, UnsupportedEncodingException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData data : formData) {
-            if (StringUtils.isEmpty(data.getFilePath()) || StringUtils.isEmpty(projectPath)) {
-                throw new IllegalArgumentException("Wrong path to file");
+            if (data.getFieldType() == null || FieldType.TEXT.equals(data.getFieldType())) {
+                entity.addTextBody(data.getFieldName(), data.getValue());
+            } else {
+                entity.addBinaryBody(data.getFieldName(), new File((projectPath == null ? "" : projectPath) + data.getFilePath()));
             }
-            ContentBody body = new FileBody(new File(projectPath + data.getFilePath()));
-            entity.addPart(data.getFieldName(), body);
-        }
-        if (formDataPostParameters != null) {
-            formDataPostParameters.forEach(entity::addTextBody);
         }
         return entity;
     }
