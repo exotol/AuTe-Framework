@@ -80,7 +80,32 @@
               </div>
             </div>
             <label>Request body</label>
-            <textarea title="Request body" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
+            <div *ngIf="step.requestBodyType != 'FORM'">
+              <textarea title="Request body" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
+            </div>
+            <div *ngIf="step.requestBodyType == 'FORM'">
+              <div *ngFor="let formData of step.formDataList">
+                <div class="col-sm-4">
+                  <input class="form-control" placeholder="Field name" title="" [(ngModel)]="formData.fieldName"/>
+                </div>
+                <div class="col-sm-3">
+                  <select class="form-control" title="Field type" [(ngModel)]="formData.fieldType">
+                    <option [ngValue]="'TEXT'">Text (default)</option>
+                    <option [ngValue]="'FILE'">File</option>
+                  </select>
+                </div>
+                <div class="col-sm-4" *ngIf="formData.fieldType == 'FILE'">
+                  <input class="form-control" placeholder="File path" title="" [(ngModel)]="formData.filePath"/>
+                </div>
+                <div class="col-sm-4" *ngIf="formData.fieldType != 'FILE'">
+                  <input class="form-control" placeholder="Field value" title="" [(ngModel)]="formData.value"/>
+                </div>
+                <div class="col-sm-1">
+                  <button class="btn btn-default" (click)="removeFormData(formData)">-</button>
+                </div>
+              </div>
+              <button class="btn" style="margin-top: 7px; margin-left: 7px;" (click)="addFormData()">Add field</button>
+            </div>
           </div>
           <div class="col-sm-6">
             <div class="row">
