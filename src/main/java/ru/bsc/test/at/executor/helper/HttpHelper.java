@@ -3,9 +3,11 @@ package ru.bsc.test.at.executor.helper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -23,6 +25,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
@@ -35,6 +38,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 22/05/17.
@@ -67,7 +71,17 @@ public class HttpHelper {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
-            HttpEntity httpEntity = setEntity(formData, projectPath).build();
+            long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+            HttpEntity httpEntity;
+            if (count > 0) {
+                httpEntity = setEntity(formData, projectPath).build();
+            } else {
+                List<NameValuePair> params = formData
+                        .stream()
+                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), formData1.getValue()))
+                        .collect(Collectors.toList());
+                httpEntity = new UrlEncodedFormEntity(params);
+            }
             ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
         }
         return execute(httpRequest, headers);
@@ -103,7 +117,7 @@ public class HttpHelper {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData data : formData) {
             if (data.getFieldType() == null || FieldType.TEXT.equals(data.getFieldType())) {
-                entity.addTextBody(data.getFieldName(), data.getValue());
+                entity.addTextBody(data.getFieldName(), data.getValue(), ContentType.TEXT_PLAIN);
             } else {
                 entity.addBinaryBody(data.getFieldName(), new File((projectPath == null ? "" : projectPath) + data.getFilePath()));
             }
