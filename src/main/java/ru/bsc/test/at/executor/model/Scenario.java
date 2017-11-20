@@ -1,7 +1,6 @@
 package ru.bsc.test.at.executor.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,8 +14,6 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     private String name;
     private Project project;
     private ScenarioGroup scenarioGroup;
-    private Date lastRunAt;
-    private Long lastRunFailures;
     private Scenario beforeScenario;
     private Scenario afterScenario;
     private List<Step> stepList;
@@ -36,18 +33,6 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
     }
     public void setScenarioGroup(ScenarioGroup scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
-    }
-    public void setLastRunAt(Date lastRunAt) {
-        this.lastRunAt = lastRunAt;
-    }
-    public Date getLastRunAt() {
-        return lastRunAt;
-    }
-    public Long getLastRunFailures() {
-        return lastRunFailures;
-    }
-    public void setLastRunFailures(Long lastRunFailures) {
-        this.lastRunFailures = lastRunFailures;
     }
     public Scenario getBeforeScenario() {
         return beforeScenario;
@@ -109,8 +94,6 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         cloned.setProject(getProject());
         cloned.setName(getName());
         cloned.setScenarioGroup(getScenarioGroup());
-        cloned.setLastRunAt(null);
-        cloned.setLastRunFailures(null);
         cloned.setBeforeScenario(getBeforeScenario());
         cloned.setAfterScenario(getAfterScenario());
         cloned.setStand(getStand());
