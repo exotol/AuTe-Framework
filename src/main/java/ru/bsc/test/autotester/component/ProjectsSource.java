@@ -174,7 +174,9 @@ public class ProjectsSource {
             }
         }
 
-        return nname.toString().replaceAll("[^a-zA-Z0-9.-]", "_");
+        String result = nname.toString().replaceAll("[^a-zA-Z0-9.-]", "_");
+        result = result.substring(0, Math.min(result.length(), 50));
+        return result;
     }
 
     private String scenarioPath(Scenario scenario) {
