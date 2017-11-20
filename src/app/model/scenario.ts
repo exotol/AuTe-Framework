@@ -11,7 +11,6 @@ export class Scenario {
   name: string;
   scenarioGroup: ScenarioGroup;
   stepResults: StepResult[];
-  lastRunAt: Date;
   lastRunFailures: number;
 
   beforeScenarioIgnore: boolean;

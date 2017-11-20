@@ -29,7 +29,7 @@
         </label>
         <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">Execute selected scenarios</button>
       </div>
-      <div class="col-sm-1" style="font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
+      <div class="col-sm-1" style="display: none; font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
         {{failCount}}
       </div>
       <div class="col-sm-4">

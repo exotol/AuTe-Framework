@@ -24,7 +24,7 @@ export class ScenarioListItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.scenario._selected = this.scenario.lastRunFailures !== 0;
+    this.scenario._selected = false; // this.scenario.lastRunFailures !== 0;
   }
 
   stateChanged() {
