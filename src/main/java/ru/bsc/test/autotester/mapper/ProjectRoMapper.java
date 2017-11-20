@@ -141,8 +141,6 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "projectStand", source = "project.stand"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
-            @Mapping(target = "lastRunAt", source = "lastRunAt"),
-            @Mapping(target = "lastRunFailures", source = "lastRunFailures"),
             @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
             @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
             @Mapping(target = "stepList", ignore = true),

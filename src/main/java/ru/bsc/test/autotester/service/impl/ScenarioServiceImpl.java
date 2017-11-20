@@ -22,10 +22,8 @@ import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
-import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,18 +54,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
-        Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
-        synchronized (projectService) {
-            Date time = Calendar.getInstance().getTime();
-            List<Project> projectList = projectService.findAll();
-            map.forEach((scenario, stepResults) -> {
-                Scenario scenarioToUpdate = findOne(projectList, scenario.getId());
-                scenarioToUpdate.setLastRunAt(time);
-                scenarioToUpdate.setLastRunFailures(stepResults.stream().filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult())).count());
-            });
-            projectService.saveProject(project, projectList);
-        }
-        return map;
+        return atExecutor.executeScenarioList(project, scenarioList);
     }
 
     @Override

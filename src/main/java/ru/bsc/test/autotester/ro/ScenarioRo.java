@@ -1,6 +1,5 @@
 package ru.bsc.test.autotester.ro;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,8 +17,6 @@ public class ScenarioRo extends AbstractRo {
     private String name;
 
     private ScenarioGroupRo scenarioGroup;
-    private Date lastRunAt;
-    private Integer lastRunFailures;
     private Long beforeScenarioId;
     private Long afterScenarioId;
     private List<StepRo> stepList;
@@ -73,22 +70,6 @@ public class ScenarioRo extends AbstractRo {
 
     public void setScenarioGroup(ScenarioGroupRo scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
-    }
-
-    public Date getLastRunAt() {
-        return lastRunAt;
-    }
-
-    public void setLastRunAt(Date lastRunAt) {
-        this.lastRunAt = lastRunAt;
-    }
-
-    public Integer getLastRunFailures() {
-        return lastRunFailures;
-    }
-
-    public void setLastRunFailures(Integer lastRunFailures) {
-        this.lastRunFailures = lastRunFailures;
     }
 
     public Long getBeforeScenarioId() {

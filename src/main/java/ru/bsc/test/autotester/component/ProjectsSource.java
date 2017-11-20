@@ -159,42 +159,64 @@ public class ProjectsSource {
         });
     }
 
+    private String translit(String string) {
+        String[] _alpha = {"a","b","v","g","d","e","yo","g","z","i","y","i",
+                "k","l","m","n","o","p","r","s","t","u",
+                "f","h","tz","ch","sh","sh","'","e","yu","ya"};
+        String alpha = "абвгдеёжзиыйклмнопрстуфхцчшщьэюя";
+        StringBuilder nname = new StringBuilder("");
+        for (char ch : string.toLowerCase().toCharArray()) {
+            int k = alpha.indexOf(ch);
+            if (k != -1)
+                nname.append(_alpha[k]);
+            else {
+                nname.append(ch);
+            }
+        }
+
+        return nname.toString().replaceAll("[^a-zA-Z0-9.-]", "_");
+    }
+
     private String scenarioPath(Scenario scenario) {
         String result;
         if (scenario != null) {
             result = "";
             if (scenario.getScenarioGroup() != null) {
-                result += "group-" + scenario.getScenarioGroup().getId() + "/";
+                result += "group-" + scenario.getScenarioGroup().getId() + "-" + translit(scenario.getScenarioGroup().getName()) + "/";
             }
 
-            result += String.valueOf(scenario.getId()) + "/";
+            result += String.valueOf(scenario.getId()) + "-" + translit(scenario.getName()) + "/";
         } else {
             result = "0/";
         }
         return result;
     }
 
+    private String stepPath(Step step) {
+        return step.getId() + (step.getStepComment() == null ? "" : "-" + translit(step.getStepComment()));
+    }
+
     private String stepRequestFile(Step step, Scenario scenario) {
-        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/request.json";
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + stepPath(step) + "/request.json";
     }
 
     private String stepExpectedResponseFile(Step step, Scenario scenario) {
-        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/expected-response.json";
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + stepPath(step) + "/expected-response.json";
     }
 
     private String mockResponseBodyFile(MockServiceResponse mockServiceResponse, Scenario scenario) {
         String ext = mockServiceResponse.getResponseBody() != null && mockServiceResponse.getResponseBody().indexOf('<') == 0 ? "xml" : "json";
-        return "scenarios/" + scenarioPath(scenario) + "steps/" + mockServiceResponse.getStep().getId() + "/mock-response-" + mockServiceResponse.getId() + "." + ext;
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + stepPath(mockServiceResponse.getStep()) + "/mock-response-" + mockServiceResponse.getId() + "." + ext;
     }
 
     private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest, Scenario scenario) {
         String ext = expectedServiceRequest.getExpectedServiceRequest() != null && expectedServiceRequest.getExpectedServiceRequest().indexOf('<') == 0 ? "xml" : "json";
-        return "scenarios/" + scenarioPath(scenario) + "steps/" + expectedServiceRequest.getStep().getId() + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + stepPath(expectedServiceRequest.getStep()) + "/expected-service-request-" + expectedServiceRequest.getId() + "." + ext;
     }
 
     private String stepMqMessageFile(Step step, Scenario scenario) {
         String ext = step.getMqMessage() != null && step.getMqMessage().indexOf('<') == 0 ? "xml" : ( step.getMqMessage().indexOf('{') == 0 ? "json" : "txt");
-        return "scenarios/" + scenarioPath(scenario) + "steps/" + step.getId() + "/mq-message." + ext;
+        return "scenarios/" + scenarioPath(scenario) + "steps/" + stepPath(step) + "/mq-message." + ext;
     }
 
     private boolean isModelWasChanged(AbstractModel model) {
@@ -202,12 +224,8 @@ public class ProjectsSource {
             return true;
         }
         Integer lastHashCode = idToHashCode.get(model.getId());
-        if (lastHashCode == null || lastHashCode != model.hashCode()) {
-            return true;
-        } else {
-            // The model did not change
-            return false;
-        }
+        // The model did not change
+        return lastHashCode == null || lastHashCode != model.hashCode();
     }
 
     private boolean isModelListWasChanged(List<? extends AbstractModel> modelList) {
