@@ -86,25 +86,25 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         this.afterScenarioIgnore = afterScenarioIgnore;
     }
 
-    @Override
-    public Scenario clone() throws CloneNotSupportedException {
-        super.clone();
-        Scenario cloned = new Scenario();
-        cloned.setId(null);
-        cloned.setProject(getProject());
-        cloned.setName(getName());
-        cloned.setScenarioGroup(getScenarioGroup());
-        cloned.setBeforeScenario(getBeforeScenario());
-        cloned.setAfterScenario(getAfterScenario());
-        cloned.setStand(getStand());
+    public Scenario copy() {
+        Scenario scenario = new Scenario();
+        scenario.setId(null);
+        scenario.setProject(getProject());
+        scenario.setName(getName());
+        scenario.setScenarioGroup(getScenarioGroup());
+        scenario.setLastRunAt(null);
+        scenario.setLastRunFailures(null);
+        scenario.setBeforeScenario(getBeforeScenario());
+        scenario.setAfterScenario(getAfterScenario());
+        scenario.setStand(getStand());
 
-        cloned.setStepListYamlFile(getStepListYamlFile());
-        cloned.setStepList(new LinkedList<>());
+        scenario.setStepListYamlFile(getStepListYamlFile());
+        scenario.setStepList(new LinkedList<>());
         for (Step step: getStepList()) {
-            Step clonedStep = step.clone();
-            cloned.getStepList().add(clonedStep);
+            Step clonedStep = step.copy();
+            scenario.getStepList().add(clonedStep);
         }
 
-        return cloned;
+        return scenario;
     }
 }

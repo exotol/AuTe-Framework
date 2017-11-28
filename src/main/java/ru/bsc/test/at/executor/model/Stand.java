@@ -51,17 +51,14 @@ public class Stand extends AbstractModel implements Cloneable {
         this.wireMockUrl = wireMockUrl;
     }
 
-    @Override
-    public Stand clone() throws CloneNotSupportedException {
-        super.clone();
-        Stand cloned = new Stand();
-        cloned.setProject(getProject());
-        cloned.setServiceUrl(getServiceUrl());
-        cloned.setDbUrl(getDbUrl());
-        cloned.setDbUser(getDbUser());
-        cloned.setDbPassword(getDbPassword());
-        cloned.setWireMockUrl(getWireMockUrl());
-
-        return cloned;
+    public Stand copy() {
+        Stand stand = new Stand();
+        stand.setProject(getProject());
+        stand.setServiceUrl(getServiceUrl());
+        stand.setDbUrl(getDbUrl());
+        stand.setDbUser(getDbUser());
+        stand.setDbPassword(getDbPassword());
+        stand.setWireMockUrl(getWireMockUrl());
+        return stand;
     }
 }

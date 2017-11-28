@@ -46,16 +46,14 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
         this.ignoredTags = ignoredTags;
     }
 
-    protected ExpectedServiceRequest clone() {
-        ExpectedServiceRequest cloned = new ExpectedServiceRequest();
-        cloned.setId(null);
-        cloned.setServiceName(getServiceName());
-        cloned.setExpectedServiceRequest(getExpectedServiceRequest());
-        cloned.setExpectedServiceRequestFile(getExpectedServiceRequestFile());
-        cloned.setSort(getSort());
-        cloned.setIgnoredTags(getIgnoredTags());
-
-        return cloned;
+    protected ExpectedServiceRequest copy() {
+        ExpectedServiceRequest request = new ExpectedServiceRequest();
+        request.setId(null);
+        request.setServiceName(getServiceName());
+        request.setExpectedServiceRequest(getExpectedServiceRequest());
+        request.setSort(getSort());
+        request.setIgnoredTags(getIgnoredTags());
+        return request;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.helper;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -51,8 +52,17 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
 
     @Override
     public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-        if (outcome == ComparisonResult.EQUAL) return outcome;
+        if (outcome == ComparisonResult.EQUAL) {
+            return outcome;
+        }
         if (outcome == ComparisonResult.DIFFERENT) {
+            if (ComparisonType.ATTR_VALUE.equals(comparison.getType()) || ComparisonType.ATTR_NAME_LOOKUP.equals(comparison.getType())) {
+                String parentNodeName = ((Attr) comparison.getControlDetails().getTarget()).getOwnerElement().getLocalName();
+                if (ignoredTags.contains(parentNodeName)) {
+                    outcome = ComparisonResult.EQUAL;
+                    return outcome;
+                }
+            }
             switch (comparison.getType()) {
                 case NAMESPACE_PREFIX:
                 case NAMESPACE_URI:

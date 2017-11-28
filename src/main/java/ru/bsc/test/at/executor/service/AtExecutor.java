@@ -2,16 +2,15 @@ package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
+import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.RequestBodyType;
@@ -39,7 +38,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,6 +63,7 @@ public class AtExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
+    private String projectPath;
 
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
@@ -162,14 +171,15 @@ public class AtExecutor {
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                        stepResult.setResult(StepResult.RESULT_OK);
-                    } catch (Exception e) {
-                        StringWriter sw = new StringWriter();
-                        e.printStackTrace(new PrintWriter(sw));
+                            stepResult.setResult(StepResult.RESULT_OK);
+                        } catch (Exception e) {
+                            StringWriter sw = new StringWriter();
+                            e.printStackTrace(new PrintWriter(sw));
 
-                        stepResult.setResult(StepResult.RESULT_FAIL);
-                        stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
-                        failures++;
+                            stepResult.setResult(StepResult.RESULT_FAIL);
+                            stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
+                            failures++;
+
                     }
                 }
             }
@@ -203,41 +213,45 @@ public class AtExecutor {
         stepResult.setRequestBody(requestBody);
 
         int retryCounter = 0;
-        boolean retry;
+        boolean retry = false;
         ResponseHelper responseData;
         do {
             retryCounter++;
             // 3. Выполнить запрос
-            responseData = http.request(
-                    step.getRequestMethod(),
-                    requestUrl,
-                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? null : requestBody,
-                    RequestBodyType.FORM.equals(step.getRequestBodyType()) ? parseFormData(requestBody) : null,
-                    step.getRequestHeaders(),
-                    project.getTestIdHeaderName(),
-                    testId);
-
+            if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
+                responseData = http.request(
+                        step.getRequestMethod(),
+                        requestUrl,
+                        requestBody,
+                        step.getRequestHeaders(),
+                        project.getTestIdHeaderName(),
+                        testId);
+            } else {
+                stepResult.setRequestBody(
+                        step.getFormDataList()
+                                .stream()
+                                .map(formData -> {
+                                    String result = formData.getFieldName() + " = ";
+                                    if (FieldType.TEXT.equals(formData.getFieldType()) || formData.getFieldType() == null) {
+                                        result += formData.getValue();
+                                    } else {
+                                        result += (projectPath == null ? "" : projectPath) + formData.getFilePath();
+                                    }
+                                    return result;
+                                })
+                                .collect(Collectors.joining("\r\n")));
+                responseData = http.request(
+                        step.getRequestMethod(),
+                        projectPath,
+                        requestUrl,
+                        step.getFormDataList(),
+                        step.getRequestHeaders(),
+                        project.getTestIdHeaderName(),
+                        testId);
+            }
             // 3.1. Polling
-            // TODO Вынести поллиг в отдельный метод
-            retry = false;
             if (step.getUsePolling()) {
-                try {
-                    Object pollingParameter = JsonPath.read(responseData.getContent(), step.getPollingJsonXPath());
-                    if (pollingParameter == null) {
-                        retry = true;
-                    } else if (pollingParameter instanceof String && StringUtils.isEmpty((String)pollingParameter)) {
-                        retry = true;
-                    } else if (pollingParameter instanceof Map && ((Map) pollingParameter).size() == 0) {
-                        retry = true;
-                    } else if (pollingParameter instanceof JSONArray && ((JSONArray) pollingParameter).size() == 0) {
-                        retry = true;
-                    }
-                } catch (PathNotFoundException e) {
-                    retry = true;
-                }
-                if (retry) {
-                    Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
-                }
+                retry = tryUsePolling(step, responseData);
             }
         } while (retry && retryCounter <= POLLING_RETRY_COUNT);
 
@@ -279,11 +293,13 @@ public class AtExecutor {
 
         if (!step.getExpectedResponseIgnore()) {
             if (step.getResponseCompareMode() == null) {
-                JSONcomparing(step, expectedResponse, responseData);
+                JSONComparing(expectedResponse, responseData);
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
-                        Assert.assertEquals(expectedResponse, responseData.getContent());
+                        if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                        }
                         break;
                     case IGNORE_MASK:
                         if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
@@ -291,14 +307,14 @@ public class AtExecutor {
                         }
                         break;
                     default:
-                        JSONcomparing(step, expectedResponse, responseData);
+                        JSONComparing(expectedResponse, responseData);
                         break;
                 }
             }
         }
     }
 
-    private void JSONcomparing(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+    private void JSONComparing(String expectedResponse, ResponseHelper responseData) throws Exception {
         if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
@@ -375,41 +391,19 @@ public class AtExecutor {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
-    protected class ServiceNameResponsePair {
-        private String serviceName;
-        private String response;
-
-        ServiceNameResponsePair(String serviceName, String response) {
-            this.serviceName = serviceName;
-            this.response = response;
-        }
-
-        public String getServiceName() {
-            return serviceName;
-        }
-
-        String getResponse() {
-            return response;
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected List<ServiceNameResponsePair> parseServiceResponsesString(String responses) {
-        List<ServiceNameResponsePair> result = new LinkedList<>();
-        if (responses != null) {
-            for (String service : responses.split(";")) {
-                String[] serviceData = service.split(":");
-                // TODO что-то сделать с неправильным форматом
-                if (serviceData.length == 2) {
-                    String serviceName = serviceData[0].trim();
-                    for (String response : serviceData[1].split(",")) {
-                        result.add(new ServiceNameResponsePair(serviceName, response.trim()));
-                    }
-                }
+    private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
+        boolean retry = true;
+        try {
+            if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
+                retry = false;
             }
+        } catch (PathNotFoundException e) {
+            retry = true;
         }
-        return result;
+        if (retry) {
+            Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
+        }
+        return retry;
     }
 
     private void saveValuesFromResponse(String values, String response, Map<String, String> savedValues) {
@@ -489,5 +483,13 @@ public class AtExecutor {
             }
         }
         return template;
+    }
+
+    public String getProjectPath() {
+        return projectPath;
+    }
+
+    public void setProjectPath(String projectPath) {
+        this.projectPath = projectPath;
     }
 }

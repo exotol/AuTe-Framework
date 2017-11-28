@@ -44,14 +44,14 @@ public class MockServiceResponse extends AbstractModel {
         this.httpStatus = httpStatus;
     }
 
-    protected MockServiceResponse clone() {
-        MockServiceResponse cloned = new MockServiceResponse();
-        cloned.setSort(getSort());
-        cloned.setServiceUrl(getServiceUrl());
-        cloned.setResponseBody(getResponseBody());
-        cloned.setResponseBodyFile(getResponseBodyFile());
-        cloned.setHttpStatus(getHttpStatus());
-        return cloned;
+    protected MockServiceResponse copy() {
+        MockServiceResponse response = new MockServiceResponse();
+        response.setSort(getSort());
+        response.setServiceUrl(getServiceUrl());
+        response.setResponseBody(getResponseBody());
+        // TODO: cloned.setResponseBodyFile(getResponseBodyFile());
+        response.setHttpStatus(getHttpStatus());
+        return response;
     }
 
     @Override

@@ -2,7 +2,6 @@ package ru.bsc.test.at.executor.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -21,18 +20,23 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.bsc.test.at.executor.model.FieldType;
+import ru.bsc.test.at.executor.model.FormData;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -53,9 +57,37 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequestBody, Map<String, String> formDataPostParameters, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException {
+    public ResponseHelper request(String method, String url, String jsonRequestBody, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
         URI uri = new URIBuilder(url).build();
+        HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
+        if (httpRequest instanceof HttpEntityEnclosingRequestBase && jsonRequestBody != null) {
+            HttpEntity httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
+            ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
+        }
+        return execute(httpRequest, headers);
+    }
 
+    public ResponseHelper request(String method, String projectPath, String url, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+        URI uri = new URIBuilder(url).build();
+        HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
+        if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
+            long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+            HttpEntity httpEntity;
+            if (count > 0) {
+                httpEntity = setEntity(formData, projectPath).build();
+            } else {
+                List<NameValuePair> params = formData
+                        .stream()
+                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), formData1.getValue()))
+                        .collect(Collectors.toList());
+                httpEntity = new UrlEncodedFormEntity(params);
+            }
+            ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
+        }
+        return execute(httpRequest, headers);
+    }
+
+    private HttpRequestBase createRequest(String method, URI uri, String testIdHeaderName, String testId) {
         HttpRequestBase httpRequest;
         switch (method == null ? "POST" : method) {
             case "GET":
@@ -75,26 +107,25 @@ public class HttpHelper {
                 httpRequest = new HttpPost(uri);
                 break;
         }
-        if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
-            HttpEntity httpEntity = null;
-            if (jsonRequestBody != null) {
-                httpEntity = new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON);
-            } else if (formDataPostParameters != null) {
-                List<NameValuePair> pairList = formDataPostParameters.entrySet()
-                        .stream()
-                        .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-                        .collect(Collectors.toList());
-                httpEntity = new UrlEncodedFormEntity(pairList, Consts.UTF_8);
-            }
-
-            if (httpEntity != null) {
-                ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(httpEntity);
-            }
-        }
-
         if (StringUtils.isNotEmpty(testIdHeaderName)) {
             httpRequest.addHeader(testIdHeaderName, testId);
         }
+        return httpRequest;
+    }
+
+    private MultipartEntityBuilder setEntity(List<FormData> formData, String projectPath) throws URISyntaxException, UnsupportedEncodingException {
+        MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        for (FormData data : formData) {
+            if (data.getFieldType() == null || FieldType.TEXT.equals(data.getFieldType())) {
+                entity.addTextBody(data.getFieldName(), data.getValue(), ContentType.TEXT_PLAIN);
+            } else {
+                entity.addBinaryBody(data.getFieldName(), new File((projectPath == null ? "" : projectPath) + data.getFilePath()));
+            }
+        }
+        return entity;
+    }
+
+    private ResponseHelper execute(HttpRequestBase httpRequest, String headers) throws IOException {
         setHeaders(httpRequest, headers);
         try (CloseableHttpResponse response = httpClient.execute(httpRequest, context)) {
             String theString = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");

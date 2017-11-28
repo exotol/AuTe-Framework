@@ -25,12 +25,9 @@ public class ScenarioGroup extends AbstractModel implements Serializable, Clonea
         this.project = project;
     }
 
-    @Override
-    public ScenarioGroup clone() throws CloneNotSupportedException {
-        super.clone();
-        ScenarioGroup cloned = new ScenarioGroup();
-        cloned.setName(getName());
-
-        return cloned;
+    public ScenarioGroup copy() {
+        ScenarioGroup scenarioGroup = new ScenarioGroup();
+        scenarioGroup.setName(getName());
+        return scenarioGroup;
     }
 }
