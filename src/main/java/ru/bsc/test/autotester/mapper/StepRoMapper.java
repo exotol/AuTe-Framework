@@ -291,7 +291,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             FormData formData = new FormData();
                             updateFormData(formDataRo, formData);
-                            formData.setStep(step);
                             return formData;
                         })
                 ).collect(Collectors.toList()));
@@ -316,7 +315,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "step", ignore = true),
+            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "fieldName", source = "fieldName"),
             @Mapping(target = "fieldType", source = "fieldType"),
             @Mapping(target = "value", source = "value"),

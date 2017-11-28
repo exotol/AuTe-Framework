@@ -18,9 +18,8 @@ import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 14.09.2017.
