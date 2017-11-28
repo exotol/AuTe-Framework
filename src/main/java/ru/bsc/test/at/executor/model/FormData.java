@@ -1,49 +1,12 @@
 package ru.bsc.test.at.executor.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 @SuppressWarnings("WeakerAccess")
-@Entity
-@Table(name = "AT_FORM_DATA")
-public class FormData {
+public class FormData extends AbstractModel {
 
-    @Id
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "SEQ_FORM_DATA", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
-    @Column(name = "ID", nullable = false)
-    private Long id;
-    @Column(name = "FIELD_NAME")
     private String fieldName;
-    @Column(name = "FIELD_TYPE", length = 500)
-    @Enumerated
     private FieldType fieldType;
-    @Column(name = "VALUE", length = 500)
     private String value;
-    @Column(name = "FILE_PATH", length = 500)
     private String filePath;
-    @ManyToOne
-    @JoinColumn(name = "STEP_ID")
-    @JsonBackReference
-    private Step step;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFieldName() {
         return fieldName;
@@ -77,14 +40,6 @@ public class FormData {
         this.filePath = filePath;
     }
 
-    public Step getStep() {
-        return step;
-    }
-
-    public void setStep(Step step) {
-        this.step = step;
-    }
-
     protected FormData copy() {
         FormData formData = new FormData();
         formData.setFieldName(getFieldName());
@@ -97,7 +52,6 @@ public class FormData {
     @Override
     public String toString() {
         return "FormData{" +
-                "id=" + id +
                 ", fieldName='" + fieldName + '\'' +
                 ", fieldType=" + fieldType +
                 ", value='" + value + '\'' +

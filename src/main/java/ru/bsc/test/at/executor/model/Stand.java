@@ -5,7 +5,7 @@ package ru.bsc.test.at.executor.model;
  *
  */
 @SuppressWarnings("WeakerAccess")
-public class Stand extends AbstractModel implements Cloneable {
+public class Stand extends AbstractModel {
 
     private Project project;
     private String serviceUrl;

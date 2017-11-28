@@ -7,22 +7,15 @@ import java.io.Serializable;
  *
  */
 @SuppressWarnings("WeakerAccess")
-public class ScenarioGroup extends AbstractModel implements Serializable, Cloneable {
+public class ScenarioGroup extends AbstractModel implements Serializable {
 
     private String name;
-    private Project project;
 
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
-    }
-    public Project getProject() {
-        return project;
-    }
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public ScenarioGroup copy() {

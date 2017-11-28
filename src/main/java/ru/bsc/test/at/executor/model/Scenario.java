@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Scenario extends AbstractModel implements Serializable, Cloneable {
+public class Scenario extends AbstractModel implements Serializable {
 
     private String name;
     private Project project;
@@ -92,8 +92,6 @@ public class Scenario extends AbstractModel implements Serializable, Cloneable {
         scenario.setProject(getProject());
         scenario.setName(getName());
         scenario.setScenarioGroup(getScenarioGroup());
-        scenario.setLastRunAt(null);
-        scenario.setLastRunFailures(null);
         scenario.setBeforeScenario(getBeforeScenario());
         scenario.setAfterScenario(getAfterScenario());
         scenario.setStand(getStand());

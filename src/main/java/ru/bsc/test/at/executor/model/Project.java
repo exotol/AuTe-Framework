@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by sdoroshin on 10.05.2017.
  */
 @SuppressWarnings("WeakerAccess")
-public class Project extends AbstractModel implements Serializable, Cloneable {
+public class Project extends AbstractModel implements Serializable {
 
     private String name;
     private String projectCode;
@@ -167,7 +167,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
         project.setScenarioGroups(new LinkedList<>());
         for (ScenarioGroup scenarioGroup : getScenarioGroups()) {
             ScenarioGroup projectScenarioGroup = scenarioGroup.copy();
-            projectScenarioGroup.setProject(project);
+            // projectScenarioGroup.setProject(project);
             project.getScenarioGroups().add(projectScenarioGroup);
 
             // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
@@ -176,6 +176,7 @@ public class Project extends AbstractModel implements Serializable, Cloneable {
                     .forEach(scenario -> scenario.setScenarioGroup(projectScenarioGroup));
         }
 
-cloned.setAmqpBroker(getAmqpBroker().copy());        return project;
+        project.setAmqpBroker(getAmqpBroker().copy());
+        return project;
     }
 }

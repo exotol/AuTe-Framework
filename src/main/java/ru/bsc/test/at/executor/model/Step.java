@@ -11,9 +11,7 @@ import java.util.Map;
  *
  */
 @SuppressWarnings("WeakerAccess")
-@Entity
-@Table(name = "AT_STEP")
-public class Step implements Serializable {
+public class Step extends AbstractModel implements Serializable {
 
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
@@ -249,6 +247,7 @@ public class Step implements Serializable {
 
     public Step copy() {
         Step step = new Step();
+        step.setSort(getSort());
         step.setRelativeUrl(getRelativeUrl());
         step.setRequestMethod(getRequestMethod());
         step.setRequestHeaders(getRequestHeaders());
@@ -292,9 +291,7 @@ public class Step implements Serializable {
         }
         step.setFormDataList(new LinkedList<>());
         for (FormData formData : getFormDataList()) {
-            FormData stepFormData = formData.copy();
-            stepFormData.setStep(step);
-            step.getFormDataList().add(stepFormData);
+            step.getFormDataList().add(formData.copy());
         }
         return step;
     }
