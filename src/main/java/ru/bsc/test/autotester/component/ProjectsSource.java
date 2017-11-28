@@ -14,6 +14,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -151,7 +152,7 @@ public class ProjectsSource {
         projectList.forEach(projectItem -> {
             String fileName = directoryPath + "/" + projectItem.getProjectCode() + "/" + MAIN_YAML_FILENAME;
             try {
-                saveToExternalFiles(projectItem);
+                saveToExternalFiles(projectItem, false);
                 YamlUtils.dumpToFile(projectItem, fileName);
             } catch (IOException e) {
                 LOGGER.error("Save file " + fileName, e);
@@ -162,7 +163,7 @@ public class ProjectsSource {
     private String translit(String string) {
         String[] _alpha = {"a","b","v","g","d","e","yo","g","z","i","y","i",
                 "k","l","m","n","o","p","r","s","t","u",
-                "f","h","tz","ch","sh","sh","'","e","yu","ya"};
+                "f","h","tz","ch","sh","sh","","e","yu","ya"};
         String alpha = "абвгдеёжзиыйклмнопрстуфхцчшщьэюя";
         StringBuilder nname = new StringBuilder("");
         for (char ch : string.toLowerCase().toCharArray()) {
@@ -242,49 +243,59 @@ public class ProjectsSource {
         return false;
     }
 
-    private void saveToExternalFiles(Project project) {
+    private void saveToExternalFiles(Project project, boolean saveAll) {
+        String projectPath = directoryPath + "/" + project.getProjectCode() + "/";
+        if (saveAll) {
+            try {
+                FileUtils.cleanDirectory(new File(projectPath + "scenarios"));
+            } catch (IOException e) {
+                LOGGER.error("Clean directory error", e);
+            }
+        }
         applyToProjectModels(project, model -> {
             if (model instanceof Step) {
                 Step step = (Step)model;
                 Scenario stepScenario = findScenarioByStep(step, project);
                 if (step.getRequest() != null) {
                     try {
-                        if (step.getRequestFile() == null) {
+                        if (isModelWasChanged(model) || saveAll) {
+                            if (step.getRequestFile() != null) {
+                                Files.deleteIfExists(new File(projectPath + step.getRequestFile()).toPath());
+                            }
                             step.setRequestFile(stepRequestFile(step, stepScenario));
-                        }
-                        if (isModelWasChanged(model)) {
-                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile());
-                            FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
+                            FileUtils.writeStringToFile(new File(projectPath + step.getRequestFile()), step.getRequest(), FILE_ENCODING);
                         }
                         step.setRequest(null);
                     } catch (IOException e) {
-                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getRequestFile(), e);
+                        LOGGER.error("Save file " + projectPath + step.getRequestFile(), e);
                     }
                 }
                 if (step.getExpectedResponse() != null) {
                     try {
-                        if (step.getExpectedResponseFile() == null) {
+                        if (isModelWasChanged(model) || saveAll) {
+                            if (step.getExpectedResponseFile() != null) {
+                                Files.deleteIfExists(new File(projectPath + step.getExpectedResponseFile()).toPath());
+                            }
                             step.setExpectedResponseFile(stepExpectedResponseFile(step, stepScenario));
-                        }
-                        if (isModelWasChanged(model)) {
-                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile());
-                            FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
+                            FileUtils.writeStringToFile(new File(projectPath + step.getExpectedResponseFile()), step.getExpectedResponse(), FILE_ENCODING);
                         }
                         step.setExpectedResponse(null);
                     } catch (IOException e) {
-                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getExpectedResponseFile(), e);
+                        LOGGER.error("Save file " + projectPath + step.getExpectedResponseFile(), e);
                     }
                 }
                 if (step.getMqMessage() != null) {
                     try {
-                        if (step.getMqMessageFile() == null) {
+                        if (isModelWasChanged(model) || saveAll) {
+                            if (step.getMqMessageFile() != null) {
+                                Files.deleteIfExists(new File(projectPath + step.getMqMessageFile()).toPath());
+                            }
                             step.setMqMessageFile(stepMqMessageFile(step, stepScenario));
+                            FileUtils.writeStringToFile(new File(projectPath + step.getMqMessageFile()), step.getMqMessage(), FILE_ENCODING);
                         }
-                        File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + step.getMqMessageFile());
-                        FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
                         step.setMqMessage(null);
                     } catch (IOException e) {
-                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + step.getMqMessageFile(), e);
+                        LOGGER.error("Save file " + projectPath + step.getMqMessageFile(), e);
                     }
                 }
             } else if (model instanceof MockServiceResponse) {
@@ -292,16 +303,16 @@ public class ProjectsSource {
                 Scenario stepScenario = findScenarioByStep(mockServiceResponse.getStep(), project);
                 if (mockServiceResponse.getResponseBody() != null) {
                     try {
-                        if (mockServiceResponse.getResponseBodyFile() == null) {
+                        if (isModelWasChanged(model) || saveAll) {
+                            if (mockServiceResponse.getResponseBodyFile() != null) {
+                                Files.deleteIfExists(new File(projectPath + mockServiceResponse.getResponseBodyFile()).toPath());
+                            }
                             mockServiceResponse.setResponseBodyFile(mockResponseBodyFile(mockServiceResponse, stepScenario));
-                        }
-                        if (isModelWasChanged(model)) {
-                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile());
-                            FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
+                            FileUtils.writeStringToFile(new File(projectPath + mockServiceResponse.getResponseBodyFile()), mockServiceResponse.getResponseBody(), FILE_ENCODING);
                         }
                         mockServiceResponse.setResponseBody(null);
                     } catch (IOException e) {
-                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + mockServiceResponse.getResponseBodyFile(), e);
+                        LOGGER.error("Save file " + projectPath + mockServiceResponse.getResponseBodyFile(), e);
                     }
                 }
             } else if (model instanceof ExpectedServiceRequest) {
@@ -309,16 +320,16 @@ public class ProjectsSource {
                 Scenario stepScenario = findScenarioByStep(expectedServiceRequest.getStep(), project);
                 if (expectedServiceRequest.getExpectedServiceRequest() != null) {
                     try {
-                        if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
+                        if (isModelWasChanged(model) || saveAll) {
+                            if (expectedServiceRequest.getExpectedServiceRequestFile() != null) {
+                                Files.deleteIfExists(new File(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()).toPath());
+                            }
                             expectedServiceRequest.setExpectedServiceRequestFile(expectedServiceRequestFile(expectedServiceRequest, stepScenario));
-                        }
-                        if (isModelWasChanged(model)) {
-                            File file = new File(directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
-                            FileUtils.writeStringToFile(file, expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
+                            FileUtils.writeStringToFile(new File(projectPath + expectedServiceRequest.getExpectedServiceRequestFile()), expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
                         }
                         expectedServiceRequest.setExpectedServiceRequest(null);
                     } catch (IOException e) {
-                        LOGGER.error("Save file " + directoryPath + "/" + project.getProjectCode() + "/" + expectedServiceRequest.getExpectedServiceRequestFile(), e);
+                        LOGGER.error("Save file " + projectPath + expectedServiceRequest.getExpectedServiceRequestFile(), e);
                     }
                 }
             }
@@ -327,10 +338,11 @@ public class ProjectsSource {
         project.getScenarioList().forEach(scenario -> {
             if (scenario.getStepList() != null && !scenario.getStepList().isEmpty()) {
                 try {
-                    if (scenario.getStepListYamlFile() == null || scenario.getStepListYamlFile().isEmpty()) {
+                    if (isModelListWasChanged(scenario.getStepList()) || saveAll) {
+                        if (scenario.getStepListYamlFile() != null) {
+                            Files.deleteIfExists(new File(directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile()).toPath());
+                        }
                         scenario.setStepListYamlFile("scenarios/" + scenarioPath(scenario) + "stepList.yml");
-                    }
-                    if (isModelListWasChanged(scenario.getStepList())) {
                         String fileName = directoryPath + "/" + project.getProjectCode() + "/" + scenario.getStepListYamlFile();
                         YamlUtils.dumpToFile(scenario.getStepList(), fileName);
                     }
