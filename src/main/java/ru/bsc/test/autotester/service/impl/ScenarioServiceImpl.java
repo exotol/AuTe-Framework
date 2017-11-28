@@ -44,6 +44,9 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final StepService stepService;
     private final ProjectService projectService;
 
+    @Value("${projects.path:}")
+    private String projectsPath;
+
     @Autowired
     public ScenarioServiceImpl(ScenarioRepository scenarioRepository, StepService stepService, ProjectService projectService) {
         this.scenarioRepository = scenarioRepository;
@@ -54,6 +57,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
+        atExecutor.setProjectPath(projectsPath);
         return atExecutor.executeScenarioList(project, scenarioList);
     }
 
@@ -125,7 +129,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             if (step != null) {
                 Scenario scenario = findScenarioIdByStep(step, projectList);
                 Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
-                Step newStep = step.clone();
+                Step newStep = step.copy();
                 newStep.setSort(maxSortStep + 50);
                 scenario.getStepList().add(newStep);
                 return stepService.save(newStep, projectList);

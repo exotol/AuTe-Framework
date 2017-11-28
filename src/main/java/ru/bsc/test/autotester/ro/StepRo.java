@@ -42,6 +42,7 @@ public class StepRo extends AbstractRo {
     private String mqMessage;
     private String mqMessageFile;
     private String responseCompareMode;
+    private List<FormDataRo> formDataList;
 
     public Long getId() {
         return id;
@@ -289,5 +290,13 @@ public class StepRo extends AbstractRo {
 
     public void setResponseCompareMode(String responseCompareMode) {
         this.responseCompareMode = responseCompareMode;
+    }
+
+    public List<FormDataRo> getFormDataList() {
+        return formDataList;
+    }
+
+    public void setFormDataList(List<FormDataRo> formDataList) {
+        this.formDataList = formDataList;
     }
 }

@@ -2,7 +2,11 @@ package ru.bsc.test.autotester.controller.rest;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
@@ -13,7 +17,10 @@ import ru.bsc.test.autotester.ro.StepResultRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by sdoroshin on 14.09.2017.
