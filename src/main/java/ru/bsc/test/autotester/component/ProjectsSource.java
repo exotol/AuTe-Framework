@@ -175,7 +175,7 @@ public class ProjectsSource {
         }
 
         String result = nname.toString().replaceAll("[^a-zA-Z0-9.-]", "_");
-        result = result.substring(0, Math.min(result.length(), 50));
+        result = result.substring(0, Math.min(result.length(), 30));
         return result;
     }
 
