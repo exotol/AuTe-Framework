@@ -11,18 +11,17 @@ public class ScenarioRo extends AbstractRo {
     private static final long serialVersionUID = -6026744701723398082L;
 
     private Long id;
-    private Long projectId;
+    private String code;
+    private String projectCode;
     private String projectName;
-    private StandRo projectStand;
     private String name;
 
-    private ScenarioGroupRo scenarioGroup;
+    private String scenarioGroup;
     private Long beforeScenarioId;
     private Long afterScenarioId;
     private List<StepRo> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
-    private StandRo stand;
 
     public Long getId() {
         return id;
@@ -32,12 +31,20 @@ public class ScenarioRo extends AbstractRo {
         this.id = id;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public String getCode() {
+        return code;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
     }
 
     public String getProjectName() {
@@ -48,14 +55,6 @@ public class ScenarioRo extends AbstractRo {
         this.projectName = projectName;
     }
 
-    public StandRo getProjectStand() {
-        return projectStand;
-    }
-
-    public void setProjectStand(StandRo projectStand) {
-        this.projectStand = projectStand;
-    }
-
     public String getName() {
         return name;
     }
@@ -64,11 +63,11 @@ public class ScenarioRo extends AbstractRo {
         this.name = name;
     }
 
-    public ScenarioGroupRo getScenarioGroup() {
+    public String getScenarioGroup() {
         return scenarioGroup;
     }
 
-    public void setScenarioGroup(ScenarioGroupRo scenarioGroup) {
+    public void setScenarioGroup(String scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
     }
 
@@ -110,13 +109,5 @@ public class ScenarioRo extends AbstractRo {
 
     public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
         this.afterScenarioIgnore = afterScenarioIgnore;
-    }
-
-    public StandRo getStand() {
-        return stand;
-    }
-
-    public void setStand(StandRo stand) {
-        this.stand = stand;
     }
 }

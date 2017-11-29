@@ -10,24 +10,22 @@ public class ProjectRo extends AbstractRo {
 
     private static final long serialVersionUID = 3953325934454830833L;
 
-    private Long id;
+    private String code;
     private String name;
     private Long beforeScenarioId;
     private Long afterScenarioId;
-    private String projectCode;
-    private List<ScenarioGroupRo> scenarioGroups;
     private List<StandRo> standList;
     private StandRo stand;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
     private AmqpBrokerRo amqpBroker;
 
-    public Long getId() {
-        return id;
+    public String getCode() {
+        return code;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -52,22 +50,6 @@ public class ProjectRo extends AbstractRo {
 
     public void setAfterScenarioId(Long afterScenarioId) {
         this.afterScenarioId = afterScenarioId;
-    }
-
-    public String getProjectCode() {
-        return projectCode;
-    }
-
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
-    }
-
-    public List<ScenarioGroupRo> getScenarioGroups() {
-        return scenarioGroups;
-    }
-
-    public void setScenarioGroups(List<ScenarioGroupRo> scenarioGroups) {
-        this.scenarioGroups = scenarioGroups;
     }
 
     public List<StandRo> getStandList() {

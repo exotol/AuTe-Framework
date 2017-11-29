@@ -8,11 +8,9 @@ import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.AmqpBroker;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.ScenarioGroup;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.autotester.ro.AmqpBrokerRo;
 import ru.bsc.test.autotester.ro.ProjectRo;
-import ru.bsc.test.autotester.ro.ScenarioGroupRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StandRo;
 
@@ -30,12 +28,10 @@ import java.util.stream.Collectors;
 public abstract class ProjectRoMapper {
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
             @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
-            @Mapping(target = "projectCode", source = "projectCode"),
-            @Mapping(target = "scenarioGroups", source = "scenarioGroups"),
+            @Mapping(target = "code", source = "code"),
             @Mapping(target = "standList", source = "standList"),
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
@@ -44,12 +40,12 @@ public abstract class ProjectRoMapper {
     abstract public ProjectRo projectToProjectRo(Project project);
 
     @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "sort", ignore = true),
-            @Mapping(target = "projectCode", source = "projectCode"),
             @Mapping(target = "beforeScenario", ignore = true),
             @Mapping(target = "afterScenario", ignore = true),
-            @Mapping(target = "scenarioGroups", ignore = true),
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "standList", ignore = true),
 
@@ -91,23 +87,7 @@ public abstract class ProjectRoMapper {
                         .orElseGet(() -> {
                             Stand newStand = new Stand();
                             updateStandFromRo(standRo, newStand);
-                            newStand.setProject(project);
                             return newStand;
-                        }))
-                .collect(Collectors.toList())
-        );
-
-        List<ScenarioGroup> projectScenarioGroupList = new LinkedList<>(project.getScenarioGroups());
-        project.getScenarioGroups().clear();
-        project.getScenarioGroups().addAll(projectRo.getScenarioGroups().stream()
-                .map(scenarioGroupRo -> projectScenarioGroupList.stream()
-                        .filter(projectScenarioGroup -> Objects.equals(projectScenarioGroup.getId(), scenarioGroupRo.getId()))
-                        .map(scenarioGroup -> updateScenarioGroupFromRo(scenarioGroupRo, scenarioGroup))
-                        .findAny()
-                        .orElseGet(() -> {
-                            ScenarioGroup newScenarioGroup = new ScenarioGroup();
-                            updateScenarioGroupFromRo(scenarioGroupRo, newScenarioGroup);
-                            return newScenarioGroup;
                         }))
                 .collect(Collectors.toList())
         );
@@ -124,8 +104,8 @@ public abstract class ProjectRoMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "sort", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
-            @Mapping(target = "project", ignore = true),
             @Mapping(target = "dbUrl", source = "dbUrl"),
             @Mapping(target = "dbUser", source = "dbUser"),
             @Mapping(target = "dbPassword", source = "dbPassword"),
@@ -135,38 +115,31 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
-            @Mapping(target = "projectId", source = "project.id"),
-            @Mapping(target = "projectName", source = "project.name"),
-            @Mapping(target = "projectStand", source = "project.stand"),
+            @Mapping(target = "projectCode", ignore = true),
+            @Mapping(target = "projectName", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "beforeScenarioId", source = "beforeScenario.id"),
             @Mapping(target = "afterScenarioId", source = "afterScenario.id"),
             @Mapping(target = "stepList", ignore = true),
-            @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    public abstract ScenarioRo scenarioToScenarioRo(Scenario scenario);
+    abstract ScenarioRo scenarioToScenarioRoInner(Scenario scenario);
 
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "name", source = "name")
-    })
-    abstract ScenarioGroupRo scenarioGroupToScenarioGroupRo(ScenarioGroup scenarioGroup);
-
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "sort", ignore = true),
-            @Mapping(target = "name", source = "name")
-    })
-    abstract ScenarioGroup updateScenarioGroupFromRo(ScenarioGroupRo scenarioGroupRo, @MappingTarget ScenarioGroup scenarioGroup);
+    public ScenarioRo scenarioToScenarioRo(String projectCode, String projectName, Scenario scenario) {
+        ScenarioRo scenarioRo = scenarioToScenarioRoInner(scenario);
+        scenarioRo.setProjectCode(projectCode);
+        scenarioRo.setProjectName(projectName);
+        return scenarioRo;
+    }
 
     public abstract List<ScenarioRo> convertScenarioListToScenarioRoList(List<Scenario> scenarioList);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "sort", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "mqService", source = "mqService"),
             @Mapping(target = "host", source = "host"),
             @Mapping(target = "port", source = "port"),

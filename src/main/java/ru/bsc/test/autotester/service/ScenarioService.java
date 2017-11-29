@@ -19,7 +19,7 @@ public interface ScenarioService {
 
     Scenario findOne(long scenarioId);
 
-    ScenarioRo updateScenarioFormRo(Long scenarioId, ScenarioRo scenarioRo);
+    ScenarioRo updateScenarioFormRo(String projectCode, Long scenarioId, ScenarioRo scenarioRo);
     Step cloneStep(Step stepId);
     List<StepRo> updateStepListFromRo(Long scenarioId, List<StepRo> stepRoList);
 
@@ -27,7 +27,7 @@ public interface ScenarioService {
 
     StepRo addStepToScenario(Long scenarioId, StepRo stepRo);
 
-    void deleteOne(Long project);
+    void deleteOne(String projectCode, Long scenarioId);
 
-    List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo);
+    List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);
 }

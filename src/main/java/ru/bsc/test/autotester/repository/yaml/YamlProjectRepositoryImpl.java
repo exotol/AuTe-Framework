@@ -25,10 +25,10 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Project findProject(Long projectId) {
+    public Project findProject(String projectCode) {
         return projectsSource.getProjectList()
                 .stream()
-                .filter(project -> Objects.equals(project.getId(), projectId))
+                .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
                 .findAny()
                 .orElse(null);
     }

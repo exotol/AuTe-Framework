@@ -18,12 +18,8 @@ import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sdoroshin on 12.09.2017.
@@ -49,69 +45,69 @@ public class RestProjectController {
         return projectRoMapper.convertProjectListToProjectRoList(projectService.findAll());
     }
 
-    @RequestMapping(value = "{projectId}", method = RequestMethod.GET)
-    public ProjectRo findOne(@PathVariable Long projectId) {
-        Project project = projectService.findOne(projectId);
+    @RequestMapping(value = "{projectCode}", method = RequestMethod.GET)
+    public ProjectRo findOne(@PathVariable String projectCode) {
+        Project project = projectService.findOne(projectCode);
         if (project != null) {
             return projectRoMapper.projectToProjectRo(project);
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{projectId}", method = RequestMethod.PUT)
-    public ProjectRo saveOne(@PathVariable Long projectId, @RequestBody ProjectRo projectRo) {
-        return projectService.updateFromRo(projectId, projectRo);
+    @RequestMapping(value = "{projectCode}", method = RequestMethod.PUT)
+    public ProjectRo saveOne(@PathVariable String projectCode, @RequestBody ProjectRo projectRo) {
+        return projectService.updateFromRo(projectCode, projectRo);
     }
 
-    @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.GET)
-    public List<ScenarioRo> getScenarios(@PathVariable Long projectId) {
-        Project project = projectService.findOne(projectId);
+    @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.GET)
+    public List<ScenarioRo> getScenarios(@PathVariable String projectCode) {
+        Project project = projectService.findOne(projectCode);
         if (project != null) {
             return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarioList());
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{projectId}/scenarios", method = RequestMethod.POST)
-    public ScenarioRo newScenario(@PathVariable Long projectId, @RequestBody ScenarioRo scenarioRo) {
-        scenarioRo = projectService.addScenarioToProject(projectId, scenarioRo);
+    @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.POST)
+    public ScenarioRo newScenario(@PathVariable String projectCode, @RequestBody ScenarioRo scenarioRo) {
+        scenarioRo = projectService.addScenarioToProject(projectCode, scenarioRo);
         if (scenarioRo != null) {
             return scenarioRo;
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{projectId}/search", method = RequestMethod.POST)
-    public List<ScenarioRo> searchByMethod(@PathVariable Long projectId, @RequestBody ProjectSearchRo projectSearchRo) {
-        return scenarioService.findScenarioByStepRelativeUrl(projectId, projectSearchRo);
+    @RequestMapping(value = "{projectCode}/search", method = RequestMethod.POST)
+    public List<ScenarioRo> searchByMethod(@PathVariable String projectCode, @RequestBody ProjectSearchRo projectSearchRo) {
+        return scenarioService.findScenarioByStepRelativeUrl(projectCode, projectSearchRo);
     }
 
     @SuppressWarnings("Duplicates")
-    @RequestMapping(value = "{projectId}/export-selected-to-yaml", method = RequestMethod.POST)
+    @RequestMapping(value = "{projectCode}/export-selected-to-yaml", method = RequestMethod.POST)
     @ResponseBody
     public String exportToYaml(
-            @PathVariable long projectId,
+            @PathVariable String projectCode,
             @RequestBody() List<Long> selectedScenarios,
             HttpServletResponse response
     ) throws IOException {
-        Project project = projectService.findOne(projectId);
+        Project project = projectService.findOne(projectCode);
         if (project != null) {
             response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getProjectCode() + ".yml\"");
-            return projectService.getSelectedAsYaml(projectId, selectedScenarios);
+            return projectService.getSelectedAsYaml(projectCode, selectedScenarios);
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{projectId}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
+    @RequestMapping(value = "{projectCode}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
     @ResponseBody
     public String getYaml(
-            @PathVariable long projectId,
+            @PathVariable String projectCode,
             HttpServletResponse response
     ) throws IOException {
-        Project project = projectService.findOne(projectId);
+        Project project = projectService.findOne(projectCode);
         if (project != null) {
             response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() + ".yml\"");
-            return projectService.findOneAsYaml(projectId);
+            return projectService.findOneAsYaml(projectCode);
         }
         throw new ResourceNotFoundException();
     }

@@ -41,9 +41,9 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     }
 
     @Override
-    public Set<Scenario> findByRelativeUrl(Long projectId, String relativeUrl) {
+    public Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl) {
         Set<Scenario> result = new HashSet<>();
-        projectsSource.getProjectList().stream().filter(project -> projectId.equals(project.getId()))
+        projectsSource.getProjectList().stream().filter(project -> projectCode.equals(project.getProjectCode()))
                 .forEach(project -> project.getScenarioList().forEach(scenario -> {
                     for(Step step: scenario.getStepList()) {
                         if (step.getRelativeUrl().contains(relativeUrl)) {

@@ -35,6 +35,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "expectedServiceRequests", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
@@ -118,6 +119,7 @@ public abstract class StepRoMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "step", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "stepParameterList", ignore = true),
             @Mapping(target = "description", source = "description")
@@ -159,6 +161,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", ignore = true),
             @Mapping(target = "stepParameterSet", ignore = true),
             @Mapping(target = "name", source = "name"),
@@ -198,7 +201,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "step", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
@@ -226,7 +229,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             MockServiceResponse newResponse = new MockServiceResponse();
                             updateMockServiceResponseFromRo(mockServiceResponseRo, newResponse);
-                            newResponse.setStep(step);
                             return newResponse;
                         }))
                 .collect(Collectors.toList())
@@ -299,6 +301,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "step", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
@@ -315,6 +318,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", ignore = true),
             @Mapping(target = "fieldName", source = "fieldName"),
             @Mapping(target = "fieldType", source = "fieldType"),

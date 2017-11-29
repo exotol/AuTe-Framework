@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProjectRepository {
 
     List<Project> findAllProjects();
-    Project findProject(Long projectId);
+    Project findProject(String projectCode);
 
     Project saveProject(Project project, List<Project> projectList);
 }

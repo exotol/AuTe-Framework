@@ -1,6 +1,5 @@
 package ru.bsc.test.autotester.repository;
 
-import org.springframework.data.repository.query.Param;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 
@@ -16,5 +15,5 @@ public interface ScenarioRepository {
 
     Scenario saveScenario(Scenario scenario, List<Project> projectList);
 
-    Set<Scenario> findByRelativeUrl(@Param("projectId") Long projectId, @Param("relativeUrl") String relativeUrl);
+    Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl);
 }

@@ -42,29 +42,29 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project findOne(Long projectId) {
+    public Project findOne(String projectCode) {
         synchronized (this) {
-            return projectRepository.findProject(projectId);
+            return projectRepository.findProject(projectCode);
         }
     }
 
-    private Project findOne(List<Project> projectList, Long projectId) {
+    private Project findOne(List<Project> projectList, String projectCode) {
         return projectList.stream()
-                .filter(project -> Objects.equals(project.getId(), projectId))
+                .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
                 .findAny()
                 .orElse(null);
     }
 
     @Override
-    public String findOneAsYaml(Long projectId) {
+    public String findOneAsYaml(String projectCode) {
         synchronized (this) {
-            return new Yaml().dump(projectRepository.findProject(projectId));
+            return new Yaml().dump(projectRepository.findProject(projectCode));
         }
     }
 
     @Override
-    public String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios) {
-        Project project = findOne(projectId);
+    public String getSelectedAsYaml(String projectCode, List<Long> selectedScenarios) {
+        Project project = findOne(projectCode);
         if (project != null) {
             project.setScenarioList(project.getScenarioList().stream()
                     .filter(scenario -> selectedScenarios.contains(scenario.getId()))
@@ -75,10 +75,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectRo updateFromRo(Long projectId, ProjectRo projectRo) {
+    public ProjectRo updateFromRo(String projectCode, ProjectRo projectRo) {
         synchronized (this) {
             List<Project> projectList = findAll();
-            Project project = findOne(projectList, projectId);
+            Project project = findOne(projectList, projectCode);
             if (project != null) {
                 projectRoMapper.updateProject(projectRo, project);
                 project = projectRepository.saveProject(project, projectList);
@@ -89,19 +89,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo) {
+    public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) {
         synchronized (this) {
             List<Project> projectList = findAll();
-            Project project = findOne(projectList, projectId);
+            Project project = findOne(projectList, projectCode);
             if (project != null) {
                 Scenario newScenario = new Scenario();
-                newScenario.setProject(project);
                 project.getScenarioList().add(newScenario);
 
-                scenarioRoMapper.updateScenario(scenarioRo, newScenario);
+                scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, newScenario);
 
                 projectRepository.saveProject(project, projectList);
-                return projectRoMapper.scenarioToScenarioRo(newScenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getProjectCode(), project.getName(), newScenario);
             }
             return null;
         }
@@ -112,6 +111,16 @@ public class ProjectServiceImpl implements ProjectService {
         synchronized (this) {
             projectRepository.saveProject(project, projectList);
             return project;
+        }
+    }
+
+    @Override
+    public Project findOneByCode(String projectCode) {
+        synchronized (this) {
+            return findAll().stream()
+                    .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
+                    .findAny()
+                    .orElse(null);
         }
     }
 }

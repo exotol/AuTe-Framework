@@ -14,15 +14,17 @@ public interface ProjectService {
 
     List<Project> findAll();
 
-    Project findOne(Long projectId);
+    Project findOne(String projectCode);
 
-    String findOneAsYaml(Long projectId);
+    String findOneAsYaml(String projectCode);
 
-    String getSelectedAsYaml(Long projectId, List<Long> selectedScenarios);
+    String getSelectedAsYaml(String projectCode, List<Long> selectedScenarios);
 
-    ProjectRo updateFromRo(Long project, ProjectRo projectRo);
+    ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
-    ScenarioRo addScenarioToProject(Long projectId, ScenarioRo scenarioRo);
+    ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo);
 
     Project saveProject(Project project, List<Project> projectList);
+
+    Project findOneByCode(String projectCode);
 }

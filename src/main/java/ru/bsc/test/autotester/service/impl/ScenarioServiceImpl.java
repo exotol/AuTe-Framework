@@ -80,12 +80,12 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public void deleteOne(Long scenarioId) {
+    public void deleteOne(String projectCode, Long scenarioId) {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
             Scenario scenario = findOne(projectList, scenarioId);
-            if (scenario != null) {
-                Project project = scenario.getProject();
+            Project project = projectList.stream().filter(p -> Objects.equals(p.getProjectCode(), projectCode)).findAny().orElse(null);
+            if (scenario != null && project != null) {
                 project.setScenarioList(project.getScenarioList().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
                 scenarioRepository.saveScenario(scenario, projectList);
             } else {
@@ -95,14 +95,15 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public ScenarioRo updateScenarioFormRo(Long scenarioId, ScenarioRo scenarioRo) {
+    public ScenarioRo updateScenarioFormRo(String projectCode, Long scenarioId, ScenarioRo scenarioRo) {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
             Scenario scenario = findOne(projectList, scenarioId);
-            if (scenario != null) {
-                scenarioRoMapper.updateScenario(scenarioRo, scenario);
+            Project project = projectList.stream().filter(project1 -> Objects.equals(project1.getProjectCode(), projectCode)).findAny().orElse(null);
+            if (scenario != null && project != null) {
+                scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, scenario);
                 scenario = scenarioRepository.saveScenario(scenario, projectList);
-                return projectRoMapper.scenarioToScenarioRo(scenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getProjectCode(), project.getName(), scenario);
             }
             return null;
         }
@@ -166,10 +167,10 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public List<ScenarioRo> findScenarioByStepRelativeUrl(Long projectId, ProjectSearchRo projectSearchRo) {
+    public List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo) {
         List<Scenario> scenarios = new ArrayList<>();
         if (!StringUtils.isEmpty(projectSearchRo.getRelativeUrl())) {
-            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectId, "%" + projectSearchRo.getRelativeUrl() + "%"));
+            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectCode, "%" + projectSearchRo.getRelativeUrl() + "%"));
         }
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
