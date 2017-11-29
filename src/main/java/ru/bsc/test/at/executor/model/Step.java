@@ -290,8 +290,10 @@ public class Step extends AbstractModel implements Serializable {
             }
         }
         step.setFormDataList(new LinkedList<>());
-        for (FormData formData : getFormDataList()) {
-            step.getFormDataList().add(formData.copy());
+        if (getFormDataList() != null) {
+            for (FormData formData : getFormDataList()) {
+                step.getFormDataList().add(formData.copy());
+            }
         }
         return step;
     }
