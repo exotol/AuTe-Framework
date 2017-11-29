@@ -41,7 +41,6 @@ class ActiveMqManager implements IMqManager {
         MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         TextMessage textMessage = session.createTextMessage(message);
-        System.out.println("Sent message: "+ message.hashCode() + " : " + Thread.currentThread().getName());
         producer.send(textMessage);
 
         session.close();

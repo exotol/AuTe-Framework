@@ -27,8 +27,7 @@ class RabbitMqManager implements IMqManager {
     public void sendTextMessage(String queueName, String message) throws Exception {
         Connection connection = connectionFactory.newConnection();
         Channel channel = connection.createChannel();
-        channel.queueDeclare(queueName, false, false, false, null);
-        channel.basicPublish("",queueName, null, message.getBytes());
+        channel.basicPublish("", queueName, null, message.getBytes());
 
         channel.close();
         connection.close();
