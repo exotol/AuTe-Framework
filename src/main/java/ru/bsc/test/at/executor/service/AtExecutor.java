@@ -39,7 +39,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -321,7 +320,7 @@ public class AtExecutor {
                 JSONAssert.assertEquals(
                         expectedResponse.replaceAll(" ", " "),
                         responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                        new IgnoringComparator(JSONCompareMode.LENIENT)
+                        new IgnoringComparator(JSONCompareMode.NON_EXTENSIBLE)
                 );
             } catch (Error assertionError) {
                 throw new Exception(assertionError);
