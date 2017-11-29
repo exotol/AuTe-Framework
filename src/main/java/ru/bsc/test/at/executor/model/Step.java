@@ -278,7 +278,6 @@ public class Step extends AbstractModel implements Serializable {
         step.setMockServiceResponseList(new LinkedList<>());
         for (MockServiceResponse mockServiceResponse: getMockServiceResponseList()) {
             MockServiceResponse stepMockServiceResponse = mockServiceResponse.copy();
-            stepMockServiceResponse.setStep(step);
             step.getMockServiceResponseList().add(stepMockServiceResponse);
         }
         step.setStepParameterSetList(new LinkedList<>());

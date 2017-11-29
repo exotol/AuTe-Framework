@@ -68,10 +68,6 @@ public class AtExecutor {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
-        standSet.addAll(scenarioExecuteList.stream()
-                .filter(scenario -> scenario.getStand() != null)
-                .map(Scenario::getStand)
-                .collect(Collectors.toList()));
         if (project.getStand() != null) {
             standSet.add(project.getStand());
         }
@@ -94,10 +90,9 @@ public class AtExecutor {
         Map<Scenario, List<StepResult>> scenarioResultList = new HashMap<>();
         try {
             for (Scenario scenario : scenarioExecuteList) {
-                Stand currentStand = scenario.getStand() != null ? scenario.getStand() : project.getStand();
                 scenarioResultList.put(
                         scenario,
-                        executeScenario(project, scenario, currentStand, standConnectionMap.get(currentStand))
+                        executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()))
                 );
             }
         } finally {

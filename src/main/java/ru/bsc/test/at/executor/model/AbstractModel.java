@@ -9,6 +9,7 @@ package ru.bsc.test.at.executor.model;
 public abstract class AbstractModel {
 
     private Long id;
+    private String code;
     private Long sort;
 
     public Long getId() {
@@ -17,6 +18,15 @@ public abstract class AbstractModel {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public Long getSort() {
         return sort;
     }

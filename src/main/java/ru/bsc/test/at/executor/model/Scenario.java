@@ -12,15 +12,13 @@ import java.util.List;
 public class Scenario extends AbstractModel implements Serializable {
 
     private String name;
-    private Project project;
-    private ScenarioGroup scenarioGroup;
+    private String scenarioGroup;
     private Scenario beforeScenario;
     private Scenario afterScenario;
     private List<Step> stepList;
     private String stepListYamlFile;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
-    private Stand stand;
 
     public String getName() {
         return name;
@@ -28,10 +26,10 @@ public class Scenario extends AbstractModel implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public ScenarioGroup getScenarioGroup() {
+    public String getScenarioGroup() {
         return scenarioGroup;
     }
-    public void setScenarioGroup(ScenarioGroup scenarioGroup) {
+    public void setScenarioGroup(String scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
     }
     public Scenario getBeforeScenario() {
@@ -61,18 +59,6 @@ public class Scenario extends AbstractModel implements Serializable {
     public void setStepListYamlFile(String stepListYamlFile) {
         this.stepListYamlFile = stepListYamlFile;
     }
-    public Project getProject() {
-        return project;
-    }
-    public void setProject(Project project) {
-        this.project = project;
-    }
-    public Stand getStand() {
-        return stand;
-    }
-    public void setStand(Stand stand) {
-        this.stand = stand;
-    }
     public Boolean getBeforeScenarioIgnore() {
         return beforeScenarioIgnore == null ? false : beforeScenarioIgnore;
     }
@@ -89,12 +75,10 @@ public class Scenario extends AbstractModel implements Serializable {
     public Scenario copy() {
         Scenario scenario = new Scenario();
         scenario.setId(null);
-        scenario.setProject(getProject());
         scenario.setName(getName());
         scenario.setScenarioGroup(getScenarioGroup());
         scenario.setBeforeScenario(getBeforeScenario());
         scenario.setAfterScenario(getAfterScenario());
-        scenario.setStand(getStand());
 
         scenario.setStepListYamlFile(getStepListYamlFile());
         scenario.setStepList(new LinkedList<>());

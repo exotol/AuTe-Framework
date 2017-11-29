@@ -13,9 +13,7 @@ import java.util.Map;
 public class Project extends AbstractModel implements Serializable {
 
     private String name;
-    private String projectCode;
     private List<Scenario> scenarioList;
-    private List<ScenarioGroup> scenarioGroups;
     private List<Stand> standList;
     private Scenario beforeScenario;
     private Scenario afterScenario;
@@ -48,14 +46,6 @@ public class Project extends AbstractModel implements Serializable {
         this.afterScenario = afterScenario;
     }
 
-    public String getProjectCode() {
-        return projectCode;
-    }
-
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
-    }
-
     public List<Scenario> getScenarioList() {
         if (scenarioList == null) {
             scenarioList = new LinkedList<>();
@@ -65,17 +55,6 @@ public class Project extends AbstractModel implements Serializable {
 
     public void setScenarioList(List<Scenario> scenarioList) {
         this.scenarioList = scenarioList;
-    }
-
-    public List<ScenarioGroup> getScenarioGroups() {
-        if (scenarioGroups == null) {
-            scenarioGroups = new LinkedList<>();
-        }
-        return scenarioGroups;
-    }
-
-    public void setScenarioGroups(List<ScenarioGroup> scenarioGroups) {
-        this.scenarioGroups = scenarioGroups;
     }
 
     public List<Stand> getStandList() {
@@ -121,27 +100,19 @@ public class Project extends AbstractModel implements Serializable {
 
     public Project copy() {
         Project project = new Project();
-        project.setId(null);
         project.setName(getName());
-        project.setProjectCode(getProjectCode() + "_COPY");
+        project.setCode(getCode() + "_COPY");
         project.setUseRandomTestId(getUseRandomTestId());
         project.setTestIdHeaderName(getTestIdHeaderName());
-        Map<Stand, Stand> standToClonedMap = new HashMap<>();
         project.setStandList(new LinkedList<>());
         for (Stand stand : getStandList()) {
-            Stand projectStand = stand.copy();
-            projectStand.setProject(project);
-            standToClonedMap.put(stand, projectStand);
-
-            project.getStandList().add(projectStand);
+            project.getStandList().add(stand.copy());
         }
-        project.setStand(standToClonedMap.get(getStand()));
+        project.setStand(getStand().copy());
         Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
         project.setScenarioList(new LinkedList<>());
         for (Scenario scenario : getScenarioList()) {
             Scenario projectScenario = scenario.copy();
-            projectScenario.setProject(project);
-            projectScenario.setStand(standToClonedMap.get(scenario.getStand()));
             scenarioToClonedScenarioMap.put(scenario, projectScenario);
             // Для начала назначаются уже существующие в проекте группы.
             // Во время клонирования групп далее будет переприсваиваться новые созданные группы
@@ -159,21 +130,9 @@ public class Project extends AbstractModel implements Serializable {
             }
         }
 
-
         for (Scenario scenario: project.getScenarioList()) {
             scenario.setBeforeScenario(scenarioToClonedScenarioMap.get(scenario.getBeforeScenario()));
             scenario.setAfterScenario(scenarioToClonedScenarioMap.get(scenario.getAfterScenario()));
-        }
-        project.setScenarioGroups(new LinkedList<>());
-        for (ScenarioGroup scenarioGroup : getScenarioGroups()) {
-            ScenarioGroup projectScenarioGroup = scenarioGroup.copy();
-            // projectScenarioGroup.setProject(project);
-            project.getScenarioGroups().add(projectScenarioGroup);
-
-            // Всем сценариям, привязанным к этой группе, переназначить группы, созданные в склонированном проекте
-            project.getScenarioList().stream()
-                    .filter(scenario -> scenarioGroup.equals(scenario.getScenarioGroup()))
-                    .forEach(scenario -> scenario.setScenarioGroup(projectScenarioGroup));
         }
 
         project.setAmqpBroker(getAmqpBroker().copy());

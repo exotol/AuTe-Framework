@@ -7,19 +7,12 @@ package ru.bsc.test.at.executor.model;
 @SuppressWarnings("WeakerAccess")
 public class Stand extends AbstractModel {
 
-    private Project project;
     private String serviceUrl;
     private String dbUrl;
     private String dbUser;
     private String dbPassword;
     private String wireMockUrl;
 
-    public Project getProject() {
-        return project;
-    }
-    public void setProject(Project project) {
-        this.project = project;
-    }
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -53,7 +46,6 @@ public class Stand extends AbstractModel {
 
     public Stand copy() {
         Stand stand = new Stand();
-        stand.setProject(getProject());
         stand.setServiceUrl(getServiceUrl());
         stand.setDbUrl(getDbUrl());
         stand.setDbUser(getDbUser());
