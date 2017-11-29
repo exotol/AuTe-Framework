@@ -34,15 +34,19 @@ public abstract class ScenarioRoMapper {
                         .findAny()
                         .orElse(null));
 
-        scenario.setBeforeScenario(scenario.getProject().getScenarioList().stream()
-                .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getBeforeScenarioId()))
-                .findAny()
-                .orElse(null));
+        if (scenarioRo.getBeforeScenarioId() != null) {
+            scenario.setBeforeScenario(scenario.getProject().getScenarioList().stream()
+                    .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getBeforeScenarioId()))
+                    .findAny()
+                    .orElse(null));
+        }
 
-        scenario.setAfterScenario(scenario.getProject().getScenarioList().stream()
-                .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getAfterScenarioId()))
-                .findAny()
-                .orElse(null));
+        if (scenarioRo.getAfterScenarioId() != null) {
+            scenario.setAfterScenario(scenario.getProject().getScenarioList().stream()
+                    .filter(scenario1 -> Objects.equals(scenario1.getId(), scenarioRo.getAfterScenarioId()))
+                    .findAny()
+                    .orElse(null));
+        }
 
         scenario.setStand(scenarioRo.getStand() == null || scenarioRo.getStand().getId() == null ? null :
                 scenario.getProject().getStandList().stream()
