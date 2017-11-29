@@ -4,7 +4,6 @@ import {Project} from '../model/project';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {Scenario} from '../model/scenario';
-import {ScenarioGroup} from '../model/scenario-group';
 import {Globals} from '../globals';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import { saveAs } from 'file-saver/FileSaver';
@@ -24,6 +23,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   failCount = 0;
   Math: any;
   newScenarioName = '';
+  scenarioGroupList: String[];
 
   @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
   executingStateExecuting = 0;
@@ -41,36 +41,43 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   ngOnInit() {
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findOne(+params.get('id')))
+      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('code')))
       .subscribe(value => {
         this.project = value;
 
         this.route
           .queryParams
           .subscribe(params => {
-            if (+params['scenarioGroupId']) {
+            if (params['scenarioGroup']) {
               this.filter = new Scenario();
-              this.filter.scenarioGroup =
-                this.project.scenarioGroups
-                  .find(scenarioGroup => scenarioGroup.id === +params['scenarioGroupId']);
+              this.filter.scenarioGroup = params['scenarioGroup'];
             }
           });
       });
 
     this.route.paramMap
       .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(+params.get('id')))
-      .subscribe(value => this.scenarioList = value);
+      .subscribe(value => {
+        this.scenarioList = value;
+        this.scenarioList
+          .map(scenario => scenario.scenarioGroup)
+          .forEach(groupName => {
+            if (this.scenarioGroupList.indexOf(groupName) === -1) {
+              this.scenarioGroupList.push(groupName);
+            }
+          });
+      });
   }
 
   ngAfterContentChecked(): void {
     this.updateFailCountSum();
   }
 
-  selectGroup(scenarioGroup?: ScenarioGroup): boolean {
+  selectGroup(scenarioGroup?: String): boolean {
     this.filter = new Scenario();
     this.filter.scenarioGroup = scenarioGroup;
 
-    this.router.navigate([], {queryParams: {scenarioGroupId: scenarioGroup ? scenarioGroup.id : -1}});
+    this.router.navigate([], {queryParams: {scenarioGroup: scenarioGroup ? scenarioGroup : -1}});
     this.updateFailCountSum();
 
     return false;
@@ -101,7 +108,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     return !this.filter ||
       (!this.filter.scenarioGroup && !scenario.scenarioGroup) ||
       (this.filter.scenarioGroup && scenario && scenario.scenarioGroup &&
-          scenario.scenarioGroup.id === this.filter.scenarioGroup.id
+          scenario.scenarioGroup === this.filter.scenarioGroup
       );
   }
 

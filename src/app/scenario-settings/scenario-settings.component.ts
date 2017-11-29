@@ -4,7 +4,6 @@ import {ScenarioService} from '../service/scenario.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
-import {ScenarioGroup} from '../model/scenario-group';
 import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
@@ -20,11 +19,6 @@ export class ScenarioSettingsComponent implements OnInit {
   scenario: Scenario;
   project: Project;
   scenarioList: Scenario[];
-  ScenarioSettingsComponent = ScenarioSettingsComponent;
-
-  static scenarioGroupCompareFn(c1: ScenarioGroup, c2: ScenarioGroup): boolean {
-    return c1 && c2 ? c1.id === c2.id : c1 === c2;
-  }
 
   constructor(
     private route: ActivatedRoute,
@@ -39,11 +33,11 @@ export class ScenarioSettingsComponent implements OnInit {
       .subscribe(value => {
         this.scenario = value;
 
-        this.projectService.findOne(this.scenario.projectId)
+        this.projectService.findOne(this.scenario.projectCode)
           .subscribe(project => {
             this.project = project;
 
-            this.projectService.findScenariosByProject(this.project.id)
+            this.projectService.findScenariosByProject(this.project.projectCode)
               .subscribe(scenarioList => this.scenarioList = scenarioList);
           });
       });

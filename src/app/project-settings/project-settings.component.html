@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
+  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.projectCode]">{{project.projectCode}}. {{project.name}}</a></li>
   <li class="breadcrumb-item active">Settings</li>
 </ol>
 
@@ -10,7 +10,7 @@
   <div>
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
-      <li [class.active]="tab == 'groups'"><a href="#" (click)="selectTab('groups')">Scenario groups</a></li>
+      <!--li [class.active]="tab == 'groups'"><a href="#" (click)="selectTab('groups')">Scenario groups</a></li-->
       <li [class.active]="tab == 'stands'"><a href="#" (click)="selectTab('stands')">Stands</a></li>
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
     </ul>
@@ -74,7 +74,7 @@
           <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span> Add broker</button>
         </div>
       </div>
-      <div [style.display]="tab == 'groups' ? '' : 'none'">
+      <!--div [style.display]="tab == 'groups' ? '' : 'none'">
         <div *ngFor="let scenarioGroup of project.scenarioGroups">
           <label>Group name</label>
           <div class="input-group">
@@ -85,7 +85,7 @@
           </div>
         </div>
         <button class="btn btn-default" style="margin-top: 7px;" (click)="addScenarioGroup()"><span class="glyphicon glyphicon-plus"></span> Add scenario group</button>
-      </div>
+      </div-->
       <div [style.display]="tab == 'stands' ? '' : 'none'">
         <div style="border: none;" class="list-group-item" *ngFor="let stand of project.standList">
           <div class="row">

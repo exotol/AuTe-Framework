@@ -24,25 +24,25 @@ export class ProjectService {
 
   save(project: Project): Observable<Project> {
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id,
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode,
       project,
       { headers: this.headers }
     ).map(value => value.json() as Project);
   }
 
-  findOne(projectId: number): Observable<Project> {
-    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId)
+  findOne(projectCode: string): Observable<Project> {
+    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
       .map(value => value.json() as Project);
   }
 
-  findScenariosByProject(projectId: number): Observable<Scenario[]> {
-    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/scenarios')
+  findScenariosByProject(projectCode: string): Observable<Scenario[]> {
+    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios')
       .map(value => value.json() as Scenario[]);
   }
 
   createScenario(project: Project, scenario: Scenario): Observable<Scenario> {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/scenarios',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode + '/scenarios',
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);
@@ -50,7 +50,7 @@ export class ProjectService {
 
   downloadYaml(project: Project, selectedScenarios: number[]) {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/export-selected-to-yaml',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode + '/export-selected-to-yaml',
       selectedScenarios,
       {responseType: ResponseContentType.Blob}
     ).map(value => new Blob([value.blob()]));

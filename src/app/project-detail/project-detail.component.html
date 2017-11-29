@@ -1,11 +1,11 @@
 <ng-container *ngIf="project">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-    <li class="breadcrumb-item active">{{project.id}}. {{project.name}}</li>
+    <li class="breadcrumb-item active">{{project.projectCode}}. {{project.name}}</li>
   </ol>
 
   <h4>{{project.name}}</h4>
-  <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
+  <a [routerLink]="['/project/' + project.projectCode + '/settings']">Settings</a>
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
@@ -15,8 +15,8 @@
       <li [class.active]="filter && !filter.scenarioGroup">
         <a href="#" (click)="selectGroup()">Without group</a>
       </li>
-      <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of project.scenarioGroups">
-        <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
+      <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of scenarioGroupList">
+        <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup}}</a>
       </li>
     </ul>
   </nav>
@@ -53,7 +53,7 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.id + '/get-yaml'">Download project as YAML</a>
+        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.projectCode + '/get-yaml'">Download project as YAML</a>
         <button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button>
       </div>
     </div>

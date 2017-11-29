@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
+  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.projectCode]">{{project.projectCode}}. {{project.name}}</a></li>
   <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
-    <a [routerLink]="['/project', scenario.projectId]" [queryParams]="{scenarioGroupId: scenario.scenarioGroup.id}">{{scenario.scenarioGroup.name}}</a>
+    <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
   </li>
   <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/scenario', scenario.id]">{{scenario.id}}. {{scenario.name}}</a></li>
   <li class="breadcrumb-item active">Settings</li>
@@ -21,17 +21,17 @@
       </div>
     </div>
 
-    <div class="row">
+    <!--div class="row">
       <div class="col-sm-3">
         <label>Scenario group</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="Scenario group" *ngIf="project" [compareWith]="ScenarioSettingsComponent.scenarioGroupCompareFn" [(ngModel)]="scenario.scenarioGroup">
+        <select class="form-control" title="Scenario group" *ngIf="project" [(ngModel)]="scenario.scenarioGroup">
           <option [ngValue]="null">[no group]</option>
-          <option *ngFor="let scenarioGroup of project.scenarioGroups" [ngValue]="scenarioGroup">{{scenarioGroup.name}}</option>
+          <option *ngFor="let scenarioGroup of scenarioGroupList" [ngValue]="scenarioGroup">{{scenarioGroup}}</option>
         </select>
       </div>
-    </div>
+    </div-->
 
     <div class="row">
       <div class="col-sm-3">

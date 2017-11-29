@@ -1,15 +1,13 @@
-import {ScenarioGroup} from './scenario-group';
 import {StepResult} from './step-result';
 import {Step} from './step';
 import {Stand} from './stand';
 
 export class Scenario {
   id: number;
-  projectId: number;
+  projectCode: string;
   projectName: string;
-  projectStand: Stand;
   name: string;
-  scenarioGroup: ScenarioGroup;
+  scenarioGroup: String;
   stepResults: StepResult[];
   lastRunFailures: number;
 

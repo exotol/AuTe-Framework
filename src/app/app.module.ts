@@ -25,7 +25,7 @@ import {CustomToastyService} from "./service/custom-toasty.service";
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
-  { path: 'project/:id', component: ProjectDetailComponent },
+  { path: 'project/:code', component: ProjectDetailComponent },
   { path: 'project/:id/settings', component: ProjectSettingsComponent },
   { path: 'scenario/:id', component: ScenarioDetailComponent },
   { path: 'scenario/:id/settings', component: ScenarioSettingsComponent }

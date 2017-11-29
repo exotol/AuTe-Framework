@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {ScenarioGroup} from '../model/scenario-group';
 import {Stand} from '../model/stand';
 import {Scenario} from '../model/scenario';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -32,11 +31,11 @@ export class ProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findOne(+params.get('id')))
+      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('code')))
       .subscribe(value => {
         this.project = value;
 
-        this.projectService.findScenariosByProject(this.project.id)
+        this.projectService.findScenariosByProject(this.project.projectCode)
           .subscribe(scenarioList => this.scenarioList = scenarioList);
       });
   }
@@ -59,6 +58,7 @@ export class ProjectSettingsComponent implements OnInit {
     return false;
   }
 
+  /*
   removeScenarioGroup(scenarioGroup: ScenarioGroup): void {
     const indexToRemove = this.project.scenarioGroups.indexOf(scenarioGroup);
     if (indexToRemove > -1) {
@@ -72,6 +72,7 @@ export class ProjectSettingsComponent implements OnInit {
     }
     this.project.scenarioGroups.push(new ScenarioGroup());
   }
+  */
 
   selectAsDefaultStand(stand: Stand): void {
     this.project.stand = stand;
