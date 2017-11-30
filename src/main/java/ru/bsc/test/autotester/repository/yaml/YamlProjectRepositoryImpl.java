@@ -28,7 +28,7 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
     public Project findProject(String projectCode) {
         return projectsSource.getProjectList()
                 .stream()
-                .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
+                .filter(project -> Objects.equals(project.getCode(), projectCode))
                 .findAny()
                 .orElse(null);
     }

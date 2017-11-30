@@ -50,7 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private Project findOne(List<Project> projectList, String projectCode) {
         return projectList.stream()
-                .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
+                .filter(project -> Objects.equals(project.getCode(), projectCode))
                 .findAny()
                 .orElse(null);
     }
@@ -100,7 +100,7 @@ public class ProjectServiceImpl implements ProjectService {
                 scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, newScenario);
 
                 projectRepository.saveProject(project, projectList);
-                return projectRoMapper.scenarioToScenarioRo(project.getProjectCode(), project.getName(), newScenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), newScenario);
             }
             return null;
         }
@@ -118,7 +118,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project findOneByCode(String projectCode) {
         synchronized (this) {
             return findAll().stream()
-                    .filter(project -> Objects.equals(project.getProjectCode(), projectCode))
+                    .filter(project -> Objects.equals(project.getCode(), projectCode))
                     .findAny()
                     .orElse(null);
         }

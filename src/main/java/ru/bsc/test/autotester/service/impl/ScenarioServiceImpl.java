@@ -84,7 +84,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
             Scenario scenario = findOne(projectList, scenarioId);
-            Project project = projectList.stream().filter(p -> Objects.equals(p.getProjectCode(), projectCode)).findAny().orElse(null);
+            Project project = projectList.stream().filter(p -> Objects.equals(p.getCode(), projectCode)).findAny().orElse(null);
             if (scenario != null && project != null) {
                 project.setScenarioList(project.getScenarioList().stream().filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId())).collect(Collectors.toList()));
                 scenarioRepository.saveScenario(scenario, projectList);
@@ -99,11 +99,11 @@ public class ScenarioServiceImpl implements ScenarioService {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
             Scenario scenario = findOne(projectList, scenarioId);
-            Project project = projectList.stream().filter(project1 -> Objects.equals(project1.getProjectCode(), projectCode)).findAny().orElse(null);
+            Project project = projectList.stream().filter(project1 -> Objects.equals(project1.getCode(), projectCode)).findAny().orElse(null);
             if (scenario != null && project != null) {
                 scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, scenario);
                 scenario = scenarioRepository.saveScenario(scenario, projectList);
-                return projectRoMapper.scenarioToScenarioRo(project.getProjectCode(), project.getName(), scenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), scenario);
             }
             return null;
         }

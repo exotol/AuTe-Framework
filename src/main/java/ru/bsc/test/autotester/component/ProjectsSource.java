@@ -69,6 +69,42 @@ public class ProjectsSource {
     }
 
     private void readExternalFiles(Project project) {
+
+
+        File[] fileList = new File(directoryPath + "/" + project.getCode() + "/").listFiles(File::isDirectory);
+        if (fileList != null) {
+            for (File folder : fileList) {
+                File scenarioYml = new File(folder, "scenario.yml");
+                if (scenarioYml.exists()) {
+                    try {
+                        Scenario scenario = YamlUtils.loadAs(scenarioYml, Scenario.class);
+                        scenario.setCode(folder.getName());
+                        project.getScenarioList().add(scenario);
+                    } catch (IOException e) {
+                        LOGGER.error("Read file " + scenarioYml.getAbsolutePath(), e);
+                    }
+                } else {
+                    File[] innerFileList = folder.listFiles(File::isDirectory);
+                    if (innerFileList != null) {
+                        for (File groupFolder : innerFileList) {
+                            File scenarioYmlInGroup = new File(groupFolder, "scenario.yml");
+                            if (scenarioYmlInGroup.exists()) {
+                                try {
+                                    Scenario scenario = YamlUtils.loadAs(scenarioYmlInGroup, Scenario.class);
+                                    scenario.setScenarioGroup(folder.getName());
+                                    project.getScenarioList().add(scenario);
+                                } catch (IOException e) {
+                                    LOGGER.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /*
         // Чтение внешних файлов списков шагов
         project.getScenarioList().forEach(scenario -> {
             if (scenario.getStepListYamlFile() != null && (scenario.getStepList() == null || scenario.getStepList().isEmpty())) {
@@ -84,6 +120,7 @@ public class ProjectsSource {
                 }
             }
         });
+        */
 
         // Чтение внешних файлов для вложенных моделей
         applyToProjectModels(project, model -> {

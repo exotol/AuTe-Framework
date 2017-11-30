@@ -92,7 +92,7 @@ public class RestProjectController {
     ) throws IOException {
         Project project = projectService.findOne(projectCode);
         if (project != null) {
-            response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getProjectCode() + ".yml\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getCode() + ".yml\"");
             return projectService.getSelectedAsYaml(projectCode, selectedScenarios);
         }
         throw new ResourceNotFoundException();
@@ -106,7 +106,7 @@ public class RestProjectController {
     ) throws IOException {
         Project project = projectService.findOne(projectCode);
         if (project != null) {
-            response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getProjectCode() + ".yml\"");
+            response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getCode() + ".yml\"");
             return projectService.findOneAsYaml(projectCode);
         }
         throw new ResourceNotFoundException();
