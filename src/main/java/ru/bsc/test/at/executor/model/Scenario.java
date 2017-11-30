@@ -13,8 +13,6 @@ public class Scenario extends AbstractModel implements Serializable {
 
     private String name;
     private String scenarioGroup;
-    private Scenario beforeScenario;
-    private Scenario afterScenario;
     private List<Step> stepList;
     private String stepListYamlFile;
     private Boolean beforeScenarioIgnore;
@@ -31,18 +29,6 @@ public class Scenario extends AbstractModel implements Serializable {
     }
     public void setScenarioGroup(String scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
-    }
-    public Scenario getBeforeScenario() {
-        return beforeScenario;
-    }
-    public void setBeforeScenario(Scenario beforeScenario) {
-        this.beforeScenario = beforeScenario;
-    }
-    public Scenario getAfterScenario() {
-        return afterScenario;
-    }
-    public void setAfterScenario(Scenario afterScenario) {
-        this.afterScenario = afterScenario;
     }
     public List<Step> getStepList() {
         if (stepList == null) {
@@ -77,8 +63,6 @@ public class Scenario extends AbstractModel implements Serializable {
         scenario.setId(null);
         scenario.setName(getName());
         scenario.setScenarioGroup(getScenarioGroup());
-        scenario.setBeforeScenario(getBeforeScenario());
-        scenario.setAfterScenario(getAfterScenario());
 
         scenario.setStepListYamlFile(getStepListYamlFile());
         scenario.setStepList(new LinkedList<>());

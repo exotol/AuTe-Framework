@@ -1,10 +1,8 @@
 package ru.bsc.test.at.executor.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sdoroshin on 10.05.2017.
@@ -91,9 +89,11 @@ public class Project extends AbstractModel implements Serializable {
     public void setTestIdHeaderName(String testIdHeaderName) {
         this.testIdHeaderName = testIdHeaderName;
     }
+
     public AmqpBroker getAmqpBroker() {
         return amqpBroker;
     }
+
     public void setAmqpBroker(AmqpBroker amqpBroker) {
         this.amqpBroker = amqpBroker;
     }
@@ -109,16 +109,10 @@ public class Project extends AbstractModel implements Serializable {
             project.getStandList().add(stand.copy());
         }
         project.setStand(getStand().copy());
-        Map<Scenario, Scenario> scenarioToClonedScenarioMap = new HashMap<>();
         project.setScenarioList(new LinkedList<>());
         for (Scenario scenario : getScenarioList()) {
             Scenario projectScenario = scenario.copy();
-            scenarioToClonedScenarioMap.put(scenario, projectScenario);
-            // Для начала назначаются уже существующие в проекте группы.
-            // Во время клонирования групп далее будет переприсваиваться новые созданные группы
             projectScenario.setScenarioGroup(scenario.getScenarioGroup());
-
-            // Добавить склонированный сценарий в склонированный проект
             project.getScenarioList().add(projectScenario);
 
             // Правильная привязка сценариев
@@ -128,11 +122,6 @@ public class Project extends AbstractModel implements Serializable {
             if (scenario.equals(getAfterScenario())) {
                 project.setAfterScenario(projectScenario);
             }
-        }
-
-        for (Scenario scenario: project.getScenarioList()) {
-            scenario.setBeforeScenario(scenarioToClonedScenarioMap.get(scenario.getBeforeScenario()));
-            scenario.setAfterScenario(scenarioToClonedScenarioMap.get(scenario.getAfterScenario()));
         }
 
         project.setAmqpBroker(getAmqpBroker().copy());

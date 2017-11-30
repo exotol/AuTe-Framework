@@ -115,7 +115,7 @@ public class AtExecutor {
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
 
         // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : scenario.getBeforeScenario() == null ? project.getBeforeScenario() : scenario.getBeforeScenario();
+        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : project.getBeforeScenario();
         if (beforeScenario != null) {
             stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues));
         }
@@ -123,7 +123,7 @@ public class AtExecutor {
         stepResultList.addAll(executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues));
 
         // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : scenario.getAfterScenario() == null ? project.getAfterScenario() : scenario.getAfterScenario();
+        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : project.getAfterScenario();
         if (afterScenario != null) {
             stepResultList.addAll(executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues));
         }
