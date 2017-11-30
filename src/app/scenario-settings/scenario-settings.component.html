@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.projectCode]">{{project.projectCode}}. {{project.name}}</a></li>
+  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.code]">{{project.code}}. {{project.name}}</a></li>
   <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
     <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
   </li>

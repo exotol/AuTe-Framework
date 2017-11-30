@@ -97,7 +97,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
       .filter(value => this.isSelectedScenario(value))
       .map(value => value.id);
     this.projectService.downloadYaml(this.project, selectedScenarios)
-      .subscribe(res => saveAs(res, 'PROJECT_' + this.project.projectCode + '.yml'))
+      .subscribe(res => saveAs(res, 'PROJECT_' + this.project.code + '.yml'))
   }
 
   isSelectedScenario(scenario: Scenario) {

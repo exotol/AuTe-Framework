@@ -7,7 +7,7 @@
   <tbody>
     <tr *ngFor="let project of projectList">
       <td>
-        <a [routerLink]="['/project', project.projectCode]">{{project.name}}</a>
+        <a [routerLink]="['/project', project.code]">{{project.name}}</a>
       </td>
       <td>
         <ng-container *ngIf="project.stand">

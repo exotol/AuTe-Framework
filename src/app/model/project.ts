@@ -5,7 +5,7 @@ export class Project {
   name: string;
   beforeScenarioId: Number;
   afterScenarioId: Number;
-  projectCode: string;
+  code: string;
   standList: Stand[];
   stand: Stand;
   useRandomTestId: boolean;

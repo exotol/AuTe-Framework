@@ -4,6 +4,7 @@ import {Stand} from './stand';
 
 export class Scenario {
   id: number;
+  code: string;
   projectCode: string;
   projectName: string;
   name: string;

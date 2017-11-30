@@ -24,7 +24,7 @@ export class ProjectService {
 
   save(project: Project): Observable<Project> {
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode,
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code,
       project,
       { headers: this.headers }
     ).map(value => value.json() as Project);
@@ -42,7 +42,7 @@ export class ProjectService {
 
   createScenario(project: Project, scenario: Scenario): Observable<Scenario> {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode + '/scenarios',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/scenarios',
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);
@@ -50,7 +50,7 @@ export class ProjectService {
 
   downloadYaml(project: Project, selectedScenarios: number[]) {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.projectCode + '/export-selected-to-yaml',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/export-selected-to-yaml',
       selectedScenarios,
       {responseType: ResponseContentType.Blob}
     ).map(value => new Blob([value.blob()]));

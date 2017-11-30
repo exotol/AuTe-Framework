@@ -35,7 +35,7 @@ export class ProjectSettingsComponent implements OnInit {
       .subscribe(value => {
         this.project = value;
 
-        this.projectService.findScenariosByProject(this.project.projectCode)
+        this.projectService.findScenariosByProject(this.project.code)
           .subscribe(scenarioList => this.scenarioList = scenarioList);
       });
   }
