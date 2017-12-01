@@ -9,18 +9,11 @@ import java.io.Serializable;
 @SuppressWarnings("WeakerAccess")
 public class ExpectedServiceRequest extends AbstractModel implements Serializable {
 
-    private Step step;
     private String serviceName;
     private String expectedServiceRequest;
     private String expectedServiceRequestFile;
     private String ignoredTags;
 
-    public Step getStep() {
-        return step;
-    }
-    public void setStep(Step step) {
-        this.step = step;
-    }
     public String getServiceName() {
         return serviceName;
     }
@@ -63,7 +56,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
 
         ExpectedServiceRequest that = (ExpectedServiceRequest) o;
 
-        if (step != null ? !step.equals(that.step) : that.step != null) return false;
         if (serviceName != null ? !serviceName.equals(that.serviceName) : that.serviceName != null) return false;
         if (expectedServiceRequest != null ? !expectedServiceRequest.equals(that.expectedServiceRequest) : that.expectedServiceRequest != null)
             return false;
@@ -74,8 +66,7 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
 
     @Override
     public int hashCode() {
-        int result = step != null ? step.hashCode() : 0;
-        result = 31 * result + (serviceName != null ? serviceName.hashCode() : 0);
+        int result = serviceName != null ? serviceName.hashCode() : 0;
         result = 31 * result + (expectedServiceRequest != null ? expectedServiceRequest.hashCode() : 0);
         result = 31 * result + (expectedServiceRequestFile != null ? expectedServiceRequestFile.hashCode() : 0);
         result = 31 * result + (ignoredTags != null ? ignoredTags.hashCode() : 0);

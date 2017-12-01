@@ -409,7 +409,7 @@ public class AtExecutor {
                     Matcher m = p.matcher(response);
 
                     if (m.matches()) {
-                        String savedValue = response.split(String.format("%s\":", value.trim()), 2)[1].trim().split(",|}", 2)[0];
+                        String savedValue = response.split(String.format("%s\":", value.trim()), 2)[1].trim().split("[,}]", 2)[0];
                         savedValues.put(value.trim(), savedValue);
                     }
                 }

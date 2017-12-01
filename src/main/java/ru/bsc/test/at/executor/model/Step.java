@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by sdoroshin on 10.05.2017.
  *
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Step extends AbstractModel implements Serializable {
 
     private List<ExpectedServiceRequest> expectedServiceRequests;
@@ -271,26 +271,23 @@ public class Step extends AbstractModel implements Serializable {
         step.setResponseCompareMode(getResponseCompareMode());
         step.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
-            ExpectedServiceRequest stepExpectedServiceRequest = expectedServiceRequest.copy();
-            stepExpectedServiceRequest.setStep(step);
-            step.getExpectedServiceRequests().add(stepExpectedServiceRequest);
+            step.getExpectedServiceRequests().add(expectedServiceRequest.copy());
         }
         step.setMockServiceResponseList(new LinkedList<>());
         for (MockServiceResponse mockServiceResponse: getMockServiceResponseList()) {
-            MockServiceResponse stepMockServiceResponse = mockServiceResponse.copy();
-            step.getMockServiceResponseList().add(stepMockServiceResponse);
+            step.getMockServiceResponseList().add(mockServiceResponse.copy());
         }
         step.setStepParameterSetList(new LinkedList<>());
         if (getStepParameterSetList() != null) {
             for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
-                StepParameterSet stepStepParameterSet = stepParameterSet.copy();
-                stepStepParameterSet.setStep(step);
-                step.getStepParameterSetList().add(stepStepParameterSet);
+                step.getStepParameterSetList().add(stepParameterSet.copy());
             }
         }
         step.setFormDataList(new LinkedList<>());
-        for (FormData formData : getFormDataList()) {
-            step.getFormDataList().add(formData.copy());
+        if (getFormDataList() != null) {
+            for (FormData formData : getFormDataList()) {
+                step.getFormDataList().add(formData.copy());
+            }
         }
         return step;
     }

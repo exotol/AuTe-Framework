@@ -10,16 +10,9 @@ import java.util.List;
 @SuppressWarnings("WeakerAccess")
 public class StepParameterSet extends AbstractModel {
 
-    private Step step;
     private List<StepParameter> stepParameterList;
     private String description;
 
-    public Step getStep() {
-        return step;
-    }
-    public void setStep(Step step) {
-        this.step = step;
-    }
     public List<StepParameter> getStepParameterList() {
         if (stepParameterList == null) {
             stepParameterList = new LinkedList<>();
