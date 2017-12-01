@@ -56,7 +56,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
       });
 
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(+params.get('id')))
+      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(params.get('cod')))
       .subscribe(value => {
         this.scenarioList = value;
         this.scenarioList
