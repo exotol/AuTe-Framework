@@ -376,7 +376,7 @@ public class AtExecutor {
             if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
-        } catch (PathNotFoundException e) {
+        } catch (PathNotFoundException | IllegalArgumentException e) {
             retry = true;
         }
         if (retry) {
