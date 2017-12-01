@@ -14,7 +14,9 @@ public class Project extends AbstractModel implements Serializable {
     private List<Scenario> scenarioList;
     private List<Stand> standList;
     private Scenario beforeScenario;
+    private String beforeScenarioPath;
     private Scenario afterScenario;
+    private String afterScenarioPath;
     private Stand stand;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
@@ -36,12 +38,28 @@ public class Project extends AbstractModel implements Serializable {
         this.beforeScenario = beforeScenario;
     }
 
+    public String getBeforeScenarioPath() {
+        return beforeScenarioPath;
+    }
+
+    public void setBeforeScenarioPath(String beforeScenarioPath) {
+        this.beforeScenarioPath = beforeScenarioPath;
+    }
+
     public Scenario getAfterScenario() {
         return afterScenario;
     }
 
     public void setAfterScenario(Scenario afterScenario) {
         this.afterScenario = afterScenario;
+    }
+
+    public String getAfterScenarioPath() {
+        return afterScenarioPath;
+    }
+
+    public void setAfterScenarioPath(String afterScenarioPath) {
+        this.afterScenarioPath = afterScenarioPath;
     }
 
     public List<Scenario> getScenarioList() {
