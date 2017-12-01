@@ -198,7 +198,7 @@ public class AtExecutor {
         stepResult.setSavedParameters(savedValues.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step);
+        sendMessageToQuery(project, step, savedValues);
 
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
@@ -328,7 +328,7 @@ public class AtExecutor {
         }
     }
 
-    private void sendMessageToQuery(Project project, Step step) throws Exception {
+    private void sendMessageToQuery(Project project, Step step, Map<String, String> savedValues) throws Exception {
         if (step.getMqName() != null && step.getMqMessage() != null) {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
@@ -340,7 +340,8 @@ public class AtExecutor {
             mqManager.setUsername(project.getAmqpBroker().getUsername());
             mqManager.setPassword(project.getAmqpBroker().getPassword());
 
-            mqManager.sendTextMessage(step.getMqName(), step.getMqMessage());
+            String message = insertSavedValues(step.getMqMessage(), savedValues);
+            mqManager.sendTextMessage(step.getMqName(), message);
         }
     }
 
