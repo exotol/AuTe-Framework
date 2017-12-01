@@ -12,6 +12,7 @@ import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -49,7 +50,7 @@ public class StepServiceImpl implements StepService {
     public StepRo updateFromRo(Long stepId, StepRo stepRo) {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
-            Step step = findOne(stepId);
+            Step step = findOne(projectList, stepId);
             if (step != null) {
                 stepRoMapper.updateStep(stepRo, step);
                 stepRepository.saveStep(step, projectList);
@@ -57,5 +58,14 @@ public class StepServiceImpl implements StepService {
             }
             return null;
         }
+    }
+
+    private Step findOne(List<Project> projectList, Long stepId) {
+        return projectList.stream()
+                .flatMap(project -> project.getScenarioList().stream())
+                .flatMap(scenario -> scenario.getStepList().stream())
+                .filter(step -> Objects.equals(step.getId(), stepId))
+                .findAny()
+                .orElse(null);
     }
 }
