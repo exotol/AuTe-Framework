@@ -45,7 +45,9 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "sort", ignore = true),
             @Mapping(target = "beforeScenario", ignore = true),
+            @Mapping(target = "beforeScenarioPath", ignore = true),
             @Mapping(target = "afterScenario", ignore = true),
+            @Mapping(target = "afterScenarioPath", ignore = true),
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "standList", ignore = true),
 

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,13 @@ public class ProjectsSource {
                         loadedProject.setCode(projectDirectory.getName());
                         readExternalFiles(loadedProject);
 
+                        if (loadedProject.getBeforeScenarioPath() != null) {
+                            loadedProject.setBeforeScenario(findScenarioByPath(loadedProject.getBeforeScenarioPath(), loadedProject.getScenarioList()));
+                        }
+                        if (loadedProject.getAfterScenarioPath() != null) {
+                            loadedProject.setAfterScenario(findScenarioByPath(loadedProject.getAfterScenarioPath(), loadedProject.getScenarioList()));
+                        }
+
                         projectList.add(loadedProject);
                     } catch (IOException e) {
                         LOGGER.error("Main project file not found", e);
@@ -79,6 +87,27 @@ public class ProjectsSource {
         checkAndRepairId(projectList);
 
         return projectList;
+    }
+
+    private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
+        String scenarioCode;
+        String scenarioGroupCode;
+        String[] scenarioPathParts = path.split("/");
+        if (scenarioPathParts.length == 1) {
+            scenarioGroupCode = null;
+            scenarioCode = scenarioPathParts[0];
+        } else if (scenarioPathParts.length == 2) {
+            scenarioGroupCode = scenarioPathParts[0];
+            scenarioCode = scenarioPathParts[1];
+        } else {
+            return null;
+        }
+
+        return scenarioList.stream()
+                .filter(scenario -> Objects.equals(scenario.getCode(), scenarioCode))
+                .filter(scenario -> scenarioGroupCode == null || Objects.equals(scenarioGroupCode, scenario.getScenarioGroup()))
+                .findAny()
+                .orElse(null);
     }
 
     private void readExternalFiles(Project project) {
@@ -208,6 +237,24 @@ public class ProjectsSource {
             try {
                 saveToExternalFiles(projectItem, true);
                 projectItem.setScenarioList(null);
+                if (projectItem.getBeforeScenario() == null) {
+                    projectItem.setBeforeScenarioPath(null);
+                } else {
+                    projectItem.setBeforeScenarioPath(
+                            (StringUtils.isEmpty(projectItem.getBeforeScenario().getScenarioGroup()) ? "" : projectItem.getBeforeScenario().getScenarioGroup() + "/")
+                            + projectItem.getBeforeScenario().getCode()
+                    );
+                    projectItem.setBeforeScenario(null);
+                }
+                if (projectItem.getAfterScenario() == null) {
+                    projectItem.setAfterScenarioPath(null);
+                } else {
+                    projectItem.setAfterScenarioPath(
+                            (StringUtils.isEmpty(projectItem.getAfterScenario().getScenarioGroup()) ? "" : projectItem.getAfterScenario().getScenarioGroup() + "/")
+                            + projectItem.getAfterScenario().getCode()
+                    );
+                    projectItem.setAfterScenario(null);
+                }
                 YamlUtils.dumpToFile(projectItem, fileName);
             } catch (IOException e) {
                 LOGGER.error("Save file " + fileName, e);
@@ -255,7 +302,7 @@ public class ProjectsSource {
         return "steps/" + step.getCode() + "/";
     }
 
-    private String stepRequestFile(Step step) {
+    private String stepRequestFile() {
         return "request.json";
     }
 
@@ -267,11 +314,11 @@ public class ProjectsSource {
         return "mq-message." + extByContent(step.getMqMessage());
     }
 
-    private String mockResponseBodyFile(MockServiceResponse mockServiceResponse, Step step) {
+    private String mockResponseBodyFile(MockServiceResponse mockServiceResponse) {
         return "mock-response-" + mockServiceResponse.getId() + "." + extByContent(mockServiceResponse.getResponseBody());
     }
 
-    private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest, Step step) {
+    private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest) {
         return "expected-service-request-" + expectedServiceRequest.getId() + "." + extByContent(expectedServiceRequest.getExpectedServiceRequest());
     }
 
@@ -342,7 +389,7 @@ public class ProjectsSource {
                 if (step.getRequest() != null) {
                     try {
                         if (step.getRequestFile() == null || saveAll) {
-                            step.setRequestFile(stepPath(step) + stepRequestFile(step));
+                            step.setRequestFile(stepPath(step) + stepRequestFile());
                         }
                         if (isModelWasChanged(step) || saveAll) {
                             File file = new File(stepFullPath + step.getRequestFile());
@@ -390,7 +437,7 @@ public class ProjectsSource {
                     if (mockServiceResponse.getResponseBody() != null) {
                         try {
                             if (mockServiceResponse.getResponseBodyFile() == null || saveAll) {
-                                mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse, step));
+                                mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse));
                             }
                             if (isModelWasChanged(step) || saveAll) {
                                 File file = new File(stepFullPath + mockServiceResponse.getResponseBodyFile());
@@ -409,7 +456,7 @@ public class ProjectsSource {
                     if (expectedServiceRequest.getExpectedServiceRequest() != null) {
                         try {
                             if (expectedServiceRequest.getExpectedServiceRequestFile() == null || saveAll) {
-                                expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest, step));
+                                expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest));
                             }
                             if (isModelWasChanged(step) || saveAll) {
                                 File file = new File(stepFullPath + expectedServiceRequest.getExpectedServiceRequestFile());
