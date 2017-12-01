@@ -17,8 +17,6 @@ public class ScenarioRo extends AbstractRo {
     private String name;
 
     private String scenarioGroup;
-    private Long beforeScenarioId;
-    private Long afterScenarioId;
     private List<StepRo> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
@@ -69,22 +67,6 @@ public class ScenarioRo extends AbstractRo {
 
     public void setScenarioGroup(String scenarioGroup) {
         this.scenarioGroup = scenarioGroup;
-    }
-
-    public Long getBeforeScenarioId() {
-        return beforeScenarioId;
-    }
-
-    public void setBeforeScenarioId(Long beforeScenarioId) {
-        this.beforeScenarioId = beforeScenarioId;
-    }
-
-    public Long getAfterScenarioId() {
-        return afterScenarioId;
-    }
-
-    public void setAfterScenarioId(Long afterScenarioId) {
-        this.afterScenarioId = afterScenarioId;
     }
 
     public List<StepRo> getStepList() {

@@ -101,7 +101,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             Scenario scenario = findOne(projectList, scenarioId);
             Project project = projectList.stream().filter(project1 -> Objects.equals(project1.getCode(), projectCode)).findAny().orElse(null);
             if (scenario != null && project != null) {
-                scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, scenario);
+                scenarioRoMapper.updateScenario(scenarioRo, scenario);
                 scenario = scenarioRepository.saveScenario(scenario, projectList);
                 return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), scenario);
             }

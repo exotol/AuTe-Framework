@@ -97,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
                 Scenario newScenario = new Scenario();
                 project.getScenarioList().add(newScenario);
 
-                scenarioRoMapper.updateScenario(project.getScenarioList(), scenarioRo, newScenario);
+                scenarioRoMapper.updateScenario(scenarioRo, newScenario);
 
                 projectRepository.saveProject(project, projectList);
                 return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), newScenario);

@@ -23,6 +23,8 @@ public class YamlUtils {
     public static void dumpToFile(Object data, String fileName) throws IOException {
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setAnchorGenerator(new AutotesterAnchorGenerator());
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
 
         File file = new File(fileName);
         if (!file.exists()) {

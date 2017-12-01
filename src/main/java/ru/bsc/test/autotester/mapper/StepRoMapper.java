@@ -118,7 +118,6 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "step", ignore = true),
             @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "stepParameterList", ignore = true),
@@ -250,7 +249,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             StepParameterSet newSet = new StepParameterSet();
                             updateStepParameterSet(stepParameterSetRo, newSet);
-                            newSet.setStep(step);
                             return newSet;
                         }))
                 .collect(Collectors.toList())
@@ -272,7 +270,6 @@ public abstract class StepRoMapper {
                         .orElseGet(() -> {
                             ExpectedServiceRequest newRequest = new ExpectedServiceRequest();
                             updateExpectedServiceRequest(expectedServiceRequestRo, newRequest);
-                            newRequest.setStep(step);
                             return newRequest;
                         }))
                 .collect(Collectors.toList())
@@ -302,7 +299,6 @@ public abstract class StepRoMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "code", ignore = true),
-            @Mapping(target = "step", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
