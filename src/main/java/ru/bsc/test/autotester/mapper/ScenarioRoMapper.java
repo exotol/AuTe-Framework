@@ -9,7 +9,7 @@ public abstract class ScenarioRoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "sort", ignore = true),
+            // @Mapping(target = "sort", ignore = true),
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),

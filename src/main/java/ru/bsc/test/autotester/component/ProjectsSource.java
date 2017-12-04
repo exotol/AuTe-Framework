@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -34,10 +35,11 @@ public class ProjectsSource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProjectsSource.class);
     private final static String MAIN_YAML_FILENAME = "main.yml";
+    private final static String SCENARIO_YAML_FILENAME = "scenario.yml";
     private static final String FILE_ENCODING = "UTF-8";
 
     private String directoryPath;
-    private final HashMap<Long, Integer> idToHashCode = new HashMap<>();
+    private final HashMap<Object, Integer> idToHashCode = new HashMap<>();
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
@@ -116,7 +118,7 @@ public class ProjectsSource {
         File[] fileList = new File(directoryPath + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
         if (fileList != null) {
             for (File folder : fileList) {
-                File scenarioYml = new File(folder, "scenario.yml");
+                File scenarioYml = new File(folder, SCENARIO_YAML_FILENAME);
                 if (scenarioYml.exists()) {
                     try {
                         Scenario scenario = YamlUtils.loadAs(scenarioYml, Scenario.class);
@@ -129,7 +131,7 @@ public class ProjectsSource {
                     File[] innerFileList = folder.listFiles(File::isDirectory);
                     if (innerFileList != null) {
                         for (File groupFolder : innerFileList) {
-                            File scenarioYmlInGroup = new File(groupFolder, "scenario.yml");
+                            File scenarioYmlInGroup = new File(groupFolder, SCENARIO_YAML_FILENAME);
                             if (scenarioYmlInGroup.exists()) {
                                 try {
                                     Scenario scenario = YamlUtils.loadAs(scenarioYmlInGroup, Scenario.class);
@@ -195,7 +197,7 @@ public class ProjectsSource {
                 });
             }
             if (model != null) {
-                idToHashCode.put(model.getId(), model.hashCode());
+                idToHashCode.put(model.getCode(), model.hashCode());
             }
         }, modelList -> {});
     }
@@ -289,7 +291,7 @@ public class ProjectsSource {
                 result += scenario.getScenarioGroup() + "/";
             }
             if (scenario.getCode() == null) {
-                scenario.setCode(scenario.getId() + "-" + translit(scenario.getName()));
+                scenario.setCode(UUID.randomUUID().toString().substring(0, 6) + "-" + translit(scenario.getName()));
             }
             result += scenario.getCode() + "/";
         } else {
@@ -477,7 +479,7 @@ public class ProjectsSource {
             try {
                 // TODO: Проверить, изменялись ли вложенные в каждый step элементы.
                 if (isModelWasChanged(scenario) || isModelListWasChanged(scenario.getStepList()) || saveAll) {
-                    String fileName = directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "scenario.yml";
+                    String fileName = directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + SCENARIO_YAML_FILENAME;
                     YamlUtils.dumpToFile(scenario, fileName);
                 }
             } catch (IOException e) {
