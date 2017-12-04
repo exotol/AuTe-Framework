@@ -23,7 +23,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   failCount = 0;
   Math: any;
   newScenarioName = '';
-  scenarioGroupList: String[];
+  scenarioGroupList: String[] = [];
 
   @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
   executingStateExecuting = 0;
@@ -56,13 +56,13 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
       });
 
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(params.get('cod')))
+      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(params.get('code')))
       .subscribe(value => {
         this.scenarioList = value;
         this.scenarioList
           .map(scenario => scenario.scenarioGroup)
           .forEach(groupName => {
-            if (this.scenarioGroupList.indexOf(groupName) === -1) {
+            if (groupName && this.scenarioGroupList.indexOf(groupName) === -1) {
               this.scenarioGroupList.push(groupName);
             }
           });
