@@ -41,7 +41,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
 
     protected ExpectedServiceRequest copy() {
         ExpectedServiceRequest request = new ExpectedServiceRequest();
-        request.setId(null);
         request.setServiceName(getServiceName());
         request.setExpectedServiceRequest(getExpectedServiceRequest());
         request.setSort(getSort());

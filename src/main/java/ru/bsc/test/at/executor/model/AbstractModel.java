@@ -8,16 +8,8 @@ package ru.bsc.test.at.executor.model;
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractModel {
 
-    private Long id;
     private String code;
     private Long sort;
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
