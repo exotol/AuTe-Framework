@@ -11,7 +11,6 @@ public class StepRo extends AbstractRo {
 
     private static final long serialVersionUID = -4795596079038167133L;
 
-    private Long id;
     private String code;
     private Long sort;
     private String relativeUrl;
@@ -44,14 +43,6 @@ public class StepRo extends AbstractRo {
     private String mqMessageFile;
     private String responseCompareMode;
     private List<FormDataRo> formDataList;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;

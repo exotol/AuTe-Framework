@@ -10,18 +10,9 @@ public class StepParameterSetRo extends AbstractRo {
 
     private static final long serialVersionUID = -8505680675142636322L;
 
-    private Long id;
     private Long sort;
     private List<StepParameterRo> stepParameterList;
     private String description;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getSort() {
         return sort;

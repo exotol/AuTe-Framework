@@ -4,19 +4,10 @@ public class FormDataRo extends AbstractRo {
 
     private static final long serialVersionUID = -7730693222002977456L;
 
-    private Long id;
     private String fieldName;
     private String fieldType;
     private String value;
     private String filePath;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFieldName() {
         return fieldName;

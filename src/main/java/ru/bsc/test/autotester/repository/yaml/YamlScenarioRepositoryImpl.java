@@ -7,8 +7,6 @@ import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -25,18 +23,21 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     }
 
     @Override
-    public Scenario findScenario(Long scenarioId) {
+    public Scenario findScenario(String projectCode, String scenarioPath) {
+        return projectsSource.findScenario(projectCode, scenarioPath);
+        /*
         return projectsSource.getProjectList()
                 .stream()
                 .flatMap(project -> project.getScenarioList().stream())
                 .filter(scenario -> Objects.equals(scenario.getId(), scenarioId))
                 .findAny()
                 .orElse(null);
+                */
     }
 
     @Override
-    public Scenario saveScenario(Scenario scenario, List<Project> projectList) {
-        projectsSource.save(projectList);
+    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) {
+        projectsSource.saveScenario(projectCode, scenarioPath, scenario);
         return scenario;
     }
 
@@ -53,6 +54,11 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
                     }
                 }));
         return result;
+    }
+
+    @Override
+    public void delete(String projectCode, String scenarioPath) {
+        projectsSource.deleteScenario(projectCode, scenarioPath);
     }
 }
 

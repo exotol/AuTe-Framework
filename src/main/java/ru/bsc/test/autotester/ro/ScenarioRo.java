@@ -10,7 +10,6 @@ public class ScenarioRo extends AbstractRo {
 
     private static final long serialVersionUID = -6026744701723398082L;
 
-    private Long id;
     private String code;
     private String projectCode;
     private String projectName;
@@ -20,14 +19,6 @@ public class ScenarioRo extends AbstractRo {
     private List<StepRo> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;

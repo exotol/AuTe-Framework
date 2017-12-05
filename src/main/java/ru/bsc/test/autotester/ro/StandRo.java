@@ -8,20 +8,11 @@ public class StandRo extends AbstractRo {
 
     private static final long serialVersionUID = 4390819697062478918L;
 
-    private Long id;
     private String serviceUrl;
     private String dbUrl;
     private String dbUser;
     private String dbPassword;
     private String wireMockUrl;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getServiceUrl() {
         return serviceUrl;

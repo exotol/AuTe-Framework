@@ -1,7 +1,5 @@
 package ru.bsc.test.autotester.ro;
 
-import java.util.List;
-
 /**
  * Created by sdoroshin on 14.09.2017.
  *
@@ -12,9 +10,8 @@ public class ProjectRo extends AbstractRo {
 
     private String code;
     private String name;
-    private Long beforeScenarioId;
-    private Long afterScenarioId;
-    private List<StandRo> standList;
+    private String beforeScenarioPath;
+    private String afterScenarioPath;
     private StandRo stand;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
@@ -36,28 +33,20 @@ public class ProjectRo extends AbstractRo {
         this.name = name;
     }
 
-    public Long getBeforeScenarioId() {
-        return beforeScenarioId;
+    public String getBeforeScenarioPath() {
+        return beforeScenarioPath;
     }
 
-    public void setBeforeScenarioId(Long beforeScenarioId) {
-        this.beforeScenarioId = beforeScenarioId;
+    public void setBeforeScenarioPath(String beforeScenarioPath) {
+        this.beforeScenarioPath = beforeScenarioPath;
     }
 
-    public Long getAfterScenarioId() {
-        return afterScenarioId;
+    public String getAfterScenarioPath() {
+        return afterScenarioPath;
     }
 
-    public void setAfterScenarioId(Long afterScenarioId) {
-        this.afterScenarioId = afterScenarioId;
-    }
-
-    public List<StandRo> getStandList() {
-        return standList;
-    }
-
-    public void setStandList(List<StandRo> standList) {
-        this.standList = standList;
+    public void setAfterScenarioPath(String afterScenarioPath) {
+        this.afterScenarioPath = afterScenarioPath;
     }
 
     public StandRo getStand() {

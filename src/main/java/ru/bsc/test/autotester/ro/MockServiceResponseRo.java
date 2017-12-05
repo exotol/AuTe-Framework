@@ -8,20 +8,11 @@ public class MockServiceResponseRo extends AbstractRo {
 
     private static final long serialVersionUID = -7918346254164488513L;
 
-    private Long id;
     private Long sort;
     private String serviceUrl;
     private String responseBody;
     private String responseBodyFile;
     private Integer httpStatus;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getSort() {
         return sort;

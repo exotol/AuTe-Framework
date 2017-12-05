@@ -17,17 +17,17 @@ import java.util.Map;
  */
 public interface ScenarioService {
 
-    Scenario findOne(long scenarioId);
+    Scenario findOne(String projectCode, String scenarioPath);
 
-    ScenarioRo updateScenarioFormRo(String projectCode, Long scenarioId, ScenarioRo scenarioRo);
-    Step cloneStep(Step stepId);
-    List<StepRo> updateStepListFromRo(Long scenarioId, List<StepRo> stepRoList);
+    ScenarioRo updateScenarioFormRo(String projectCode, String scenarioPath, ScenarioRo scenarioRo);
+    Step cloneStep(String projectCode, String scenarioPath, Step step);
+    List<StepRo> updateStepListFromRo(String projectCode, String scenarioPath, List<StepRo> stepRoList);
 
     Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList);
 
-    StepRo addStepToScenario(Long scenarioId, StepRo stepRo);
+    StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo);
 
-    void deleteOne(String projectCode, Long scenarioId);
+    void deleteOne(String projectCode, String scenarioPath);
 
     List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);
 }

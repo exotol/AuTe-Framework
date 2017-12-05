@@ -43,18 +43,18 @@ public class RestScenarioController {
         this.projectService = projectService;
     }
 
-    @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.GET)
-    public List<StepRo> findSteps(@PathVariable Long scenarioId) {
-        Scenario scenario = scenarioService.findOne(scenarioId);
+    @RequestMapping(value = "{scenarioPath}/steps", method = RequestMethod.GET)
+    public List<StepRo> findSteps(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+        Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
             return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{scenarioId}", method = RequestMethod.GET)
-    public ScenarioRo findOne(@PathVariable String projectCode, @PathVariable Long scenarioId) {
-        Scenario scenario = scenarioService.findOne(scenarioId);
+    @RequestMapping(value = "{scenarioPath}", method = RequestMethod.GET)
+    public ScenarioRo findOne(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+        Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
             return projectRoMapper.scenarioToScenarioRo(projectCode, "", scenario);
         }
@@ -62,8 +62,8 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.PUT)
-    public ScenarioRo saveOne(@PathVariable String projectCode, @PathVariable Long scenarioId, @RequestBody ScenarioRo scenarioRo) {
-        scenarioRo = scenarioService.updateScenarioFormRo(projectCode, scenarioId, scenarioRo);
+    public ScenarioRo saveOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody ScenarioRo scenarioRo) {
+        scenarioRo = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
         if (scenarioRo != null) {
             return scenarioRo;
         }
@@ -71,13 +71,13 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.DELETE)
-    public void deleteOne(@PathVariable String projectCode, @PathVariable Long scenarioId) {
-        scenarioService.deleteOne(projectCode, scenarioId);
+    public void deleteOne(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+        scenarioService.deleteOne(projectCode, scenarioPath);
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.POST)
-    public StepRo createNewStep(@PathVariable Long scenarioId, @RequestBody StepRo stepRo) {
-        stepRo = scenarioService.addStepToScenario(scenarioId, stepRo);
+    public StepRo createNewStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody StepRo stepRo) {
+        stepRo = scenarioService.addStepToScenario(projectCode, scenarioPath, stepRo);
         if (stepRo != null) {
             return stepRo;
         }
@@ -85,13 +85,13 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
-    public List<StepRo> saveStepList(@PathVariable Long scenarioId, @RequestBody List<StepRo> stepRoList) {
-        return scenarioService.updateStepListFromRo(scenarioId, stepRoList);
+    public List<StepRo> saveStepList(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody List<StepRo> stepRoList) {
+        return scenarioService.updateStepListFromRo(projectCode, scenarioPath, stepRoList);
     }
 
     @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
-    public List<StepResultRo> executing(@PathVariable String projectCode, @PathVariable Long scenarioId) {
-        Scenario scenario = scenarioService.findOne(scenarioId);
+    public List<StepResultRo> executing(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+        Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         Project project = projectService.findOneByCode(projectCode);
         if (scenario != null) {
             Map<Scenario, List<StepResult>> scenarioResultMap =

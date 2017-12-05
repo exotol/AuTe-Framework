@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 public abstract class StepRoMapper {
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "code", ignore = true),
             @Mapping(target = "expectedServiceRequests", ignore = true),
             @Mapping(target = "sort", source = "sort"),
@@ -71,7 +70,6 @@ public abstract class StepRoMapper {
     abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
@@ -104,7 +102,6 @@ public abstract class StepRoMapper {
     abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
@@ -117,8 +114,6 @@ public abstract class StepRoMapper {
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "stepParameterList", ignore = true),
             @Mapping(target = "description", source = "description")
@@ -159,9 +154,6 @@ public abstract class StepRoMapper {
     abstract List<StepParameterRo> convertStepParameterToStepParameterRo(List<StepParameter> stepParameterList);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "code", ignore = true),
-            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "stepParameterSet", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "value", source = "value")
@@ -190,7 +182,6 @@ public abstract class StepRoMapper {
     abstract List<MockServiceResponseRo> convertMockServiceResponseListToMockServiceResponseRoList(List<MockServiceResponse> mockServiceResponseList);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
@@ -199,8 +190,6 @@ public abstract class StepRoMapper {
     abstract MockServiceResponseRo mockServiceResponseToMockServiceResponseRo(MockServiceResponse mockServiceResponse);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
@@ -297,8 +286,6 @@ public abstract class StepRoMapper {
     }
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "code", ignore = true),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
@@ -313,9 +300,6 @@ public abstract class StepRoMapper {
     }
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "code", ignore = true),
-            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "fieldName", source = "fieldName"),
             @Mapping(target = "fieldType", source = "fieldType"),
             @Mapping(target = "value", source = "value"),
@@ -326,7 +310,6 @@ public abstract class StepRoMapper {
     abstract List<FormDataRo> convertFormDataListToRo(List<FormData> formDataList);
 
     @Mappings({
-            @Mapping(target = "id", source = "id"),
             @Mapping(target = "fieldName", source = "fieldName"),
             @Mapping(target = "fieldType", source = "fieldType"),
             @Mapping(target = "value", source = "value"),

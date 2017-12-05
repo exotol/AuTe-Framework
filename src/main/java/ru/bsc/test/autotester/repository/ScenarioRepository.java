@@ -1,9 +1,7 @@
 package ru.bsc.test.autotester.repository;
 
-import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -11,9 +9,11 @@ import java.util.Set;
  *
  */
 public interface ScenarioRepository {
-    Scenario findScenario(Long scenarioId);
+    Scenario findScenario(String projectCode, String scenarioPath);
 
-    Scenario saveScenario(Scenario scenario, List<Project> projectList);
+    Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario);
 
     Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl);
+
+    void delete(String projectCode, String scenarioPath);
 }

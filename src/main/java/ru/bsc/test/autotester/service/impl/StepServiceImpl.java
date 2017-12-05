@@ -47,10 +47,10 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public StepRo updateFromRo(Long stepId, StepRo stepRo) {
+    public StepRo updateFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) {
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
-            Step step = findOne(projectList, stepId);
+            Step step = findOne(projectList, stepCode);
             if (step != null) {
                 stepRoMapper.updateStep(stepRo, step);
                 stepRepository.saveStep(step, projectList);
@@ -60,11 +60,11 @@ public class StepServiceImpl implements StepService {
         }
     }
 
-    private Step findOne(List<Project> projectList, Long stepId) {
+    private Step findOne(List<Project> projectList, String stepCode) {
         return projectList.stream()
                 .flatMap(project -> project.getScenarioList().stream())
                 .flatMap(scenario -> scenario.getStepList().stream())
-                .filter(step -> Objects.equals(step.getId(), stepId))
+                .filter(step -> Objects.equals(step.getCode(), stepCode))
                 .findAny()
                 .orElse(null);
     }
