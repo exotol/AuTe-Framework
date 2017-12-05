@@ -115,7 +115,7 @@ public class AtExecutor {
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
 
         // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : project.getBeforeScenario();
+        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
         if (beforeScenario != null) {
             stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues));
         }
@@ -123,7 +123,7 @@ public class AtExecutor {
         stepResultList.addAll(executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues));
 
         // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : project.getAfterScenario();
+        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
         if (afterScenario != null) {
             stepResultList.addAll(executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues));
         }
@@ -131,6 +131,27 @@ public class AtExecutor {
         httpHelper.closeHttpConnection();
 
         return stepResultList;
+    }
+
+    private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
+        String scenarioCode;
+        String scenarioGroupCode;
+        String[] scenarioPathParts = path.split("/");
+        if (scenarioPathParts.length == 1) {
+            scenarioGroupCode = null;
+            scenarioCode = scenarioPathParts[0];
+        } else if (scenarioPathParts.length == 2) {
+            scenarioGroupCode = scenarioPathParts[0];
+            scenarioCode = scenarioPathParts[1];
+        } else {
+            return null;
+        }
+
+        return scenarioList.stream()
+                .filter(scenario -> Objects.equals(scenario.getCode(), scenarioCode))
+                .filter(scenario -> scenarioGroupCode == null || Objects.equals(scenarioGroupCode, scenario.getScenarioGroup()))
+                .findAny()
+                .orElse(null);
     }
 
     private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {

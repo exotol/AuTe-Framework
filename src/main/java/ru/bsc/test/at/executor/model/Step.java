@@ -13,6 +13,8 @@ import java.util.Map;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Step extends AbstractModel implements Serializable {
 
+    private String code;
+    private Long sort;
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
@@ -44,6 +46,18 @@ public class Step extends AbstractModel implements Serializable {
     private String mqMessageFile;
     private List<FormData> formDataList;
 
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public Long getSort() {
+        return sort;
+    }
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
     public String getRelativeUrl() {
         return relativeUrl;
     }

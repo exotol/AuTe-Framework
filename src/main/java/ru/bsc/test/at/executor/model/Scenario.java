@@ -11,12 +11,26 @@ import java.util.List;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Scenario extends AbstractModel implements Serializable {
 
+    private String code;
+    private Long sort;
     private String name;
     private String scenarioGroup;
     private List<Step> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
 
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public Long getSort() {
+        return sort;
+    }
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
     public String getName() {
         return name;
     }
