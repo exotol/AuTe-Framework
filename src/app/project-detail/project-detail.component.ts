@@ -120,8 +120,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     if (this.scenarioList) {
       this.failCount = this.scenarioList
         .filter(item => this.isDisplayScenario(item))
-        .map(value => value.lastRunFailures)
-        .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+        .filter(value => value.failed)
+        .length;
     } else {
       this.failCount = 0;
     }
