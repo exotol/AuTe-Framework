@@ -21,7 +21,8 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "stepListYamlFile", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore"),
-            @Mapping(target = "stand", ignore = true)
+            @Mapping(target = "stand", ignore = true),
+            @Mapping(target = "failed", source = "failed")
     })
     abstract void updateScenarioFromRo(ScenarioRo scenarioRo, @MappingTarget Scenario scenario);
 

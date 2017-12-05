@@ -23,6 +23,7 @@ public class ScenarioRo extends AbstractRo {
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
     private StandRo stand;
+    private Boolean failed;
 
     public Long getId() {
         return id;
@@ -118,5 +119,13 @@ public class ScenarioRo extends AbstractRo {
 
     public void setStand(StandRo stand) {
         this.stand = stand;
+    }
+
+    public Boolean getFailed() {
+        return failed;
+    }
+
+    public void setFailed(Boolean failed) {
+        this.failed = failed;
     }
 }
