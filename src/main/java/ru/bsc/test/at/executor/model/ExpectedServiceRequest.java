@@ -9,12 +9,19 @@ import java.io.Serializable;
 @SuppressWarnings("WeakerAccess")
 public class ExpectedServiceRequest extends AbstractModel implements Serializable {
 
+    private String code;
     private Long sort;
     private String serviceName;
     private String expectedServiceRequest;
     private String expectedServiceRequestFile;
     private String ignoredTags;
 
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
     public Long getSort() {
         return sort;
     }

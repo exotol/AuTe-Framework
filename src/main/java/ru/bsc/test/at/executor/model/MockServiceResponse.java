@@ -7,12 +7,19 @@ package ru.bsc.test.at.executor.model;
 @SuppressWarnings("WeakerAccess")
 public class MockServiceResponse extends AbstractModel {
 
+    private String code;
     private Long sort;
     private String serviceUrl;
     private String responseBody;
     private String responseBodyFile;
     private Integer httpStatus;
 
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
     public Long getSort() {
         return sort;
     }
