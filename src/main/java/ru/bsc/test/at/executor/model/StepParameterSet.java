@@ -44,7 +44,6 @@ public class StepParameterSet extends AbstractModel {
         cloned.setStepParameterList(new LinkedList<>());
         for (StepParameter stepParameter: getStepParameterList()) {
             StepParameter copyStepParameter = stepParameter.copy();
-            copyStepParameter.setStepParameterSet(cloned);
             cloned.getStepParameterList().add(copyStepParameter);
         }
 

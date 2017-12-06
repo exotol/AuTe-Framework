@@ -7,16 +7,9 @@ package ru.bsc.test.at.executor.model;
 @SuppressWarnings("WeakerAccess")
 public class StepParameter extends AbstractModel {
 
-    private StepParameterSet stepParameterSet;
     private String name;
     private String value;
 
-    public StepParameterSet getStepParameterSet() {
-        return stepParameterSet;
-    }
-    public void setStepParameterSet(StepParameterSet stepParameterSet) {
-        this.stepParameterSet = stepParameterSet;
-    }
     public String getName() {
         return name;
     }
