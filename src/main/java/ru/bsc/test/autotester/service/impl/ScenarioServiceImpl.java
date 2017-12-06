@@ -25,7 +25,6 @@ import ru.bsc.test.autotester.service.StepService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -80,29 +79,6 @@ public class ScenarioServiceImpl implements ScenarioService {
     public void deleteOne(String projectCode, String scenarioPath) throws IOException {
         synchronized (projectService) {
             scenarioRepository.delete(projectCode, scenarioPath);
-            /*
-            List<Project> projectList = projectService.findAll();
-            Project project = projectList.stream().filter(p -> Objects.equals(p.getCode(), projectCode)).findAny().orElse(null);
-            if (project != null) {
-                Scenario scenario = findScenarioByPath(scenarioPath, project.getScenarioList());
-                if (scenario != null) {
-
-                    project.setScenarioList(
-                            project
-                                    .getScenarioList()
-                                    .stream()
-                                    .filter(scenario1 -> !Objects.equals(scenario1.getId(), scenario.getId()))
-                                    .collect(Collectors.toList())
-                    );
-                    scenarioRepository.saveScenario(scenario, projectList);
-
-                } else {
-                    throw new ResourceNotFoundException();
-                }
-            } else {
-                throw new ResourceNotFoundException();
-            }
-            */
         }
     }
 
@@ -129,15 +105,8 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Step cloneStep(String projectCode, String scenarioPath, Step step) throws IOException {
         synchronized (projectService) {
-            Scenario scenario = findOne(projectCode, scenarioPath);
-            if (scenario != null) {
-                Long maxSortStep = scenario.getStepList().stream().max(Comparator.comparing(Step::getSort)).map(Step::getSort).orElse(0L);
-                Step newStep = step.copy();
-                newStep.setSort(maxSortStep + 50);
-                scenario.getStepList().add(newStep);
-                return stepService.save(projectCode, scenarioPath, null, newStep);
-            }
-            return null;
+            Step newStep = step.copy();
+            return stepService.save(projectCode, scenarioPath, null, newStep);
         }
     }
 

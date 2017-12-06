@@ -9,7 +9,6 @@ public class MockServiceResponseRo extends AbstractRo {
     private static final long serialVersionUID = -7918346254164488513L;
 
     private String code;
-    private Long sort;
     private String serviceUrl;
     private String responseBody;
     private String responseBodyFile;
@@ -21,14 +20,6 @@ public class MockServiceResponseRo extends AbstractRo {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Long getSort() {
-        return sort;
-    }
-
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
 
     public String getServiceUrl() {

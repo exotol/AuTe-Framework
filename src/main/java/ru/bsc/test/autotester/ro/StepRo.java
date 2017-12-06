@@ -12,7 +12,6 @@ public class StepRo extends AbstractRo {
     private static final long serialVersionUID = -4795596079038167133L;
 
     private String code;
-    private Long sort;
     private String relativeUrl;
     private String requestMethod;
     private String request;
@@ -50,14 +49,6 @@ public class StepRo extends AbstractRo {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Long getSort() {
-        return sort;
-    }
-
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
 
     public String getRelativeUrl() {

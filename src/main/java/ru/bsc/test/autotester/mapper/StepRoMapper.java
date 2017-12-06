@@ -34,7 +34,6 @@ public abstract class StepRoMapper {
     @Mappings({
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "expectedServiceRequests", source = "expectedServiceRequestList"),
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
             @Mapping(target = "request", source = "request"),
@@ -74,7 +73,6 @@ public abstract class StepRoMapper {
     abstract List<FormData> formDataRoListToFormData(List<FormDataRo> formDataRoList);
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
             @Mapping(target = "request", source = "request"),
@@ -106,7 +104,6 @@ public abstract class StepRoMapper {
     abstract public List<StepRo> convertStepListToStepRoList(List<Step> stepList);
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
             @Mapping(target = "ignoredTags", source = "ignoredTags"),
@@ -118,7 +115,6 @@ public abstract class StepRoMapper {
     abstract List<StepParameterSetRo> convertStepParameterSetListToStepParameterSetRoList(List<StepParameterSet> stepParameterSetList);
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "stepParameterList", source = "stepParameterList"),
             @Mapping(target = "description", source = "description")
     })
@@ -189,7 +185,6 @@ public abstract class StepRoMapper {
     abstract List<MockServiceResponseRo> convertMockServiceResponseListToMockServiceResponseRoList(List<MockServiceResponse> mockServiceResponseList);
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "httpStatus", source = "httpStatus")
@@ -197,7 +192,6 @@ public abstract class StepRoMapper {
     abstract MockServiceResponseRo mockServiceResponseToMockServiceResponseRo(MockServiceResponse mockServiceResponse);
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
@@ -301,7 +295,6 @@ public abstract class StepRoMapper {
     }
 
     @Mappings({
-            @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
