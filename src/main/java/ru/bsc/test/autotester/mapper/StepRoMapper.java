@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
@@ -21,21 +20,20 @@ import ru.bsc.test.autotester.ro.StepParameterSetRo;
 import ru.bsc.test.autotester.ro.StepResultRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 14.09.2017.
  */
 
+@SuppressWarnings("unused")
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class StepRoMapper {
 
     @Mappings({
-            @Mapping(target = "code", ignore = true),
-            @Mapping(target = "expectedServiceRequests", ignore = true),
+            @Mapping(target = "code", source = "code"),
+            @Mapping(target = "expectedServiceRequests", source = "expectedServiceRequestList"),
             @Mapping(target = "sort", source = "sort"),
             @Mapping(target = "relativeUrl", source = "relativeUrl"),
             @Mapping(target = "requestMethod", source = "requestMethod"),
@@ -56,18 +54,24 @@ public abstract class StepRoMapper {
             @Mapping(target = "requestBodyType", source = "requestBodyType"),
             @Mapping(target = "usePolling", source = "usePolling"),
             @Mapping(target = "pollingJsonXPath", source = "pollingJsonXPath"),
-            @Mapping(target = "mockServiceResponseList", ignore = true),
+            @Mapping(target = "mockServiceResponseList", source = "mockServiceResponseList"),
             @Mapping(target = "disabled", source = "disabled"),
             @Mapping(target = "stepComment", source = "stepComment"),
             @Mapping(target = "savedValuesCheck", source = "savedValuesCheck"),
-            @Mapping(target = "stepParameterSetList", ignore = true),
+            @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
             @Mapping(target = "mqName", source = "mqName"),
             @Mapping(target = "mqMessage", source = "mqMessage"),
             @Mapping(target = "mqMessageFile", ignore = true),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataList", ignore = true)
+            @Mapping(target = "formDataList", source = "formDataList")
     })
-    abstract void updateStepFromRo(StepRo stepRo, @MappingTarget Step step);
+    public abstract Step updateStep(StepRo stepRo);
+
+    abstract List<ExpectedServiceRequest> requestListRoToRequest(List<ExpectedServiceRequestRo> expectedServiceRequestRoList);
+
+    abstract List<MockServiceResponse> responseListRoToResponse(List<MockServiceResponseRo> mockServiceResponseRoList);
+
+    abstract List<FormData> formDataRoListToFormData(List<FormDataRo> formDataRoList);
 
     @Mappings({
             @Mapping(target = "sort", source = "sort"),
@@ -99,7 +103,7 @@ public abstract class StepRoMapper {
     })
     public abstract StepRo stepToStepRo(Step step);
 
-    abstract public List<StepRo> convertStepRoListToStepList(List<Step> stepList);
+    abstract public List<StepRo> convertStepListToStepRoList(List<Step> stepList);
 
     @Mappings({
             @Mapping(target = "sort", source = "sort"),
@@ -115,16 +119,19 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "sort", source = "sort"),
-            @Mapping(target = "stepParameterList", ignore = true),
+            @Mapping(target = "stepParameterList", source = "stepParameterList"),
             @Mapping(target = "description", source = "description")
     })
-    abstract void updateStepParameterSetFromRo(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet);
+    abstract StepParameterSet updateStepParameterSetFromRo(StepParameterSetRo stepParameterSetRo);
+
+    abstract List<StepParameter> stepParameterRoListToStepParameter(List<StepParameterRo> stepParameterRoList);
 
     abstract StepParameterSetRo stepParameterSetToStepParameterSetRo(StepParameterSet stepParameterSet);
 
-    private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo, @MappingTarget StepParameterSet stepParameterSet) {
-        updateStepParameterSetFromRo(stepParameterSetRo, stepParameterSet);
+    private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo) {
+        return updateStepParameterSetFromRo(stepParameterSetRo);
 
+        /*
         if (stepParameterSet.getStepParameterList() == null) {
             stepParameterSet.setStepParameterList(new LinkedList<>());
         }
@@ -147,18 +154,18 @@ public abstract class StepRoMapper {
                 )
                 .collect(Collectors.toList())
         );
+        */
 
-        return stepParameterSet;
+        // return stepParameterSet;
     }
 
     abstract List<StepParameterRo> convertStepParameterToStepParameterRo(List<StepParameter> stepParameterList);
 
     @Mappings({
-            @Mapping(target = "stepParameterSet", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "value", source = "value")
     })
-    abstract StepParameter updateStepParameterFromRo(StepParameterRo stepParameterRo, @MappingTarget StepParameter stepParameter);
+    abstract StepParameter updateStepParameterFromRo(StepParameterRo stepParameterRo);
 
     abstract StepParameterRo stepParameterToStepParameterRo(StepParameter stepParameter);
 
@@ -191,16 +198,18 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "sort", source = "sort"),
+            @Mapping(target = "code", source = "code"),
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "responseBodyFile", ignore = true),
             @Mapping(target = "httpStatus", source = "httpStatus")
     })
-    abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo, @MappingTarget MockServiceResponse mockServiceResponse);
+    abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo);
 
-    public Step updateStep(StepRo stepRo, @MappingTarget Step step) {
-        updateStepFromRo(stepRo, step);
+    public Step updateStepOld(StepRo stepRo) {
+        return updateStep(stepRo);
 
+        /*
         if (step.getMockServiceResponseList() == null) {
             step.setMockServiceResponseList(new LinkedList<>());
         }
@@ -221,7 +230,9 @@ public abstract class StepRoMapper {
                         }))
                 .collect(Collectors.toList())
         );
+        */
 
+        /*
         if (step.getStepParameterSetList() == null) {
             step.setStepParameterSetList(new LinkedList<>());
         }
@@ -242,7 +253,9 @@ public abstract class StepRoMapper {
                         }))
                 .collect(Collectors.toList())
         );
+        */
 
+        /*
         if (step.getExpectedServiceRequests() == null) {
             step.setExpectedServiceRequests(new LinkedList<>());
         }
@@ -263,6 +276,8 @@ public abstract class StepRoMapper {
                         }))
                 .collect(Collectors.toList())
         );
+        */
+        /*
         if (step.getFormDataList() == null) {
             step.setFormDataList(new LinkedList<>());
         }
@@ -282,21 +297,21 @@ public abstract class StepRoMapper {
                             return formData;
                         })
                 ).collect(Collectors.toList()));
-        return step;
+                */
     }
 
     @Mappings({
             @Mapping(target = "sort", source = "sort"),
+            @Mapping(target = "code", source = "code"),
             @Mapping(target = "serviceName", source = "serviceName"),
             @Mapping(target = "expectedServiceRequest", source = "expectedServiceRequest"),
             @Mapping(target = "expectedServiceRequestFile", ignore = true),
             @Mapping(target = "ignoredTags", source = "ignoredTags")
     })
-    abstract void updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest);
+    abstract ExpectedServiceRequest updateExpectedServiceRequestFromRo(ExpectedServiceRequestRo expectedServiceRequestRo);
 
-    private ExpectedServiceRequest updateExpectedServiceRequest(ExpectedServiceRequestRo expectedServiceRequestRo, @MappingTarget ExpectedServiceRequest expectedServiceRequest) {
-        updateExpectedServiceRequestFromRo(expectedServiceRequestRo, expectedServiceRequest);
-        return expectedServiceRequest;
+    private ExpectedServiceRequest updateExpectedServiceRequest(ExpectedServiceRequestRo expectedServiceRequestRo) {
+        return updateExpectedServiceRequestFromRo(expectedServiceRequestRo);
     }
 
     @Mappings({
@@ -305,7 +320,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "value", source = "value"),
             @Mapping(target = "filePath", source = "filePath")
     })
-    abstract void updateFormDataFromRo(FormDataRo formDataRo, @MappingTarget FormData formData);
+    abstract FormData updateFormDataFromRo(FormDataRo formDataRo);
 
     abstract List<FormDataRo> convertFormDataListToRo(List<FormData> formDataList);
 
@@ -317,12 +332,9 @@ public abstract class StepRoMapper {
     })
     abstract FormDataRo formDataToRo(FormData formData);
 
-    private FormData updateFormData(FormDataRo formDataRo, @MappingTarget FormData formData) {
-        updateFormDataFromRo(formDataRo, formData);
-        return formData;
-    }
-
-    public Scenario updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
+    public void updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
+        scenario.setStepList(stepRoList.stream().map(this::updateStep).collect(Collectors.toList()));
+        /*
         List<Step> scenarioSteps = new LinkedList<>(scenario.getStepList());
         scenario.getStepList().clear();
         scenario.getStepList().addAll(stepRoList.stream()
@@ -336,6 +348,6 @@ public abstract class StepRoMapper {
                             return newStep;
                         }))
                 .collect(Collectors.toList()));
-        return scenario;
+                */
     }
 }

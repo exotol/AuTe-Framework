@@ -19,6 +19,7 @@ import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/rest/project/{projectCode}/scenarios")
+@RequestMapping("/rest/projects/{projectCode}/scenarios")
 public class RestScenarioController {
 
     private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
@@ -44,16 +45,16 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioPath}/steps", method = RequestMethod.GET)
-    public List<StepRo> findSteps(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+    public List<StepRo> findSteps(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
-            return stepRoMapper.convertStepRoListToStepList(scenario.getStepList());
+            return stepRoMapper.convertStepListToStepRoList(scenario.getStepList());
         }
         throw new ResourceNotFoundException();
     }
 
     @RequestMapping(value = "{scenarioPath}", method = RequestMethod.GET)
-    public ScenarioRo findOne(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+    public ScenarioRo findOne(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
             return projectRoMapper.scenarioToScenarioRo(projectCode, "", scenario);
@@ -62,7 +63,7 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.PUT)
-    public ScenarioRo saveOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody ScenarioRo scenarioRo) {
+    public ScenarioRo saveOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody ScenarioRo scenarioRo) throws IOException {
         scenarioRo = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
         if (scenarioRo != null) {
             return scenarioRo;
@@ -71,12 +72,12 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}", method = RequestMethod.DELETE)
-    public void deleteOne(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+    public void deleteOne(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
         scenarioService.deleteOne(projectCode, scenarioPath);
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.POST)
-    public StepRo createNewStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody StepRo stepRo) {
+    public StepRo createNewStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody StepRo stepRo) throws IOException {
         stepRo = scenarioService.addStepToScenario(projectCode, scenarioPath, stepRo);
         if (stepRo != null) {
             return stepRo;
@@ -85,14 +86,14 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
-    public List<StepRo> saveStepList(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody List<StepRo> stepRoList) {
+    public List<StepRo> saveStepList(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody List<StepRo> stepRoList) throws IOException {
         return scenarioService.updateStepListFromRo(projectCode, scenarioPath, stepRoList);
     }
 
     @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
-    public List<StepResultRo> executing(@PathVariable String projectCode, @PathVariable String scenarioPath) {
+    public List<StepResultRo> executing(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
-        Project project = projectService.findOneByCode(projectCode);
+        Project project = projectService.findOne(projectCode);
         if (scenario != null) {
             Map<Scenario, List<StepResult>> scenarioResultMap =
                     scenarioService.executeScenarioList(project, Collections.singletonList(scenario));

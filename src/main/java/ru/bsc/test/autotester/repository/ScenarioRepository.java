@@ -12,7 +12,7 @@ import java.util.Set;
 public interface ScenarioRepository {
     Scenario findScenario(String projectCode, String scenarioPath) throws IOException;
 
-    Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario);
+    Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException;
 
     Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl);
 

@@ -100,14 +100,4 @@ public class ProjectServiceImpl implements ProjectService {
             return project;
         }
     }
-
-    @Override
-    public Project findOneByCode(String projectCode) {
-        synchronized (this) {
-            return findAll().stream()
-                    .filter(project -> Objects.equals(project.getCode(), projectCode))
-                    .findAny()
-                    .orElse(null);
-        }
-    }
 }

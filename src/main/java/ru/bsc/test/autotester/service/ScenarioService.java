@@ -8,6 +8,7 @@ import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.ro.StepRo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,17 +18,19 @@ import java.util.Map;
  */
 public interface ScenarioService {
 
-    Scenario findOne(String projectCode, String scenarioPath);
+    Scenario findOne(String projectCode, String scenarioPath) throws IOException;
 
-    ScenarioRo updateScenarioFormRo(String projectCode, String scenarioPath, ScenarioRo scenarioRo);
-    Step cloneStep(String projectCode, String scenarioPath, Step step);
-    List<StepRo> updateStepListFromRo(String projectCode, String scenarioPath, List<StepRo> stepRoList);
+    ScenarioRo updateScenarioFormRo(String projectCode, String scenarioPath, ScenarioRo scenarioRo) throws IOException;
+    Step cloneStep(String projectCode, String scenarioPath, Step step) throws IOException;
+    List<StepRo> updateStepListFromRo(String projectCode, String scenarioPath, List<StepRo> stepRoList) throws IOException;
 
     Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList);
 
-    StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo);
+    StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo) throws IOException;
 
-    void deleteOne(String projectCode, String scenarioPath);
+    void deleteOne(String projectCode, String scenarioPath) throws IOException;
 
     List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);
+
+    void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException;
 }

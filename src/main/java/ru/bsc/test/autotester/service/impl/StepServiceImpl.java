@@ -3,7 +3,6 @@ package ru.bsc.test.autotester.service.impl;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.repository.StepRepository;
@@ -12,8 +11,6 @@ import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.StepService;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -41,32 +38,36 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public Step save(Step step, List<Project> projectList) {
+    public Step save(String projectCode, String scenarioPath, String stepCode, Step step) throws IOException {
         synchronized (projectService) {
-            return stepRepository.saveStep(step, projectList);
+            return stepRepository.saveStep(projectCode, scenarioPath, stepCode, step);
         }
     }
 
     @Override
-    public StepRo updateFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) {
+    public StepRo updateFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) throws IOException {
         synchronized (projectService) {
-            List<Project> projectList = projectService.findAll();
-            Step step = findOne(projectList, stepCode);
-            if (step != null) {
-                stepRoMapper.updateStep(stepRo, step);
-                stepRepository.saveStep(step, projectList);
-                return stepRoMapper.stepToStepRo(step);
+            Step newStep = stepRoMapper.updateStep(stepRo);
+            newStep.setCode(stepCode);
+            newStep = save(projectCode, scenarioPath, stepCode, newStep);
+
+            return stepRoMapper.stepToStepRo(newStep);
+            /*
+            Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
+            Step existsStep = scenario.getStepList()
+                    .stream()
+                    .filter(step1 -> Objects.equals(step1.getCode(), stepRo.getCode()))
+                    .findAny()
+                    .orElse(null);
+
+            if (existsStep != null) {
+
+                scenario.getStepList().set(scenario.getStepList().indexOf(existsStep), newStep);
+                scenarioService.save(projectCode, scenarioPath, scenario);
+                return stepRoMapper.stepToStepRo(newStep);
             }
             return null;
+            */
         }
-    }
-
-    private Step findOne(List<Project> projectList, String stepCode) {
-        return projectList.stream()
-                .flatMap(project -> project.getScenarioList().stream())
-                .flatMap(scenario -> scenario.getStepList().stream())
-                .filter(step -> Objects.equals(step.getCode(), stepCode))
-                .findAny()
-                .orElse(null);
     }
 }

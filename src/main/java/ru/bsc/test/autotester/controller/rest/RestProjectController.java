@@ -82,6 +82,7 @@ public class RestProjectController {
         return scenarioService.findScenarioByStepRelativeUrl(projectCode, projectSearchRo);
     }
 
+    /*
     @SuppressWarnings("Duplicates")
     @RequestMapping(value = "{projectCode}/export-selected-to-yaml", method = RequestMethod.POST)
     @ResponseBody
@@ -97,6 +98,7 @@ public class RestProjectController {
         }
         throw new ResourceNotFoundException();
     }
+    */
 
     @RequestMapping(value = "{projectCode}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
     @ResponseBody

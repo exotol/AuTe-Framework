@@ -1,12 +1,10 @@
 package ru.bsc.test.autotester.repository.yaml;
 
-import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.repository.StepRepository;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -32,8 +30,7 @@ public class YamlStepRepositoryImpl implements StepRepository {
     }
 
     @Override
-    public Step saveStep(Step step, List<Project> projectList) {
-        projectsSource.save(projectList);
-        return step;
+    public Step saveStep(String projectCode, String scenarioPath, String stepCode, Step step) throws IOException {
+        return projectsSource.saveStep(projectCode, scenarioPath, stepCode, step);
     }
 }

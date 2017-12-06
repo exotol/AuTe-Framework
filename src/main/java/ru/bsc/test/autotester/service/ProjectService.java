@@ -23,6 +23,4 @@ public interface ProjectService {
     ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo);
 
     Project saveProject(Project project, List<Project> projectList);
-
-    Project findOneByCode(String projectCode);
 }

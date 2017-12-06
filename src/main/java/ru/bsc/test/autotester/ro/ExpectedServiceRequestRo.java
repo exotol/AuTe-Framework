@@ -8,11 +8,20 @@ public class ExpectedServiceRequestRo extends AbstractRo {
 
     private static final long serialVersionUID = -5748544019274406969L;
 
+    private String code;
     private Long sort;
     private String serviceName;
     private String expectedServiceRequest;
     private String expectedServiceRequestFile;
     private String ignoredTags;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public Long getSort() {
         return sort;

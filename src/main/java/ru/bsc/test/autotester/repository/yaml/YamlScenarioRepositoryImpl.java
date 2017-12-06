@@ -36,7 +36,7 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     }
 
     @Override
-    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) {
+    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
         projectsSource.saveScenario(projectCode, scenarioPath, scenario);
         return scenario;
     }

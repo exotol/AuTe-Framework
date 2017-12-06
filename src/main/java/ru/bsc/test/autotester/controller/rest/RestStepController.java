@@ -17,7 +17,7 @@ import ru.bsc.test.autotester.service.StepService;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/rest/project/{projectCode}/scenarios/{scenarioPath}/steps")
+@RequestMapping("/rest/projects/{projectCode}/scenarios/{scenarioPath}/steps")
 public class RestStepController {
 
     private final StepService stepService;
@@ -31,7 +31,7 @@ public class RestStepController {
     }
 
     @RequestMapping(value = "{stepCode}", method = RequestMethod.PUT)
-    public StepRo updateOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @PathVariable String stepCode, @RequestBody StepRo stepRo) {
+    public StepRo updateOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @PathVariable String stepCode, @RequestBody StepRo stepRo) throws IOException {
         stepRo = stepService.updateFromRo(projectCode, scenarioPath, stepCode, stepRo);
         if (stepRo != null) {
             return stepRo;

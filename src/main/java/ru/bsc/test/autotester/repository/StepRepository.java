@@ -15,5 +15,5 @@ public interface StepRepository {
 
     Step findStep(String projectCode, String scenarioPath, String stepCode) throws IOException;
 
-    Step saveStep(Step step, List<Project> projectList);
+    Step saveStep(String projectCode, String scenarioPath, String stepCode, Step step) throws IOException;
 }
