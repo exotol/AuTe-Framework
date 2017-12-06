@@ -14,7 +14,6 @@ import java.util.Map;
 public class Step extends AbstractModel implements Serializable {
 
     private String code;
-    private Long sort;
     private List<ExpectedServiceRequest> expectedServiceRequests;
     private String relativeUrl;
     private String requestMethod;
@@ -51,12 +50,6 @@ public class Step extends AbstractModel implements Serializable {
     }
     public void setCode(String code) {
         this.code = code;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getRelativeUrl() {
         return relativeUrl;
@@ -261,7 +254,6 @@ public class Step extends AbstractModel implements Serializable {
 
     public Step copy() {
         Step step = new Step();
-        step.setSort(getSort());
         step.setRelativeUrl(getRelativeUrl());
         step.setRequestMethod(getRequestMethod());
         step.setRequestHeaders(getRequestHeaders());

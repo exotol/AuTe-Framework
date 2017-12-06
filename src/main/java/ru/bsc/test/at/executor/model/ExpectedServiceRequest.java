@@ -10,7 +10,6 @@ import java.io.Serializable;
 public class ExpectedServiceRequest extends AbstractModel implements Serializable {
 
     private String code;
-    private Long sort;
     private String serviceName;
     private String expectedServiceRequest;
     private String expectedServiceRequestFile;
@@ -21,12 +20,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
     }
     public void setCode(String code) {
         this.code = code;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getServiceName() {
         return serviceName;
@@ -57,7 +50,6 @@ public class ExpectedServiceRequest extends AbstractModel implements Serializabl
         ExpectedServiceRequest request = new ExpectedServiceRequest();
         request.setServiceName(getServiceName());
         request.setExpectedServiceRequest(getExpectedServiceRequest());
-        request.setSort(getSort());
         request.setIgnoredTags(getIgnoredTags());
         return request;
     }

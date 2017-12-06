@@ -8,7 +8,6 @@ package ru.bsc.test.at.executor.model;
 public class MockServiceResponse extends AbstractModel {
 
     private String code;
-    private Long sort;
     private String serviceUrl;
     private String responseBody;
     private String responseBodyFile;
@@ -19,12 +18,6 @@ public class MockServiceResponse extends AbstractModel {
     }
     public void setCode(String code) {
         this.code = code;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getServiceUrl() {
         return serviceUrl;
@@ -53,7 +46,6 @@ public class MockServiceResponse extends AbstractModel {
 
     protected MockServiceResponse copy() {
         MockServiceResponse response = new MockServiceResponse();
-        response.setSort(getSort());
         response.setServiceUrl(getServiceUrl());
         response.setResponseBody(getResponseBody());
         // TODO: cloned.setResponseBodyFile(getResponseBodyFile());
