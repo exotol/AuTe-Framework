@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -112,12 +111,9 @@ public class ScenarioServiceImpl implements ScenarioService {
         synchronized (projectService) {
             Project project = projectService.findOne(projectCode);
             if (project != null) {
-                Scenario scenario = findOne(projectCode, scenarioPath);
-                if (scenario != null) {
-                    scenarioRoMapper.updateScenario(scenarioRo, scenario);
-                    scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
-                    return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), scenario);
-                }
+                Scenario scenario = scenarioRoMapper.scenarioRoToScenario(scenarioRo);
+                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), scenario);
             }
             return null;
         }
@@ -170,5 +166,24 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
         scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+    }
+
+    @Override
+    public List<Scenario> findAllByProject(String projectCode) {
+        Project project = projectService.findOne(projectCode);
+        return project.getScenarioList();
+    }
+
+    @Override
+    public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException {
+        synchronized (this) {
+            Project project = projectService.findOne(projectCode);
+            if (project != null) {
+                Scenario newScenario = scenarioRoMapper.scenarioRoToScenario(scenarioRo);
+                newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario);
+                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), newScenario);
+            }
+            return null;
+        }
     }
 }

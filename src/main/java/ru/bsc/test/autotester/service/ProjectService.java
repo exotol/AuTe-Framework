@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.ro.ProjectRo;
-import ru.bsc.test.autotester.ro.ScenarioRo;
 
 import java.util.List;
 
@@ -20,7 +19,5 @@ public interface ProjectService {
 
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
-    ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo);
-
-    Project saveProject(Project project, List<Project> projectList);
+    Project saveProject(Project project);
 }

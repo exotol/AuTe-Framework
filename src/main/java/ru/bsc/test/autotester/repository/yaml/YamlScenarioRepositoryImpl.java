@@ -25,14 +25,6 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     @Override
     public Scenario findScenario(String projectCode, String scenarioPath) throws IOException {
         return projectsSource.findScenario(projectCode, scenarioPath);
-        /*
-        return projectsSource.getProjectList()
-                .stream()
-                .flatMap(project -> project.getScenarioList().stream())
-                .filter(scenario -> Objects.equals(scenario.getId(), scenarioId))
-                .findAny()
-                .orElse(null);
-                */
     }
 
     @Override

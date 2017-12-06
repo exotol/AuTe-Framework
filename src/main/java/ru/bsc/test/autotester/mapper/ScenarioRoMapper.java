@@ -8,7 +8,6 @@ import ru.bsc.test.autotester.ro.ScenarioRo;
 public abstract class ScenarioRoMapper {
 
     @Mappings({
-            @Mapping(target = "sort", ignore = true),
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
@@ -16,11 +15,5 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    abstract void updateScenarioFromRo(ScenarioRo scenarioRo, @MappingTarget Scenario scenario);
-
-    public Scenario updateScenario(ScenarioRo scenarioRo, @MappingTarget Scenario scenario) {
-        updateScenarioFromRo(scenarioRo, scenario);
-
-        return scenario;
-    }
+    public abstract Scenario scenarioRoToScenario(ScenarioRo scenarioRo);
 }

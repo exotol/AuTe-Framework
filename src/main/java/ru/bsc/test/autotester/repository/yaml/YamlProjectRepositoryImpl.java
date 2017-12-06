@@ -34,8 +34,8 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Project saveProject(Project project, List<Project> projectList) {
-        projectsSource.save(projectList);
+    public Project saveProject(Project project) {
+        projectsSource.saveProject(project);
         return project;
     }
 }

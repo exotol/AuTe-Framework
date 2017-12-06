@@ -14,5 +14,5 @@ public interface ProjectRepository {
     List<Project> findAllProjects();
     Project findProject(String projectCode);
 
-    Project saveProject(Project project, List<Project> projectList);
+    Project saveProject(Project project);
 }

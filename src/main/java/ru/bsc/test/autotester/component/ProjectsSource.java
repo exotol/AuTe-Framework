@@ -92,9 +92,8 @@ public class ProjectsSource {
                 } else {
                     File[] innerFileList = folder.listFiles(File::isDirectory);
                     if (innerFileList != null) {
-                        for (File groupFolder : innerFileList) {
-                            File scenarioYmlInGroup = new File(groupFolder, SCENARIO_YAML_FILENAME);
-                            if (scenarioYmlInGroup.exists()) {
+                        for (File scenarioYmlInGroup : innerFileList) {
+                            if (new File(scenarioYmlInGroup, SCENARIO_YAML_FILENAME).exists()) {
                                 try {
                                     project.getScenarioList().add(
                                             loadScenarioFromFiles(scenarioYmlInGroup)
@@ -154,24 +153,21 @@ public class ProjectsSource {
         }
     }
 
-    public void save(List<Project> projectList) {
+    public void saveProject(Project project) {
         synchronized (this) {
-            saveToFiles(projectList);
-            projectList.forEach(this::readExternalFiles);
+            saveProjectToFiles(project);
+            // readExternalFiles(project);
         }
     }
 
-    private void saveToFiles(List<Project> projectList) {
-        projectList.forEach(projectItem -> {
-            String fileName = directoryPath + "/" + projectItem.getCode() + "/" + MAIN_YAML_FILENAME;
-            try {
-                saveToExternalFiles(projectItem);
-                projectItem.setScenarioList(null);
-                YamlUtils.dumpToFile(projectItem, fileName);
-            } catch (IOException e) {
-                LOGGER.error("Save file " + fileName, e);
-            }
-        });
+    private void saveProjectToFiles(Project project) {
+        String fileName = directoryPath + "/" + project.getCode() + "/" + MAIN_YAML_FILENAME;
+        try {
+            project.setScenarioList(null);
+            YamlUtils.dumpToFile(project, fileName);
+        } catch (IOException e) {
+            LOGGER.error("Save file " + fileName, e);
+        }
     }
 
     private String translit(String string) {
@@ -244,7 +240,7 @@ public class ProjectsSource {
         return content != null && content.indexOf('<') == 0 ? "xml" : "json";
     }
 
-    private void saveToExternalFiles(Project project) throws IOException {
+    private void saveAllScenariosToExternalFiles(Project project) throws IOException {
         String projectPath = directoryPath + "/" + project.getCode() + "/";
         if (new File(projectPath + "scenarios").exists()) {
             FileUtils.deleteDirectory(new File(projectPath + "scenarios"));
@@ -312,7 +308,7 @@ public class ProjectsSource {
     private Scenario loadScenarioFromFiles(File scenarioFolder) throws IOException {
         File scenarioFile = new File(scenarioFolder + "/" + SCENARIO_YAML_FILENAME);
         Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
-        scenario.setCode(scenarioFile.getParentFile().getParent());
+        scenario.setCode(scenarioFile.getParentFile().getName());
 
         File scenarioRootDirectory = scenarioFile.getParentFile();
         scenario.getStepList().forEach(step ->
@@ -323,26 +319,25 @@ public class ProjectsSource {
     }
 
     private Step loadStepFromFiles(Step step, File scenarioRootDirectory) {
-        File stepFolder = new File(scenarioRootDirectory, stepPath(step));
         if (step.getRequestFile() != null && step.getRequest() == null) {
-            step.setRequest(readFile(stepFolder + step.getRequestFile()));
+            step.setRequest(readFile(scenarioRootDirectory + "/" + step.getRequestFile()));
         }
         if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
-            step.setExpectedResponse(readFile(stepFolder + step.getExpectedResponseFile()));
+            step.setExpectedResponse(readFile(scenarioRootDirectory + "/" + step.getExpectedResponseFile()));
         }
         if (step.getMqMessageFile() != null && step.getMqMessage() == null) {
-            step.setMqMessage(readFile(stepFolder + step.getMqMessageFile()));
+            step.setMqMessage(readFile(scenarioRootDirectory + "/" + step.getMqMessageFile()));
         }
 
         step.getMockServiceResponseList().forEach(mockServiceResponse -> {
             if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
-                mockServiceResponse.setResponseBody(readFile(scenarioRootDirectory + mockServiceResponse.getResponseBodyFile()));
+                mockServiceResponse.setResponseBody(readFile(scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile()));
             }
         });
 
         step.getExpectedServiceRequests().forEach(expectedServiceRequest -> {
             if (expectedServiceRequest.getExpectedServiceRequestFile() != null && expectedServiceRequest.getExpectedServiceRequest() == null) {
-                expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + expectedServiceRequest.getExpectedServiceRequestFile()));
+                expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile()));
             }
         });
         return step;
@@ -445,6 +440,9 @@ public class ProjectsSource {
     }
 
     private void saveScenarioToFiles(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
+        if (scenarioPath == null) {
+            // TODO
+        }
         File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 

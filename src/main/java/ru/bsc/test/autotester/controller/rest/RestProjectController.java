@@ -61,16 +61,12 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.GET)
     public List<ScenarioRo> getScenarios(@PathVariable String projectCode) {
-        Project project = projectService.findOne(projectCode);
-        if (project != null) {
-            return projectRoMapper.convertScenarioListToScenarioRoList(project.getScenarioList());
-        }
-        throw new ResourceNotFoundException();
+        return projectRoMapper.convertScenarioListToScenarioRoList(scenarioService.findAllByProject(projectCode));
     }
 
     @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.POST)
-    public ScenarioRo newScenario(@PathVariable String projectCode, @RequestBody ScenarioRo scenarioRo) {
-        scenarioRo = projectService.addScenarioToProject(projectCode, scenarioRo);
+    public ScenarioRo newScenario(@PathVariable String projectCode, @RequestBody ScenarioRo scenarioRo) throws IOException {
+        scenarioRo = scenarioService.addScenarioToProject(projectCode, scenarioRo);
         if (scenarioRo != null) {
             return scenarioRo;
         }

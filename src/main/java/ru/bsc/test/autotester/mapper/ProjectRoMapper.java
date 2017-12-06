@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.AmqpBroker;
@@ -36,22 +35,17 @@ public abstract class ProjectRoMapper {
     abstract public ProjectRo projectToProjectRo(Project project);
 
     @Mappings({
-            @Mapping(target = "code", ignore = true),
+            @Mapping(target = "code", source = "code"),
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "beforeScenarioPath", ignore = true),
-            @Mapping(target = "afterScenarioPath", ignore = true),
+            @Mapping(target = "beforeScenarioPath", source = "beforeScenarioPath"),
+            @Mapping(target = "afterScenarioPath", source = "afterScenarioPath"),
             @Mapping(target = "stand", source = "stand"),
+            @Mapping(target = "amqpBroker", source = "amqpBroker"),
+            @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
+            @Mapping(target = "testIdHeaderName", source = "testIdHeaderName"),
             @Mapping(target = "scenarioList", ignore = true)
     })
-    abstract void updateProjectFromRo(ProjectRo projectRo, @MappingTarget Project project);
-
-    public void updateProject(ProjectRo projectRo, @MappingTarget Project project) {
-        updateProjectFromRo(projectRo, project);
-
-        project.setBeforeScenarioPath(projectRo.getBeforeScenarioPath());
-
-        project.setAfterScenarioPath(projectRo.getAfterScenarioPath());
-    }
+    public abstract Project updateProjectFromRo(ProjectRo projectRo);
 
     abstract public List<ProjectRo> convertProjectListToProjectRoList(List<Project> list);
 
@@ -71,7 +65,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "dbPassword", source = "dbPassword"),
             @Mapping(target = "wireMockUrl", source = "wireMockUrl")
     })
-    abstract Stand updateStandFromRo(StandRo standRo, @MappingTarget Stand stand);
+    abstract Stand updateStandFromRo(StandRo standRo);
 
     @Mappings({
             @Mapping(target = "projectCode", ignore = true),
@@ -101,7 +95,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "password", source = "password"),
 
     })
-    public abstract AmqpBroker updateAmqpBrokerFromRo(AmqpBrokerRo amqpBrokerRo, @MappingTarget AmqpBroker amqpBroker);
+    public abstract AmqpBroker updateAmqpBrokerFromRo(AmqpBrokerRo amqpBrokerRo);
 
     @Mappings({
             @Mapping(target = "mqService", source = "mqService"),
