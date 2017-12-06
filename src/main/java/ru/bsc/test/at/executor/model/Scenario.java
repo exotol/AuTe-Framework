@@ -12,7 +12,6 @@ import java.util.List;
 public class Scenario extends AbstractModel implements Serializable {
 
     private String code;
-    private Long sort;
     private String name;
     private String scenarioGroup;
     private List<Step> stepList;
@@ -24,12 +23,6 @@ public class Scenario extends AbstractModel implements Serializable {
     }
     public void setCode(String code) {
         this.code = code;
-    }
-    public Long getSort() {
-        return sort;
-    }
-    public void setSort(Long sort) {
-        this.sort = sort;
     }
     public String getName() {
         return name;
