@@ -14,8 +14,10 @@ import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.service.StepService;
 
+import java.io.IOException;
+
 @RestController
-@RequestMapping("/rest/steps")
+@RequestMapping("/rest/project/{projectCode}/scenarios/{scenarioPath}/steps")
 public class RestStepController {
 
     private final StepService stepService;
@@ -28,9 +30,9 @@ public class RestStepController {
         this.scenarioService = scenarioService;
     }
 
-    @RequestMapping(value = "{stepId}", method = RequestMethod.PUT)
-    public StepRo updateOne(@PathVariable Long stepId, @RequestBody StepRo stepRo) {
-        stepRo = stepService.updateFromRo(stepId, stepRo);
+    @RequestMapping(value = "{stepCode}", method = RequestMethod.PUT)
+    public StepRo updateOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @PathVariable String stepCode, @RequestBody StepRo stepRo) {
+        stepRo = stepService.updateFromRo(projectCode, scenarioPath, stepCode, stepRo);
         if (stepRo != null) {
             return stepRo;
         }
@@ -38,10 +40,10 @@ public class RestStepController {
     }
 
     @RequestMapping(value = "{stepId}/clone", method = RequestMethod.POST)
-    public StepRo cloneStep(@PathVariable Long stepId) {
-        Step step = stepService.findOne(stepId);
+    public StepRo cloneStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @PathVariable String stepCode) throws IOException {
+        Step step = stepService.findOne(projectCode, scenarioPath, stepCode);
         if (step != null) {
-            return stepRoMapper.stepToStepRo(scenarioService.cloneStep(step));
+            return stepRoMapper.stepToStepRo(scenarioService.cloneStep(projectCode, scenarioPath, step));
         }
         throw new ResourceNotFoundException();
     }

@@ -4,6 +4,7 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.ro.StepRo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -11,8 +12,8 @@ import java.util.List;
  *
  */
 public interface StepService {
-    Step findOne(Long stepId);
+    Step findOne(String projectCode, String scenarioPath, String stepCode) throws IOException;
     Step save(Step step, List<Project> projectList);
 
-    StepRo updateFromRo(Long stepId, StepRo stepRo);
+    StepRo updateFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo);
 }

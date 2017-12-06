@@ -1,11 +1,11 @@
 package ru.bsc.test.autotester.repository.yaml;
 
-import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +23,7 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     }
 
     @Override
-    public Scenario findScenario(String projectCode, String scenarioPath) {
+    public Scenario findScenario(String projectCode, String scenarioPath) throws IOException {
         return projectsSource.findScenario(projectCode, scenarioPath);
         /*
         return projectsSource.getProjectList()
@@ -57,7 +57,7 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
     }
 
     @Override
-    public void delete(String projectCode, String scenarioPath) {
+    public void delete(String projectCode, String scenarioPath) throws IOException {
         projectsSource.deleteScenario(projectCode, scenarioPath);
     }
 }

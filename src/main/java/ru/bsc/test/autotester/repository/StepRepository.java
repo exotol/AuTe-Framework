@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.repository;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface StepRepository {
 
-    Step findStep(Long stepId);
+    Step findStep(String projectCode, String scenarioPath, String stepCode) throws IOException;
 
     Step saveStep(Step step, List<Project> projectList);
 }

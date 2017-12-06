@@ -11,6 +11,7 @@ import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.StepService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,9 +34,9 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public Step findOne(Long stepId) {
+    public Step findOne(String projectCode, String scenarioPath, String stepCode) throws IOException {
         synchronized (projectService) {
-            return stepRepository.findStep(stepId);
+            return stepRepository.findStep(projectCode, scenarioPath, stepCode);
         }
     }
 

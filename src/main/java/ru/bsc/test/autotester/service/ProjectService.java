@@ -18,8 +18,6 @@ public interface ProjectService {
 
     String findOneAsYaml(String projectCode);
 
-    String getSelectedAsYaml(String projectCode, List<Long> selectedScenarios);
-
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
     ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo);

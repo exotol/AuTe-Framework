@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.repository;
 
 import ru.bsc.test.at.executor.model.Scenario;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -9,11 +10,11 @@ import java.util.Set;
  *
  */
 public interface ScenarioRepository {
-    Scenario findScenario(String projectCode, String scenarioPath);
+    Scenario findScenario(String projectCode, String scenarioPath) throws IOException;
 
     Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario);
 
     Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl);
 
-    void delete(String projectCode, String scenarioPath);
+    void delete(String projectCode, String scenarioPath) throws IOException;
 }

@@ -5,6 +5,7 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.repository.StepRepository;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,12 +23,10 @@ public class YamlStepRepositoryImpl implements StepRepository {
     }
 
     @Override
-    public Step findStep(Long stepId) {
-        return projectsSource.getProjectList()
+    public Step findStep(String projectCode, String scenarioPath, String stepCode) throws IOException {
+        return projectsSource.findScenario(projectCode, scenarioPath).getStepList()
                 .stream()
-                .flatMap(project -> project.getScenarioList().stream())
-                .flatMap(scenario -> scenario.getStepList().stream())
-                .filter(scenario -> Objects.equals(scenario.getId(), stepId))
+                .filter(step -> Objects.equals(step.getCode(), stepCode))
                 .findAny()
                 .orElse(null);
     }

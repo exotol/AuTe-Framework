@@ -15,9 +15,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -68,13 +66,6 @@ public class ProjectsSource {
                         loadedProject.setCode(projectDirectory.getName());
                         readExternalFiles(loadedProject);
 
-                        if (loadedProject.getBeforeScenarioPath() != null) {
-                            loadedProject.setBeforeScenario(findScenarioByPath(loadedProject.getBeforeScenarioPath(), loadedProject.getScenarioList()));
-                        }
-                        if (loadedProject.getAfterScenarioPath() != null) {
-                            loadedProject.setAfterScenario(findScenarioByPath(loadedProject.getAfterScenarioPath(), loadedProject.getScenarioList()));
-                        }
-
                         projectList.add(loadedProject);
                     } catch (IOException e) {
                         LOGGER.error("Main project file not found", e);
@@ -82,11 +73,6 @@ public class ProjectsSource {
                 }
             }
         }
-
-        // Проверка и восстановление id:
-        // - исправляются повторения id
-        // - исправляются неназначенные id (id == null)
-        checkAndRepairId(projectList);
 
         return projectList;
     }
@@ -119,9 +105,9 @@ public class ProjectsSource {
                 File scenarioYml = new File(folder, SCENARIO_YAML_FILENAME);
                 if (scenarioYml.exists()) {
                     try {
-                        Scenario scenario = YamlUtils.loadAs(scenarioYml, Scenario.class);
-                        scenario.setCode(folder.getName());
-                        project.getScenarioList().add(scenario);
+                        project.getScenarioList().add(
+                                loadScenarioFromFiles(folder)
+                        );
                     } catch (IOException e) {
                         LOGGER.error("Read file " + scenarioYml.getAbsolutePath(), e);
                     }
@@ -165,11 +151,7 @@ public class ProjectsSource {
         */
 
         // Чтение внешних файлов для вложенных моделей
-        applyToProjectModels(project, model -> {
-            if (model != null) {
-                idToHashCode.put(model.getCode(), model.hashCode());
-            }
-        }, modelList -> {});
+        applyToProjectModels(project, model -> idToHashCode.put(model, model.hashCode()), modelList -> {});
     }
 
     private String readFile(String path) {
@@ -196,8 +178,6 @@ public class ProjectsSource {
 
     public void save(List<Project> projectList) {
         synchronized (this) {
-            checkAndRepairSort(projectList);
-            checkAndRepairId(projectList);
             saveToFiles(projectList);
             projectList.forEach(this::readExternalFiles);
         }
@@ -209,24 +189,6 @@ public class ProjectsSource {
             try {
                 saveToExternalFiles(projectItem, true);
                 projectItem.setScenarioList(null);
-                if (projectItem.getBeforeScenario() == null) {
-                    projectItem.setBeforeScenarioPath(null);
-                } else {
-                    projectItem.setBeforeScenarioPath(
-                            (StringUtils.isEmpty(projectItem.getBeforeScenario().getScenarioGroup()) ? "" : projectItem.getBeforeScenario().getScenarioGroup() + "/")
-                            + projectItem.getBeforeScenario().getCode()
-                    );
-                    projectItem.setBeforeScenario(null);
-                }
-                if (projectItem.getAfterScenario() == null) {
-                    projectItem.setAfterScenarioPath(null);
-                } else {
-                    projectItem.setAfterScenarioPath(
-                            (StringUtils.isEmpty(projectItem.getAfterScenario().getScenarioGroup()) ? "" : projectItem.getAfterScenario().getScenarioGroup() + "/")
-                            + projectItem.getAfterScenario().getCode()
-                    );
-                    projectItem.setAfterScenario(null);
-                }
                 YamlUtils.dumpToFile(projectItem, fileName);
             } catch (IOException e) {
                 LOGGER.error("Save file " + fileName, e);
@@ -308,7 +270,7 @@ public class ProjectsSource {
         if (model == null) {
             return true;
         }
-        Integer lastHashCode = idToHashCode.get(model.getCode());
+        Integer lastHashCode = idToHashCode.get(model);
         // The model did not change
         return lastHashCode == null || lastHashCode != model.hashCode();
     }
@@ -337,26 +299,6 @@ public class ProjectsSource {
             }
         }
         project.getScenarioList().forEach(scenario -> saveScenarioToFiles(project.getCode(), scenarioPath(scenario), scenario, saveAll));
-    }
-
-    private void checkAndRepairSort(List<Project> projectList) {
-        applyToAllProjects(
-                projectList,
-                model -> {},
-                modelList -> modelList.sort(Comparator.comparingLong(o -> o.getSort() != null ? o.getSort() : 0L)));
-    }
-
-    private void checkAndRepairId(List<Project> projectList) {
-        Set<Long> idSet = new LinkedHashSet<>();
-        // applyToAllProjects(projectList, model -> collectAndReplaceRepeatsId(idSet, model), modelList -> {});
-        applyToAllProjects(projectList, model -> newIdToModel(idSet, model), modelList -> {});
-    }
-
-    private void newIdToModel(Set<Long> idSet, AbstractModel model) {
-        if (idSet == null || model == null) {
-            return;
-        }
-        model.setCode(UUID.randomUUID().toString());
     }
 
     private void applyToProjectModels(Project project, IMethodToModel methodToModel, IMethodToList methodToList) {
@@ -396,15 +338,11 @@ public class ProjectsSource {
                 }
             });
         }
-        if (project.getStandList() != null) {
-            methodToList.method(project.getStandList());
-            project.getStandList().forEach(methodToModel::method);
-        }
     }
 
-    private void applyToAllProjects(List<Project> projectList, IMethodToModel methodToModel, IMethodToList methodToList) {
+    /*private void applyToAllProjects(List<Project> projectList, IMethodToModel methodToModel, IMethodToList methodToList) {
         projectList.forEach(project -> applyToProjectModels(project, methodToModel, methodToList));
-    }
+    }*/
 
     public void deleteScenario(String projectCode, String scenarioPath) throws IOException {
         FileUtils.deleteDirectory(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath));

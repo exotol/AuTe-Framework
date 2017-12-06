@@ -15,7 +15,6 @@ import ru.bsc.test.autotester.service.ProjectService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -60,18 +59,6 @@ public class ProjectServiceImpl implements ProjectService {
         synchronized (this) {
             return new Yaml().dump(projectRepository.findProject(projectCode));
         }
-    }
-
-    @Override
-    public String getSelectedAsYaml(String projectCode, List<Long> selectedScenarios) {
-        Project project = findOne(projectCode);
-        if (project != null) {
-            project.setScenarioList(project.getScenarioList().stream()
-                    .filter(scenario -> selectedScenarios.contains(scenario.getId()))
-                    .collect(Collectors.toList()));
-            return new Yaml().dump(project);
-        }
-        return null;
     }
 
     @Override
