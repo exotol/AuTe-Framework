@@ -47,14 +47,14 @@
     </div>
   </div>
   <div style="min-height: 33px; margin-top: 7px; margin-bottom: 25px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
-    <app-scenario-list-item [scenario]="scenario" (onStateChange)="onStateChange($event, scenario)"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)"></app-scenario-list-item>
   </div>
 
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
         <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'">Download project as YAML</a>
-        <button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button>
+        <!--button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button-->
       </div>
     </div>
   </div>

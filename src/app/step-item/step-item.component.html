@@ -26,7 +26,7 @@
           <button class="btn btn-default" title="Delete" *ngIf="showUpDownDeleteCloneButtons" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> Delete</button>
           <button class="btn btn-default" title="Disabled toggle" *ngIf="!step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disable</button>
           <button class="btn btn-default" title="Disabled toggle" style="color: red;" *ngIf="step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> Disabled</button>
-          <button class="btn btn-success" title="Clone" *ngIf="showUpDownDeleteCloneButtons && step.id" (click)="cloneStep()"><span class="glyphicon glyphicon-paste"></span> Clone</button>
+          <button class="btn btn-success" title="Clone" *ngIf="showUpDownDeleteCloneButtons && step.code" (click)="cloneStep()"><span class="glyphicon glyphicon-paste"></span> Clone</button>
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@
         <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">Summary</a></li>
         <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
         <li [class.active]="tab == 'savedValues'">
-          <a href="#" (click)="selectTab('savedValues')">Saved values <span *ngIf="step.jsonXPath || Object.keys(step.savedValuesCheck).length" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('savedValues')">Saved values <span *ngIf="step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'headers'">
           <a href="#" (click)="selectTab('headers')">Headers <span *ngIf="step.requestHeaders" class="glyphicon glyphicon-tag"></span></a>
@@ -228,7 +228,7 @@
               <label>Check saved values</label>
             </div>
           </div>
-          <div class="row" *ngFor="let checkedValueName of Object.keys(step.savedValuesCheck)">
+          <div class="row" *ngFor="let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])">
             <div class="col-sm-4" style="text-align: right;">
               <label>
                 <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>

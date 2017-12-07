@@ -10,7 +10,7 @@ import {Globals} from '../globals';
 @Injectable()
 export class ScenarioService {
 
-  public serviceUrl = '/rest/scenarios';
+  public serviceUrl = '/rest/projects';
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(
@@ -18,35 +18,39 @@ export class ScenarioService {
     private http: Http
   ) { }
 
-  run(scenario: Scenario): Observable<StepResult[]> {
+  run(projectCode: String, scenario: Scenario): Observable<StepResult[]> {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id + '/exec',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath() + '/exec',
       {},
       {headers: this.headers}
     ).map(value => value.json() as StepResult[]);
   }
 
-  findOne(scenarioId: number): Observable<Scenario> {
-    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenarioId)
+  findOne(projectCode: String, scenarioGroup: String, scenarioCode: String): Observable<Scenario> {
+    const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
+    return this.http
+      .get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath)
       .map(value => value.json() as Scenario);
   }
 
-  findScenarioSteps(scenarioId: number): Observable<Step[]> {
-    return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenarioId + '/steps')
+  findScenarioSteps(projectCode: String, scenarioGroup: String, scenarioCode: String): Observable<Step[]> {
+    const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
+    return this.http
+      .get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps')
       .map(value => value.json() as Step[]);
   }
 
-  saveStepList(scenario: Scenario, stepList: Step[]): Observable<Step[]> {
+  saveStepList(projectCode: String, scenario: Scenario, stepList: Step[]): Observable<Step[]> {
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id + '/steps',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath() + '/steps',
       stepList,
       {headers: this.headers}
     ).map(value => value.json() as Step[]);
   }
 
-  saveOne(scenario: Scenario): Observable<Scenario> {
+  saveOne(projectCode: String, scenario: Scenario): Observable<Scenario> {
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id,
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath(),
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);

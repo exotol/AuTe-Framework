@@ -4,7 +4,7 @@
   <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
     <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
   </li>
-  <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/scenario', scenario.id]">{{scenario.id}}. {{scenario.name}}</a></li>
+  <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">{{scenario.code}}. {{scenario.name}}</a></li>
   <li class="breadcrumb-item active">Settings</li>
 </ol>
 
@@ -35,34 +35,10 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>Before scenario</label>
-      </div>
-      <div class="col-sm-9">
-        <select class="form-control" title="Before scenario" [(ngModel)]="scenario.beforeScenarioId">
-          <option [ngValue]="null">[default from project]</option>
-          <option *ngFor="let scenarioItem of scenarioList" [ngValue]="scenarioItem.id">{{scenarioItem.name}}</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-3">
         <label>Before scenario ignore</label>
       </div>
       <div class="col-sm-9">
         <input type="checkbox" title="" [(ngModel)]="scenario.beforeScenarioIgnore"/>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-3">
-        <label>After scenario</label>
-      </div>
-      <div class="col-sm-9">
-        <select class="form-control" title="After scenario" [(ngModel)]="scenario.afterScenarioId">
-          <option [ngValue]="null">[default from project]</option>
-          <option *ngFor="let scenarioItem of scenarioList" [ngValue]="scenarioItem.id">{{scenarioItem.name}}</option>
-        </select>
       </div>
     </div>
 

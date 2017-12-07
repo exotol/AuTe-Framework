@@ -18,7 +18,7 @@ export class ScenarioSettingsComponent implements OnInit {
 
   scenario: Scenario;
   project: Project;
-  scenarioList: Scenario[];
+  projectCode: String;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,24 +28,23 @@ export class ScenarioSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.paramMap
-      .switchMap((params: ParamMap) => this.scenarioService.findOne(+params.get('id')))
-      .subscribe(value => {
-        this.scenario = value;
+    this.route.params.subscribe((params: ParamMap) => {
+      console.log(params);
+      this.projectCode = params['projectCode'];
 
-        this.projectService.findOne(this.scenario.projectCode)
-          .subscribe(project => {
-            this.project = project;
+      this.scenarioService
+        .findOne(this.projectCode, params['scenarioGroup'], params['scenarioCode'])
+        .subscribe(value => this.scenario = value);
 
-            this.projectService.findScenariosByProject(this.project.code)
-              .subscribe(scenarioList => this.scenarioList = scenarioList);
-          });
-      });
+      this.projectService
+        .findOne(this.projectCode)
+        .subscribe(project => this.project = project);
+    });
   }
 
   save(): void {
     const toasty = this.customToastyService.saving();
-    this.scenarioService.saveOne(this.scenario)
+    this.scenarioService.saveOne(this.project.code, this.scenario)
       .subscribe(value => {
         this.scenario = value;
         this.customToastyService.success('Сохранено', 'Сценарий сохранен');

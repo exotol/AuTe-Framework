@@ -41,7 +41,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   ngOnInit() {
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('code')))
+      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('projectCode')))
       .subscribe(value => {
         this.project = value;
 
@@ -56,7 +56,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
       });
 
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(params.get('code')))
+      .switchMap((params: ParamMap) => this.projectService.findScenariosByProject(params.get('projectCode')))
       .subscribe(value => {
         this.scenarioList = value;
         this.scenarioList
@@ -92,6 +92,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     return false;
   }
 
+  /*
   downloadSelectedAsYaml() {
     const selectedScenarios = this.scenarioList
       .filter(value => this.isSelectedScenario(value))
@@ -99,6 +100,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.projectService.downloadYaml(this.project, selectedScenarios)
       .subscribe(res => saveAs(res, 'PROJECT_' + this.project.code + '.yml'))
   }
+  */
 
   isSelectedScenario(scenario: Scenario) {
     return scenario && scenario._selected && this.isDisplayScenario(scenario);

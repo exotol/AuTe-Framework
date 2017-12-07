@@ -15,6 +15,7 @@ export class ScenarioDetailComponent implements OnInit {
 
   scenario: Scenario;
   stepList: Step[];
+  projectCode: String;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,19 +25,24 @@ export class ScenarioDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.paramMap
-      .switchMap((params: ParamMap) => this.scenarioService.findOne(+params.get('id')))
-      .subscribe(value => this.scenario = value);
+    this.route.params.subscribe((params: ParamMap) => {
+      console.log(params);
+      this.projectCode = params['projectCode'];
 
-    this.route.paramMap
-      .switchMap((params: ParamMap) => this.scenarioService.findScenarioSteps(+params.get('id')))
-      .subscribe(value => this.stepList = value);
+      this.scenarioService
+        .findOne(this.projectCode, params['scenarioGroup'], params['scenarioCode'])
+        .subscribe(value => this.scenario = value);
+
+      this.scenarioService
+        .findScenarioSteps(this.projectCode, params['scenarioGroup'], params['scenarioCode'])
+        .subscribe(value => this.stepList = value);
+    });
   }
 
   saveSteps() {
     if (this.scenario && this.stepList) {
       const toasty = this.customToastyService.saving();
-      this.scenarioService.saveStepList(this.scenario, this.stepList)
+      this.scenarioService.saveStepList(this.projectCode, this.scenario, this.stepList)
         .subscribe(savedStepList => {
           this.customToastyService.success('Сохранено', 'Шаги сохранены');
           this.stepList = savedStepList;

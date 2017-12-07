@@ -4,7 +4,7 @@ import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
 
 export class Step {
-  id: number;
+  code: String;
   expectedServiceRequestList: ExpectedServiceRequest[];
   sort: number;
   relativeUrl: string;

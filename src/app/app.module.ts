@@ -25,10 +25,13 @@ import {CustomToastyService} from './service/custom-toasty.service';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
-  { path: 'project/:code', component: ProjectDetailComponent },
-  { path: 'project/:code/settings', component: ProjectSettingsComponent },
-  { path: 'scenario/:id', component: ScenarioDetailComponent },
-  { path: 'scenario/:id/settings', component: ScenarioSettingsComponent }
+  { path: 'project/:projectCode', component: ProjectDetailComponent },
+  { path: 'project/:projectCode/settings', component: ProjectSettingsComponent },
+  { path: 'project/:projectCode/scenario/:scenarioCode/settings', component: ScenarioSettingsComponent },
+  { path: 'project/:projectCode/scenario/:scenarioGroup/:scenarioCode/settings', component: ScenarioSettingsComponent },
+  { path: 'project/:projectCode/scenario/:scenarioCode', component: ScenarioDetailComponent },
+  { path: 'project/:projectCode/scenario/:scenarioGroup/:scenarioCode', component: ScenarioDetailComponent },
+
 ];
 
 @NgModule({

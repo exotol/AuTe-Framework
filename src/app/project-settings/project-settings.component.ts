@@ -31,7 +31,7 @@ export class ProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('code')))
+      .switchMap((params: ParamMap) => this.projectService.findOne(params.get('projectCode')))
       .subscribe(value => {
         this.project = value;
 
@@ -58,38 +58,8 @@ export class ProjectSettingsComponent implements OnInit {
     return false;
   }
 
-  /*
-  removeScenarioGroup(scenarioGroup: ScenarioGroup): void {
-    const indexToRemove = this.project.scenarioGroups.indexOf(scenarioGroup);
-    if (indexToRemove > -1) {
-      this.project.scenarioGroups.splice(indexToRemove, 1);
-    }
-  }
-
-  addScenarioGroup(): void {
-    if (!this.project.scenarioGroups) {
-      this.project.scenarioGroups = [];
-    }
-    this.project.scenarioGroups.push(new ScenarioGroup());
-  }
-  */
-
   selectAsDefaultStand(stand: Stand): void {
     this.project.stand = stand;
-  }
-
-  addStand(): void {
-    if (!this.project.standList) {
-      this.project.standList = [];
-    }
-    this.project.standList.push(new Stand());
-  }
-
-  removeStand(stand: Stand): void {
-    const indexToRemove = this.project.standList.indexOf(stand);
-    if (indexToRemove > -1) {
-      this.project.standList.splice(indexToRemove, 1);
-    }
   }
 
   addAmqpBroker() {

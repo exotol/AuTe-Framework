@@ -18,7 +18,7 @@
       <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
     </div>
     <div class="col-sm-1">
-      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
+      <a class="btn btn-default" [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">Edit</a>
     </div>
   </div>
   <div class="row" *ngIf="showResultDetails && stepResultList">

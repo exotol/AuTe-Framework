@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Project} from '../model/project';
-import {Headers, Http, ResponseContentType} from '@angular/http';
+import {Headers, Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Scenario} from '../model/scenario';
 import {Globals} from '../globals';
@@ -30,12 +30,12 @@ export class ProjectService {
     ).map(value => value.json() as Project);
   }
 
-  findOne(projectCode: string): Observable<Project> {
+  findOne(projectCode: String): Observable<Project> {
     return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
       .map(value => value.json() as Project);
   }
 
-  findScenariosByProject(projectCode: string): Observable<Scenario[]> {
+  findScenariosByProject(projectCode: String): Observable<Scenario[]> {
     return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios')
       .map(value => value.json() as Scenario[]);
   }
@@ -48,6 +48,7 @@ export class ProjectService {
     ).map(value => value.json() as Scenario);
   }
 
+  /*
   downloadYaml(project: Project, selectedScenarios: number[]) {
     return this.http.post(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/export-selected-to-yaml',
@@ -55,4 +56,5 @@ export class ProjectService {
       {responseType: ResponseContentType.Blob}
     ).map(value => new Blob([value.blob()]));
   }
+  */
 }

@@ -3,8 +3,8 @@ import {AmqpBroker} from './amqp-broker';
 
 export class Project {
   name: string;
-  beforeScenarioId: Number;
-  afterScenarioId: Number;
+  beforeScenarioPath: String;
+  afterScenarioPath: String;
   code: string;
   standList: Stand[];
   stand: Stand;

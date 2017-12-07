@@ -17,16 +17,18 @@ export class StepService {
   ) { }
 
   saveStep(step: Step): Observable<Step> {
+    // TODO
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.id,
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.code,
       step,
       {headers: this.headers}
     ).map(value => value.json() as Step);
   }
 
   cloneStep(step: Step): Observable<Step> {
+    // TODO
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.id + '/clone',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.code + '/clone',
       {},
       {headers: this.headers}
     ).map(value => value.json() as Step);

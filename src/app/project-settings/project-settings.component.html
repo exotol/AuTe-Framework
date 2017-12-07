@@ -11,7 +11,7 @@
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
       <!--li [class.active]="tab == 'groups'"><a href="#" (click)="selectTab('groups')">Scenario groups</a></li-->
-      <li [class.active]="tab == 'stands'"><a href="#" (click)="selectTab('stands')">Stands</a></li>
+      <li [class.active]="tab == 'stand'"><a href="#" (click)="selectTab('stand')">Stand</a></li>
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
@@ -20,15 +20,15 @@
         <input class="form-control" title="" [(ngModel)]="project.name"/>
 
         <label>Before scenario</label>
-        <select class="form-control" title="Before scenario" [(ngModel)]="project.beforeScenarioId">
+        <select class="form-control" title="Before scenario" [(ngModel)]="project.beforeScenarioPath">
           <option [ngValue]="null">disabled</option>
-          <option *ngFor="let scenario of scenarioList" [ngValue]="scenario.id">{{scenario.name}}</option>
+          <option *ngFor="let scenario of scenarioList" [ngValue]="(scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code">{{scenario.name}}</option>
         </select>
 
         <label>After scenario</label>
-        <select class="form-control" title="Before scenario" [(ngModel)]="project.afterScenarioId">
+        <select class="form-control" title="Before scenario" [(ngModel)]="project.afterScenarioPath">
           <option [ngValue]="null">disabled</option>
-          <option *ngFor="let scenario of scenarioList" [ngValue]="scenario.id">{{scenario.name}}</option>
+          <option *ngFor="let scenario of scenarioList" [ngValue]="(scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code">{{scenario.name}}</option>
         </select>
 
         <label>Project code</label>
@@ -86,41 +86,32 @@
         </div>
         <button class="btn btn-default" style="margin-top: 7px;" (click)="addScenarioGroup()"><span class="glyphicon glyphicon-plus"></span> Add scenario group</button>
       </div-->
-      <div [style.display]="tab == 'stands' ? '' : 'none'">
-        <div style="border: none;" class="list-group-item" *ngFor="let stand of project.standList">
+      <div [style.display]="tab == 'stand' ? '' : 'none'">
+        <div style="border: none;" class="list-group-item">
           <div class="row">
             <div class="col-sm-12">
               <label>Service URL</label>
               <div class="input-group">
-                <input placeholder="Service URL" class="form-control" title="" [(ngModel)]="stand.serviceUrl"/>
-                <span class="input-group-btn">
-                  <button class="btn btn-default" *ngIf="project.stand && stand.id && project.stand.id != stand.id" (click)="selectAsDefaultStand(stand)">Set as default</button>
-                  <button class="btn btn-primary" *ngIf="!(project.stand && project.stand.id != stand.id)" disabled>Used by default</button>
-
-                  <button class="btn" (click)="removeStand(stand)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
-                </span>
+                <input placeholder="Service URL" class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-4">
-              <input placeholder="Data base URL" class="form-control" title="" [(ngModel)]="stand.dbUrl"/>
+              <input placeholder="Data base URL" class="form-control" title="" [(ngModel)]="project.stand.dbUrl"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="Data base User" class="form-control" title="" [(ngModel)]="stand.dbUser"/>
+              <input placeholder="Data base User" class="form-control" title="" [(ngModel)]="project.stand.dbUser"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="Data base Password" type="password" class="form-control" title="" [(ngModel)]="stand.dbPassword"/>
+              <input placeholder="Data base Password" type="password" class="form-control" title="" [(ngModel)]="project.stand.dbPassword"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <input placeholder="WireMock URL" class="form-control" title="" [(ngModel)]="stand.wireMockUrl"/>
+              <input placeholder="WireMock URL" class="form-control" title="" [(ngModel)]="project.stand.wireMockUrl"/>
             </div>
           </div>
-        </div>
-        <div style="border: none;" class="list-group-item">
-          <button class="btn btn-default" (click)="addStand()"><span class="glyphicon glyphicon-plus"></span> Add stand</button>
         </div>
       </div>
       <div [style.display]="tab == 'json' ? '' : 'none'">

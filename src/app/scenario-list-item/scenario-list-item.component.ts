@@ -12,6 +12,8 @@ export class ScenarioListItemComponent implements OnInit {
 
   @Input()
   scenario: Scenario;
+  @Input()
+  projectCode: String;
   @Output() onStateChange = new EventEmitter<any>();
 
   stepResultList: StepResult[];
@@ -35,7 +37,7 @@ export class ScenarioListItemComponent implements OnInit {
     if (this.state !== 'executing') {
       this.state = 'executing';
       this.stateChanged();
-      this.scenarioService.run(this.scenario)
+      this.scenarioService.run(this.projectCode, this.scenario)
         .subscribe(value => { this.stepResultList = value; this.state = 'finished'; this.stateChanged(); });
     }
   }

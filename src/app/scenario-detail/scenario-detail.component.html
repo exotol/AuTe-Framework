@@ -5,15 +5,15 @@
     <li class="breadcrumb-item" *ngIf="scenario.scenarioGroup">
       <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
     </li>
-    <li class="breadcrumb-item active">{{scenario.id}}. {{scenario.name}}</li>
+    <li class="breadcrumb-item active">{{scenario.code}}. {{scenario.name}}</li>
   </ol>
 
   <div *ngIf="scenario">
     <div style="margin-bottom: 10px;">
       <h3>{{scenario.name}}</h3>
-      <a [routerLink]="['/scenario/' + scenario.id + '/settings']">Settings</a>
+      <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']">Settings</a>
     </div>
-    <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="projectCode"></app-scenario-list-item>
   </div>
   <hr/>
   <div class="help-block" *ngIf="!stepList">
