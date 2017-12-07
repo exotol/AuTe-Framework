@@ -7,8 +7,14 @@ public class MaskComparator {
     private static final String IGNORE = "*ignore*";
 
     public static boolean compare(String expected, String actual) {
-        expected = expected.replaceAll("[\n\r]+", "\n");
-        actual = actual.replaceAll("[\n\r]+", "\n");
+        expected = expected
+                .replaceAll("[\n\r]+", "\n")
+                .replaceAll(" ", " ")
+                .trim();
+        actual = actual
+                .replaceAll("[\n\r]+", "\n")
+                .replaceAll(" ", " ")
+                .trim();
         String[] expectedParts = expected.split(Pattern.quote(IGNORE));
         int position = 0;
         String lastValue = null;

@@ -17,6 +17,7 @@ public class Scenario extends AbstractModel implements Serializable {
     private List<Step> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
+    private Boolean failed;
 
     public String getCode() {
         return code;
@@ -56,6 +57,14 @@ public class Scenario extends AbstractModel implements Serializable {
     }
     public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
         this.afterScenarioIgnore = afterScenarioIgnore;
+    }
+
+    public Boolean getFailed() {
+        return failed;
+    }
+
+    public void setFailed(Boolean failed) {
+        this.failed = failed;
     }
 
     public Scenario copy() {
