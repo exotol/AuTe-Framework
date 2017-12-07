@@ -23,10 +23,6 @@ public class Step extends AbstractModel implements Serializable {
     private String expectedResponse;
     private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
-    private String savingValues;
-    private String responses;
-    private String dbParams;
-    private String tmpServiceRequestsDirectory;
     private Integer expectedStatusCode;
     private String sql;
     private String sqlSavedParameter;
@@ -92,30 +88,6 @@ public class Step extends AbstractModel implements Serializable {
     }
     public void setExpectedResponseFile(String expectedResponseFile) {
         this.expectedResponseFile = expectedResponseFile;
-    }
-    public String getSavingValues() {
-        return savingValues;
-    }
-    public void setSavingValues(String savingValues) {
-        this.savingValues = savingValues;
-    }
-    public String getResponses() {
-        return responses;
-    }
-    public void setResponses(String responses) {
-        this.responses = responses;
-    }
-    public String getDbParams() {
-        return dbParams;
-    }
-    public void setDbParams(String dbParams) {
-        this.dbParams = dbParams;
-    }
-    public String getTmpServiceRequestsDirectory() {
-        return tmpServiceRequestsDirectory;
-    }
-    public void setTmpServiceRequestsDirectory(String tmpServiceRequestsDirectory) {
-        this.tmpServiceRequestsDirectory = tmpServiceRequestsDirectory;
     }
     public Integer getExpectedStatusCode() {
         return expectedStatusCode;
@@ -259,10 +231,6 @@ public class Step extends AbstractModel implements Serializable {
         step.setRequestHeaders(getRequestHeaders());
         step.setRequest(getRequest());
         step.setExpectedResponse(getExpectedResponse());
-        step.setSavingValues(getSavingValues());
-        step.setResponses(getResponses());
-        step.setDbParams(getDbParams());
-        step.setTmpServiceRequestsDirectory(getTmpServiceRequestsDirectory());
         step.setExpectedStatusCode(getExpectedStatusCode());
         step.setSql(getSql());
         step.setSqlSavedParameter(getSqlSavedParameter());
@@ -318,11 +286,6 @@ public class Step extends AbstractModel implements Serializable {
             return false;
         if (expectedResponseIgnore != null ? !expectedResponseIgnore.equals(step.expectedResponseIgnore) : step.expectedResponseIgnore != null)
             return false;
-        if (savingValues != null ? !savingValues.equals(step.savingValues) : step.savingValues != null) return false;
-        if (responses != null ? !responses.equals(step.responses) : step.responses != null) return false;
-        if (dbParams != null ? !dbParams.equals(step.dbParams) : step.dbParams != null) return false;
-        if (tmpServiceRequestsDirectory != null ? !tmpServiceRequestsDirectory.equals(step.tmpServiceRequestsDirectory) : step.tmpServiceRequestsDirectory != null)
-            return false;
         if (expectedStatusCode != null ? !expectedStatusCode.equals(step.expectedStatusCode) : step.expectedStatusCode != null)
             return false;
         if (sql != null ? !sql.equals(step.sql) : step.sql != null) return false;
@@ -348,10 +311,6 @@ public class Step extends AbstractModel implements Serializable {
         result = 31 * result + (expectedResponse != null ? expectedResponse.hashCode() : 0);
         result = 31 * result + (expectedResponseFile != null ? expectedResponseFile.hashCode() : 0);
         result = 31 * result + (expectedResponseIgnore != null ? expectedResponseIgnore.hashCode() : 0);
-        result = 31 * result + (savingValues != null ? savingValues.hashCode() : 0);
-        result = 31 * result + (responses != null ? responses.hashCode() : 0);
-        result = 31 * result + (dbParams != null ? dbParams.hashCode() : 0);
-        result = 31 * result + (tmpServiceRequestsDirectory != null ? tmpServiceRequestsDirectory.hashCode() : 0);
         result = 31 * result + (expectedStatusCode != null ? expectedStatusCode.hashCode() : 0);
         result = 31 * result + (sql != null ? sql.hashCode() : 0);
         result = 31 * result + (sqlSavedParameter != null ? sqlSavedParameter.hashCode() : 0);

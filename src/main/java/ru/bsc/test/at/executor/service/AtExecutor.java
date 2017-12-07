@@ -38,7 +38,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -134,6 +133,9 @@ public class AtExecutor {
     }
 
     private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
+        if (path == null) {
+            return null;
+        }
         String scenarioCode;
         String scenarioGroupCode;
         String[] scenarioPathParts = path.split("/");
@@ -159,7 +161,6 @@ public class AtExecutor {
         if (stepList == null) {
             return null;
         }
-        int failures = 0;
         for (Step step: stepList) {
             if (!step.getDisabled()) {
                 List<StepParameterSet> parametersEnvironment;
@@ -186,15 +187,13 @@ public class AtExecutor {
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                            stepResult.setResult(StepResult.RESULT_OK);
-                        } catch (Exception e) {
-                            StringWriter sw = new StringWriter();
-                            e.printStackTrace(new PrintWriter(sw));
+                        stepResult.setResult(StepResult.RESULT_OK);
+                    } catch (Exception e) {
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
 
-                            stepResult.setResult(StepResult.RESULT_FAIL);
-                            stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
-                            failures++;
-
+                        stepResult.setResult(StepResult.RESULT_FAIL);
+                        stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                     }
                 }
             }
@@ -275,21 +274,22 @@ public class AtExecutor {
         stepResult.setExpected(step.getExpectedResponse());
 
         // 4. Сохранить полученные значения
-        saveValuesFromResponse(step.getSavingValues(), responseData.getContent(), savedValues);
         saveValuesByJsonXPath(step, responseData, savedValues);
 
         stepResult.setSavedParameters(savedValues.toString());
 
         // 4.1 Проверить сохраненные значения
-        for(Map.Entry<String, String> entry: step.getSavedValuesCheck().entrySet()) {
-            String valueExpected = entry.getValue() == null ? "" : entry.getValue();
-            for (Map.Entry<String, String> savedVal : savedValues.entrySet()) {
-                String key = String.format("%%%s%%", savedVal.getKey());
-                valueExpected = valueExpected.replaceAll(key, savedVal.getValue());
-            }
-            String valueActual = savedValues.get(entry.getKey());
-            if (!valueExpected.equals(valueActual)) {
-                throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+        if (step.getSavedValuesCheck() != null) {
+            for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
+                String valueExpected = entry.getValue() == null ? "" : entry.getValue();
+                for (Map.Entry<String, String> savedVal : savedValues.entrySet()) {
+                    String key = String.format("%%%s%%", savedVal.getKey());
+                    valueExpected = valueExpected.replaceAll(key, savedVal.getValue());
+                }
+                String valueActual = savedValues.get(entry.getKey());
+                if (!valueExpected.equals(valueActual)) {
+                    throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+                }
             }
         }
 
@@ -361,17 +361,6 @@ public class AtExecutor {
         }
     }
 
-    private Map<String, String> parseFormData(String formDataString) {
-        Map<String, String> formDataMap = new HashMap<>();
-        if (StringUtils.isNotEmpty(formDataString)) {
-            for (String line : formDataString.split("\\r?\\n")) {
-                String[] lineParts = line.split("=", 2);
-                formDataMap.put(lineParts[0].trim(), lineParts[1].trim());
-            }
-        }
-        return formDataMap;
-    }
-
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
         if (StringUtils.isNotEmpty(responseData.getContent())) {
             if (StringUtils.isNotEmpty(step.getJsonXPath())) {
@@ -420,23 +409,6 @@ public class AtExecutor {
             Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
         }
         return retry;
-    }
-
-    private void saveValuesFromResponse(String values, String response, Map<String, String> savedValues) {
-        if (StringUtils.isNotEmpty(values)) {
-            List<String> valuesList = Arrays.asList(values.split(","));
-            for (String value : valuesList) {
-                if (!value.isEmpty()) {
-                    Pattern p = Pattern.compile(String.format(".*%s.*", value.trim()), Pattern.DOTALL);
-                    Matcher m = p.matcher(response);
-
-                    if (m.matches()) {
-                        String savedValue = response.split(String.format("%s\":", value.trim()), 2)[1].trim().split("[,}]", 2)[0];
-                        savedValues.put(value.trim(), savedValue);
-                    }
-                }
-            }
-        }
     }
 
     private void executeSql(Connection connection, Step step, Map<String, String> savedValues) throws SQLException {
