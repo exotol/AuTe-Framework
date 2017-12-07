@@ -2,6 +2,8 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ import java.util.Map;
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ScenarioServiceImpl.class);
+
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
     private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
@@ -58,17 +62,21 @@ public class ScenarioServiceImpl implements ScenarioService {
         AtExecutor atExecutor = new AtExecutor();
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
-            List<Project> projectList = projectService.findAll();
             map.forEach((scenario, stepResults) -> {
-                Scenario scenarioToUpdate = findOne(projectList, scenario.getId());
-                scenarioToUpdate.setFailed(
-                        stepResults
-                                .stream()
-                                .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
-                                .count() > 0
-                );
+                String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
+                try {
+                    Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
+                    scenarioToUpdate.setFailed(
+                            stepResults
+                                    .stream()
+                                    .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+                                    .count() > 0
+                    );
+                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
+                } catch (IOException e) {
+                    LOGGER.error("", e);
+                }
             });
-            projectService.saveProject(project, projectList);
         }
         return map;
     }
