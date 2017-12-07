@@ -1,7 +1,6 @@
 export class ExpectedServiceRequest {
-  id: number;
+  code: string;
   serviceName: string;
   expectedServiceRequest: string;
-  sort: number;
   ignoredTags: string;
 }

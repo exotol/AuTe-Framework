@@ -1,6 +1,5 @@
 export class MockServiceResponse {
-  id: number;
-  sort: number;
+  code: string;
   serviceUrl: string;
   responseBody: string;
   httpStatus: number;

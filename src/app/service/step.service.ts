@@ -8,7 +8,7 @@ import {Globals} from '../globals';
 @Injectable()
 export class StepService {
 
-  public serviceUrl = '/rest/steps';
+  public serviceUrl = '/rest/projects';
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(
@@ -16,19 +16,19 @@ export class StepService {
     private http: Http
   ) { }
 
-  saveStep(step: Step): Observable<Step> {
-    // TODO
+  saveStep(projectCode: String, scenarioGroup: String, scenarioCode: String, step: Step): Observable<Step> {
+    const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.code,
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code,
       step,
       {headers: this.headers}
     ).map(value => value.json() as Step);
   }
 
-  cloneStep(step: Step): Observable<Step> {
-    // TODO
+  cloneStep(projectCode: String, scenarioGroup: String, scenarioCode: String, step: Step): Observable<Step> {
+    const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + step.code + '/clone',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code + '/clone',
       {},
       {headers: this.headers}
     ).map(value => value.json() as Step);

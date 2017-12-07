@@ -14,8 +14,4 @@ export class Scenario {
   stand: Stand;
 
   _selected = false;
-
-  getPath(): string {
-    return (this.scenarioGroup ? this.scenarioGroup + '/' : '') + this.code;
-  }
 }

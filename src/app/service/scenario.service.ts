@@ -19,8 +19,9 @@ export class ScenarioService {
   ) { }
 
   run(projectCode: String, scenario: Scenario): Observable<StepResult[]> {
+    const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath() + '/exec',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/exec',
       {},
       {headers: this.headers}
     ).map(value => value.json() as StepResult[]);
@@ -41,16 +42,18 @@ export class ScenarioService {
   }
 
   saveStepList(projectCode: String, scenario: Scenario, stepList: Step[]): Observable<Step[]> {
+    const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath() + '/steps',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps',
       stepList,
       {headers: this.headers}
     ).map(value => value.json() as Step[]);
   }
 
   saveOne(projectCode: String, scenario: Scenario): Observable<Scenario> {
+    const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.put(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/' + scenario.getPath(),
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath,
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);

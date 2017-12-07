@@ -54,10 +54,7 @@ export class ScenarioDetailComponent implements OnInit {
     if (!this.stepList) {
       this.stepList = [];
     }
-    const newStep = new Step();
-    const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
-    newStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
-    this.stepList.push(newStep);
+    this.stepList.push(new Step());
   }
 
   onDeleteClick(step: Step) {
@@ -72,24 +69,13 @@ export class ScenarioDetailComponent implements OnInit {
   addStepBefore(step: Step) {
     const addAfterIndex = this.stepList.indexOf(step);
     if (addAfterIndex > -1) {
-      const newStep = new Step();
-      newStep.sort = step.sort;
-
-      this.stepList
-        .filter(value => value.sort >= step.sort)
-        .forEach(value => value.sort += 50);
-
-      this.stepList.splice(addAfterIndex, 0, newStep);
+      this.stepList.splice(addAfterIndex, 0, new Step());
     }
   }
 
   onUpClick(step: Step) {
     const index = this.stepList.indexOf(step);
     if (index > 0) {
-      const topSort = this.stepList[index - 1].sort;
-      this.stepList[index - 1].sort = step.sort;
-      step.sort = topSort;
-
       const tmpStep = this.stepList[index];
       this.stepList[index] = this.stepList[index - 1];
       this.stepList[index - 1] = tmpStep;
@@ -99,10 +85,6 @@ export class ScenarioDetailComponent implements OnInit {
   onDownClick(step: Step) {
     const index = this.stepList.indexOf(step);
     if (index > -1 && index < this.stepList.length - 1) {
-      const bottomSort = this.stepList[index + 1].sort;
-      this.stepList[index + 1].sort = step.sort;
-      step.sort = bottomSort;
-
       const tmpStep = this.stepList[index];
       this.stepList[index] = this.stepList[index + 1];
       this.stepList[index + 1] = tmpStep;
@@ -112,10 +94,8 @@ export class ScenarioDetailComponent implements OnInit {
   onCloneClick(step: Step) {
     if (confirm('Confirm: Clone step')) {
       const toasty = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
-      this.stepService.cloneStep(step)
+      this.stepService.cloneStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, step)
         .subscribe(clonedStep => {
-          const maxSort = Math.max.apply(null, this.stepList.map(value => value.sort));
-          clonedStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
           this.stepList.push(clonedStep);
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));

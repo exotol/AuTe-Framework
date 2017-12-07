@@ -104,11 +104,7 @@ export class StepItemComponent implements OnInit {
     if (!this.step.expectedServiceRequestList) {
       this.step.expectedServiceRequestList = [];
     }
-    const newItem = new ExpectedServiceRequest();
-    const maxSort = Math.max.apply(null, this.step.expectedServiceRequestList.map(value => value.sort));
-    newItem.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
-
-    this.step.expectedServiceRequestList.push(newItem);
+    this.step.expectedServiceRequestList.push(new ExpectedServiceRequest());
   }
 
   removeExpectedServiceRequest(expectedServiceRequest: ExpectedServiceRequest) {
