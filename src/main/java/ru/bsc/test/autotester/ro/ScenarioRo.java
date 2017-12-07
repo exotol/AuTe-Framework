@@ -18,6 +18,7 @@ public class ScenarioRo extends AbstractRo {
     private List<StepRo> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
+    private Boolean failed;
 
     public String getCode() {
         return code;
@@ -73,5 +74,13 @@ public class ScenarioRo extends AbstractRo {
 
     public void setAfterScenarioIgnore(Boolean afterScenarioIgnore) {
         this.afterScenarioIgnore = afterScenarioIgnore;
+    }
+
+    public Boolean getFailed() {
+        return failed;
+    }
+
+    public void setFailed(Boolean failed) {
+        this.failed = failed;
     }
 }

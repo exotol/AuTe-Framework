@@ -13,7 +13,8 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "stepList", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
-            @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
+            @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore"),
+            @Mapping(target = "failed", source = "failed")
     })
     abstract void updateScenarioFromRo(ScenarioRo scenarioRo, @MappingTarget Scenario scenario);
 
