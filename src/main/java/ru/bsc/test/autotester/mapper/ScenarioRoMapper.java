@@ -15,5 +15,11 @@ public abstract class ScenarioRoMapper {
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")
     })
-    public abstract Scenario scenarioRoToScenario(ScenarioRo scenarioRo);
+    abstract void updateScenarioFromRo(ScenarioRo scenarioRo, @MappingTarget Scenario scenario);
+
+    public Scenario updateScenario(ScenarioRo scenarioRo, @MappingTarget Scenario scenario) {
+        updateScenarioFromRo(scenarioRo, scenario);
+
+        return scenario;
+    }
 }

@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.controller.rest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,8 +45,12 @@ public class RestScenarioController {
         this.projectService = projectService;
     }
 
-    @RequestMapping(value = "{scenarioPath}/steps", method = RequestMethod.GET)
-    public List<StepRo> findSteps(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.GET)
+    public List<StepRo> findSteps(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
             return stepRoMapper.convertStepListToStepRoList(scenario.getStepList());
@@ -53,17 +58,27 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{scenarioPath}", method = RequestMethod.GET)
-    public ScenarioRo findOne(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.GET)
+    public ScenarioRo findOne(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         if (scenario != null) {
-            return projectRoMapper.scenarioToScenarioRo(projectCode, "", scenario);
+            // TODO Set projectName
+            return projectRoMapper.scenarioToScenarioRo(projectCode, scenario);
         }
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{scenarioId}", method = RequestMethod.PUT)
-    public ScenarioRo saveOne(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody ScenarioRo scenarioRo) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.PUT)
+    public ScenarioRo saveOne(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode,
+            @RequestBody ScenarioRo scenarioRo) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         scenarioRo = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
         if (scenarioRo != null) {
             return scenarioRo;
@@ -71,13 +86,22 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{scenarioId}", method = RequestMethod.DELETE)
-    public void deleteOne(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.DELETE)
+    public void deleteOne(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         scenarioService.deleteOne(projectCode, scenarioPath);
     }
 
-    @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.POST)
-    public StepRo createNewStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody StepRo stepRo) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.POST)
+    public StepRo createNewStep(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode,
+            @RequestBody StepRo stepRo) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         stepRo = scenarioService.addStepToScenario(projectCode, scenarioPath, stepRo);
         if (stepRo != null) {
             return stepRo;
@@ -85,13 +109,22 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{scenarioId}/steps", method = RequestMethod.PUT)
-    public List<StepRo> saveStepList(@PathVariable String projectCode, @PathVariable String scenarioPath, @RequestBody List<StepRo> stepRoList) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.PUT)
+    public List<StepRo> saveStepList(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode,
+            @RequestBody List<StepRo> stepRoList) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         return scenarioService.updateStepListFromRo(projectCode, scenarioPath, stepRoList);
     }
 
-    @RequestMapping(value = "{scenarioId}/exec", method = RequestMethod.POST)
-    public List<StepResultRo> executing(@PathVariable String projectCode, @PathVariable String scenarioPath) throws IOException {
+    @RequestMapping(value = { "{scenarioCode}/exec", "{scenarioGroup}/{scenarioCode}/exec" }, method = RequestMethod.POST)
+    public List<StepResultRo> executing(
+            @PathVariable String projectCode,
+            @PathVariable(required = false) String scenarioGroup,
+            @PathVariable String scenarioCode) throws IOException {
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         Project project = projectService.findOne(projectCode);
         if (scenario != null) {

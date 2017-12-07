@@ -12,7 +12,6 @@ public class ScenarioRo extends AbstractRo {
 
     private String code;
     private String projectCode;
-    private String projectName;
     private String name;
 
     private String scenarioGroup;
@@ -34,14 +33,6 @@ public class ScenarioRo extends AbstractRo {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public String getName() {

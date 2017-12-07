@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.bsc.test.at.executor.model.AbstractModel;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
@@ -15,7 +14,6 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +34,6 @@ public class ProjectsSource {
     private static final String FILE_ENCODING = "UTF-8";
 
     private String directoryPath;
-    private final HashMap<Object, Integer> idToHashCode = new HashMap<>();
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
@@ -126,9 +123,6 @@ public class ProjectsSource {
             }
         });
         */
-
-        // Чтение внешних файлов для вложенных моделей
-        applyToProjectModels(project, model -> idToHashCode.put(model, model.hashCode()), modelList -> {});
     }
 
     private String readFile(String path) {
@@ -247,55 +241,13 @@ public class ProjectsSource {
         }
         project.getScenarioList().forEach(scenario -> {
             try {
-                saveScenarioToFiles(project.getCode(), scenarioPath(scenario), scenario);
+                File scenarioFile = new File(directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
+                saveScenarioToFiles(project.getCode(), scenarioPath(scenario), scenario, scenarioFile);
             } catch (IOException e) {
                 LOGGER.error("Save project external files", e);
             }
         });
     }
-
-    private void applyToProjectModels(Project project, IMethodToModel methodToModel, IMethodToList methodToList) {
-        methodToModel.method(project);
-        methodToModel.method(project.getAmqpBroker());
-        if (project.getScenarioList() != null) {
-            methodToList.method(project.getScenarioList());
-            project.getScenarioList().forEach(scenario -> {
-                methodToModel.method(scenario);
-                if (scenario.getStepList() != null) {
-                    methodToList.method(scenario.getStepList());
-                    scenario.getStepList().forEach(step -> {
-                        methodToModel.method(step);
-                        if (step.getExpectedServiceRequests() != null) {
-                            methodToList.method(step.getExpectedServiceRequests());
-                            step.getExpectedServiceRequests().forEach(methodToModel::method);
-                        }
-                        if (step.getStepParameterSetList() != null) {
-                            methodToList.method(step.getStepParameterSetList());
-                            step.getStepParameterSetList().forEach(stepParameterSet -> {
-                                methodToModel.method(stepParameterSet);
-                                if (stepParameterSet.getStepParameterList() != null) {
-                                    methodToList.method(stepParameterSet.getStepParameterList());
-                                    stepParameterSet.getStepParameterList().forEach(methodToModel::method);
-                                }
-                            });
-                        }
-                        if (step.getMockServiceResponseList() != null) {
-                            methodToList.method(step.getMockServiceResponseList());
-                            step.getMockServiceResponseList().forEach(methodToModel::method);
-                        }
-                        if (step.getFormDataList() != null) {
-                            methodToList.method(step.getFormDataList());
-                            step.getFormDataList().forEach(methodToModel::method);
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-    /*private void applyToAllProjects(List<Project> projectList, IMethodToModel methodToModel, IMethodToList methodToList) {
-        projectList.forEach(project -> applyToProjectModels(project, methodToModel, methodToList));
-    }*/
 
     public void deleteScenario(String projectCode, String scenarioPath) throws IOException {
         FileUtils.deleteDirectory(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath));
@@ -318,7 +270,7 @@ public class ProjectsSource {
         return scenario;
     }
 
-    private Step loadStepFromFiles(Step step, File scenarioRootDirectory) {
+    private void loadStepFromFiles(Step step, File scenarioRootDirectory) {
         if (step.getRequestFile() != null && step.getRequest() == null) {
             step.setRequest(readFile(scenarioRootDirectory + "/" + step.getRequestFile()));
         }
@@ -340,19 +292,24 @@ public class ProjectsSource {
                 expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile()));
             }
         });
-        return step;
     }
 
     public void saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
-        saveScenarioToFiles(projectCode, scenarioPath, scenario);
+        File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
+        File scenarioRootDirectory = scenarioFile.getParentFile();
+
+        saveScenarioToFiles(projectCode, scenarioPath, scenario, scenarioFile);
+        scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
     }
 
     public Step saveStep(String projectCode, String scenarioPath, String stepCode, Step step) throws IOException {
         File scenarioRootDirectory = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/");
-        return saveStepToFiles(stepCode, step, scenarioRootDirectory);
+        saveStepToFiles(stepCode, step, scenarioRootDirectory);
+        loadStepFromFiles(step, scenarioRootDirectory);
+        return step;
     }
 
-    private Step saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
+    private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
 
         FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
 
@@ -434,16 +391,12 @@ public class ProjectsSource {
                 expectedServiceRequest.setExpectedServiceRequest(null);
             }
         });
-
-        // TODO: read step from files and return
-        return loadStepFromFiles(step, scenarioRootDirectory);
     }
 
-    private void saveScenarioToFiles(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
+    private void saveScenarioToFiles(String projectCode, String scenarioPath, Scenario scenario, File scenarioFile) throws IOException {
         if (scenarioPath == null) {
             // TODO
         }
-        File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
 
@@ -475,16 +428,6 @@ public class ProjectsSource {
         for (Step step : scenario.getStepList()) {
             saveStepToFiles(step.getCode(), step, scenarioRootDirectory);
         }
-        YamlUtils.dumpToFile(scenario, scenarioRootDirectory + SCENARIO_YAML_FILENAME);
-    }
-
-    @FunctionalInterface
-    interface IMethodToModel {
-        void method(AbstractModel model);
-    }
-
-    @FunctionalInterface
-    interface IMethodToList {
-        void method(List<? extends AbstractModel> modelList);
+        YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
     }
 }

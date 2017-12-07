@@ -69,7 +69,6 @@ public abstract class ProjectRoMapper {
 
     @Mappings({
             @Mapping(target = "projectCode", ignore = true),
-            @Mapping(target = "projectName", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "stepList", ignore = true),
@@ -78,10 +77,9 @@ public abstract class ProjectRoMapper {
     })
     abstract ScenarioRo scenarioToScenarioRoInner(Scenario scenario);
 
-    public ScenarioRo scenarioToScenarioRo(String projectCode, String projectName, Scenario scenario) {
+    public ScenarioRo scenarioToScenarioRo(String projectCode, Scenario scenario) {
         ScenarioRo scenarioRo = scenarioToScenarioRoInner(scenario);
         scenarioRo.setProjectCode(projectCode);
-        scenarioRo.setProjectName(projectName);
         return scenarioRo;
     }
 

@@ -85,11 +85,11 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public ScenarioRo updateScenarioFormRo(String projectCode, String scenarioPath, ScenarioRo scenarioRo) throws IOException {
         synchronized (projectService) {
-            Project project = projectService.findOne(projectCode);
-            if (project != null) {
-                Scenario scenario = scenarioRoMapper.scenarioRoToScenario(scenarioRo);
+            Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
+            if (scenario != null) {
+                scenario = scenarioRoMapper.updateScenario(scenarioRo, scenario);
                 scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
-                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), scenario);
+                return projectRoMapper.scenarioToScenarioRo(projectCode, scenario);
             }
             return null;
         }
@@ -146,13 +146,9 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException {
         synchronized (this) {
-            Project project = projectService.findOne(projectCode);
-            if (project != null) {
-                Scenario newScenario = scenarioRoMapper.scenarioRoToScenario(scenarioRo);
-                newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario);
-                return projectRoMapper.scenarioToScenarioRo(project.getCode(), project.getName(), newScenario);
-            }
-            return null;
+            Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
+            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario);
+            return projectRoMapper.scenarioToScenarioRo(projectCode, newScenario);
         }
     }
 }

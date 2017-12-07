@@ -39,7 +39,7 @@ public class RestStepController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = "{stepId}/clone", method = RequestMethod.POST)
+    @RequestMapping(value = "{stepCode}/clone", method = RequestMethod.POST)
     public StepRo cloneStep(@PathVariable String projectCode, @PathVariable String scenarioPath, @PathVariable String stepCode) throws IOException {
         Step step = stepService.findOne(projectCode, scenarioPath, stepCode);
         if (step != null) {

@@ -20,10 +20,6 @@ public class StepRo extends AbstractRo {
     private String expectedResponse;
     private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
-    private String savingValues;
-    private String responses;
-    private String dbParams;
-    private String tmpServiceRequestsDirectory;
     private Integer expectedStatusCode;
     private String sql;
     private String sqlSavedParameter;
@@ -113,38 +109,6 @@ public class StepRo extends AbstractRo {
 
     public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
         this.expectedResponseIgnore = expectedResponseIgnore;
-    }
-
-    public String getSavingValues() {
-        return savingValues;
-    }
-
-    public void setSavingValues(String savingValues) {
-        this.savingValues = savingValues;
-    }
-
-    public String getResponses() {
-        return responses;
-    }
-
-    public void setResponses(String responses) {
-        this.responses = responses;
-    }
-
-    public String getDbParams() {
-        return dbParams;
-    }
-
-    public void setDbParams(String dbParams) {
-        this.dbParams = dbParams;
-    }
-
-    public String getTmpServiceRequestsDirectory() {
-        return tmpServiceRequestsDirectory;
-    }
-
-    public void setTmpServiceRequestsDirectory(String tmpServiceRequestsDirectory) {
-        this.tmpServiceRequestsDirectory = tmpServiceRequestsDirectory;
     }
 
     public Integer getExpectedStatusCode() {
