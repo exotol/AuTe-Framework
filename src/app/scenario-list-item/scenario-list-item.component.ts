@@ -26,7 +26,7 @@ export class ScenarioListItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.scenario._selected = false; // this.scenario.lastRunFailures !== 0;
+    this.scenario._selected = false;
   }
 
   stateChanged() {
@@ -42,7 +42,7 @@ export class ScenarioListItemComponent implements OnInit {
           this.stepResultList = value;
           this.state = 'finished';
           this.stateChanged();
-          this.scenario.failed = value.filter(value2 => value2.result === 'Failed').length > 0;
+          this.scenario.failed = value.filter(value2 => value2.result === 'Fail').length > 0;
         });
     }
   }
