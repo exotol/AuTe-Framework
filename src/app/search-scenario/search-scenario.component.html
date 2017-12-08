@@ -1,0 +1,11 @@
+<div class="search-block">
+  <input type="text" name="queryString" #queryInput [(ngModel)]="queryString" placeholder="{{placeholderText}}" (input)="search()"/>
+  <div class="search-result" #searchResult *ngIf="scenarioList || errorFlag">
+    <ol *ngIf="scenarioList">
+      <li *ngFor="let scenario of scenarioList" [routerLink]="['/scenario', scenario.id]">{{scenario.name}}</li>
+    </ol>
+    <p class="error" *ngIf="errorFlag">{{errorMsg}}</p>
+  </div>
+</div>
+
+
