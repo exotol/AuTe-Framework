@@ -1,12 +1,15 @@
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
-  <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
-    <a [routerLink]="['/project', scenario.projectId]" [queryParams]="{scenarioGroupId: scenario.scenarioGroup.id}">{{scenario.scenarioGroup.name}}</a>
-  </li>
-  <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/scenario', scenario.id]">{{scenario.id}}. {{scenario.name}}</a></li>
-  <li class="breadcrumb-item active">Settings</li>
-</ol>
+<div class="breadcrumb-search">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+    <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
+    <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
+      <a [routerLink]="['/project', scenario.projectId]" [queryParams]="{scenarioGroupId: scenario.scenarioGroup.id}">{{scenario.scenarioGroup.name}}</a>
+    </li>
+    <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/scenario', scenario.id]">{{scenario.id}}. {{scenario.name}}</a></li>
+    <li class="breadcrumb-item active">Settings</li>
+  </ol>
+  <app-search [projectId]="scenario.projectId"></app-search>
+</div>
 
 <div *ngIf="scenario">
   <button style="margin: 15px;" class="btn btn-success" (click)="save()">Save scenario settings</button>

@@ -21,7 +21,9 @@ import {Globals} from './globals';
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ScenarioSettingsComponent } from './scenario-settings/scenario-settings.component';
 import {VersionService} from './service/version.service';
-import {CustomToastyService} from "./service/custom-toasty.service";
+import {CustomToastyService} from './service/custom-toasty.service';
+import { SearchComponent } from './search-scenario/search-scenario.component';
+import {SearchScenarioService} from './service/search-scenario.service';
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -43,7 +45,8 @@ const routes: Routes = [
     MockServiceResponseComponent,
     StepParameterSetComponent,
     ProjectSettingsComponent,
-    ScenarioSettingsComponent
+    ScenarioSettingsComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,7 @@ const routes: Routes = [
     ToastyModule.forRoot(),
     FormsModule
   ],
-  providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals],
+  providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals, SearchScenarioService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
