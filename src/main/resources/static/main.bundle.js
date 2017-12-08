@@ -120,7 +120,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 var routes = [
     { path: '', component: __WEBPACK_IMPORTED_MODULE_5__project_list_project_list_component__["a" /* ProjectListComponent */] },
-    { path: 'project/:code', component: __WEBPACK_IMPORTED_MODULE_6__project_detail_project_detail_component__["a" /* ProjectDetailComponent */] },
+    { path: 'project/:id', component: __WEBPACK_IMPORTED_MODULE_6__project_detail_project_detail_component__["a" /* ProjectDetailComponent */] },
     { path: 'project/:id/settings', component: __WEBPACK_IMPORTED_MODULE_19__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */] },
     { path: 'scenario/:id', component: __WEBPACK_IMPORTED_MODULE_7__scenario_detail_scenario_detail_component__["a" /* ScenarioDetailComponent */] },
     { path: 'scenario/:id/settings', component: __WEBPACK_IMPORTED_MODULE_20__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] }
@@ -191,7 +191,7 @@ Globals = __decorate([
 /***/ "../../../../../src/app/mock-service-response/mock-service-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <div class=\"row\">\n    <div class=\"col-sm-6\">\n      <input class=\"form-control\" placeholder=\"Service URL\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\n    </div>\n    <div class=\"col-sm-4\">\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\n    </div>\n    <div class=\"col-sm-2\">\n      <input class=\"form-control\" placeholder=\"Sort\" title=\"\" [(ngModel)]=\"mockServiceResponse.sort\"/>\n    </div>\n  </div>\n  <div class=\"row\">\n    <div class=\"col-sm-12\">\n      <label>Response body</label>\n      <textarea class=\"form-control\" placeholder=\"Response body\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"Service URL\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <input class=\"form-control\" placeholder=\"Sort\" title=\"\" [(ngModel)]=\"mockServiceResponse.sort\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>Response body</label>\r\n      <textarea class=\"form-control\" placeholder=\"Response body\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -297,6 +297,21 @@ var MockServiceResponse = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/model/scenario-group.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioGroup; });
+var ScenarioGroup = (function () {
+    function ScenarioGroup() {
+    }
+    return ScenarioGroup;
+}());
+
+//# sourceMappingURL=scenario-group.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/model/scenario.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -397,7 +412,7 @@ var Step = (function () {
 /***/ "../../../../../src/app/project-detail/project-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"project\">\r\n  <ol class=\"breadcrumb\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n    <li class=\"breadcrumb-item active\">{{project.projectCode}}. {{project.name}}</li>\r\n  </ol>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.projectCode + '/settings']\">Settings</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">All</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">Without group</a>\r\n      </li>\r\n      <li [class.active]=\"filter && scenarioGroup == filter.scenarioGroup\" *ngFor=\"let scenarioGroup of scenarioGroupList\">\r\n        <a href=\"#\" (click)=\"selectGroup(scenarioGroup)\">{{scenarioGroup}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-6\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"Select\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">Execute selected scenarios</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"display: none; font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuting > 0\"\r\n               [style.display]=\"(executingStateExecuting + executingStateFinished) > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateFinished / (executingStateExecuting + executingStateFinished) * 95) + '%'\">\r\n            {{Math.round(executingStateFinished / (executingStateExecuting + executingStateFinished) * 100)}} %\r\n            {{executingStateExecuting > 0 ? '(left: ' + executingStateExecuting + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px; margin-top: 7px; margin-bottom: 25px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" (onStateChange)=\"onStateChange($event, scenario)\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <a class=\"btn btn-default\" target=\"_blank\" [attr.href]=\"globals.serviceBaseUrl + '/rest/projects/' + project.projectCode + '/get-yaml'\">Download project as YAML</a>\r\n        <button class=\"btn btn-default\" (click)=\"downloadSelectedAsYaml()\">Download selected scenarios as YAML</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>Create new scenario</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"Scenario name\" class=\"form-control\" title=\"New scenario name\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> Create</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n"
+module.exports = "<ng-container *ngIf=\"project\">\r\n  <ol class=\"breadcrumb\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n    <li class=\"breadcrumb-item active\">{{project.id}}. {{project.name}}</li>\r\n  </ol>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.id + '/settings']\">Settings</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">All</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">Without group</a>\r\n      </li>\r\n      <li [class.active]=\"filter && scenarioGroup == filter.scenarioGroup\" *ngFor=\"let scenarioGroup of project.scenarioGroups\">\r\n        <a href=\"#\" (click)=\"selectGroup(scenarioGroup)\">{{scenarioGroup.name}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-6\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"Select\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">Execute selected scenarios</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"display: none; font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuting > 0\"\r\n               [style.display]=\"(executingStateExecuting + executingStateFinished) > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateFinished / (executingStateExecuting + executingStateFinished) * 95) + '%'\">\r\n            {{Math.round(executingStateFinished / (executingStateExecuting + executingStateFinished) * 100)}} %\r\n            {{executingStateExecuting > 0 ? '(left: ' + executingStateExecuting + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px; margin-top: 7px; margin-bottom: 25px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" (onStateChange)=\"onStateChange($event, scenario)\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <a class=\"btn btn-default\" target=\"_blank\" [attr.href]=\"globals.serviceBaseUrl + '/rest/projects/' + project.id + '/get-yaml'\">Download project as YAML</a>\r\n        <button class=\"btn btn-default\" (click)=\"downloadSelectedAsYaml()\">Download selected scenarios as YAML</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>Create new scenario</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"Scenario name\" class=\"form-control\" title=\"New scenario name\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> Create</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n"
 
 /***/ }),
 
@@ -452,30 +467,23 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.paramMap
-            .switchMap(function (params) { return _this.projectService.findOne(params.get('code')); })
+            .switchMap(function (params) { return _this.projectService.findOne(+params.get('id')); })
             .subscribe(function (value) {
             _this.project = value;
             _this.route
                 .queryParams
                 .subscribe(function (params) {
-                if (params['scenarioGroup']) {
+                if (+params['scenarioGroupId']) {
                     _this.filter = new __WEBPACK_IMPORTED_MODULE_4__model_scenario__["a" /* Scenario */]();
-                    _this.filter.scenarioGroup = params['scenarioGroup'];
+                    _this.filter.scenarioGroup =
+                        _this.project.scenarioGroups
+                            .find(function (scenarioGroup) { return scenarioGroup.id === +params['scenarioGroupId']; });
                 }
             });
         });
         this.route.paramMap
-            .switchMap(function (params) { return _this.projectService.findScenariosByProject(params.get('cod')); })
-            .subscribe(function (value) {
-            _this.scenarioList = value;
-            _this.scenarioList
-                .map(function (scenario) { return scenario.scenarioGroup; })
-                .forEach(function (groupName) {
-                if (_this.scenarioGroupList.indexOf(groupName) === -1) {
-                    _this.scenarioGroupList.push(groupName);
-                }
-            });
-        });
+            .switchMap(function (params) { return _this.projectService.findScenariosByProject(+params.get('id')); })
+            .subscribe(function (value) { return _this.scenarioList = value; });
     };
     ProjectDetailComponent.prototype.ngAfterContentChecked = function () {
         this.updateFailCountSum();
@@ -483,7 +491,7 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.selectGroup = function (scenarioGroup) {
         this.filter = new __WEBPACK_IMPORTED_MODULE_4__model_scenario__["a" /* Scenario */]();
         this.filter.scenarioGroup = scenarioGroup;
-        this.router.navigate([], { queryParams: { scenarioGroup: scenarioGroup ? scenarioGroup : -1 } });
+        this.router.navigate([], { queryParams: { scenarioGroupId: scenarioGroup ? scenarioGroup.id : -1 } });
         this.updateFailCountSum();
         return false;
     };
@@ -499,7 +507,7 @@ var ProjectDetailComponent = (function () {
             .filter(function (value) { return _this.isSelectedScenario(value); })
             .map(function (value) { return value.id; });
         this.projectService.downloadYaml(this.project, selectedScenarios)
-            .subscribe(function (res) { return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__["saveAs"])(res, 'PROJECT_' + _this.project.code + '.yml'); });
+            .subscribe(function (res) { return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__["saveAs"])(res, 'PROJECT_' + _this.project.projectCode + '.yml'); });
     };
     ProjectDetailComponent.prototype.isSelectedScenario = function (scenario) {
         return scenario && scenario._selected && this.isDisplayScenario(scenario);
@@ -508,7 +516,7 @@ var ProjectDetailComponent = (function () {
         return !this.filter ||
             (!this.filter.scenarioGroup && !scenario.scenarioGroup) ||
             (this.filter.scenarioGroup && scenario && scenario.scenarioGroup &&
-                scenario.scenarioGroup === this.filter.scenarioGroup);
+                scenario.scenarioGroup.id === this.filter.scenarioGroup.id);
     };
     ProjectDetailComponent.prototype.executeSelectedScenarios = function () {
         var _this = this;
@@ -526,8 +534,8 @@ var ProjectDetailComponent = (function () {
         if (this.scenarioList) {
             this.failCount = this.scenarioList
                 .filter(function (item) { return _this.isDisplayScenario(item); })
-                .map(function (value) { return value.lastRunFailures; })
-                .reduce(function (previousValue, currentValue) { return previousValue + currentValue; }, 0);
+                .filter(function (value) { return value.failed; })
+                .length;
         }
         else {
             this.failCount = 0;
@@ -581,7 +589,7 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/project-list/project-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>Projects</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n"
+module.exports = "<h4>Projects</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.id]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n"
 
 /***/ }),
 
@@ -629,7 +637,7 @@ var _a;
 /***/ "../../../../../src/app/project-settings/project-settings.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n  <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.projectCode]\">{{project.projectCode}}. {{project.name}}</a></li>\r\n  <li class=\"breadcrumb-item active\">Settings</li>\r\n</ol>\r\n\r\n<div class=\"container-fluid\" *ngIf=\"project\">\r\n  <h3>{{project.name}}</h3>\r\n  <button class=\"btn btn-success\" style=\"margin-bottom: 15px;\" (click)=\"save()\">Save project settings</button>\r\n  <div>\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">Details</a></li>\r\n      <!--li [class.active]=\"tab == 'groups'\"><a href=\"#\" (click)=\"selectTab('groups')\">Scenario groups</a></li-->\r\n      <li [class.active]=\"tab == 'stands'\"><a href=\"#\" (click)=\"selectTab('stands')\">Stands</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div [style.display]=\"tab == 'details' ? '' : 'none'\">\r\n        <label>Project name</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.name\"/>\r\n\r\n        <label>Before scenario</label>\r\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"project.beforeScenarioId\">\r\n          <option [ngValue]=\"null\">disabled</option>\r\n          <option *ngFor=\"let scenario of scenarioList\" [ngValue]=\"scenario.id\">{{scenario.name}}</option>\r\n        </select>\r\n\r\n        <label>After scenario</label>\r\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"project.afterScenarioId\">\r\n          <option [ngValue]=\"null\">disabled</option>\r\n          <option *ngFor=\"let scenario of scenarioList\" [ngValue]=\"scenario.id\">{{scenario.name}}</option>\r\n        </select>\r\n\r\n        <label>Project code</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.code\"/>\r\n\r\n        <hr/>\r\n        <label style=\"margin-top: 8px;\">\r\n          <input type=\"checkbox\" style=\"height: 25px;\" title=\"\" [(ngModel)]=\"project.useRandomTestId\"/>\r\n          Use random testId\r\n        </label>\r\n        <div class=\"clearfix\"></div>\r\n\r\n        <label>testId header name</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.testIdHeaderName\"/>\r\n\r\n        <hr/>\r\n        <label>AMQP broker</label>\r\n        <div *ngIf=\"project.amqpBroker\">\r\n          <label>Broker type</label>\r\n          <div class=\"input-group-btn\">\r\n            <select class=\"form-control\" title=\"AMQP broker type\" [(ngModel)]=\"project.amqpBroker.mqService\">\r\n              <option [ngValue]=\"null\"></option>\r\n              <option [ngValue]=\"'ACTIVE_MQ'\">Active MQ</option>\r\n              <option [ngValue]=\"'RABBIT_MQ'\">Rabbit MQ</option>\r\n            </select>\r\n          </div>\r\n\r\n          <label>Host</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.host\"/>\r\n\r\n          <label>Port</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.port\"/>\r\n\r\n          <label>Username</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.username\"/>\r\n\r\n          <label>Password</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.password\"/>\r\n\r\n          <button class=\"btn btn-default\" (click)=\"removeAmqpBroker()\"><span class=\"glyphicon glyphicon-minus\"></span> Remove broker</button>\r\n        </div>\r\n        <div *ngIf=\"!project.amqpBroker\">\r\n          <button class=\"btn btn-default\" (click)=\"addAmqpBroker()\"><span class=\"glyphicon glyphicon-plus\"></span> Add broker</button>\r\n        </div>\r\n      </div>\r\n      <!--div [style.display]=\"tab == 'groups' ? '' : 'none'\">\r\n        <div *ngFor=\"let scenarioGroup of project.scenarioGroups\">\r\n          <label>Group name</label>\r\n          <div class=\"input-group\">\r\n            <input class=\"form-control\" title=\"\" [(ngModel)]=\"scenarioGroup.name\"/>\r\n            <span class=\"input-group-btn\">\r\n              <button class=\"btn btn-default\" (click)=\"removeScenarioGroup(scenarioGroup)\"><span class=\"glyphicon glyphicon-minus\"></span> Remove</button>\r\n            </span>\r\n          </div>\r\n        </div>\r\n        <button class=\"btn btn-default\" style=\"margin-top: 7px;\" (click)=\"addScenarioGroup()\"><span class=\"glyphicon glyphicon-plus\"></span> Add scenario group</button>\r\n      </div-->\r\n      <div [style.display]=\"tab == 'stands' ? '' : 'none'\">\r\n        <div style=\"border: none;\" class=\"list-group-item\" *ngFor=\"let stand of project.standList\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <label>Service URL</label>\r\n              <div class=\"input-group\">\r\n                <input placeholder=\"Service URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.serviceUrl\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn btn-default\" *ngIf=\"project.stand && stand.id && project.stand.id != stand.id\" (click)=\"selectAsDefaultStand(stand)\">Set as default</button>\r\n                  <button class=\"btn btn-primary\" *ngIf=\"!(project.stand && project.stand.id != stand.id)\" disabled>Used by default</button>\r\n\r\n                  <button class=\"btn\" (click)=\"removeStand(stand)\"><span class=\"glyphicon glyphicon-minus\"></span> Remove</button>\r\n                </span>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbUrl\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base User\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbUser\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base Password\" type=\"password\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbPassword\"/>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <input placeholder=\"WireMock URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.wireMockUrl\"/>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div style=\"border: none;\" class=\"list-group-item\">\r\n          <button class=\"btn btn-default\" (click)=\"addStand()\"><span class=\"glyphicon glyphicon-plus\"></span> Add stand</button>\r\n        </div>\r\n      </div>\r\n      <div [style.display]=\"tab == 'json' ? '' : 'none'\">\r\n        <pre>{{project | json}}</pre>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n  <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.id]\">{{project.id}}. {{project.name}}</a></li>\r\n  <li class=\"breadcrumb-item active\">Settings</li>\r\n</ol>\r\n\r\n<div class=\"container-fluid\" *ngIf=\"project\">\r\n  <h3>{{project.name}}</h3>\r\n  <button class=\"btn btn-success\" style=\"margin-bottom: 15px;\" (click)=\"save()\">Save project settings</button>\r\n  <div>\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">Details</a></li>\r\n      <li [class.active]=\"tab == 'groups'\"><a href=\"#\" (click)=\"selectTab('groups')\">Scenario groups</a></li>\r\n      <li [class.active]=\"tab == 'stands'\"><a href=\"#\" (click)=\"selectTab('stands')\">Stands</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div [style.display]=\"tab == 'details' ? '' : 'none'\">\r\n        <label>Project name</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.name\"/>\r\n\r\n        <label>Before scenario</label>\r\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"project.beforeScenarioId\">\r\n          <option [ngValue]=\"null\">disabled</option>\r\n          <option *ngFor=\"let scenario of scenarioList\" [ngValue]=\"scenario.id\">{{scenario.name}}</option>\r\n        </select>\r\n\r\n        <label>After scenario</label>\r\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"project.afterScenarioId\">\r\n          <option [ngValue]=\"null\">disabled</option>\r\n          <option *ngFor=\"let scenario of scenarioList\" [ngValue]=\"scenario.id\">{{scenario.name}}</option>\r\n        </select>\r\n\r\n        <label>Project code</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.projectCode\"/>\r\n\r\n        <hr/>\r\n        <label style=\"margin-top: 8px;\">\r\n          <input type=\"checkbox\" style=\"height: 25px;\" title=\"\" [(ngModel)]=\"project.useRandomTestId\"/>\r\n          Use random testId\r\n        </label>\r\n        <div class=\"clearfix\"></div>\r\n\r\n        <label>testId header name</label>\r\n        <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.testIdHeaderName\"/>\r\n\r\n        <hr/>\r\n        <label>AMQP broker</label>\r\n        <div *ngIf=\"project.amqpBroker\">\r\n          <label>Broker type</label>\r\n          <div class=\"input-group-btn\">\r\n            <select class=\"form-control\" title=\"AMQP broker type\" [(ngModel)]=\"project.amqpBroker.mqService\">\r\n              <option [ngValue]=\"null\"></option>\r\n              <option [ngValue]=\"'ACTIVE_MQ'\">Active MQ</option>\r\n              <option [ngValue]=\"'RABBIT_MQ'\">Rabbit MQ</option>\r\n            </select>\r\n          </div>\r\n\r\n          <label>Host</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.host\"/>\r\n\r\n          <label>Port</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.port\"/>\r\n\r\n          <label>Username</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.username\"/>\r\n\r\n          <label>Password</label>\r\n          <input class=\"form-control\" title=\"\" [(ngModel)]=\"project.amqpBroker.password\"/>\r\n\r\n          <button class=\"btn btn-default\" (click)=\"removeAmqpBroker()\"><span class=\"glyphicon glyphicon-minus\"></span> Remove broker</button>\r\n        </div>\r\n        <div *ngIf=\"!project.amqpBroker\">\r\n          <button class=\"btn btn-default\" (click)=\"addAmqpBroker()\"><span class=\"glyphicon glyphicon-plus\"></span> Add broker</button>\r\n        </div>\r\n      </div>\r\n      <div [style.display]=\"tab == 'groups' ? '' : 'none'\">\r\n        <div *ngFor=\"let scenarioGroup of project.scenarioGroups\">\r\n          <label>Group name</label>\r\n          <div class=\"input-group\">\r\n            <input class=\"form-control\" title=\"\" [(ngModel)]=\"scenarioGroup.name\"/>\r\n            <span class=\"input-group-btn\">\r\n              <button class=\"btn btn-default\" (click)=\"removeScenarioGroup(scenarioGroup)\"><span class=\"glyphicon glyphicon-minus\"></span> Remove</button>\r\n            </span>\r\n          </div>\r\n        </div>\r\n        <button class=\"btn btn-default\" style=\"margin-top: 7px;\" (click)=\"addScenarioGroup()\"><span class=\"glyphicon glyphicon-plus\"></span> Add scenario group</button>\r\n      </div>\r\n      <div [style.display]=\"tab == 'stands' ? '' : 'none'\">\r\n        <div style=\"border: none;\" class=\"list-group-item\" *ngFor=\"let stand of project.standList\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <label>Service URL</label>\r\n              <div class=\"input-group\">\r\n                <input placeholder=\"Service URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.serviceUrl\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn btn-default\" *ngIf=\"project.stand && stand.id && project.stand.id != stand.id\" (click)=\"selectAsDefaultStand(stand)\">Set as default</button>\r\n                  <button class=\"btn btn-primary\" *ngIf=\"!(project.stand && project.stand.id != stand.id)\" disabled>Used by default</button>\r\n\r\n                  <button class=\"btn\" (click)=\"removeStand(stand)\"><span class=\"glyphicon glyphicon-minus\"></span> Remove</button>\r\n                </span>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbUrl\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base User\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbUser\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input placeholder=\"Data base Password\" type=\"password\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.dbPassword\"/>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <input placeholder=\"WireMock URL\" class=\"form-control\" title=\"\" [(ngModel)]=\"stand.wireMockUrl\"/>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div style=\"border: none;\" class=\"list-group-item\">\r\n          <button class=\"btn btn-default\" (click)=\"addStand()\"><span class=\"glyphicon glyphicon-plus\"></span> Add stand</button>\r\n        </div>\r\n      </div>\r\n      <div [style.display]=\"tab == 'json' ? '' : 'none'\">\r\n        <pre>{{project | json}}</pre>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -640,9 +648,10 @@ module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__model_stand__ = __webpack_require__("../../../../../src/app/model/stand.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__model_amqp_broker__ = __webpack_require__("../../../../../src/app/model/amqp-broker.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__model_scenario_group__ = __webpack_require__("../../../../../src/app/model/scenario-group.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_stand__ = __webpack_require__("../../../../../src/app/model/stand.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__model_amqp_broker__ = __webpack_require__("../../../../../src/app/model/amqp-broker.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -659,6 +668,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ProjectSettingsComponent = (function () {
     function ProjectSettingsComponent(projectService, route, customToastyService) {
         this.projectService = projectService;
@@ -669,10 +679,10 @@ var ProjectSettingsComponent = (function () {
     ProjectSettingsComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.paramMap
-            .switchMap(function (params) { return _this.projectService.findOne(params.get('code')); })
+            .switchMap(function (params) { return _this.projectService.findOne(+params.get('id')); })
             .subscribe(function (value) {
             _this.project = value;
-            _this.projectService.findScenariosByProject(_this.project.code)
+            _this.projectService.findScenariosByProject(_this.project.id)
                 .subscribe(function (scenarioList) { return _this.scenarioList = scenarioList; });
         });
     };
@@ -689,21 +699,18 @@ var ProjectSettingsComponent = (function () {
         this.tab = tabName;
         return false;
     };
-    /*
-    removeScenarioGroup(scenarioGroup: ScenarioGroup): void {
-      const indexToRemove = this.project.scenarioGroups.indexOf(scenarioGroup);
-      if (indexToRemove > -1) {
-        this.project.scenarioGroups.splice(indexToRemove, 1);
-      }
-    }
-  
-    addScenarioGroup(): void {
-      if (!this.project.scenarioGroups) {
-        this.project.scenarioGroups = [];
-      }
-      this.project.scenarioGroups.push(new ScenarioGroup());
-    }
-    */
+    ProjectSettingsComponent.prototype.removeScenarioGroup = function (scenarioGroup) {
+        var indexToRemove = this.project.scenarioGroups.indexOf(scenarioGroup);
+        if (indexToRemove > -1) {
+            this.project.scenarioGroups.splice(indexToRemove, 1);
+        }
+    };
+    ProjectSettingsComponent.prototype.addScenarioGroup = function () {
+        if (!this.project.scenarioGroups) {
+            this.project.scenarioGroups = [];
+        }
+        this.project.scenarioGroups.push(new __WEBPACK_IMPORTED_MODULE_3__model_scenario_group__["a" /* ScenarioGroup */]());
+    };
     ProjectSettingsComponent.prototype.selectAsDefaultStand = function (stand) {
         this.project.stand = stand;
     };
@@ -711,7 +718,7 @@ var ProjectSettingsComponent = (function () {
         if (!this.project.standList) {
             this.project.standList = [];
         }
-        this.project.standList.push(new __WEBPACK_IMPORTED_MODULE_3__model_stand__["a" /* Stand */]());
+        this.project.standList.push(new __WEBPACK_IMPORTED_MODULE_4__model_stand__["a" /* Stand */]());
     };
     ProjectSettingsComponent.prototype.removeStand = function (stand) {
         var indexToRemove = this.project.standList.indexOf(stand);
@@ -720,7 +727,7 @@ var ProjectSettingsComponent = (function () {
         }
     };
     ProjectSettingsComponent.prototype.addAmqpBroker = function () {
-        this.project.amqpBroker = new __WEBPACK_IMPORTED_MODULE_5__model_amqp_broker__["a" /* AmqpBroker */]();
+        this.project.amqpBroker = new __WEBPACK_IMPORTED_MODULE_6__model_amqp_broker__["a" /* AmqpBroker */]();
     };
     ProjectSettingsComponent.prototype.removeAmqpBroker = function () {
         if (confirm('Confirm: remove AMQP broker')) {
@@ -739,7 +746,7 @@ ProjectSettingsComponent = __decorate([
             'input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object])
 ], ProjectSettingsComponent);
 
 var _a, _b, _c;
@@ -750,7 +757,7 @@ var _a, _b, _c;
 /***/ "../../../../../src/app/scenario-detail/scenario-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectCode]\">{{scenario.projectCode}}. {{scenario.projectName}}</a></li>\r\n    <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n      <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroupId: scenario.scenarioGroup.id}\">{{scenario.scenarioGroup.name}}</a>\r\n    </li>\r\n    <li class=\"breadcrumb-item active\">{{scenario.id}}. {{scenario.name}}</li>\r\n  </ol>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <div style=\"margin-bottom: 10px;\">\r\n      <h3>{{scenario.name}}</h3>\r\n      <a [routerLink]=\"['/scenario/' + scenario.id + '/settings']\">Settings</a>\r\n    </div>\r\n    <app-scenario-list-item [scenario]=\"scenario\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    Loading...\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">Save steps</button>\r\n    </div>\r\n\r\n    <div *ngFor=\"let step of stepList\">\r\n      <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n        <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\"><span class=\"glyphicon glyphicon-hand-left\"></span> Insert step</button>\r\n      </div>\r\n      <app-step-item\r\n        [step]=\"step\"\r\n        [showUpDownDeleteCloneButtons]=\"true\"\r\n        (onDeleteClick)=\"onDeleteClick(step)\"\r\n        (onUpClick)=\"onUpClick(step)\"\r\n        (onDownClick)=\"onDownClick(step)\"\r\n        (onCloneClick)=\"onCloneClick(step)\"\r\n      ></app-step-item>\r\n    </div>\r\n\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-default\" (click)=\"addStep()\"><span class=\"glyphicon glyphicon-plus\"></span> Add step</button>\r\n    </div>\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">Save steps</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectId]\">{{scenario.projectId}}. {{scenario.projectName}}</a></li>\r\n    <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n      <a [routerLink]=\"['/project', scenario.projectId]\" [queryParams]=\"{scenarioGroupId: scenario.scenarioGroup.id}\">{{scenario.scenarioGroup.name}}</a>\r\n    </li>\r\n    <li class=\"breadcrumb-item active\">{{scenario.id}}. {{scenario.name}}</li>\r\n  </ol>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <div style=\"margin-bottom: 10px;\">\r\n      <h3>{{scenario.name}}</h3>\r\n      <a [routerLink]=\"['/scenario/' + scenario.id + '/settings']\">Settings</a>\r\n    </div>\r\n    <app-scenario-list-item [scenario]=\"scenario\"></app-scenario-list-item>\r\n  </div>\r\n  <hr/>\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    Loading...\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">Save steps</button>\r\n    </div>\r\n\r\n    <div *ngFor=\"let step of stepList\">\r\n      <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n        <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\"><span class=\"glyphicon glyphicon-hand-left\"></span> Insert step</button>\r\n      </div>\r\n      <app-step-item\r\n        [step]=\"step\"\r\n        [showUpDownDeleteCloneButtons]=\"true\"\r\n        (onDeleteClick)=\"onDeleteClick(step)\"\r\n        (onUpClick)=\"onUpClick(step)\"\r\n        (onDownClick)=\"onDownClick(step)\"\r\n        (onCloneClick)=\"onCloneClick(step)\"\r\n      ></app-step-item>\r\n    </div>\r\n\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-default\" (click)=\"addStep()\"><span class=\"glyphicon glyphicon-plus\"></span> Add step</button>\r\n    </div>\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">Save steps</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -891,7 +898,7 @@ var _a, _b, _c, _d;
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\" *ngIf=\"scenario\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-5\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        {{scenario.name}}\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\"></div>\r\n    <div class=\"col-sm-1\">\r\n      <div [style.color]=\"scenario.lastRunFailures > 0 ? 'red' : ''\">{{scenario.lastRunFailures}}</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-primary\" *ngIf=\"state != 'executing'\" (click)=\"runScenario()\">Run</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" disabled>Executing...</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">Show results</button>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <a class=\"btn btn-default\" [routerLink]=\"['/scenario', scenario.id]\">Edit</a>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\" *ngIf=\"scenario\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-5\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        {{scenario.name}}\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\"></div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">Failed</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-primary\" *ngIf=\"state != 'executing'\" (click)=\"runScenario()\">Run</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" disabled>Executing...</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">Show results</button>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <a class=\"btn btn-default\" [routerLink]=\"['/scenario', scenario.id]\">Edit</a>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -934,7 +941,12 @@ var ScenarioListItemComponent = (function () {
             this.state = 'executing';
             this.stateChanged();
             this.scenarioService.run(this.scenario)
-                .subscribe(function (value) { _this.stepResultList = value; _this.state = 'finished'; _this.stateChanged(); });
+                .subscribe(function (stepResultList) {
+                _this.stepResultList = stepResultList;
+                _this.state = 'finished';
+                _this.stateChanged();
+                _this.scenario.failed = stepResultList.filter(function (result) { return result.result === 'Fail'; }).length > 0;
+            });
         }
     };
     ScenarioListItemComponent.prototype.resultDetailsToggle = function () {
@@ -967,7 +979,7 @@ var _a, _b;
 /***/ "../../../../../src/app/scenario-settings/scenario-settings.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ol class=\"breadcrumb\">\n  <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\n  <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.code]\">{{project.code}}. {{project.name}}</a></li>\n  <li class=\"breadcrumb-item\" *ngIf=\"scenario && scenario.scenarioGroup && project\">\n    <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\n  </li>\n  <li *ngIf=\"scenario\" class=\"breadcrumb-item\"><a [routerLink]=\"['/scenario', scenario.id]\">{{scenario.id}}. {{scenario.name}}</a></li>\n  <li class=\"breadcrumb-item active\">Settings</li>\n</ol>\n\n<div *ngIf=\"scenario\">\n  <button style=\"margin: 15px;\" class=\"btn btn-success\" (click)=\"save()\">Save scenario settings</button>\n\n  <div class=\"container-fluid\">\n    <div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>Name</label>\n      </div>\n      <div class=\"col-sm-9\">\n        <input class=\"form-control\" title=\"Scenario name\" [(ngModel)]=\"scenario.name\"/>\n      </div>\n    </div>\n\n    <!--div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>Scenario group</label>\n      </div>\n      <div class=\"col-sm-9\">\n        <select class=\"form-control\" title=\"Scenario group\" *ngIf=\"project\" [(ngModel)]=\"scenario.scenarioGroup\">\n          <option [ngValue]=\"null\">[no group]</option>\n          <option *ngFor=\"let scenarioGroup of scenarioGroupList\" [ngValue]=\"scenarioGroup\">{{scenarioGroup}}</option>\n        </select>\n      </div>\n    </div-->\n\n    <div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>Before scenario</label>\n      </div>\n      <div class=\"col-sm-9\">\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"scenario.beforeScenarioId\">\n          <option [ngValue]=\"null\">[default from project]</option>\n          <option *ngFor=\"let scenarioItem of scenarioList\" [ngValue]=\"scenarioItem.id\">{{scenarioItem.name}}</option>\n        </select>\n      </div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>Before scenario ignore</label>\n      </div>\n      <div class=\"col-sm-9\">\n        <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.beforeScenarioIgnore\"/>\n      </div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>After scenario</label>\n      </div>\n      <div class=\"col-sm-9\">\n        <select class=\"form-control\" title=\"After scenario\" [(ngModel)]=\"scenario.afterScenarioId\">\n          <option [ngValue]=\"null\">[default from project]</option>\n          <option *ngFor=\"let scenarioItem of scenarioList\" [ngValue]=\"scenarioItem.id\">{{scenarioItem.name}}</option>\n        </select>\n      </div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"col-sm-3\">\n        <label>After scenario ignore</label>\n      </div>\n      <div class=\"col-sm-9\">\n          <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.afterScenarioIgnore\"/>\n      </div>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">Projects</a></li>\r\n  <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.id]\">{{project.id}}. {{project.name}}</a></li>\r\n  <li class=\"breadcrumb-item\" *ngIf=\"scenario && scenario.scenarioGroup && project\">\r\n    <a [routerLink]=\"['/project', scenario.projectId]\" [queryParams]=\"{scenarioGroupId: scenario.scenarioGroup.id}\">{{scenario.scenarioGroup.name}}</a>\r\n  </li>\r\n  <li *ngIf=\"scenario\" class=\"breadcrumb-item\"><a [routerLink]=\"['/scenario', scenario.id]\">{{scenario.id}}. {{scenario.name}}</a></li>\r\n  <li class=\"breadcrumb-item active\">Settings</li>\r\n</ol>\r\n\r\n<div *ngIf=\"scenario\">\r\n  <button style=\"margin: 15px;\" class=\"btn btn-success\" (click)=\"save()\">Save scenario settings</button>\r\n\r\n  <div class=\"container-fluid\">\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>Name</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input class=\"form-control\" title=\"Scenario name\" [(ngModel)]=\"scenario.name\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>Scenario group</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <select class=\"form-control\" title=\"Scenario group\" *ngIf=\"project\" [compareWith]=\"ScenarioSettingsComponent.scenarioGroupCompareFn\" [(ngModel)]=\"scenario.scenarioGroup\">\r\n          <option [ngValue]=\"null\">[no group]</option>\r\n          <option *ngFor=\"let scenarioGroup of project.scenarioGroups\" [ngValue]=\"scenarioGroup\">{{scenarioGroup.name}}</option>\r\n        </select>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>Before scenario</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <select class=\"form-control\" title=\"Before scenario\" [(ngModel)]=\"scenario.beforeScenarioId\">\r\n          <option [ngValue]=\"null\">[default from project]</option>\r\n          <option *ngFor=\"let scenarioItem of scenarioList\" [ngValue]=\"scenarioItem.id\">{{scenarioItem.name}}</option>\r\n        </select>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>Before scenario ignore</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.beforeScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>After scenario</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <select class=\"form-control\" title=\"After scenario\" [(ngModel)]=\"scenario.afterScenarioId\">\r\n          <option [ngValue]=\"null\">[default from project]</option>\r\n          <option *ngFor=\"let scenarioItem of scenarioList\" [ngValue]=\"scenarioItem.id\">{{scenarioItem.name}}</option>\r\n        </select>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>After scenario ignore</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n          <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.afterScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -995,23 +1007,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ScenarioSettingsComponent = (function () {
+var ScenarioSettingsComponent = ScenarioSettingsComponent_1 = (function () {
     function ScenarioSettingsComponent(route, scenarioService, projectService, customToastyService) {
         this.route = route;
         this.scenarioService = scenarioService;
         this.projectService = projectService;
         this.customToastyService = customToastyService;
+        this.ScenarioSettingsComponent = ScenarioSettingsComponent_1;
     }
+    ScenarioSettingsComponent.scenarioGroupCompareFn = function (c1, c2) {
+        return c1 && c2 ? c1.id === c2.id : c1 === c2;
+    };
     ScenarioSettingsComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.paramMap
             .switchMap(function (params) { return _this.scenarioService.findOne(+params.get('id')); })
             .subscribe(function (value) {
             _this.scenario = value;
-            _this.projectService.findOne(_this.scenario.projectCode)
+            _this.projectService.findOne(_this.scenario.projectId)
                 .subscribe(function (project) {
                 _this.project = project;
-                _this.projectService.findScenariosByProject(_this.project.code)
+                _this.projectService.findScenariosByProject(_this.project.id)
                     .subscribe(function (scenarioList) { return _this.scenarioList = scenarioList; });
             });
         });
@@ -1027,7 +1043,7 @@ var ScenarioSettingsComponent = (function () {
     };
     return ScenarioSettingsComponent;
 }());
-ScenarioSettingsComponent = __decorate([
+ScenarioSettingsComponent = ScenarioSettingsComponent_1 = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-scenario-settings',
         template: __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.html"),
@@ -1039,7 +1055,7 @@ ScenarioSettingsComponent = __decorate([
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _d || Object])
 ], ScenarioSettingsComponent);
 
-var _a, _b, _c, _d;
+var ScenarioSettingsComponent_1, _a, _b, _c, _d;
 //# sourceMappingURL=scenario-settings.component.js.map
 
 /***/ }),
@@ -1147,21 +1163,21 @@ var ProjectService = (function () {
             .map(function (value) { return value.json(); });
     };
     ProjectService.prototype.save = function (project) {
-        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code, project, { headers: this.headers }).map(function (value) { return value.json(); });
+        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id, project, { headers: this.headers }).map(function (value) { return value.json(); });
     };
-    ProjectService.prototype.findOne = function (projectCode) {
-        return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
+    ProjectService.prototype.findOne = function (projectId) {
+        return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId)
             .map(function (value) { return value.json(); });
     };
-    ProjectService.prototype.findScenariosByProject = function (projectCode) {
-        return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios')
+    ProjectService.prototype.findScenariosByProject = function (projectId) {
+        return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/scenarios')
             .map(function (value) { return value.json(); });
     };
     ProjectService.prototype.createScenario = function (project, scenario) {
-        return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/scenarios', scenario, { headers: this.headers }).map(function (value) { return value.json(); });
+        return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/scenarios', scenario, { headers: this.headers }).map(function (value) { return value.json(); });
     };
     ProjectService.prototype.downloadYaml = function (project, selectedScenarios) {
-        return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/export-selected-to-yaml', selectedScenarios, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (value) { return new Blob([value.blob()]); });
+        return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.id + '/export-selected-to-yaml', selectedScenarios, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (value) { return new Blob([value.blob()]); });
     };
     return ProjectService;
 }());
@@ -1639,7 +1655,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\n  <div class=\"col-sm-1\">\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\n    {{stepResult.result}}\n  </div>\n  <div style=\"color: gray;\" class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\n  <div class=\"clearfix\"></div>\n  <div class=\"col-sm-11 col-sm-offset-1\">\n    {{stepResult.step.requestMethod}}\n    {{stepResult.requestUrl}}\n  </div>\n  <div class=\"clearfix\"></div>\n  <div class=\"col-sm-11 col-sm-offset-1\">\n    <ul class=\"nav nav-tabs\">\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">Summary</a></li>\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">Details</a></li>\n      <li [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">Edit step</a></li>\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\n    </ul>\n    <div class=\"tab-content\" style=\"padding: 10px;\">\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\n        Test id: {{stepResult.testId}}\n      </div>\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\" style=\"color: gray;\">\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">Polling retry count: {{stepResult.pollingRetryCount}}</div>\n            Saved parameters: {{stepResult.savedParameters}}\n          </div>\n          <div class=\"clearfix\"></div>\n          <div class=\"col-sm-12\">\n            <label>Request body</label>\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\n          </div>\n          <div class=\"clearfix\"></div>\n          <div class=\"col-sm-6\">\n            <label>Actual</label>\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.actual}}</div>\n          </div>\n          <div class=\"col-sm-6\">\n            <label>Expected</label>\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.expected}}</div>\n          </div>\n          <div class=\"col-sm-12\" style=\"color: gray;\">\n            <label>Details</label>\n            <pre>{{stepResult.details}}</pre>\n          </div>\n        </div>\n      </div>\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\n        <pre>{{stepResult | json}}</pre>\n      </div>\n      <div *ngIf=\"tab == 'stepEdit' || tab == 'all'\">\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">Save step</button>\n      </div>\n    </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">Summary</a></li>\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">Details</a></li>\r\n      <li [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">Edit step</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\r\n        Test id: {{stepResult.testId}}\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">Polling retry count: {{stepResult.pollingRetryCount}}</div>\r\n            Saved parameters: {{stepResult.savedParameters}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>Request body</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>Actual</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.actual}}</div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>Expected</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.expected}}</div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>Details</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"tab == 'stepEdit' || tab == 'all'\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">Save step</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
