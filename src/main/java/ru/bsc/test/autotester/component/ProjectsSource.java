@@ -104,25 +104,6 @@ public class ProjectsSource {
                 }
             }
         }
-
-
-        /*
-        // Чтение внешних файлов списков шагов
-        project.getScenarioList().forEach(scenario -> {
-            if (scenario.getStepListYamlFile() != null && (scenario.getStepList() == null || scenario.getStepList().isEmpty())) {
-                File stepListYamlFile = new File(directoryPath + "/" + project.getCode() + "/" + scenario.getStepListYamlFile());
-                try {
-                    if (stepListYamlFile.exists()) {
-                        List<Step> loadedStepList = YamlUtils.loadAs(stepListYamlFile, List.class);
-                        scenario.getStepList().clear();
-                        scenario.getStepList().addAll(loadedStepList);
-                    }
-                } catch (IOException e) {
-                    LOGGER.error("Read step list yaml", e);
-                }
-            }
-        });
-        */
     }
 
     private String readFile(String path) {
@@ -150,7 +131,6 @@ public class ProjectsSource {
     public void saveProject(Project project) {
         synchronized (this) {
             saveProjectToFiles(project);
-            // readExternalFiles(project);
         }
     }
 
@@ -242,7 +222,7 @@ public class ProjectsSource {
         project.getScenarioList().forEach(scenario -> {
             try {
                 File scenarioFile = new File(directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
-                saveScenarioToFiles(project.getCode(), scenarioPath(scenario), scenario, scenarioFile);
+                saveScenarioToFiles(scenario, scenarioFile);
             } catch (IOException e) {
                 LOGGER.error("Save project external files", e);
             }
@@ -295,25 +275,21 @@ public class ProjectsSource {
     }
 
     public void saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
+        if (scenarioPath == null) {
+            scenarioPath = scenarioPath(scenario);
+        }
         File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
-        saveScenarioToFiles(projectCode, scenarioPath, scenario, scenarioFile);
+        saveScenarioToFiles(scenario, scenarioFile);
         scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
     }
 
-    public Step saveStep(String projectCode, String scenarioPath, String stepCode, Step step) throws IOException {
-        File scenarioRootDirectory = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/");
-        saveStepToFiles(stepCode, step, scenarioRootDirectory);
-        loadStepFromFiles(step, scenarioRootDirectory);
-        return step;
-    }
-
     private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
-
-        FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
-
-        step.setCode(stepCode);
+        if (step.getCode() != null) {
+            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
+        }
+        step.setCode(StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode);
 
         if (step.getRequest() != null) {
             try {
@@ -329,6 +305,7 @@ public class ProjectsSource {
         } else {
             step.setRequestFile(null);
         }
+
         if (step.getExpectedResponse() != null) {
             try {
                 if (step.getExpectedResponseFile() == null) {
@@ -343,6 +320,7 @@ public class ProjectsSource {
         } else {
             step.setExpectedResponseFile(null);
         }
+
         if (step.getMqMessage() != null) {
             try {
                 if (step.getMqMessageFile() == null) {
@@ -393,13 +371,8 @@ public class ProjectsSource {
         });
     }
 
-    private void saveScenarioToFiles(String projectCode, String scenarioPath, Scenario scenario, File scenarioFile) throws IOException {
-        if (scenarioPath == null) {
-            // TODO
-        }
+    private void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
         File scenarioRootDirectory = scenarioFile.getParentFile();
-
-
         int i = 1;
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
         for (Step step: scenario.getStepList()) {

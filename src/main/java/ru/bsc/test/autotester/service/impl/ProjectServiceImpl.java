@@ -61,12 +61,4 @@ public class ProjectServiceImpl implements ProjectService {
             return null;
         }
     }
-
-    @Override
-    public Project saveProject(Project project) {
-        synchronized (this) {
-            projectRepository.saveProject(project);
-            return project;
-        }
-    }
 }

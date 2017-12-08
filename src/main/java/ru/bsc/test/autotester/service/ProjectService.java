@@ -18,6 +18,4 @@ public interface ProjectService {
     String findOneAsYaml(String projectCode);
 
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
-
-    Project saveProject(Project project);
 }

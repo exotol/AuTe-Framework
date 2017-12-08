@@ -23,12 +23,12 @@ import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
-import ru.bsc.test.autotester.service.StepService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -44,16 +44,14 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
-    private final StepService stepService;
     private final ProjectService projectService;
 
     @Value("${projects.path:}")
     private String projectsPath;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, StepService stepService, ProjectService projectService) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ProjectService projectService) {
         this.scenarioRepository = scenarioRepository;
-        this.stepService = stepService;
         this.projectService = projectService;
     }
 
@@ -86,9 +84,8 @@ public class ScenarioServiceImpl implements ScenarioService {
         synchronized (projectService) {
             Scenario scenario = findOne(projectCode, scenarioPath);
             if (scenario != null) {
-                Step newStep = stepRoMapper.updateStep(stepRo);
+                Step newStep = stepRoMapper.convertStepRoToStep(stepRo);
                 scenario.getStepList().add(newStep);
-
                 scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
                 return stepRoMapper.stepToStepRo(newStep);
             }
@@ -124,10 +121,19 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public Step cloneStep(String projectCode, String scenarioPath, Step step) throws IOException {
+    public Step cloneStep(String projectCode, String scenarioPath, String stepCode) throws IOException {
         synchronized (projectService) {
-            Step newStep = step.copy();
-            return stepService.save(projectCode, scenarioPath, null, newStep);
+            Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
+            Step existsStep = scenario.getStepList().stream()
+                    .filter(step -> Objects.equals(step.getCode(), stepCode))
+                    .findAny()
+                    .orElse(null);
+            if (existsStep != null) {
+                Step newStep = existsStep.copy();
+                scenario.getStepList().add(newStep);
+                return newStep;
+            }
+            return null;
         }
     }
 
@@ -156,6 +162,21 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
         scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+    }
+
+    @Override
+    public StepRo updateStepFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) throws IOException {
+        synchronized (projectService) {
+            Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
+            Step existsStep = scenario.getStepList().stream()
+                    .filter(step -> Objects.equals(step.getCode(), stepCode))
+                    .findAny()
+                    .orElse(null);
+            stepRoMapper.updateStep(stepRo, existsStep);
+            scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+            // existsStep = scenarioRepository.saveStep(projectCode, scenarioPath, stepCode, existsStep);
+            return stepRoMapper.stepToStepRo(existsStep);
+        }
     }
 
     @Override

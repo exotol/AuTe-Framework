@@ -12,10 +12,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import ru.bsc.test.autotester.component.ProjectsSource;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.repository.StepRepository;
 import ru.bsc.test.autotester.repository.yaml.YamlProjectRepositoryImpl;
 import ru.bsc.test.autotester.repository.yaml.YamlScenarioRepositoryImpl;
-import ru.bsc.test.autotester.repository.yaml.YamlStepRepositoryImpl;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -62,10 +60,5 @@ public class SpringRootConfig {
     @Bean
     public ScenarioRepository scenarioRepository() {
         return new YamlScenarioRepositoryImpl(applicationContext.getBean(ProjectsSource.class));
-    }
-
-    @Bean
-    public StepRepository stepRepository() {
-        return new YamlStepRepositoryImpl(applicationContext.getBean(ProjectsSource.class));
     }
 }

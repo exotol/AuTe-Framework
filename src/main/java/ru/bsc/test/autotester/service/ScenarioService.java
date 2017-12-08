@@ -21,7 +21,9 @@ public interface ScenarioService {
     Scenario findOne(String projectCode, String scenarioPath) throws IOException;
 
     ScenarioRo updateScenarioFormRo(String projectCode, String scenarioPath, ScenarioRo scenarioRo) throws IOException;
-    Step cloneStep(String projectCode, String scenarioPath, Step step) throws IOException;
+
+    Step cloneStep(String projectCode, String scenarioPath, String stepCode) throws IOException;
+
     List<StepRo> updateStepListFromRo(String projectCode, String scenarioPath, List<StepRo> stepRoList) throws IOException;
 
     Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList);
@@ -33,6 +35,8 @@ public interface ScenarioService {
     List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);
 
     void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException;
+
+    StepRo updateStepFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) throws IOException;
 
     List<Scenario> findAllByProject(String projectCode);
 
