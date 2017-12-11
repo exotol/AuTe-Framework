@@ -1481,6 +1481,9 @@ var StepItemComponent = (function () {
         }
     };
     StepItemComponent.prototype.addFormData = function () {
+        if (!this.step.formDataList) {
+            this.step.formDataList = [];
+        }
         this.step.formDataList.push(new __WEBPACK_IMPORTED_MODULE_5__model_form_data__["a" /* FormData */]());
     };
     return StepItemComponent;
