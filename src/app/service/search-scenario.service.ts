@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Globals} from '../globals';
 import {Headers, Http} from '@angular/http';
+import {Observable} from 'rxjs/Observable';
 import {Scenario} from '../model/scenario';
 
 
@@ -14,13 +15,11 @@ export class SearchScenarioService {
     private http: Http
   ) { }
 
-  searchByMethod(projectId: number, queryString: string): Promise<Scenario[]> {
+  searchByMethod(projectId: number, queryString: string): Observable<Scenario[]> {
     const url = this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/search ';
 
     return this.http.post(url, {'relativeUrl': queryString},
       {headers: this.headers})
-      .map(value => value.json() as Scenario[]).toPromise();
-    /*return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/scenarios')
-      .map(value => value.json() as Scenario[]).toPromise();*/
+      .map(value => value.json() as Scenario[]);
   }
 }

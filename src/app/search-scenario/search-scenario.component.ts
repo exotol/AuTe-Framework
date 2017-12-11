@@ -42,10 +42,12 @@ export class SearchComponent implements OnInit {
   search(query) {
     this.errorFlag = false;
     this.searchScenarioService.searchByMethod(this.projectId, query)
-      .then( (result) => {this.scenarioList = result; })
-      .catch( () => {
-        this.errorFlag = true;
-      });
+      .subscribe(
+        (result) => {this.scenarioList = result; },
+        () => {
+          this.errorFlag = true;
+        }
+      );
   }
 
   @HostListener('window:mousedown', ['$event.target'])
