@@ -29,13 +29,20 @@ public class YamlUtils {
         File file = new File(fileName);
         if (!file.exists()) {
             if (!file.getParentFile().mkdirs()) {
-                LOGGER.info("Directory {} not created", file);
+                LOGGER.info("Directory {} not created", file.getParentFile());
             }
         }
         try(FileWriter fileWriter = new FileWriter(file)) {
             new Yaml(new SkipEmptyRepresenter(), dumperOptions)
                     .dump(data, fileWriter);
         }
+    }
+
+    public static <T> T loadAsFromString(String yamlContent, Class<T> type) {
+        Representer representer = new Representer();
+        representer.getPropertyUtils().setSkipMissingProperties(true);
+        return new Yaml(representer)
+                .loadAs(yamlContent, type);
     }
 
     public static <T> T loadAs(File fileName, Class<T> type) throws IOException {

@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.repository;
 
 import ru.bsc.test.at.executor.model.Project;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -15,4 +16,6 @@ public interface ProjectRepository {
     Project findProject(String projectCode);
 
     Project saveProject(Project project);
+
+    void saveFullProject(Project project) throws Exception;
 }

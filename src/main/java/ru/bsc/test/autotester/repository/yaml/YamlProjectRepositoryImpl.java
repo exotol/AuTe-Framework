@@ -38,4 +38,9 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
         projectsSource.saveProject(project);
         return project;
     }
+
+    @Override
+    public void saveFullProject(Project project) throws Exception {
+        projectsSource.saveFullProject(project);
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
+import ru.bsc.test.autotester.ro.ImportProjectRo;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
@@ -78,23 +79,10 @@ public class RestProjectController {
         return scenarioService.findScenarioByStepRelativeUrl(projectCode, projectSearchRo);
     }
 
-    /*
-    @SuppressWarnings("Duplicates")
-    @RequestMapping(value = "{projectCode}/export-selected-to-yaml", method = RequestMethod.POST)
-    @ResponseBody
-    public String exportToYaml(
-            @PathVariable String projectCode,
-            @RequestBody() List<Long> selectedScenarios,
-            HttpServletResponse response
-    ) throws IOException {
-        Project project = projectService.findOne(projectCode);
-        if (project != null) {
-            response.setHeader("Content-Disposition", "attachment; filename=\"project-" + project.getCode() + ".yml\"");
-            return projectService.getSelectedAsYaml(projectCode, selectedScenarios);
-        }
-        throw new ResourceNotFoundException();
+    @RequestMapping(value = "/import-project-from-yaml", method = RequestMethod.POST)
+    public void importProjectFromYaml(@RequestBody ImportProjectRo importProjectRo) throws Exception {
+        projectService.importProjectFormYaml(importProjectRo);
     }
-    */
 
     @RequestMapping(value = "{projectCode}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
     @ResponseBody

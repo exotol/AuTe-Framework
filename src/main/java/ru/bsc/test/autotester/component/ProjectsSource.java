@@ -134,6 +134,22 @@ public class ProjectsSource {
         }
     }
 
+    public void saveFullProject(Project project) throws Exception {
+        synchronized (this) {
+            File root = new File(directoryPath + "/" + project.getCode());
+            if (!root.exists()) {
+                if (root.mkdirs()) {
+                    saveAllScenariosToExternalFiles(project);
+                    saveProjectToFiles(project);
+                } else {
+                    throw new Exception("Directory " + root + " not created.");
+                }
+            } else {
+                throw new Exception("Project " + project.getCode() + " already exists.");
+            }
+        }
+    }
+
     private void saveProjectToFiles(Project project) {
         String fileName = directoryPath + "/" + project.getCode() + "/" + MAIN_YAML_FILENAME;
         try {

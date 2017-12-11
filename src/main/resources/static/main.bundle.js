@@ -284,6 +284,21 @@ var FormData = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/model/import-project.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ImportProject; });
+var ImportProject = (function () {
+    function ImportProject() {
+    }
+    return ImportProject;
+}());
+
+//# sourceMappingURL=import-project.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/model/mock-service-response.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -567,7 +582,7 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/project-list/project-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>Projects</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n"
+module.exports = "<h4>Projects</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  Loading...\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<div class=\"container\">\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <a (click)=\"displayImportProjectForm = !displayImportProjectForm\" href=\"#\">Import project from YAML</a>\r\n      <div *ngIf=\"displayImportProjectForm\">\r\n        <label>New project code:</label>\r\n        <input class=\"form-control\" placeholder=\"EXAMPLE_CODE\" title=\"Project code\" [(ngModel)]=\"importProject.projectCode\" />\r\n        <label>YAML:</label>\r\n        <textarea rows=\"15\" class=\"form-control\" title=\"YAML content\" [(ngModel)]=\"importProject.yamlContent\"></textarea>\r\n        <button style=\"margin-top: 7px;\" class=\"btn btn-default\" (click)=\"doImport()\">Import project from YAML</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -577,6 +592,7 @@ module.exports = "<h4>Projects</h4>\r\n<div class=\"help-block\" *ngIf=\"!projec
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__model_import_project__ = __webpack_require__("../../../../../src/app/model/import-project.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectListComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -589,13 +605,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var ProjectListComponent = (function () {
     function ProjectListComponent(projectService) {
         this.projectService = projectService;
+        this.displayImportProjectForm = false;
+        this.importProject = new __WEBPACK_IMPORTED_MODULE_2__model_import_project__["a" /* ImportProject */]();
     }
     ProjectListComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.projectService.findAll().subscribe(function (value) { return _this.projectList = value; });
+    };
+    ProjectListComponent.prototype.doImport = function () {
+        this.projectService.saveFullProject(this.importProject)
+            .subscribe();
     };
     return ProjectListComponent;
 }());
@@ -1112,6 +1135,9 @@ var ProjectService = (function () {
     };
     ProjectService.prototype.createScenario = function (project, scenario) {
         return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/scenarios', scenario, { headers: this.headers }).map(function (value) { return value.json(); });
+    };
+    ProjectService.prototype.saveFullProject = function (importProject) {
+        return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/import-project-from-yaml', importProject, { headers: this.headers });
     };
     return ProjectService;
 }());
