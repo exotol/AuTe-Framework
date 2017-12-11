@@ -36,11 +36,28 @@
           <div class="clearfix"></div>
           <div class="col-sm-6">
             <label>Actual</label>
-            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.actual}}</div>
+            <div class="form-control"
+                 #actualResult
+                 style="overflow: scroll; height: 180px; background-color: #eee;"
+                 [syncScroll]="expectedResult">
+              <span *ngFor="let item of diff"
+                    [style.background]="item.added ? '#afa' : ''"
+                    [style.fontWeight]="item.added ? 'bold' : 'none'">
+                <span *ngIf="!item.removed" style="white-space: pre-wrap;">{{item.value}}</span>
+              </span>
+            </div>
           </div>
           <div class="col-sm-6">
             <label>Expected</label>
-            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.expected}}</div>
+            <div class="form-control"
+                 #expectedResult
+                 style="overflow: scroll; height: 180px; background-color: #eee;">
+              <span *ngFor="let item of diff"
+                    [style.background]="item.removed ? '#faa' : ''"
+                    [style.fontWeight]="item.removed ? 'bold' : 'none'">
+                <span *ngIf="!item.added" style="white-space: pre-wrap;">{{item.value}}</span>
+              </span>
+            </div>
           </div>
           <div class="col-sm-12" style="color: gray;">
             <label>Details</label>

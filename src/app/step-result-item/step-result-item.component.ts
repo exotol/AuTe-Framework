@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import * as JsDiff from 'diff';
 
 @Component({
   selector: 'app-step-result-item',
@@ -19,6 +20,7 @@ export class StepResultItemComponent implements OnInit {
   stepResult: StepResult;
 
   tab = 'summary';
+  diff: any[];
 
   constructor(
     private stepService: StepService,
@@ -26,6 +28,9 @@ export class StepResultItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // stepResult.actual
+    // stepResult.expected
+    this.processResultString();
   }
 
   selectTab(tabName: string) {
@@ -39,5 +44,27 @@ export class StepResultItemComponent implements OnInit {
       .subscribe(() => {
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+  }
+
+  private processResultString() {
+    const actualResultObject: object = this.tryToParseAsJSON(this.stepResult.actual);
+    const expectedResultStr: string = this.prepareStringToComparison(this.stepResult.expected);
+    const actualResultStr: string = actualResultObject ?
+      JSON.stringify(actualResultObject, null, 2) :
+      this.prepareStringToComparison(this.stepResult.actual);
+
+    this.diff = JsDiff.diffWordsWithSpace(expectedResultStr, actualResultStr);
+  }
+
+  private prepareStringToComparison(str: string): string {
+    return str ? str.replace(/\r/g, '').replace(/\t/g, '  ').trim() : '';
+  }
+
+  private tryToParseAsJSON(str: string): object {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return null;
+    }
   }
 }
