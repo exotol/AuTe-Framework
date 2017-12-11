@@ -45,7 +45,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final StepService stepService;
     private final ProjectService projectService;
 
-    @Value("${projects.path:}")
+    @Value("${projects.directory.path:}")
     private String projectsPath;
 
     @Autowired
@@ -58,6 +58,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
+        atExecutor.setProjectPath(projectsPath + "/" + project.getProjectCode() + "/");
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
             List<Project> projectList = projectService.findAll();
