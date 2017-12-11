@@ -1,5 +1,7 @@
 import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
 import { NgModule } from '@angular/core';
+import {FormControl} from '@angular/forms';
+import	'rxjs/Rx';
 import {Scenario} from '../model/scenario';
 import {SearchScenarioService} from '../service/search-scenario.service';
 
@@ -14,6 +16,7 @@ export class SearchComponent implements OnInit {
   errorFlag: boolean;
   queryString: string;
   scenarioList: Scenario[];
+  queryField: FormControl;
   @Input() projectId;
   @ViewChild('searchResult') searchResult: ElementRef;
   @ViewChild('queryInput') queryInput: ElementRef;
@@ -26,20 +29,23 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.queryField = new FormControl();
+    this.queryField.valueChanges
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe( query => {
+          this.search(query)
+        }
+      )
   }
 
-  search() {
+  search(query) {
     this.errorFlag = false;
-
-    if (this.queryString) {
-      this.searchScenarioService.searchByMethod(this.projectId, this.queryString)
-        .then( (result) => {this.scenarioList = result; })
-        .catch( () => {
-          this.errorFlag = true;
-        });
-    } else {
-      this.scenarioList = null;
-    }
+    this.searchScenarioService.searchByMethod(this.projectId, query)
+      .then( (result) => {this.scenarioList = result; })
+      .catch( () => {
+        this.errorFlag = true;
+      });
   }
 
   @HostListener('window:mousedown', ['$event.target'])
