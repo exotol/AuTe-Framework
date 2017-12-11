@@ -39,7 +39,7 @@
             <div class="form-control"
                  #actualResult
                  style="overflow: scroll; height: 180px; background-color: #eee;"
-                 [syncScroll]="expectedResult">
+                 [appSyncScroll]="expectedResult">
               <span *ngFor="let item of diff"
                     [style.background]="item.added ? '#afa' : ''"
                     [style.fontWeight]="item.added ? 'bold' : 'none'">

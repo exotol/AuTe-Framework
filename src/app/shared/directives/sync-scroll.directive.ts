@@ -4,7 +4,7 @@ import {Directive, ElementRef, HostListener, Input} from '@angular/core';
   selector: '[appSyncScroll]',
 })
 export class SyncScrollDirective {
-  @Input('syncScroll') boundElement: any;
+  @Input('appSyncScroll') boundElement: any;
 
   @HostListener('scroll') synchronizeScroll() {
     if (this.boundElement) {
