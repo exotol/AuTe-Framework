@@ -6,7 +6,6 @@ export class Project {
   beforeScenarioPath: String;
   afterScenarioPath: String;
   code: string;
-  standList: Stand[];
   stand: Stand;
   useRandomTestId: boolean;
   testIdHeaderName: string;

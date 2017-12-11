@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
+import {ImportProject} from '../model/import-project';
 
 @Component({
   selector: 'app-project-list',
@@ -9,6 +10,8 @@ import {ProjectService} from '../service/project.service';
 export class ProjectListComponent implements OnInit {
 
   projectList: Project[];
+  displayImportProjectForm = false;
+  importProject: ImportProject = new ImportProject();
 
   constructor(
     private projectService: ProjectService
@@ -16,6 +19,11 @@ export class ProjectListComponent implements OnInit {
 
   ngOnInit() {
     this.projectService.findAll().subscribe(value => this.projectList = value);
+  }
+
+  doImport() {
+    this.projectService.saveFullProject(this.importProject)
+      .subscribe();
   }
 
 }
