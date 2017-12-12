@@ -425,6 +425,10 @@ public class ProjectsSource {
                             methodToList.method(step.getMockServiceResponseList());
                             step.getMockServiceResponseList().forEach(methodToModel::method);
                         }
+                        if (step.getFormDataList() != null) {
+                            methodToList.method(step.getFormDataList());
+                            step.getFormDataList().forEach(methodToModel::method);
+                        }
                     });
                 }
             });
