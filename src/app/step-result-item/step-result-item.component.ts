@@ -12,7 +12,9 @@ import * as JsDiff from 'diff';
     '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
     '.row { margin-bottom: 5px; }',
     '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
-    '.form-control span { white-space: pre-wrap; }',
+    '.form-control .diff-content { white-space: pre-wrap; }',
+    '.form-control .added-row { background-color: #dfd; }',
+    '.form-control .removed-row { background-color: #fdd; }',
     '.form-control .added { background-color: #afa; font-weight: bold; }',
     '.form-control .removed { background-color: #fbb; font-weight: bold; }'
   ]
@@ -24,6 +26,7 @@ export class StepResultItemComponent implements OnInit {
 
   tab = 'summary';
   diff: any[];
+  diffMode: boolean;
 
   constructor(
     private stepService: StepService,
@@ -51,12 +54,23 @@ export class StepResultItemComponent implements OnInit {
 
   private processResultString() {
     const actualResultObject: object = this.tryToParseAsJSON(this.stepResult.actual);
+    this.diffMode = actualResultObject ? true : false;
     const expectedResultStr: string = this.prepareStringToComparison(this.stepResult.expected);
-    const actualResultStr: string = actualResultObject ?
+    const actualResultStr: string = this.diffMode ?
       JSON.stringify(actualResultObject, null, 2) :
       this.prepareStringToComparison(this.stepResult.actual);
 
-    this.diff = JsDiff.diffWordsWithSpace(expectedResultStr, actualResultStr);
+    this.diff = this.diffMode ?
+      JsDiff.diffLines(expectedResultStr, actualResultStr) :
+      JsDiff.diffWordsWithSpace(expectedResultStr, actualResultStr);
+
+    if (this.diffMode) {
+      this.diff.forEach((item, i, arr) => {
+        if (item.removed && arr[i + 1] && arr[i + 1].added) {
+          item.rowDiff = arr[i + 1].rowDiff = JsDiff.diffWordsWithSpace(item.value, arr[i + 1].value);
+        }
+      });
+    }
   }
 
   private prepareStringToComparison(str: string): string {

@@ -40,8 +40,12 @@
                  #actualResult
                  style="overflow: scroll; height: 180px; background-color: #eee;"
                  [appSyncScroll]="expectedResult">
-              <span *ngFor="let item of diff"
-                    [class]="item.added ? 'added' : ''">{{!item.removed ? item.value : ''}}</span>
+              <ng-container *ngIf="this.diffMode">
+                <ng-container *ngTemplateOutlet="lineDiffActual"></ng-container>
+              </ng-container>
+              <ng-container *ngIf="!this.diffMode">
+                <ng-container *ngTemplateOutlet="wordDiffActual"></ng-container>
+              </ng-container>
             </div>
           </div>
           <div class="col-sm-6">
@@ -49,8 +53,12 @@
             <div class="form-control"
                  #expectedResult
                  style="overflow: scroll; height: 180px; background-color: #eee;">
-              <span *ngFor="let item of diff"
-                    [class]="item.removed ? 'removed' : ''">{{!item.added ? item.value : ''}}</span>
+              <ng-container *ngIf="this.diffMode">
+                <ng-container *ngTemplateOutlet="lineDiffExpected"></ng-container>
+              </ng-container>
+              <ng-container *ngIf="!this.diffMode">
+                <ng-container *ngTemplateOutlet="wordDiffExpected"></ng-container>
+              </ng-container>
             </div>
           </div>
           <div class="col-sm-12" style="color: gray;">
@@ -69,3 +77,43 @@
     </div>
   </div>
 </div>
+
+<ng-template #lineDiffActual>
+  <div *ngFor="let item of diff" [class.added-row]="item.added">
+    <ng-container *ngIf="!item.removed && item.rowDiff">
+      <span
+        *ngFor="let rowItem of item.rowDiff"
+        class="diff-content"
+        [class.added]="rowItem.added">{{!rowItem.removed ? rowItem.value : ''}}</span>
+    </ng-container>
+    <ng-container *ngIf="!item.removed && !item.rowDiff">
+      <span class="diff-content" [class.added]="item.added">{{!item.removed ? item.value : ''}}</span>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #lineDiffExpected>
+  <div *ngFor="let item of diff" [class.removed-row]="item.removed">
+    <ng-container *ngIf="!item.added && item.rowDiff">
+      <span
+        *ngFor="let rowItem of item.rowDiff"
+        class="diff-content"
+        [class.removed]="rowItem.removed">{{!rowItem.added ? rowItem.value : ''}}</span>
+    </ng-container>
+    <ng-container *ngIf="!item.added && !item.rowDiff">
+      <span class="diff-content" [class.removed]="item.removed">{{!item.added ? item.value : ''}}</span>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #wordDiffActual>
+  <span *ngFor="let item of diff"
+        class="diff-content"
+        [class.added]="item.added">{{!item.removed ? item.value : ''}}</span>
+</ng-template>
+
+<ng-template #wordDiffExpected>
+  <span *ngFor="let item of diff"
+        class="diff-content"
+        [class.removed]="item.removed">{{!item.added ? item.value : ''}}</span>
+</ng-template>
