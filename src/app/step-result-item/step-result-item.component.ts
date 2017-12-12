@@ -11,7 +11,10 @@ import * as JsDiff from 'diff';
     '.nav-tabs > li > a { padding-top: 3px; padding-bottom: 3px; }',
     '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
     '.row { margin-bottom: 5px; }',
-    '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }'
+    '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
+    '.form-control span { white-space: pre-wrap; }',
+    '.form-control .added { background-color: #afa; font-weight: bold; }',
+    '.form-control .removed { background-color: #fbb; font-weight: bold; }'
   ]
 })
 export class StepResultItemComponent implements OnInit {

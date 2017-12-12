@@ -41,10 +41,7 @@
                  style="overflow: scroll; height: 180px; background-color: #eee;"
                  [appSyncScroll]="expectedResult">
               <span *ngFor="let item of diff"
-                    [style.background]="item.added ? '#afa' : ''"
-                    [style.fontWeight]="item.added ? 'bold' : 'none'">
-                <span *ngIf="!item.removed" style="white-space: pre-wrap;">{{item.value}}</span>
-              </span>
+                    [class]="item.added ? 'added' : ''">{{!item.removed ? item.value : ''}}</span>
             </div>
           </div>
           <div class="col-sm-6">
@@ -53,10 +50,7 @@
                  #expectedResult
                  style="overflow: scroll; height: 180px; background-color: #eee;">
               <span *ngFor="let item of diff"
-                    [style.background]="item.removed ? '#faa' : ''"
-                    [style.fontWeight]="item.removed ? 'bold' : 'none'">
-                <span *ngIf="!item.added" style="white-space: pre-wrap;">{{item.value}}</span>
-              </span>
+                    [class]="item.removed ? 'removed' : ''">{{!item.added ? item.value : ''}}</span>
             </div>
           </div>
           <div class="col-sm-12" style="color: gray;">
