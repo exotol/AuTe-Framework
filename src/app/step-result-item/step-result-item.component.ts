@@ -26,7 +26,6 @@ export class StepResultItemComponent implements OnInit {
 
   tab = 'summary';
   diff: any[];
-  diffMode: boolean;
 
   constructor(
     private stepService: StepService,
@@ -53,28 +52,26 @@ export class StepResultItemComponent implements OnInit {
   }
 
   private processResultString() {
-    const actualResultObject: object = this.tryToParseAsJSON(this.stepResult.actual);
-    this.diffMode = actualResultObject ? true : false;
-    const expectedResultStr: string = this.prepareStringToComparison(this.stepResult.expected);
-    const actualResultStr: string = this.diffMode ?
-      JSON.stringify(actualResultObject, null, 2) :
-      this.prepareStringToComparison(this.stepResult.actual);
+    const actualResultStr: string = this.prepareStringForComparison(this.stepResult.actual);
+    const expectedResultStr: string = this.prepareStringForComparison(this.stepResult.expected);
 
-    this.diff = this.diffMode ?
-      JsDiff.diffLines(expectedResultStr, actualResultStr) :
-      JsDiff.diffWordsWithSpace(expectedResultStr, actualResultStr);
+    this.diff = JsDiff.diffLines(expectedResultStr, actualResultStr);
 
-    if (this.diffMode) {
-      this.diff.forEach((item, i, arr) => {
-        if (item.removed && arr[i + 1] && arr[i + 1].added) {
-          item.rowDiff = arr[i + 1].rowDiff = JsDiff.diffWordsWithSpace(item.value, arr[i + 1].value);
-        }
-      });
-    }
+    this.diff.forEach((item, i, arr) => {
+      if (item.removed && arr[i + 1] && arr[i + 1].added) {
+        item.rowDiff = arr[i + 1].rowDiff = JsDiff.diffWordsWithSpace(item.value, arr[i + 1].value);
+      }
+    });
   }
 
-  private prepareStringToComparison(str: string): string {
-    return str ? str.replace(/\r/g, '').replace(/\t/g, '  ').trim() : '';
+  private prepareStringForComparison(str: string): string {
+    if (!str) {
+      return '';
+    }
+    const resultObject: object = this.tryToParseAsJSON(str);
+    return resultObject ?
+      JSON.stringify(resultObject, null, 2) :
+      str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
   }
 
   private tryToParseAsJSON(str: string): object {
