@@ -7,6 +7,7 @@ import {RouterModule, Routes} from '@angular/router';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ScenarioDetailComponent } from './scenario-detail/scenario-detail.component';
+import {DiffComponent} from './shared/diff/diff.component';
 import {ProjectService} from './service/project.service';
 import {HttpModule} from '@angular/http';
 import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
@@ -45,6 +46,7 @@ const routes: Routes = [
     StepParameterSetComponent,
     ProjectSettingsComponent,
     ScenarioSettingsComponent,
+    DiffComponent,
     SyncScrollDirective
   ],
   imports: [
