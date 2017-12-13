@@ -46,7 +46,7 @@ public class YamlScenarioRepositoryImpl implements ScenarioRepository {
         projectsSource.getProjectList().stream().filter(project -> projectId.equals(project.getId()))
                 .forEach(project -> project.getScenarioList().forEach(scenario -> {
                     for(Step step: scenario.getStepList()) {
-                        if (step.getRelativeUrl().contains(relativeUrl)) {
+                        if (step.getRelativeUrl() != null && step.getRelativeUrl().toLowerCase().contains(relativeUrl.toLowerCase())) {
                             result.add(scenario);
                             break;
                         }
