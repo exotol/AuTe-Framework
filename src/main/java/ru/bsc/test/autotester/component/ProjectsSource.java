@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
  *
  */
 
-@Component
 public class ProjectsSource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProjectsSource.class);
@@ -37,17 +35,6 @@ public class ProjectsSource {
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
-
-        /*
-        try {
-            projectList.add(YamlUtils.loadAs(new File("c:\\tmp\\project-BCS_PREMIER.yml"), Project.class));
-            projectList.get(0).setCode("NEW_FORMAT");
-            saveToFiles(projectList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-
 
         projectList.clear();
         LOGGER.debug("Load projects from: {}", directoryPath);
