@@ -77,6 +77,5 @@ public class Application {
             return;
         }
         SpringApplication.run(new Class<?>[] {Application.class, SpringRootConfig.class, SpringWebConfig.class}, args);
-        System.exit(0);
     }
 }
