@@ -1,8 +1,8 @@
 <div class="col-sm-6">
   <label>Actual</label>
   <div class="form-control"
-       #actualResult
-       [appSyncScroll]="expectedResult">
+       #actual
+       [appSyncScroll]="syncScroll && expected">
     <div *ngFor="let item of actualDiff" [class.added-row]="item.added">
       <ng-container *ngIf="item.rowDiff">
         <span
@@ -20,8 +20,8 @@
 <div class="col-sm-6">
   <label>Expected</label>
   <div class="form-control"
-       #expectedResult
-       [appSyncScroll]="actualResult">
+       #expected
+       [appSyncScroll]="syncScroll && actual">
     <div *ngFor="let item of expectedDiff" [class.removed-row]="item.removed">
       <ng-container *ngIf="item.rowDiff">
         <span
@@ -34,4 +34,10 @@
       </ng-container>
     </div>
   </div>
+</div>
+
+<div class="col-sm-12">
+  <label>
+    <input type="checkbox" [(ngModel)]="syncScroll"> Synchronize scrolling
+  </label>
 </div>

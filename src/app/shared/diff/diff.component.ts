@@ -11,6 +11,7 @@ export class DiffComponent implements OnInit {
   @Input('actual') actual: string;
   expectedDiff: any[];
   actualDiff: any[];
+  syncScroll: boolean = true;
 
   ngOnInit() {
     this.formDiff();
@@ -30,14 +31,14 @@ export class DiffComponent implements OnInit {
 
     this.expectedDiff = diff.filter(item => !item.added).map(item => {
       if (item.rowDiff) {
-        item.rowDiff = item.rowDiff.filter(item => !item.added);
+        item.rowDiff = item.rowDiff.filter(rowDiffItem => !rowDiffItem.added);
       }
       return item;
     });
 
     this.actualDiff = diff.filter(item => !item.removed).map(item => {
       if (item.rowDiff) {
-        item.rowDiff = item.rowDiff.filter(item => !item.removed);
+        item.rowDiff = item.rowDiff.filter(rowDiffItem => !rowDiffItem.removed);
       }
       return item;
     });
@@ -47,13 +48,13 @@ export class DiffComponent implements OnInit {
     if (!str) {
       return '';
     }
-    const resultObject: object = this.tryToParseAsJSON(str);
+    const resultObject: any = this.tryToParseAsJSON(str);
     return resultObject ?
       JSON.stringify(resultObject, null, 2) :
       str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
   }
 
-  private tryToParseAsJSON(str: string): object {
+  private tryToParseAsJSON(str: string): any {
     try {
       return JSON.parse(str);
     } catch (e) {
