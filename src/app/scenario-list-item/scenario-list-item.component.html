@@ -3,7 +3,8 @@
     <div class="col-sm-5">
       <label>
         <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" />
-        {{scenario.name}}
+        <a [routerLink]="['/scenario', scenario.id]" *ngIf="isLinkTitleScenario">{{scenario.name}}</a>
+        <span *ngIf="!isLinkTitleScenario">{{scenario.name}}</span>
       </label>
     </div>
     <div class="col-sm-1">
@@ -16,9 +17,6 @@
     </div>
     <div class="col-sm-2">
       <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Show results' | translate}}</button>
-    </div>
-    <div class="col-sm-2">
-      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">{{'Edit' | translate}}</a>
     </div>
   </div>
   <div class="row" *ngIf="showResultDetails && stepResultList">
