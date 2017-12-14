@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import {ToastyModule} from 'ng2-toasty';
@@ -9,7 +11,7 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ScenarioDetailComponent } from './scenario-detail/scenario-detail.component';
 import {DiffComponent} from './shared/diff/diff.component';
 import {ProjectService} from './service/project.service';
-import {HttpModule} from '@angular/http';
+import {Http, HttpModule} from '@angular/http';
 import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
 import {ScenarioService} from './service/scenario.service';
 import {StepService} from './service/step.service';
@@ -27,6 +29,10 @@ import { SearchComponent } from './search-scenario/search-scenario.component';
 import {SearchScenarioService} from './service/search-scenario.service';
 import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
 
+
+export function HttpLoaderFactory(http: Http) {
+  return new TranslateHttpLoader(http);
+}
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -59,6 +65,13 @@ const routes: Routes = [
     HttpModule,
     RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [Http]
+      }
+    }),
     FormsModule,
     ReactiveFormsModule
   ],

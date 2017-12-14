@@ -1,22 +1,22 @@
 <ng-container *ngIf="project">
   <div class="breadcrumb-search">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
       <li class="breadcrumb-item active">{{project.id}}. {{project.name}}</li>
     </ol>
     <app-search [projectId]="project.id"></app-search>
   </div>
 
   <h4>{{project.name}}</h4>
-  <a [routerLink]="['/project/' + project.id + '/settings']">Settings</a>
+  <a [routerLink]="['/project/' + project.id + '/settings']">{{'Settings' | translate}}</a>
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
       <li [class.active]="!filter">
-        <a href="#" (click)="selectAllGroups()">All</a>
+        <a href="#" (click)="selectAllGroups()">{{'All' | translate}}</a>
       </li>
       <li [class.active]="filter && !filter.scenarioGroup">
-        <a href="#" (click)="selectGroup()">Without group</a>
+        <a href="#" (click)="selectGroup()">{{'Without group' | translate}}</a>
       </li>
       <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of project.scenarioGroups">
         <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup.name}}</a>
@@ -28,9 +28,9 @@
     <div class="row">
       <div style="height: 40px;" class="col-sm-6">
         <label>
-          <input class="select-all" type="checkbox" title="Select" (click)="selectAll()" />
+          <input class="select-all" type="checkbox" title="{{'Select' | translate}}" (click)="selectAll()" />
         </label>
-        <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">Execute selected scenarios</button>
+        <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">{{'Execute selected scenarios' | translate}}</button>
       </div>
       <div class="col-sm-1" style="display: none; font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
         {{failCount}}
@@ -56,8 +56,8 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.id + '/get-yaml'">Download project as YAML</a>
-        <button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button>
+        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.id + '/get-yaml'">{{'Download project as YAML' | translate}}</a>
+        <button class="btn btn-default" (click)="downloadSelectedAsYaml()">{{ 'Download selected scenarios as YAML' | translate}}</button>
       </div>
     </div>
   </div>
@@ -65,11 +65,11 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <label>Create new scenario</label>
+        <label>{{'Create new scenario' | translate}}</label>
         <div class="input-group">
-          <input placeholder="Scenario name" class="form-control" title="New scenario name" [(ngModel)]="newScenarioName" />
+          <input placeholder="{{'Scenario name' | translate}}" class="form-control" title="{{'Scenario name' | translate}}" [(ngModel)]="newScenarioName" />
           <span class="input-group-btn">
-            <button class="btn btn-success" (click)="saveNewScenario()"><span class="glyphicon glyphicon-plus"></span> Create</button>
+            <button class="btn btn-success" (click)="saveNewScenario()"><span class="glyphicon glyphicon-plus"></span>{{ 'Create' | translate}}</button>
           </span>
         </div>
       </div>
@@ -79,5 +79,5 @@
 </ng-container>
 <div class="help-block" *ngIf="!project">
   <span class="glyphicon glyphicon-time"></span>
-  Loading...
+  {{'Loading' | translate}}
 </div>
