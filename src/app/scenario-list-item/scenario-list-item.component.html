@@ -1,4 +1,4 @@
-<div class="container-fluid" *ngIf="scenario">
+<div class="container-fluid" *ngIf="scenario" [ngClass] = "getMapStyleForScenario()">
   <div class="row">
     <div class="col-sm-6">
       <label>
@@ -20,7 +20,7 @@
       <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Show results' | translate}}</button>
     </div>
   </div>
-  <div class="row" *ngIf="showResultDetails && stepResultList">
+  <div class="row result" *ngIf="showResultDetails && stepResultList">
     <ng-container *ngFor="let stepResult of stepResultList">
       <app-step-result-item [stepResult]="stepResult"></app-step-result-item>
     </ng-container>
