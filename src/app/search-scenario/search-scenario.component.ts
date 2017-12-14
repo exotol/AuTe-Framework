@@ -1,5 +1,4 @@
 import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import { NgModule } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import	'rxjs/Rx';
 import {Scenario} from '../model/scenario';
@@ -14,7 +13,6 @@ export class SearchComponent implements OnInit {
   placeholderText: string;
   errorMsg: string;
   errorFlag: boolean;
-  queryString: string;
   scenarioList: Scenario[];
   queryField: FormControl;
   @Input() projectId;
@@ -25,7 +23,7 @@ export class SearchComponent implements OnInit {
     private searchScenarioService: SearchScenarioService
   ) {
       this.placeholderText = 'Поиск по наименованию метода';
-      this.errorMsg = 'Сценарий не найден';
+      this.errorMsg = 'Ничего не найдено';
   }
 
   ngOnInit() {
@@ -34,7 +32,11 @@ export class SearchComponent implements OnInit {
       .debounceTime(400)
       .distinctUntilChanged()
       .subscribe( query => {
-          this.search(query)
+          if (query === '') {
+            this.hiddenResultBlock();
+            return;
+          }
+          this.search(query);
         }
       )
   }
@@ -43,11 +45,22 @@ export class SearchComponent implements OnInit {
     this.errorFlag = false;
     this.searchScenarioService.searchByMethod(this.projectId, query)
       .subscribe(
-        (result) => {this.scenarioList = result; },
+        (result) => {
+                            if (!result.length) {
+                                this.hiddenResultBlock(true);
+                                return;
+                            }
+                            this.scenarioList = result;
+                          },
         () => {
-          this.errorFlag = true;
+          this.hiddenResultBlock(true);
         }
       );
+  }
+
+  hiddenResultBlock(stateErrorFlag: boolean = false) {
+    this.errorFlag = stateErrorFlag;
+    this.scenarioList = null;
   }
 
   @HostListener('window:mousedown', ['$event.target'])
@@ -58,7 +71,7 @@ export class SearchComponent implements OnInit {
     if (isShowSearchResult) {
       return;
     }
-    this.errorFlag = false;
-    this.scenarioList = null;
+
+    this.hiddenResultBlock();
   }
 }
