@@ -14,6 +14,8 @@ export class ScenarioListItemComponent implements OnInit {
   scenario: Scenario;
   @Input()
   projectCode: String;
+  @Input()
+  isLinkTitleScenario = true;
   @Output() onStateChange = new EventEmitter<any>();
 
   stepResultList: StepResult[];
@@ -38,11 +40,11 @@ export class ScenarioListItemComponent implements OnInit {
       this.state = 'executing';
       this.stateChanged();
       this.scenarioService.run(this.projectCode, this.scenario)
-        .subscribe(value => {
-          this.stepResultList = value;
+        .subscribe(stepResultList => {
+          this.stepResultList = stepResultList;
           this.state = 'finished';
           this.stateChanged();
-          this.scenario.failed = value.filter(value2 => value2.result === 'Fail').length > 0;
+          this.scenario.failed = stepResultList.filter(result => result.result === 'Fail').length > 0;
         });
     }
   }

@@ -1,19 +1,22 @@
 <ng-container *ngIf="project">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-    <li class="breadcrumb-item active">{{project.code}}. {{project.name}}</li>
-  </ol>
+  <div class="breadcrumb-search">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
+      <li class="breadcrumb-item active">{{project.code}}. {{project.name}}</li>
+    </ol>
+    <app-search [projectId]="project.id"></app-search>
+  </div>
 
   <h4>{{project.name}}</h4>
-  <a [routerLink]="['/project/' + project.code + '/settings']">Settings</a>
+  <a [routerLink]="['/project/' + project.code + '/settings']">{{'Settings' | translate}}</a>
 
   <nav aria-label="Scenario groups">
     <ul class="pagination">
       <li [class.active]="!filter">
-        <a href="#" (click)="selectAllGroups()">All</a>
+        <a href="#" (click)="selectAllGroups()">{{'All' | translate}}</a>
       </li>
       <li [class.active]="filter && !filter.scenarioGroup">
-        <a href="#" (click)="selectGroup()">Without group</a>
+        <a href="#" (click)="selectGroup()">{{'Without group' | translate}}</a>
       </li>
       <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of scenarioGroupList">
         <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup}}</a>
@@ -25,9 +28,9 @@
     <div class="row">
       <div style="height: 40px;" class="col-sm-6">
         <label>
-          <input class="select-all" type="checkbox" title="Select" (click)="selectAll()" />
+          <input class="select-all" type="checkbox" title="{{'Select' | translate}}" (click)="selectAll()" />
         </label>
-        <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">Execute selected scenarios</button>
+        <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">{{'Execute selected scenarios' | translate}}</button>
       </div>
       <div class="col-sm-1" style="display: none; font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
         {{failCount}}
@@ -47,14 +50,14 @@
     </div>
   </div>
   <div style="min-height: 33px; margin-top: 7px; margin-bottom: 25px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
-    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)" [isLinkTitleScenario] = "true"></app-scenario-list-item>
   </div>
 
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'">Download project as YAML</a>
-        <!--button class="btn btn-default" (click)="downloadSelectedAsYaml()">Download selected scenarios as YAML</button-->
+        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'">{{'Download project as YAML' | translate}}</a>
+        <!--button class="btn btn-default" (click)="downloadSelectedAsYaml()">{{ 'Download selected scenarios as YAML' | translate}}</button-->
       </div>
     </div>
   </div>
@@ -62,11 +65,11 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <label>Create new scenario</label>
+        <label>{{'Create new scenario' | translate}}</label>
         <div class="input-group">
-          <input placeholder="Scenario name" class="form-control" title="New scenario name" [(ngModel)]="newScenarioName" />
+          <input placeholder="{{'Scenario name' | translate}}" class="form-control" title="{{'Scenario name' | translate}}" [(ngModel)]="newScenarioName" />
           <span class="input-group-btn">
-            <button class="btn btn-success" (click)="saveNewScenario()"><span class="glyphicon glyphicon-plus"></span> Create</button>
+            <button class="btn btn-success" (click)="saveNewScenario()"><span class="glyphicon glyphicon-plus"></span>{{ 'Create' | translate}}</button>
           </span>
         </div>
       </div>
@@ -76,5 +79,5 @@
 </ng-container>
 <div class="help-block" *ngIf="!project">
   <span class="glyphicon glyphicon-time"></span>
-  Loading...
+  {{'Loading' | translate}}
 </div>

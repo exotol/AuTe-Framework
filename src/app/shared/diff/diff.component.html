@@ -1,0 +1,43 @@
+<div class="col-sm-6">
+  <label>{{'Actual' | translate}}</label>
+  <div class="form-control"
+       #actual
+       [appSyncScroll]="syncScroll && expected">
+    <div *ngFor="let item of actualDiff" [class.added-row]="item.added">
+      <ng-container *ngIf="item.rowDiff">
+        <span
+          *ngFor="let rowItem of item.rowDiff"
+          class="diff-content"
+          [class.added]="rowItem.added">{{rowItem.value}}</span>
+      </ng-container>
+      <ng-container *ngIf="!item.rowDiff">
+        <span class="diff-content" [class.added]="item.added">{{item.value}}</span>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-6">
+  <label>{{'Expected' | translate}}</label>
+  <div class="form-control"
+       #expected
+       [appSyncScroll]="syncScroll && actual">
+    <div *ngFor="let item of expectedDiff" [class.removed-row]="item.removed">
+      <ng-container *ngIf="item.rowDiff">
+        <span
+          *ngFor="let rowItem of item.rowDiff"
+          class="diff-content"
+          [class.removed]="rowItem.removed">{{rowItem.value}}</span>
+      </ng-container>
+      <ng-container *ngIf="!item.rowDiff">
+        <span class="diff-content" [class.removed]="item.removed">{{item.value}}</span>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-12">
+  <label>
+    <input type="checkbox" [(ngModel)]="syncScroll"> {{'Synchronize scrolling' | translate}}
+  </label>
+</div>

@@ -14,7 +14,7 @@
     <tbody>
       <tr *ngFor="let stepParameterSet of stepParameterSetList">
         <th>
-          <input title="" placeholder="Case description" class="form-control no-border" [(ngModel)]="stepParameterSet.description" />
+          <input title="" placeholder="{{'Case description' | translate}}" class="form-control no-border" [(ngModel)]="stepParameterSet.description" />
         </th>
         <td *ngFor="let parameterName of parameterNameList">
           <ng-container *ngIf="findParameter(stepParameterSet, parameterName)">
@@ -27,5 +27,5 @@
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-default" (click)="addParameterSet()"><span class="glyphicon glyphicon-plus"></span> Add case</button>
+  <button class="btn btn-default" (click)="addParameterSet()"><span class="glyphicon glyphicon-plus"></span> {{'Add case' | translate}}</button>
 </div>

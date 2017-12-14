@@ -9,10 +9,7 @@ import {CustomToastyService} from '../service/custom-toasty.service';
 @Component({
   selector: 'app-scenario-settings',
   templateUrl: './scenario-settings.component.html',
-  styles: [
-    'input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }',
-    '.row { margin-bottom: 7px; }'
-  ]
+  styleUrls: ['./scenario-settings.component.css']
 })
 export class ScenarioSettingsComponent implements OnInit {
 

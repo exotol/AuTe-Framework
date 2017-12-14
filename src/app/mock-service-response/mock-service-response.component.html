@@ -1,7 +1,7 @@
 <div>
   <div class="row">
     <div class="col-sm-8">
-      <input class="form-control" placeholder="Service URL" title="" [(ngModel)]="mockServiceResponse.serviceUrl"/>
+      <input class="form-control" placeholder="{{'Service URL' | translate}}" title="" [(ngModel)]="mockServiceResponse.serviceUrl"/>
     </div>
     <div class="col-sm-4">
       <input class="form-control" placeholder="HTTP-status: 200, 404, 500, [empty]" title="" [(ngModel)]="mockServiceResponse.httpStatus"/>
@@ -9,8 +9,8 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <label>Response body</label>
-      <textarea class="form-control" placeholder="Response body" title="" rows="7" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
+      <label>{{'Response body' | translate}}</label>
+      <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
     </div>
   </div>
 </div>

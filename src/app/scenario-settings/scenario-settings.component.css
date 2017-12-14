@@ -1,0 +1,13 @@
+input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }
+.row { margin-bottom: 7px; }
+
+.breadcrumb-search {
+  position: relative;
+}
+
+app-search {
+  position: absolute;
+
+  right: 40px;
+  top: 3px;
+}

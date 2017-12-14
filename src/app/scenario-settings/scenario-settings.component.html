@@ -1,33 +1,36 @@
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-  <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.code]">{{project.code}}. {{project.name}}</a></li>
-  <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
-    <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
-  </li>
-  <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">{{scenario.code}}. {{scenario.name}}</a></li>
-  <li class="breadcrumb-item active">Settings</li>
-</ol>
+<div class="breadcrumb-search">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
+    <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.code]">{{project.code}}. {{project.name}}</a></li>
+    <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
+      <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
+    </li>
+    <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">{{scenario.code}}. {{scenario.name}}</a></li>
+    <li class="breadcrumb-item active">{{'Settings' | translate}}</li>
+  </ol>
+  <app-search [projectId]="scenario?.projectId"></app-search>
+</div>
 
 <div *ngIf="scenario">
-  <button style="margin: 15px;" class="btn btn-success" (click)="save()">Save scenario settings</button>
+  <button style="margin: 15px;" class="btn btn-success" (click)="save()">{{'Save scenario settings' | translate}}</button>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-3">
-        <label>Name</label>
+        <label>{{'Name' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <input class="form-control" title="Scenario name" [(ngModel)]="scenario.name"/>
+        <input class="form-control" title="{{'Scenario name' | translate}}" [(ngModel)]="scenario.name"/>
       </div>
     </div>
 
     <!--div class="row">
       <div class="col-sm-3">
-        <label>Scenario group</label>
+        <label>{{'Scenario group' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="Scenario group" *ngIf="project" [(ngModel)]="scenario.scenarioGroup">
-          <option [ngValue]="null">[no group]</option>
+        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [(ngModel)]="scenario.scenarioGroup">
+          <option [ngValue]="null">{{'[no group]' | translate}}</option>
           <option *ngFor="let scenarioGroup of scenarioGroupList" [ngValue]="scenarioGroup">{{scenarioGroup}}</option>
         </select>
       </div>
@@ -35,7 +38,7 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>Before scenario ignore</label>
+        <label>{{'Before scenario ignore' | translate}}</label>
       </div>
       <div class="col-sm-9">
         <input type="checkbox" title="" [(ngModel)]="scenario.beforeScenarioIgnore"/>
@@ -44,7 +47,7 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>After scenario ignore</label>
+        <label>{{'After scenario ignore' | translate}}</label>
       </div>
       <div class="col-sm-9">
           <input type="checkbox" title="" [(ngModel)]="scenario.afterScenarioIgnore"/>

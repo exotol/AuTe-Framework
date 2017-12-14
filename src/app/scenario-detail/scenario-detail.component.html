@@ -1,33 +1,36 @@
 <div>
-  <ol class="breadcrumb" *ngIf="scenario">
-    <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
-    <li class="breadcrumb-item"><a [routerLink]="['/project', scenario.projectCode]">{{scenario.projectCode}}. {{scenario.projectName}}</a></li>
-    <li class="breadcrumb-item" *ngIf="scenario.scenarioGroup">
-      <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
-    </li>
-    <li class="breadcrumb-item active">{{scenario.code}}. {{scenario.name}}</li>
-  </ol>
+  <div class="breadcrumb-search">
+    <ol class="breadcrumb" *ngIf="scenario">
+      <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="['/project', scenario.projectCode]">{{scenario.projectCode}}. {{scenario.projectName}}</a></li>
+      <li class="breadcrumb-item" *ngIf="scenario.scenarioGroup">
+        <a [routerLink]="['/project', scenario.projectCode]" [queryParams]="{scenarioGroup: scenario.scenarioGroup}">{{scenario.scenarioGroup}}</a>
+      </li>
+      <li class="breadcrumb-item active">{{scenario.code}}. {{scenario.name}}</li>
+    </ol>
+    <app-search [projectId]="scenario?.projectId"></app-search>
+  </div>
 
   <div *ngIf="scenario">
     <div style="margin-bottom: 10px;">
       <h3>{{scenario.name}}</h3>
-      <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']">Settings</a>
+      <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']">{{'Settings' | translate}}</a>
     </div>
-    <app-scenario-list-item [scenario]="scenario" [projectCode]="projectCode"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="projectCode" [isLinkTitleScenario]="false"></app-scenario-list-item>
   </div>
   <hr/>
   <div class="help-block" *ngIf="!stepList">
     <span class="glyphicon glyphicon-time"></span>
-    Loading...
+    {{'Loading' | translate}}
   </div>
   <div *ngIf="scenario && stepList">
     <div class="container-fluid" style="margin-bottom: 20px;">
-      <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
+      <button class="btn btn-success" (click)="saveSteps()">{{'Save steps' | translate}}</button>
     </div>
 
     <div *ngFor="let step of stepList">
       <div style="margin-bottom: 15px;" class="col-sm-offset-11 col-sm-1 text-right">
-        <button style="white-space: normal;" class="btn btn-xs btn-block btn-default" (click)="addStepBefore(step)"><span class="glyphicon glyphicon-hand-left"></span> Insert step</button>
+        <button style="white-space: normal;" class="btn btn-xs btn-block btn-default" (click)="addStepBefore(step)"><span class="glyphicon glyphicon-hand-left"></span> {{'Insert step' | translate}}</button>
       </div>
       <app-step-item
         [step]="step"
@@ -40,10 +43,10 @@
     </div>
 
     <div class="container-fluid" style="margin-bottom: 20px;">
-      <button class="btn btn-default" (click)="addStep()"><span class="glyphicon glyphicon-plus"></span> Add step</button>
+      <button class="btn btn-default" (click)="addStep()"><span class="glyphicon glyphicon-plus"></span> {{'Add step' | translate}}</button>
     </div>
     <div class="container-fluid" style="margin-bottom: 20px;">
-      <button class="btn btn-success" (click)="saveSteps()">Save steps</button>
+      <button class="btn btn-success" (click)="saveSteps()">{{'Save steps' | translate}}</button>
     </div>
   </div>
 </div>

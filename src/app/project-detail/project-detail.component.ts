@@ -12,7 +12,7 @@ import {CustomToastyService} from '../service/custom-toasty.service';
 @Component({
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
-  styles: ['input.select-all { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
+  styleUrls: ['project-detail.component.css']
 })
 export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 

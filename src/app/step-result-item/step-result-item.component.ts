@@ -28,7 +28,7 @@ export class StepResultItemComponent implements OnInit {
     private route: ActivatedRoute,
     private stepService: StepService,
     private customToastyService: CustomToastyService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe((params: ParamMap) => {

@@ -144,6 +144,9 @@ export class StepItemComponent implements OnInit {
   }
 
   addFormData() {
+    if (!this.step.formDataList) {
+      this.step.formDataList = [];
+    }
     this.step.formDataList.push(new FormData());
   }
 }
