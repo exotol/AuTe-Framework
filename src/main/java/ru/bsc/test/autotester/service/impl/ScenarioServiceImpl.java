@@ -46,7 +46,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ScenarioRepository scenarioRepository;
     private final ProjectService projectService;
 
-    @Value("${projects.path:}")
+    @Value("${projects.directory.path:}")
     private String projectsPath;
 
     @Autowired
@@ -58,6 +58,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
+        atExecutor.setProjectPath(projectsPath + "/" + project.getProjectCode() + "/");
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
             map.forEach((scenario, stepResults) -> {
@@ -154,7 +155,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     public List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo) {
         List<Scenario> scenarios = new ArrayList<>();
         if (!StringUtils.isEmpty(projectSearchRo.getRelativeUrl())) {
-            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectCode, "%" + projectSearchRo.getRelativeUrl() + "%"));
+            scenarios = new ArrayList<>(scenarioRepository.findByRelativeUrl(projectCode, projectSearchRo.getRelativeUrl()));
         }
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarios);
     }
