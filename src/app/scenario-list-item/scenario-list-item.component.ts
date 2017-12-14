@@ -6,7 +6,7 @@ import {StepResult} from '../model/step-result';
 @Component({
   selector: 'app-scenario-list-item',
   templateUrl: './scenario-list-item.component.html',
-  styles: [' input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
+  styleUrls: ['./scenario-list-item.component.css']
 })
 export class ScenarioListItemComponent implements OnInit {
 
@@ -38,6 +38,7 @@ export class ScenarioListItemComponent implements OnInit {
       this.scenarioService.run(this.scenario)
         .subscribe(stepResultList => {
           this.stepResultList = stepResultList;
+          console.log(this.stepResultList);
           this.state = 'finished';
           this.stateChanged();
           this.scenario.failed = stepResultList.filter(result => result.result === 'Fail').length > 0;

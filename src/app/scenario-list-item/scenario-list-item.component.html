@@ -1,4 +1,4 @@
-<div class="container-fluid" *ngIf="scenario">
+<div class="container-fluid" *ngIf="scenario" [ngClass] = "{'failedScenario': scenario.failed, 'passedScenario': (scenario.failed == false)}">
   <div class="row">
     <div class="col-sm-5">
       <label>
