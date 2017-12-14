@@ -1,33 +1,33 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+  <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
   <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
   <li class="breadcrumb-item" *ngIf="scenario && scenario.scenarioGroup && project">
     <a [routerLink]="['/project', scenario.projectId]" [queryParams]="{scenarioGroupId: scenario.scenarioGroup.id}">{{scenario.scenarioGroup.name}}</a>
   </li>
   <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/scenario', scenario.id]">{{scenario.id}}. {{scenario.name}}</a></li>
-  <li class="breadcrumb-item active">Settings</li>
+  <li class="breadcrumb-item active">{{'Settings' | translate}}</li>
 </ol>
 
 <div *ngIf="scenario">
-  <button style="margin: 15px;" class="btn btn-success" (click)="save()">Save scenario settings</button>
+  <button style="margin: 15px;" class="btn btn-success" (click)="save()">{{'Save scenario settings' | translate}}</button>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-3">
-        <label>Name</label>
+        <label>{{'Name' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <input class="form-control" title="Scenario name" [(ngModel)]="scenario.name"/>
+        <input class="form-control" title="{{'Scenario name' | translate}}" [(ngModel)]="scenario.name"/>
       </div>
     </div>
 
     <div class="row">
       <div class="col-sm-3">
-        <label>Scenario group</label>
+        <label>{{'Scenario group' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="Scenario group" *ngIf="project" [compareWith]="ScenarioSettingsComponent.scenarioGroupCompareFn" [(ngModel)]="scenario.scenarioGroup">
-          <option [ngValue]="null">[no group]</option>
+        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [compareWith]="ScenarioSettingsComponent.scenarioGroupCompareFn" [(ngModel)]="scenario.scenarioGroup">
+          <option [ngValue]="null">{{'[no group]' | translate}}</option>
           <option *ngFor="let scenarioGroup of project.scenarioGroups" [ngValue]="scenarioGroup">{{scenarioGroup.name}}</option>
         </select>
       </div>
@@ -35,11 +35,11 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>Before scenario</label>
+        <label>{{'Before scenario' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="Before scenario" [(ngModel)]="scenario.beforeScenarioId">
-          <option [ngValue]="null">[default from project]</option>
+        <select class="form-control" title="{{'Before scenario' | translate}}" [(ngModel)]="scenario.beforeScenarioId">
+          <option [ngValue]="null">{{'[default from project]' | translate}}</option>
           <option *ngFor="let scenarioItem of scenarioList" [ngValue]="scenarioItem.id">{{scenarioItem.name}}</option>
         </select>
       </div>
@@ -47,7 +47,7 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>Before scenario ignore</label>
+        <label>{{'Before scenario ignore' | translate}}</label>
       </div>
       <div class="col-sm-9">
         <input type="checkbox" title="" [(ngModel)]="scenario.beforeScenarioIgnore"/>
@@ -56,11 +56,11 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>After scenario</label>
+        <label>{{'After scenario' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="After scenario" [(ngModel)]="scenario.afterScenarioId">
-          <option [ngValue]="null">[default from project]</option>
+        <select class="form-control" title="{{'After scenario' | translate}}" [(ngModel)]="scenario.afterScenarioId">
+          <option [ngValue]="null">{{'[default from project]' | translate}}</option>
           <option *ngFor="let scenarioItem of scenarioList" [ngValue]="scenarioItem.id">{{scenarioItem.name}}</option>
         </select>
       </div>
@@ -68,7 +68,7 @@
 
     <div class="row">
       <div class="col-sm-3">
-        <label>After scenario ignore</label>
+        <label>{{'After scenario ignore' | translate}}</label>
       </div>
       <div class="col-sm-9">
           <input type="checkbox" title="" [(ngModel)]="scenario.afterScenarioIgnore"/>

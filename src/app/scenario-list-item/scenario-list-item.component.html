@@ -6,20 +6,19 @@
         {{scenario.name}}
       </label>
     </div>
-    <div class="col-sm-1"></div>
     <div class="col-sm-1">
-      <div *ngIf="state != 'executing' && scenario.failed" style="color: red">Failed</div>
+      <div *ngIf="state != 'executing' && scenario.failed" style="color: red">{{'Failed' | translate}}</div>
       <div *ngIf="state == 'executing'" style="color: gray">...</div>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">Run</button>
-      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>Executing...</button>
+      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">{{'Run' | translate}}</button>
+      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>{{'Executing' | translate}}</button>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
+      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Show results' | translate}}</button>
     </div>
-    <div class="col-sm-1">
-      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
+    <div class="col-sm-2">
+      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">{{'Edit' | translate}}</a>
     </div>
   </div>
   <div class="row" *ngIf="showResultDetails && stepResultList">
