@@ -16,7 +16,7 @@
       <h3>{{scenario.name}}</h3>
       <a [routerLink]="['/scenario/' + scenario.id + '/settings']">{{'Settings' | translate}}</a>
     </div>
-    <app-scenario-list-item [scenario]="scenario"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [isLinkTitleScenario] = "false"></app-scenario-list-item>
   </div>
   <hr/>
   <div class="help-block" *ngIf="!stepList">
