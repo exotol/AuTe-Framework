@@ -1,4 +1,4 @@
-<div class="search-block">
+<div class="search-block" *ngIf="projectId">
   <input #queryInput [formControl] ="queryField" placeholder="{{placeholderText}}"/>
   <div class="search-result" #searchResult *ngIf="scenarioList || errorFlag">
     <ol *ngIf="scenarioList">
