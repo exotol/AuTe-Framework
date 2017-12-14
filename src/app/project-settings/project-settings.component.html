@@ -1,56 +1,56 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+  <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
   <li *ngIf="project" class="breadcrumb-item"><a [routerLink]="['/project', project.id]">{{project.id}}. {{project.name}}</a></li>
-  <li class="breadcrumb-item active">Settings</li>
+  <li class="breadcrumb-item active">{{'Settings' | translate}}</li>
 </ol>
 
 <div class="container-fluid" *ngIf="project">
   <h3>{{project.name}}</h3>
-  <button class="btn btn-success" style="margin-bottom: 15px;" (click)="save()">Save project settings</button>
+  <button class="btn btn-success" style="margin-bottom: 15px;" (click)="save()">{{'Save project settings' | translate}}</button>
   <div>
     <ul class="nav nav-tabs">
-      <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">Details</a></li>
-      <li [class.active]="tab == 'groups'"><a href="#" (click)="selectTab('groups')">Scenario groups</a></li>
-      <li [class.active]="tab == 'stands'"><a href="#" (click)="selectTab('stands')">Stands</a></li>
-      <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
+      <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
+      <li [class.active]="tab == 'groups'"><a href="#" (click)="selectTab('groups')">{{'Scenario groups' | translate}}</a></li>
+      <li [class.active]="tab == 'stands'"><a href="#" (click)="selectTab('stands')">{{'Stands' | translate}}</a></li>
+      <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">{{'json' | translate}}</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
       <div [style.display]="tab == 'details' ? '' : 'none'">
-        <label>Project name</label>
+        <label>{{'Project name' | translate}}</label>
         <input class="form-control" title="" [(ngModel)]="project.name"/>
 
-        <label>Before scenario</label>
-        <select class="form-control" title="Before scenario" [(ngModel)]="project.beforeScenarioId">
-          <option [ngValue]="null">disabled</option>
+        <label>{{'Before scenario' | translate}}</label>
+        <select class="form-control" title="{{'Before scenario' | translate}}" [(ngModel)]="project.beforeScenarioId">
+          <option [ngValue]="null">{{'disabled' | translate}}</option>
           <option *ngFor="let scenario of scenarioList" [ngValue]="scenario.id">{{scenario.name}}</option>
         </select>
 
-        <label>After scenario</label>
-        <select class="form-control" title="Before scenario" [(ngModel)]="project.afterScenarioId">
-          <option [ngValue]="null">disabled</option>
+        <label>{{'After scenario' | translate}}</label>
+        <select class="form-control" title="{{'After scenario' | translate}}" [(ngModel)]="project.afterScenarioId">
+          <option [ngValue]="null">{{'disabled' | translate}}</option>
           <option *ngFor="let scenario of scenarioList" [ngValue]="scenario.id">{{scenario.name}}</option>
         </select>
 
-        <label>Project code</label>
+        <label>{{'Project code' | translate}}</label>
         <input class="form-control" title="" [(ngModel)]="project.projectCode"/>
 
         <hr/>
         <label style="margin-top: 8px;">
           <input type="checkbox" style="height: 25px;" title="" [(ngModel)]="project.useRandomTestId"/>
-          Use random testId
+          {{'Use random testId' | translate}}
         </label>
         <div class="clearfix"></div>
 
-        <label>testId header name</label>
+        <label>{{'testId header name' | translate}}</label>
         <input class="form-control" title="" [(ngModel)]="project.testIdHeaderName"/>
 
         <hr/>
-        <label>AMQP broker</label>
+        <label>{{'AMQP broker' | translate}}</label>
         <div *ngIf="project.amqpBroker">
-          <label>Broker type</label>
+          <label>{{'Broker type' | translate}}</label>
           <div class="input-group-btn">
-            <select class="form-control" title="AMQP broker type" [(ngModel)]="project.amqpBroker.mqService">
-              <option [ngValue]="null"></option>
+            <select class="form-control" title="{{'Broker type' | translate}}" [(ngModel)]="project.amqpBroker.mqService">
+              <option [ngValue]="null">{{'disabled' | translate}}</option>
               <option [ngValue]="'ACTIVE_MQ'">Active MQ</option>
               <option [ngValue]="'RABBIT_MQ'">Rabbit MQ</option>
             </select>
@@ -62,65 +62,65 @@
           <label>Port</label>
           <input class="form-control" title="" [(ngModel)]="project.amqpBroker.port"/>
 
-          <label>Username</label>
+          <label>{{'Username' | translate}}</label>
           <input class="form-control" title="" [(ngModel)]="project.amqpBroker.username"/>
 
-          <label>Password</label>
+          <label>{{'Password' | translate}}</label>
           <input class="form-control" title="" [(ngModel)]="project.amqpBroker.password"/>
 
-          <button class="btn btn-default" (click)="removeAmqpBroker()"><span class="glyphicon glyphicon-minus"></span> Remove broker</button>
+          <button class="btn btn-default" (click)="removeAmqpBroker()"><span class="glyphicon glyphicon-minus"></span>{{'Remove broker' | translate}}</button>
         </div>
         <div *ngIf="!project.amqpBroker">
-          <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span> Add broker</button>
+          <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span>{{'Add broker' | translate}}</button>
         </div>
       </div>
       <div [style.display]="tab == 'groups' ? '' : 'none'">
         <div *ngFor="let scenarioGroup of project.scenarioGroups">
-          <label>Group name</label>
+          <label>{{'Group name' | translate}}</label>
           <div class="input-group">
             <input class="form-control" title="" [(ngModel)]="scenarioGroup.name"/>
             <span class="input-group-btn">
-              <button class="btn btn-default" (click)="removeScenarioGroup(scenarioGroup)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+              <button class="btn btn-default" (click)="removeScenarioGroup(scenarioGroup)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
             </span>
           </div>
         </div>
-        <button class="btn btn-default" style="margin-top: 7px;" (click)="addScenarioGroup()"><span class="glyphicon glyphicon-plus"></span> Add scenario group</button>
+        <button class="btn btn-default" style="margin-top: 7px;" (click)="addScenarioGroup()"><span class="glyphicon glyphicon-plus"></span>{{'Add scenario group' | translate}}</button>
       </div>
       <div [style.display]="tab == 'stands' ? '' : 'none'">
         <div style="border: none;" class="list-group-item" *ngFor="let stand of project.standList">
           <div class="row">
             <div class="col-sm-12">
-              <label>Service URL</label>
+              <label>{{'Service URL' | translate}}</label>
               <div class="input-group">
-                <input placeholder="Service URL" class="form-control" title="" [(ngModel)]="stand.serviceUrl"/>
+                <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.serviceUrl"/>
                 <span class="input-group-btn">
-                  <button class="btn btn-default" *ngIf="project.stand && stand.id && project.stand.id != stand.id" (click)="selectAsDefaultStand(stand)">Set as default</button>
-                  <button class="btn btn-primary" *ngIf="!(project.stand && project.stand.id != stand.id)" disabled>Used by default</button>
+                  <button class="btn btn-default" *ngIf="project.stand && stand.id && project.stand.id != stand.id" (click)="selectAsDefaultStand(stand)">{{'Set as default' | translate}}</button>
+                  <button class="btn btn-primary" *ngIf="!(project.stand && project.stand.id != stand.id)" disabled>{{'Used by default' | translate}}</button>
 
-                  <button class="btn" (click)="removeStand(stand)"><span class="glyphicon glyphicon-minus"></span> Remove</button>
+                  <button class="btn" (click)="removeStand(stand)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
                 </span>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-4">
-              <input placeholder="Data base URL" class="form-control" title="" [(ngModel)]="stand.dbUrl"/>
+              <input placeholder="{{'Data base URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUrl"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="Data base User" class="form-control" title="" [(ngModel)]="stand.dbUser"/>
+              <input placeholder="{{'Data base User' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUser"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="Data base Password" type="password" class="form-control" title="" [(ngModel)]="stand.dbPassword"/>
+              <input placeholder="{{'Data base Password' | translate}}" type="password" class="form-control" title="" [(ngModel)]="stand.dbPassword"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <input placeholder="WireMock URL" class="form-control" title="" [(ngModel)]="stand.wireMockUrl"/>
+              <input placeholder="{{'WireMock URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.wireMockUrl"/>
             </div>
           </div>
         </div>
         <div style="border: none;" class="list-group-item">
-          <button class="btn btn-default" (click)="addStand()"><span class="glyphicon glyphicon-plus"></span> Add stand</button>
+          <button class="btn btn-default" (click)="addStand()"><span class="glyphicon glyphicon-plus"></span>{{'Add stand' | translate}}</button>
         </div>
       </div>
       <div [style.display]="tab == 'json' ? '' : 'none'">

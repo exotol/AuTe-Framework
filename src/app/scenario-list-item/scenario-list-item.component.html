@@ -1,25 +1,23 @@
 <div class="container-fluid" *ngIf="scenario" [ngClass] = "{'failedScenario': scenario.failed, 'passedScenario': (scenario.failed == false)}">
   <div class="row">
-    <div class="col-sm-5">
+    <div class="col-sm-6">
       <label>
         <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" />
-        {{scenario.name}}
+        <a [routerLink]="['/scenario', scenario.id]" *ngIf="isLinkTitleScenario">{{scenario.name}}</a>
+        <span *ngIf="!isLinkTitleScenario">{{scenario.name}}</span>
       </label>
     </div>
     <div class="col-sm-1"></div>
     <div class="col-sm-1">
-      <div *ngIf="state != 'executing' && scenario.failed" style="color: red">Failed</div>
+      <div *ngIf="state != 'executing' && scenario.failed" style="color: red">{{'Failed' | translate}}</div>
       <div *ngIf="state == 'executing'" style="color: gray">...</div>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">Run</button>
-      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>Executing...</button>
+      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">{{'Run' | translate}}</button>
+      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>{{'Executing' | translate}}</button>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
-    </div>
-    <div class="col-sm-1">
-      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
+      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Show results' | translate}}</button>
     </div>
   </div>
   <div class="row" *ngIf="showResultDetails && stepResultList">
