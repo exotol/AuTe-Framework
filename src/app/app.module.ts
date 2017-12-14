@@ -57,7 +57,6 @@ const routes: Routes = [
     ScenarioSettingsComponent,
     DiffComponent,
     SyncScrollDirective,
-    ScenarioSettingsComponent,
     SearchComponent
   ],
   imports: [
