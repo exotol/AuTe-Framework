@@ -35,7 +35,6 @@ export class ScenarioListItemComponent implements OnInit {
   runScenario() {
     if (this.state !== 'executing') {
       this.state = 'executing';
-      this.scenario.failed = null;
       this.stateChanged();
       this.scenarioService.run(this.scenario)
         .subscribe(stepResultList => {
@@ -49,5 +48,12 @@ export class ScenarioListItemComponent implements OnInit {
 
   resultDetailsToggle() {
     this.showResultDetails = !this.showResultDetails;
+  }
+
+  getMapStyleForScenario() {
+    return {
+      'failedScenario': this.scenario.failed && this.state !== 'executing',
+      'passedScenario': (this.scenario.failed === false && this.state !== 'executing')
+    }
   }
 }

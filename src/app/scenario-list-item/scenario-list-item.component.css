@@ -17,3 +17,9 @@ input[type=checkbox] {
   padding-top: 7px;
   padding-bottom: 25px;
 }
+
+.row.result {
+  background: #fff;
+  margin: 10px;
+  padding: 10px 0;
+}
