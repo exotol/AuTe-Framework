@@ -112,5 +112,8 @@
   "Waiting for json element exists. Example": "Waiting for json element exists. Example",
   "Check saved values": "Check saved values",
   "Checked value": "Checked value",
-  "Add": "Add"
+  "Add": "Add",
+  "Actual": "Actual",
+  "Expected": "Expected",
+  "Synchronize scrolling": "Synchronize scrolling"
 }

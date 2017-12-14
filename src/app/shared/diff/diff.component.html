@@ -1,5 +1,5 @@
 <div class="col-sm-6">
-  <label>Actual</label>
+  <label>{{'Actual' | translate}}</label>
   <div class="form-control"
        #actual
        [appSyncScroll]="syncScroll && expected">
@@ -18,7 +18,7 @@
 </div>
 
 <div class="col-sm-6">
-  <label>Expected</label>
+  <label>{{'Expected' | translate}}</label>
   <div class="form-control"
        #expected
        [appSyncScroll]="syncScroll && actual">
@@ -38,6 +38,6 @@
 
 <div class="col-sm-12">
   <label>
-    <input type="checkbox" [(ngModel)]="syncScroll"> Synchronize scrolling
+    <input type="checkbox" [(ngModel)]="syncScroll"> {{'Synchronize scrolling' | translate}}
   </label>
 </div>

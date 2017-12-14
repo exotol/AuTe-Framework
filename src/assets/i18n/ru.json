@@ -7,7 +7,7 @@
   "Download selected scenarios as YAML": "Скачать выбранные сценарии в формате YAML",
   "Loading": "Загрузка...",
   "Create": "Создать",
-  "Create new scenario": "Create new сценарий",
+  "Create new scenario": "Создать сценарий",
   "All": "Все",
   "Scenario name": "Название сценария",
   "Sort": "Сортировать",
@@ -55,9 +55,9 @@
   "[no group]": "[нет группы]",
   "Before scenario": "Перед сценарием",
   "[default from project]": "[по умолчанию из проекта]",
-  "Before scenario ignore": "Before scenario ignore",
+  "Before scenario ignore": "Игнорировать перед сценарием",
   "After scenario": "После сценария",
-  "After scenario ignore": "After scenario ignore",
+  "After scenario ignore": "Игнорировать после сценария",
   "Summary": "Сводка",
   "Details": "Детали",
   "Edit step": "Редактировать шаг",
@@ -112,5 +112,8 @@
   "Waiting for json element exists. Example": "Waiting for json element exists. Example",
   "Check saved values": "Проверить сохраненные значения",
   "Checked value": "Сохраненные значения",
-  "Add": "Добавить"
+  "Add": "Добавить",
+  "Actual": "Фактический",
+  "Expected": "Ожидаемый",
+  "Synchronize scrolling": "Синхронизировать прокрутку"
 }
