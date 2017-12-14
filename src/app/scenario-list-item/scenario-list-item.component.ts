@@ -50,10 +50,11 @@ export class ScenarioListItemComponent implements OnInit {
     this.showResultDetails = !this.showResultDetails;
   }
 
-  getMapStyleForScenario() {
-    return {
-      'failedScenario': this.scenario.failed && this.state !== 'executing',
-      'passedScenario': (this.scenario.failed === false && this.state !== 'executing')
+  getMapStyleForScenario(): string {
+    if (this.state !== 'executing') {
+      if (this.scenario.failed) { return 'failedScenario'; }
+      if (this.scenario.failed === false) { return 'passedScenario'; }
     }
+    return '';
   }
 }
