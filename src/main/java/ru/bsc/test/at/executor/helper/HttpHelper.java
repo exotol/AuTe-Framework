@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -113,13 +114,19 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formData, String projectPath) throws URISyntaxException, UnsupportedEncodingException {
+    private MultipartEntityBuilder setEntity(List<FormData> formData, String projectPath) throws URISyntaxException, IOException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData data : formData) {
             if (data.getFieldType() == null || FieldType.TEXT.equals(data.getFieldType())) {
                 entity.addTextBody(data.getFieldName(), data.getValue(), ContentType.TEXT_PLAIN);
             } else {
-                entity.addBinaryBody(data.getFieldName(), new File((projectPath == null ? "" : projectPath) + data.getFilePath()));
+                File file = new File((projectPath == null ? "" : projectPath) + data.getFilePath());
+                entity.addBinaryBody(
+                        data.getFieldName(),
+                        file,
+                        ContentType.parse(Files.probeContentType(file.toPath())),
+                        file.getName()
+                );
             }
         }
         return entity;
