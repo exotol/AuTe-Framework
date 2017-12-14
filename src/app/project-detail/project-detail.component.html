@@ -1,8 +1,11 @@
 <ng-container *ngIf="project">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
-    <li class="breadcrumb-item active">{{project.id}}. {{project.name}}</li>
-  </ol>
+  <div class="breadcrumb-search">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="'/'">Projects</a></li>
+      <li class="breadcrumb-item active">{{project.id}}. {{project.name}}</li>
+    </ol>
+    <app-search [projectId]="project.id"></app-search>
+  </div>
 
   <h4>{{project.name}}</h4>
   <a [routerLink]="['/project/' + project.id + '/settings']">{{'Settings' | translate}}</a>
