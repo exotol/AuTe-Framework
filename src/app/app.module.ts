@@ -15,7 +15,7 @@ import {ScenarioService} from './service/scenario.service';
 import {StepService} from './service/step.service';
 import { StepResultItemComponent } from './step-result-item/step-result-item.component';
 import { StepItemComponent } from './step-item/step-item.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MockServiceResponseComponent } from './mock-service-response/mock-service-response.component';
 import { StepParameterSetComponent } from './step-parameter-set/step-parameter-set.component';
 import {Globals} from './globals';
@@ -23,7 +23,10 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ScenarioSettingsComponent } from './scenario-settings/scenario-settings.component';
 import {VersionService} from './service/version.service';
 import {CustomToastyService} from './service/custom-toasty.service';
+import { SearchComponent } from './search-scenario/search-scenario.component';
+import {SearchScenarioService} from './service/search-scenario.service';
 import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
+
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
@@ -48,15 +51,18 @@ const routes: Routes = [
     ScenarioSettingsComponent,
     DiffComponent,
     SyncScrollDirective
+    ScenarioSettingsComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
     RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot(),
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals],
+  providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals, SearchScenarioService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

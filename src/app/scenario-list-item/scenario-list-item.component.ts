@@ -36,7 +36,12 @@ export class ScenarioListItemComponent implements OnInit {
       this.state = 'executing';
       this.stateChanged();
       this.scenarioService.run(this.scenario)
-        .subscribe(value => { this.stepResultList = value; this.state = 'finished'; this.stateChanged(); });
+        .subscribe(stepResultList => {
+          this.stepResultList = stepResultList;
+          this.state = 'finished';
+          this.stateChanged();
+          this.scenario.failed = stepResultList.filter(result => result.result === 'Fail').length > 0;
+        });
     }
   }
 

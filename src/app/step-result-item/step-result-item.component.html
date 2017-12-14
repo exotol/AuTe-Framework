@@ -4,9 +4,9 @@
     <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result != 'OK'"></span>
     {{stepResult.result}}
   </div>
-  <div style="color: gray;" class="col-sm-11">{{stepResult.step.stepComment}} {{stepResult.description}}</div>
+  <div class="col-sm-11">{{stepResult.step.stepComment}} {{stepResult.description}}</div>
   <div class="clearfix"></div>
-  <div class="col-sm-11 col-sm-offset-1">
+  <div style="color: gray;" class="col-sm-11 col-sm-offset-1">
     {{stepResult.step.requestMethod}}
     {{stepResult.requestUrl}}
   </div>
