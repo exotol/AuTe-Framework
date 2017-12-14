@@ -7,12 +7,13 @@ export class TextSelectDirective implements AfterViewInit {
   content: string;
 
   @HostListener('keydown', ['$event']) disableKeydown(e) {
-    if (!e.ctrlKey) {
+    if (!e.ctrlKey || 'xv'.includes(e.key)) {
       e.preventDefault();
     }
   }
 
   @HostListener('input') disableInput() {
+    console.log(123);
     this.ref.nativeElement.innerHTML = this.content;
   }
 
