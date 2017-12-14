@@ -39,6 +39,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -226,6 +227,9 @@ public class AtExecutor {
                         project.getTestIdHeaderName(),
                         testId);
             } else {
+                if (step.getFormDataList() == null) {
+                    step.setFormDataList(Collections.emptyList());
+                }
                 stepResult.setRequestBody(
                         step.getFormDataList()
                                 .stream()
