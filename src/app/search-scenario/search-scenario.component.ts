@@ -15,7 +15,7 @@ export class SearchComponent implements OnInit {
   errorFlag: boolean;
   scenarioList: Scenario[];
   queryField: FormControl;
-  @Input() projectId;
+  @Input() projectCode;
   @ViewChild('searchResult') searchResult: ElementRef;
   @ViewChild('queryInput') queryInput: ElementRef;
 
@@ -43,7 +43,7 @@ export class SearchComponent implements OnInit {
 
   search(query) {
     this.errorFlag = false;
-    this.searchScenarioService.searchByMethod(this.projectId, query)
+    this.searchScenarioService.searchByMethod(this.projectCode, query)
       .subscribe(
         (result) => {
                             if (!result.length) {

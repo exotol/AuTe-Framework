@@ -15,8 +15,8 @@ export class SearchScenarioService {
     private http: Http
   ) { }
 
-  searchByMethod(projectId: number, queryString: string): Observable<Scenario[]> {
-    const url = this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectId + '/search ';
+  searchByMethod(projectCode: number, queryString: string): Observable<Scenario[]> {
+    const url = this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/search ';
 
     return this.http.post(url, {'relativeUrl': queryString},
       {headers: this.headers})

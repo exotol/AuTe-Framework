@@ -4,7 +4,7 @@
       <li class="breadcrumb-item"><a [routerLink]="'/'">{{'Projects' | translate}}</a></li>
       <li class="breadcrumb-item active">{{project.code}}. {{project.name}}</li>
     </ol>
-    <app-search [projectId]="project.id"></app-search>
+    <app-search [projectCode]="project.code"></app-search>
   </div>
 
   <h4>{{project.name}}</h4>

@@ -21,13 +21,13 @@
 <div class="container">
   <div class="panel panel-default">
     <div class="panel-body">
-      <a (click)="displayImportProjectForm = !displayImportProjectForm" href="#">Import project from YAML</a>
+      <a (click)="displayImportProjectForm = !displayImportProjectForm" href="#">{{ "Import project from YAML" | translate }}</a>
       <div *ngIf="displayImportProjectForm">
         <label>New project code:</label>
         <input class="form-control" placeholder="EXAMPLE_CODE" title="Project code" [(ngModel)]="importProject.projectCode" />
         <label>YAML:</label>
         <textarea rows="15" class="form-control" title="YAML content" [(ngModel)]="importProject.yamlContent"></textarea>
-        <button style="margin-top: 7px;" class="btn btn-default" (click)="doImport()">Import project from YAML</button>
+        <button style="margin-top: 7px;" class="btn btn-default" (click)="doImport()">{{ "Import project from YAML" | translate }}</button>
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@
     <li *ngIf="scenario" class="breadcrumb-item"><a [routerLink]="['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">{{scenario.code}}. {{scenario.name}}</a></li>
     <li class="breadcrumb-item active">{{'Settings' | translate}}</li>
   </ol>
-  <app-search [projectId]="scenario?.projectId"></app-search>
+  <app-search [projectCode]="projectCode"></app-search>
 </div>
 
 <div *ngIf="scenario">

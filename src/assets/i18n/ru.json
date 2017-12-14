@@ -53,13 +53,10 @@
   "Name": "Название",
   "Scenario group": "Группа сценариев",
   "[no group]": "[нет группы]",
-  "Before scenario": "Перед сценарием",
   "[default from project]": "[по умолчанию из проекта]",
   "Before scenario ignore": "Игнорировать перед сценарием",
-  "After scenario": "После сценария",
   "After scenario ignore": "Игнорировать после сценария",
   "Summary": "Сводка",
-  "Details": "Детали",
   "Edit step": "Редактировать шаг",
   "Polling retry count": "Количество попыток опроса",
   "Saved parameters": "Сохраненные параметры",
@@ -115,5 +112,6 @@
   "Add": "Добавить",
   "Actual": "Фактический",
   "Expected": "Ожидаемый",
-  "Synchronize scrolling": "Синхронизировать прокрутку"
+  "Synchronize scrolling": "Синхронизировать прокрутку",
+  "Import project from YAML": "Импортировать проект из YAML"
 }
