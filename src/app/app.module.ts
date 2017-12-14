@@ -9,6 +9,7 @@ import {RouterModule, Routes} from '@angular/router';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ScenarioDetailComponent } from './scenario-detail/scenario-detail.component';
+import {DiffComponent} from './shared/diff/diff.component';
 import {ProjectService} from './service/project.service';
 import {Http, HttpModule} from '@angular/http';
 import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
@@ -26,6 +27,8 @@ import {VersionService} from './service/version.service';
 import {CustomToastyService} from './service/custom-toasty.service';
 import { SearchComponent } from './search-scenario/search-scenario.component';
 import {SearchScenarioService} from './service/search-scenario.service';
+import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
+
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http);
@@ -51,6 +54,9 @@ const routes: Routes = [
     MockServiceResponseComponent,
     StepParameterSetComponent,
     ProjectSettingsComponent,
+    ScenarioSettingsComponent,
+    DiffComponent,
+    SyncScrollDirective
     ScenarioSettingsComponent,
     SearchComponent
   ],
