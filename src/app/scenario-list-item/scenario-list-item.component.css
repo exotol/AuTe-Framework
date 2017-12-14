@@ -6,11 +6,11 @@ input[type=checkbox] {
 }
 
 .failedScenario {
-  background: rgba(255, 45, 39, 0.5);
+  background: rgba(247, 186, 163, 0.5);
 }
 
 .passedScenario {
-  background: rgba(101, 224, 101, 0.5);
+  background: rgba(181, 241, 181, 0.5);
 }
 
 .container-fluid {
