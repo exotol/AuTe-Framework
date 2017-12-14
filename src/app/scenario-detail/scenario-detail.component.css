@@ -1,0 +1,10 @@
+.breadcrumb-search {
+  position: relative;
+}
+
+app-search {
+  position: absolute;
+
+  right: 40px;
+  top: 3px;
+}

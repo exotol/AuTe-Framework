@@ -9,7 +9,8 @@ import {CustomToastyService} from '../service/custom-toasty.service';
 
 @Component({
   selector: 'app-scenario-detail',
-  templateUrl: './scenario-detail.component.html'
+  templateUrl: './scenario-detail.component.html',
+  styleUrls: ['./scenario-detail.component.css']
 })
 export class ScenarioDetailComponent implements OnInit {
 
