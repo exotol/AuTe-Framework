@@ -1,9 +1,10 @@
 <div class="container-fluid" *ngIf="scenario">
   <div class="row">
-    <div class="col-sm-5">
+    <div class="col-sm-6">
       <label>
         <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" />
-        {{scenario.name}}
+        <a [routerLink]="['/scenario', scenario.id]" *ngIf="isLinkTitleScenario">{{scenario.name}}</a>
+        <span *ngIf="!isLinkTitleScenario">{{scenario.name}}</span>
       </label>
     </div>
     <div class="col-sm-1"></div>
@@ -17,9 +18,6 @@
     </div>
     <div class="col-sm-2">
       <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">Show results</button>
-    </div>
-    <div class="col-sm-1">
-      <a class="btn btn-default" [routerLink]="['/scenario', scenario.id]">Edit</a>
     </div>
   </div>
   <div class="row" *ngIf="showResultDetails && stepResultList">

@@ -12,6 +12,7 @@ export class ScenarioListItemComponent implements OnInit {
 
   @Input()
   scenario: Scenario;
+  @Input() isLinkTitleScenario = true;
   @Output() onStateChange = new EventEmitter<any>();
 
   stepResultList: StepResult[];
