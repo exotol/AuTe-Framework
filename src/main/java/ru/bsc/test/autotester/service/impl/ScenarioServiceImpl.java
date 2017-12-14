@@ -58,7 +58,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
-        atExecutor.setProjectPath(projectsPath + "/" + project.getProjectCode() + "/");
+        atExecutor.setProjectPath(projectsPath + "/" + project.getCode() + "/");
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
             map.forEach((scenario, stepResults) -> {

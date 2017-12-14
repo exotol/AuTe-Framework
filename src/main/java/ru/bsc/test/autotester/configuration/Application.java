@@ -50,9 +50,9 @@ public class Application {
             List<Project> projectList = projectsSource.getProjectList();
 
             projectList.forEach(project -> {
-                System.out.println("Project: [" + project.getProjectCode() + "]" + project.getName());
+                System.out.println("Project: [" + project.getCode() + "]" + project.getName());
                 AtExecutor atExecutor = new AtExecutor();
-                atExecutor.setProjectPath(prop.getProperty(PROJECTS_PATH_PROPERTY));
+                atExecutor.setProjectPath(prop.getProperty(PROJECTS_PATH_PROPERTY) + "/" + project.getCode() + "/");
                 Map<Scenario, List<StepResult>> result = atExecutor.executeScenarioList(project, project.getScenarioList());
 
                 int failedCount = result.entrySet().stream().map(scenarioListEntry -> {
@@ -61,8 +61,8 @@ public class Application {
 
                     long count = stepResultList.stream().filter(stepResult -> "Fail".equals(stepResult.getResult())).count();
                     if (count > 0) {
-                        System.out.println("Failed: Scenario [" + scenario.getId() + "]" + scenario.getName());
-                        stepResultList.forEach(stepResult -> System.out.println("\t" + stepResult.getResult() + ": Step [" + stepResult.getStep().getId() + "] " + stepResult.getRequestUrl()));
+                        System.out.println("Failed: Scenario [" + scenario.getCode() + "]" + scenario.getName());
+                        stepResultList.forEach(stepResult -> System.out.println("\t" + stepResult.getResult() + ": Step [" + stepResult.getStep().getCode() + "] " + stepResult.getRequestUrl()));
                         return 1;
                     }
                     return 0;
