@@ -56,7 +56,7 @@ const routes: Routes = [
     ProjectSettingsComponent,
     ScenarioSettingsComponent,
     DiffComponent,
-    SyncScrollDirective
+    SyncScrollDirective,
     ScenarioSettingsComponent,
     SearchComponent
   ],
