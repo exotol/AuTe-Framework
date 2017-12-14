@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -13,7 +13,7 @@ import {CustomToastyService} from '../service/custom-toasty.service';
     '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }'
   ]
 })
-export class StepResultItemComponent implements OnInit {
+export class StepResultItemComponent {
 
   @Input()
   stepResult: StepResult;
@@ -23,10 +23,7 @@ export class StepResultItemComponent implements OnInit {
   constructor(
     private stepService: StepService,
     private customToastyService: CustomToastyService
-  ) { }
-
-  ngOnInit() {
-  }
+  ) {}
 
   selectTab(tabName: string) {
     this.tab = tabName;

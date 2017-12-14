@@ -34,14 +34,10 @@
             <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.requestBody}}</div>
           </div>
           <div class="clearfix"></div>
-          <div class="col-sm-6">
-            <label>Actual</label>
-            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.actual}}</div>
-          </div>
-          <div class="col-sm-6">
-            <label>Expected</label>
-            <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.expected}}</div>
-          </div>
+          <app-diff
+            [expected]="stepResult.expected"
+            [actual]="stepResult.actual">
+          </app-diff>
           <div class="col-sm-12" style="color: gray;">
             <label>Details</label>
             <pre>{{stepResult.details}}</pre>
