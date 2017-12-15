@@ -28,7 +28,10 @@ export class ScenarioDetailComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findOne(+params.get('id')))
-      .subscribe(value => this.scenario = value);
+      .subscribe(value => this.scenario = value,
+        () => {
+          this.router.navigate(['/'], {replaceUrl: true});
+        });
 
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findScenarioSteps(+params.get('id')))
