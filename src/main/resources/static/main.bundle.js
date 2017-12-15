@@ -128,6 +128,7 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__ = __webpack_require__("../../../../../src/app/search-scenario/search-scenario.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__service_search_scenario_service__ = __webpack_require__("../../../../../src/app/service/search-scenario.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__ = __webpack_require__("../../../../../src/app/shared/directives/sync-scroll.directive.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__ = __webpack_require__("../../../../../src/app/shared/directives/text-select.directive.ts");
 /* unused harmony export HttpLoaderFactory */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -136,6 +137,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -198,7 +200,8 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */],
             __WEBPACK_IMPORTED_MODULE_10__shared_diff_diff_component__["a" /* DiffComponent */],
             __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__["a" /* SyncScrollDirective */],
-            __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__["a" /* SearchComponent */]
+            __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__["a" /* SearchComponent */],
+            __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__["a" /* TextSelectDirective */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -571,18 +574,6 @@ var ProjectDetailComponent = (function () {
         this.router.navigate([]);
         this.updateFailCountSum();
         return false;
-    };
-    /*
-    downloadSelectedAsYaml() {
-      const selectedScenarios = this.scenarioList
-        .filter(value => this.isSelectedScenario(value))
-        .map(value => value.id);
-      this.projectService.downloadYaml(this.project, selectedScenarios)
-        .subscribe(res => saveAs(res, 'PROJECT_' + this.project.code + '.yml'))
-    }
-    */
-    ProjectDetailComponent.prototype.isSelectedScenario = function (scenario) {
-        return scenario && scenario._selected && this.isDisplayScenario(scenario);
     };
     ProjectDetailComponent.prototype.isDisplayScenario = function (scenario) {
         return !this.filter ||
@@ -1632,7 +1623,7 @@ var _a, _b;
 /***/ "../../../../../src/app/shared/diff/diff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-sm-6\">\r\n  <label>{{'Actual' | translate}}</label>\r\n  <div class=\"form-control\"\r\n       #actual\r\n       [appSyncScroll]=\"syncScroll && expected\">\r\n    <div *ngFor=\"let item of actualDiff\" [class.added-row]=\"item.added\">\r\n      <ng-container *ngIf=\"item.rowDiff\">\r\n        <span\r\n          *ngFor=\"let rowItem of item.rowDiff\"\r\n          class=\"diff-content\"\r\n          [class.added]=\"rowItem.added\">{{rowItem.value}}</span>\r\n      </ng-container>\r\n      <ng-container *ngIf=\"!item.rowDiff\">\r\n        <span class=\"diff-content\" [class.added]=\"item.added\">{{item.value}}</span>\r\n      </ng-container>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div class=\"col-sm-6\">\r\n  <label>{{'Expected' | translate}}</label>\r\n  <div class=\"form-control\"\r\n       #expected\r\n       [appSyncScroll]=\"syncScroll && actual\">\r\n    <div *ngFor=\"let item of expectedDiff\" [class.removed-row]=\"item.removed\">\r\n      <ng-container *ngIf=\"item.rowDiff\">\r\n        <span\r\n          *ngFor=\"let rowItem of item.rowDiff\"\r\n          class=\"diff-content\"\r\n          [class.removed]=\"rowItem.removed\">{{rowItem.value}}</span>\r\n      </ng-container>\r\n      <ng-container *ngIf=\"!item.rowDiff\">\r\n        <span class=\"diff-content\" [class.removed]=\"item.removed\">{{item.value}}</span>\r\n      </ng-container>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div class=\"col-sm-12\">\r\n  <label>\r\n    <input type=\"checkbox\" [(ngModel)]=\"syncScroll\"> {{'Synchronize scrolling' | translate}}\r\n  </label>\r\n</div>\r\n"
+module.exports = "<div class=\"col-sm-6\">\r\n  <label>{{'Actual' | translate}}</label>\r\n  <div class=\"form-control\"\r\n       #actual\r\n       appTextSelect\r\n       [appSyncScroll]=\"syncScroll && expected\">\r\n    <div *ngFor=\"let item of actualDiff\" [class.added-row]=\"item.added\">\r\n      <ng-container *ngIf=\"item.rowDiff\">\r\n        <span\r\n          *ngFor=\"let rowItem of item.rowDiff\"\r\n          class=\"diff-content\"\r\n          [class.added]=\"rowItem.added\">{{rowItem.value}}</span>\r\n      </ng-container>\r\n      <ng-container *ngIf=\"!item.rowDiff\">\r\n        <span class=\"diff-content\" [class.added]=\"item.added\">{{item.value}}</span>\r\n      </ng-container>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div class=\"col-sm-6\">\r\n  <label>{{'Expected' | translate}}</label>\r\n  <div class=\"form-control\"\r\n       #expected\r\n       appTextSelect\r\n       [appSyncScroll]=\"syncScroll && actual\">\r\n    <div *ngFor=\"let item of expectedDiff\" [class.removed-row]=\"item.removed\">\r\n      <ng-container *ngIf=\"item.rowDiff\">\r\n        <span\r\n          *ngFor=\"let rowItem of item.rowDiff\"\r\n          class=\"diff-content\"\r\n          [class.removed]=\"rowItem.removed\">{{rowItem.value}}</span>\r\n      </ng-container>\r\n      <ng-container *ngIf=\"!item.rowDiff\">\r\n        <span class=\"diff-content\" [class.removed]=\"item.removed\">{{item.value}}</span>\r\n      </ng-container>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div class=\"col-sm-12\">\r\n  <label>\r\n    <input type=\"checkbox\" [(ngModel)]=\"syncScroll\"> {{'Synchronize scrolling' | translate}}\r\n  </label>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1803,6 +1794,73 @@ SyncScrollDirective = __decorate([
 
 var _a;
 //# sourceMappingURL=sync-scroll.directive.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/shared/directives/text-select.directive.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TextSelectDirective; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var TextSelectDirective = (function () {
+    function TextSelectDirective(ref) {
+        this.ref = ref;
+        this.ref.nativeElement.contentEditable = true;
+    }
+    TextSelectDirective.prototype.disableTextChangingEvents = function (e) {
+        if (e.ctrlKey && 'zxv'.includes(e.key) || [8, 46].includes(e.keyCode)) {
+            e.preventDefault();
+        }
+    };
+    TextSelectDirective.prototype.disableKeypress = function (e) {
+        e.preventDefault();
+    };
+    TextSelectDirective.prototype.disableInput = function (e) {
+        this.ref.nativeElement.innerHTML = this.content;
+    };
+    TextSelectDirective.prototype.ngAfterViewInit = function () {
+        this.content = this.ref.nativeElement.innerHTML;
+    };
+    return TextSelectDirective;
+}());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_7" /* HostListener */])('keydown', ['$event']),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TextSelectDirective.prototype, "disableTextChangingEvents", null);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_7" /* HostListener */])('keypress', ['$event']),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TextSelectDirective.prototype, "disableKeypress", null);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_7" /* HostListener */])('input'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TextSelectDirective.prototype, "disableInput", null);
+TextSelectDirective = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* Directive */])({
+        selector: '[appTextSelect]',
+    }),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["M" /* ElementRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["M" /* ElementRef */]) === "function" && _a || Object])
+], TextSelectDirective);
+
+var _a;
+//# sourceMappingURL=text-select.directive.js.map
 
 /***/ }),
 
