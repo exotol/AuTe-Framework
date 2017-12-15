@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -18,6 +18,7 @@ export class ScenarioDetailComponent implements OnInit {
   stepList: Step[];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private stepService: StepService,
@@ -113,6 +114,20 @@ export class ScenarioDetailComponent implements OnInit {
           clonedStep.sort = Number.isInteger(maxSort) ? maxSort + 50 : 50;
           this.stepList.push(clonedStep);
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
+        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+    }
+  }
+
+  deleteScenario() {
+    const initialRoute = this.router.url;
+    if (confirm('Confirm: Delete scenario')) {
+      const toasty = this.customToastyService.deletion('Удаление сценария...');
+      this.scenarioService.deleteOne(this.scenario)
+        .subscribe(() => {
+          if (this.router.url === initialRoute) {
+            this.router.navigate(['/project', this.scenario.projectId], {replaceUrl: true});
+          }
+          this.customToastyService.success('Удалено', 'Сценарий удалён');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
   }
