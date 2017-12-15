@@ -112,5 +112,6 @@
   "Add": "Добавить",
   "Actual": "Фактический",
   "Expected": "Ожидаемый",
-  "Synchronize scrolling": "Синхронизировать прокрутку"
+  "Synchronize scrolling": "Синхронизировать прокрутку",
+  "MIME type": "Тип MIME"
 }
