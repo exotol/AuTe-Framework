@@ -8,10 +8,7 @@ export class TextSelectDirective {
   @HostListener('keydown', ['$event']) overrideSelectAllShortcut(e) {
     if (e.ctrlKey && e.key === 'a') {
       e.preventDefault();
-      const range = document.createRange();
-      range.selectNode(this.ref.nativeElement);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
+      window.getSelection().selectAllChildren(this.ref.nativeElement);
     }
   }
 
