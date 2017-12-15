@@ -92,20 +92,6 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     return false;
   }
 
-  /*
-  downloadSelectedAsYaml() {
-    const selectedScenarios = this.scenarioList
-      .filter(value => this.isSelectedScenario(value))
-      .map(value => value.id);
-    this.projectService.downloadYaml(this.project, selectedScenarios)
-      .subscribe(res => saveAs(res, 'PROJECT_' + this.project.code + '.yml'))
-  }
-  */
-
-  isSelectedScenario(scenario: Scenario) {
-    return scenario && scenario._selected && this.isDisplayScenario(scenario);
-  }
-
   isDisplayScenario(scenario: Scenario) {
     return !this.filter ||
       (!this.filter.scenarioGroup && !scenario.scenarioGroup) ||
