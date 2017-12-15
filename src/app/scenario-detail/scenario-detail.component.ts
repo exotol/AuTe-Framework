@@ -28,10 +28,7 @@ export class ScenarioDetailComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findOne(+params.get('id')))
-      .subscribe(value => this.scenario = value,
-        () => {
-          this.router.navigate(['/'], {replaceUrl: true});
-        });
+      .subscribe(value => this.scenario = value, this.handleError);
 
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findScenarioSteps(+params.get('id')))
@@ -133,5 +130,9 @@ export class ScenarioDetailComponent implements OnInit {
           this.customToastyService.success('Удалено', 'Сценарий удалён');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
+  }
+
+  handleError() {
+    this.router.navigate(['/'], {replaceUrl: true});
   }
 }
