@@ -7,6 +7,7 @@ public class FormData extends AbstractModel {
     private FieldType fieldType;
     private String value;
     private String filePath;
+    private String mimeType;
 
     public String getFieldName() {
         return fieldName;
@@ -40,12 +41,21 @@ public class FormData extends AbstractModel {
         this.filePath = filePath;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     protected FormData copy() {
         FormData formData = new FormData();
         formData.setFieldName(getFieldName());
         formData.setFieldType(getFieldType());
         formData.setFilePath(getFilePath());
         formData.setValue(getValue());
+        formData.setMimeType(getMimeType());
         return formData;
     }
 
@@ -56,6 +66,7 @@ public class FormData extends AbstractModel {
                 ", fieldType=" + fieldType +
                 ", value='" + value + '\'' +
                 ", filePath='" + filePath + '\'' +
+                ", mimeType='" + mimeType + '\'' +
                 '}';
     }
 }

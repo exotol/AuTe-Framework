@@ -33,7 +33,6 @@ import ru.bsc.test.at.executor.model.FormData;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -114,17 +113,17 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formData, String projectPath) throws URISyntaxException, IOException {
+    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws URISyntaxException, IOException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        for (FormData data : formData) {
-            if (data.getFieldType() == null || FieldType.TEXT.equals(data.getFieldType())) {
-                entity.addTextBody(data.getFieldName(), data.getValue(), ContentType.TEXT_PLAIN);
+        for (FormData formData : formDataList) {
+            if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
+                entity.addTextBody(formData.getFieldName(), formData.getValue(), ContentType.TEXT_PLAIN);
             } else {
-                File file = new File((projectPath == null ? "" : projectPath) + data.getFilePath());
+                File file = new File((projectPath == null ? "" : projectPath) + formData.getFilePath());
                 entity.addBinaryBody(
-                        data.getFieldName(),
+                        formData.getFieldName(),
                         file,
-                        ContentType.parse(Files.probeContentType(file.toPath())),
+                        ContentType.parse( StringUtils.isEmpty(formData.getMimeType()) ? Files.probeContentType(file.toPath()) : formData.getMimeType()),
                         file.getName()
                 );
             }
