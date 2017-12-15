@@ -1,27 +1,21 @@
-import {Directive, ElementRef, HostListener, AfterViewInit} from '@angular/core';
+import {Directive, ElementRef, HostListener} from '@angular/core';
 
 @Directive({
   selector: '[appTextSelect]',
 })
-export class TextSelectDirective implements AfterViewInit {
-  content: string;
+export class TextSelectDirective {
 
-  @HostListener('keydown', ['$event']) disableKeydown(e) {
-    if (!e.ctrlKey || 'xv'.includes(e.key)) {
+  @HostListener('keydown', ['$event']) overrideSelectAllShortcut(e) {
+    if (e.ctrlKey && e.key === 'a') {
       e.preventDefault();
+      const range = document.createRange();
+      range.selectNode(this.ref.nativeElement);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
     }
   }
 
-  @HostListener('input') disableInput() {
-    console.log(123);
-    this.ref.nativeElement.innerHTML = this.content;
-  }
-
   constructor(private ref: ElementRef) {
-    this.ref.nativeElement.contentEditable = true;
-  }
-
-  ngAfterViewInit() {
-    this.content = this.ref.nativeElement.innerHTML;
+    this.ref.nativeElement.tabIndex = 0;
   }
 }
