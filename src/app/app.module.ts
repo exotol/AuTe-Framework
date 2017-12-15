@@ -28,7 +28,7 @@ import {CustomToastyService} from './service/custom-toasty.service';
 import { SearchComponent } from './search-scenario/search-scenario.component';
 import {SearchScenarioService} from './service/search-scenario.service';
 import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
-
+import {TextSelectDirective} from './shared/directives/text-select.directive';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http);
@@ -60,7 +60,8 @@ const routes: Routes = [
     ScenarioSettingsComponent,
     DiffComponent,
     SyncScrollDirective,
-    SearchComponent
+    SearchComponent,
+    TextSelectDirective
   ],
   imports: [
     BrowserModule,
