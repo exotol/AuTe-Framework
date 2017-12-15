@@ -2,6 +2,7 @@
   <label>{{'Actual' | translate}}</label>
   <div class="form-control"
        #actual
+       appTextSelect
        [appSyncScroll]="syncScroll && expected">
     <div *ngFor="let item of actualDiff" [class.added-row]="item.added">
       <ng-container *ngIf="item.rowDiff">
@@ -21,6 +22,7 @@
   <label>{{'Expected' | translate}}</label>
   <div class="form-control"
        #expected
+       appTextSelect
        [appSyncScroll]="syncScroll && actual">
     <div *ngFor="let item of expectedDiff" [class.removed-row]="item.removed">
       <ng-container *ngIf="item.rowDiff">
