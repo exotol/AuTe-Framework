@@ -6,7 +6,7 @@ import {StepResult} from '../model/step-result';
 @Component({
   selector: 'app-scenario-list-item',
   templateUrl: './scenario-list-item.component.html',
-  styles: [' input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }']
+  styleUrls: ['./scenario-list-item.component.css']
 })
 export class ScenarioListItemComponent implements OnInit {
 
@@ -51,5 +51,13 @@ export class ScenarioListItemComponent implements OnInit {
 
   resultDetailsToggle() {
     this.showResultDetails = !this.showResultDetails;
+  }
+
+  getMapStyleForScenario(): string {
+    if (this.state !== 'executing') {
+      if (this.scenario.failed) { return 'failedScenario'; }
+      if (this.scenario.failed === false) { return 'passedScenario'; }
+    }
+    return '';
   }
 }

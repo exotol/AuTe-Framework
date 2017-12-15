@@ -1,0 +1,25 @@
+input[type=checkbox] {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.failedScenario {
+  background: rgba(247, 186, 163, 0.5);
+}
+
+.passedScenario {
+  background: rgba(181, 241, 181, 0.5);
+}
+
+.container-fluid {
+  padding-top: 7px;
+  padding-bottom: 25px;
+}
+
+.row.result {
+  background: #fff;
+  margin: 10px;
+  padding: 10px 0;
+}

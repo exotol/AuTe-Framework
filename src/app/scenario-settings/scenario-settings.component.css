@@ -5,6 +5,10 @@ input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: mid
   position: relative;
 }
 
+.breadcrumb {
+  padding-right: 342px;
+}
+
 app-search {
   position: absolute;
 
