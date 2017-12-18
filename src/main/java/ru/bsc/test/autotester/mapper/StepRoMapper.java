@@ -214,7 +214,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "fieldName", source = "fieldName"),
             @Mapping(target = "fieldType", source = "fieldType"),
             @Mapping(target = "value", source = "value"),
-            @Mapping(target = "filePath", source = "filePath")
+            @Mapping(target = "filePath", source = "filePath"),
+            @Mapping(target = "mimeType", source = "mimeType")
     })
     abstract FormData updateFormDataFromRo(FormDataRo formDataRo);
 

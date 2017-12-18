@@ -8,6 +8,7 @@ public class FormDataRo extends AbstractRo {
     private String fieldType;
     private String value;
     private String filePath;
+    private String mimeType;
 
     public String getFieldName() {
         return fieldName;
@@ -39,5 +40,13 @@ public class FormDataRo extends AbstractRo {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 }
