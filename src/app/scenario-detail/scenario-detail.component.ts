@@ -108,10 +108,10 @@ export class ScenarioDetailComponent implements OnInit {
     const initialRoute = this.router.url;
     if (confirm('Confirm: Delete scenario')) {
       const toasty = this.customToastyService.deletion('Удаление сценария...');
-      this.scenarioService.deleteOne(this.scenario)
+      this.scenarioService.deleteOne(this.projectCode, this.scenario)
         .subscribe(() => {
           if (this.router.url === initialRoute) {
-            this.router.navigate(['/project', this.scenario.projectId], {replaceUrl: true});
+            this.router.navigate(['/project', this.scenario.projectCode], {replaceUrl: true});
           }
           this.customToastyService.success('Удалено', 'Сценарий удалён');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));

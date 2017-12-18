@@ -59,9 +59,10 @@ export class ScenarioService {
     ).map(value => value.json() as Scenario);
   }
 
-  deleteOne(scenario: Scenario): Observable<any> {
+  deleteOne(projectCode: String, scenario: Scenario): Observable<any> {
+    const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.delete(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath
     );
   }
 }
