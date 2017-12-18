@@ -13,7 +13,11 @@ import {FormData} from '../model/form-data';
     '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
     '.row { margin-bottom: 5px; }',
     '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
-    '.request-body-field { margin-bottom: 10px; }'
+    '.request-body-field { display: flex; margin-bottom: 10px; }',
+    '.request-body-field > * { margin: 0 5px; min-width: 0; }',
+    '.request-body-field > .request-body-field__name { margin-left: 0; min-width: 25%; flex: 0 0; }',
+    '.request-body-field > .request-body-field__type { min-width: 80px; flex: 0 0; }',
+    '.request-body-field > .request-body-field__remove { margin-right: 0; flex: 0 0; }'
   ]
 })
 export class StepItemComponent implements OnInit {

@@ -87,30 +87,18 @@
               <textarea title="{{'Request body' | translate}}" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
             </div>
             <div *ngIf="step.requestBodyType == 'FORM'">
-              <div *ngFor="let formData of step.formDataList" class="request-body-field row">
-                <div class="col-sm-3">
-                  <input class="form-control" placeholder="{{'Field name' | translate}}" title="" [(ngModel)]="formData.fieldName"/>
-                </div>
-                <div class="col-sm-2">
-                  <select class="form-control" title="{{'Field type' | translate}}" [(ngModel)]="formData.fieldType">
-                    <option [ngValue]="'TEXT'">{{'Text (default)' | translate}}</option>
-                    <option [ngValue]="'FILE'">{{'File' | translate}}</option>
-                  </select>
-                </div>
+              <div *ngFor="let formData of step.formDataList" class="request-body-field">
+                <input class="form-control request-body-field__name" placeholder="{{'Field name' | translate}}" title="" [(ngModel)]="formData.fieldName"/>
+                <select class="form-control request-body-field__type" title="{{'Field type' | translate}}" [(ngModel)]="formData.fieldType">
+                  <option [ngValue]="'TEXT'">{{'Text (default)' | translate}}</option>
+                  <option [ngValue]="'FILE'">{{'File' | translate}}</option>
+                </select>
                 <ng-container *ngIf="formData.fieldType == 'FILE'">
-                  <div class="col-sm-3">
-                    <input class="form-control" placeholder="{{'File path' | translate}}" title="" [(ngModel)]="formData.filePath"/>
-                  </div>
-                  <div class="col-sm-3">
-                    <input class="form-control" placeholder="{{'MIME type' | translate}}" title="" [(ngModel)]="formData.mimeType"/>
-                  </div>
+                  <input class="form-control w-25" placeholder="{{'File path' | translate}}" title="" [(ngModel)]="formData.filePath"/>
+                  <input class="form-control w-25" placeholder="{{'MIME type' | translate}}" title="" [(ngModel)]="formData.mimeType"/>
                 </ng-container>
-                <div class="col-sm-6" *ngIf="formData.fieldType != 'FILE'">
-                  <input class="form-control" placeholder="{{'Field value' | translate}}" title="" [(ngModel)]="formData.value"/>
-                </div>
-                <div class="col-sm-1">
-                  <button class="btn btn-default" (click)="removeFormData(formData)">-</button>
-                </div>
+                <input class="form-control" *ngIf="formData.fieldType != 'FILE'" placeholder="{{'Field value' | translate}}" title="" [(ngModel)]="formData.value"/>
+                <button class="btn btn-default request-body-field__remove" (click)="removeFormData(formData)">-</button>
               </div>
               <button class="btn" style="margin-top: 7px; margin-left: 7px;" (click)="addFormData()">{{'Add field' | translate}}</button>
             </div>
