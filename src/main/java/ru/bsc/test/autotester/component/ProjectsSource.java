@@ -148,6 +148,9 @@ public class ProjectsSource {
     }
 
     private String translit(String string) {
+        if (string == null) {
+            return "";
+        }
         String[] _alpha = {"a","b","v","g","d","e","yo","g","z","i","y","i",
                 "k","l","m","n","o","p","r","s","t","u",
                 "f","h","tz","ch","sh","sh","","e","yu","ya"};
@@ -225,7 +228,7 @@ public class ProjectsSource {
         project.getScenarioList().forEach(scenario -> {
             try {
                 File scenarioFile = new File(directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
-                saveScenarioToFiles(scenario, scenarioFile);
+                saveScenarioToFiles(scenario, scenarioFile, true);
             } catch (IOException e) {
                 LOGGER.error("Save project external files", e);
             }
@@ -284,11 +287,11 @@ public class ProjectsSource {
         File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
-        saveScenarioToFiles(scenario, scenarioFile);
+        saveScenarioToFiles(scenario, scenarioFile, false);
         scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
     }
 
-    private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
+    private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory, boolean updatePaths) throws IOException {
         if (step.getCode() != null) {
             FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
         }
@@ -296,7 +299,7 @@ public class ProjectsSource {
 
         if (step.getRequest() != null) {
             try {
-                if (step.getRequestFile() == null) {
+                if (step.getRequestFile() == null || updatePaths) {
                     step.setRequestFile(stepPath(step) + stepRequestFile());
                 }
                 File file = new File(scenarioRootDirectory + "/" + step.getRequestFile());
@@ -311,7 +314,7 @@ public class ProjectsSource {
 
         if (step.getExpectedResponse() != null) {
             try {
-                if (step.getExpectedResponseFile() == null) {
+                if (step.getExpectedResponseFile() == null || updatePaths) {
                     step.setExpectedResponseFile(stepPath(step) + stepExpectedResponseFile(step));
                 }
                 File file = new File(scenarioRootDirectory + "/" + step.getExpectedResponseFile());
@@ -326,7 +329,7 @@ public class ProjectsSource {
 
         if (step.getMqMessage() != null) {
             try {
-                if (step.getMqMessageFile() == null) {
+                if (step.getMqMessageFile() == null || updatePaths) {
                     step.setMqMessageFile(stepPath(step) + stepMqMessageFile(step));
                 }
                 File file = new File(scenarioRootDirectory + "/" + step.getMqMessageFile());
@@ -342,7 +345,7 @@ public class ProjectsSource {
         step.getMockServiceResponseList().forEach(mockServiceResponse -> {
             if (mockServiceResponse.getResponseBody() != null) {
                 try {
-                    if (mockServiceResponse.getResponseBodyFile() == null) {
+                    if (mockServiceResponse.getResponseBodyFile() == null || updatePaths) {
                         mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse));
                     }
                     File file = new File(scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile());
@@ -359,7 +362,7 @@ public class ProjectsSource {
         step.getExpectedServiceRequests().forEach(expectedServiceRequest -> {
             if (expectedServiceRequest.getExpectedServiceRequest() != null) {
                 try {
-                    if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
+                    if (expectedServiceRequest.getExpectedServiceRequestFile() == null || updatePaths) {
                         expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest));
                     }
                     File file = new File(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
@@ -374,7 +377,7 @@ public class ProjectsSource {
         });
     }
 
-    private void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
+    private void saveScenarioToFiles(Scenario scenario, File scenarioFile, boolean updatePaths) throws IOException {
         File scenarioRootDirectory = scenarioFile.getParentFile();
         int i = 1;
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
@@ -402,7 +405,7 @@ public class ProjectsSource {
         }
 
         for (Step step : scenario.getStepList()) {
-            saveStepToFiles(step.getCode(), step, scenarioRootDirectory);
+            saveStepToFiles(step.getCode(), step, scenarioRootDirectory, updatePaths);
         }
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
     }
