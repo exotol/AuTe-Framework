@@ -94,8 +94,8 @@
                   <option [ngValue]="'FILE'">{{'File' | translate}}</option>
                 </select>
                 <ng-container *ngIf="formData.fieldType == 'FILE'">
-                  <input class="form-control w-25" placeholder="{{'File path' | translate}}" title="" [(ngModel)]="formData.filePath"/>
-                  <input class="form-control w-25" placeholder="{{'MIME type' | translate}}" title="" [(ngModel)]="formData.mimeType"/>
+                  <input class="form-control" placeholder="{{'File path' | translate}}" title="" [(ngModel)]="formData.filePath"/>
+                  <input class="form-control" placeholder="{{'MIME type' | translate}}" title="" [(ngModel)]="formData.mimeType"/>
                 </ng-container>
                 <input class="form-control" *ngIf="formData.fieldType != 'FILE'" placeholder="{{'Field value' | translate}}" title="" [(ngModel)]="formData.value"/>
                 <button class="btn btn-default request-body-field__remove" (click)="removeFormData(formData)">-</button>
