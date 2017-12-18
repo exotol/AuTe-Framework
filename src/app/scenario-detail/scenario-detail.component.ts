@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -18,6 +18,7 @@ export class ScenarioDetailComponent implements OnInit {
   stepList: Step[];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private stepService: StepService,
@@ -27,7 +28,7 @@ export class ScenarioDetailComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findOne(+params.get('id')))
-      .subscribe(value => this.scenario = value);
+      .subscribe(value => this.scenario = value, this.handleError);
 
     this.route.paramMap
       .switchMap((params: ParamMap) => this.scenarioService.findScenarioSteps(+params.get('id')))
@@ -115,5 +116,23 @@ export class ScenarioDetailComponent implements OnInit {
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
+  }
+
+  deleteScenario() {
+    const initialRoute = this.router.url;
+    if (confirm('Confirm: Delete scenario')) {
+      const toasty = this.customToastyService.deletion('Удаление сценария...');
+      this.scenarioService.deleteOne(this.scenario)
+        .subscribe(() => {
+          if (this.router.url === initialRoute) {
+            this.router.navigate(['/project', this.scenario.projectId], {replaceUrl: true});
+          }
+          this.customToastyService.success('Удалено', 'Сценарий удалён');
+        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+    }
+  }
+
+  handleError() {
+    this.router.navigate(['/'], {replaceUrl: true});
   }
 }

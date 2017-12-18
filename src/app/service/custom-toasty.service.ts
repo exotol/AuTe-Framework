@@ -20,6 +20,18 @@ export class CustomToastyService {
     return this.toastyService.uniqueCounter;
   }
 
+  deletion(title?: string, msg?: string) {
+    this.toastyService.clearAll();
+    this.toastyService.warning({
+      title: title ? title : 'Удаление',
+      msg: msg ? msg : 'Удаление может занять некоторое время...',
+      timeout: 100000,
+      showClose: true,
+      theme: 'bootstrap'
+    });
+    return this.toastyService.uniqueCounter;
+  }
+
   success(title: string, msg: string): number {
     this.toastyService.success({
       title: title,
