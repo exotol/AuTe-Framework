@@ -58,4 +58,10 @@ export class ScenarioService {
       {headers: this.headers}
     ).map(value => value.json() as Scenario);
   }
+
+  deleteOne(scenario: Scenario): Observable<any> {
+    return this.http.delete(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + scenario.id
+    );
+  }
 }

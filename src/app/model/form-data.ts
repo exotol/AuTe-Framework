@@ -3,4 +3,5 @@ export class FormData {
   fieldType: string;
   value: string;
   filePath: string;
+  mimeType: string;
 }

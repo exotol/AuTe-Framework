@@ -113,5 +113,6 @@
   "Actual": "Actual",
   "Expected": "Expected",
   "Synchronize scrolling": "Synchronize scrolling",
-  "Import project from YAML": "Import project from YAML"
+  "Import project from YAML": "Import project from YAML",
+  "MIME type": "MIME type"
 }

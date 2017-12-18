@@ -26,6 +26,7 @@
   <div *ngIf="scenario && stepList">
     <div class="container-fluid" style="margin-bottom: 20px;">
       <button class="btn btn-success" (click)="saveSteps()">{{'Save steps' | translate}}</button>
+      <button class="btn btn-danger pull-right" (click)="deleteScenario()">{{'Delete' | translate}}</button>
     </div>
 
     <div *ngFor="let step of stepList">
