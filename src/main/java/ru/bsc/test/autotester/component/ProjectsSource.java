@@ -68,7 +68,7 @@ public class ProjectsSource {
                 if (scenarioYml.exists()) {
                     try {
                         project.getScenarioList().add(
-                                loadScenarioFromFiles(folder)
+                                loadScenarioFromFiles(folder, null)
                         );
                     } catch (IOException e) {
                         LOGGER.error("Read file " + scenarioYml.getAbsolutePath(), e);
@@ -80,7 +80,7 @@ public class ProjectsSource {
                             if (new File(scenarioYmlInGroup, SCENARIO_YAML_FILENAME).exists()) {
                                 try {
                                     project.getScenarioList().add(
-                                            loadScenarioFromFiles(scenarioYmlInGroup)
+                                            loadScenarioFromFiles(scenarioYmlInGroup, folder.getName())
                                     );
                                 } catch (IOException e) {
                                     LOGGER.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
@@ -240,13 +240,15 @@ public class ProjectsSource {
     }
 
     public Scenario findScenario(String projectCode, String scenarioPath) throws IOException {
-        return loadScenarioFromFiles(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath));
+        String[] pathParts = scenarioPath.split("/");
+        return loadScenarioFromFiles(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath), pathParts.length > 1 ? pathParts[0] : null);
     }
 
-    private Scenario loadScenarioFromFiles(File scenarioFolder) throws IOException {
+    private Scenario loadScenarioFromFiles(File scenarioFolder, String group) throws IOException {
         File scenarioFile = new File(scenarioFolder + "/" + SCENARIO_YAML_FILENAME);
         Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
         scenario.setCode(scenarioFile.getParentFile().getName());
+        scenario.setScenarioGroup(group);
 
         File scenarioRootDirectory = scenarioFile.getParentFile();
         scenario.getStepList().forEach(step ->
@@ -407,6 +409,7 @@ public class ProjectsSource {
         for (Step step : scenario.getStepList()) {
             saveStepToFiles(step.getCode(), step, scenarioRootDirectory, updatePaths);
         }
+        scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
     }
 }
