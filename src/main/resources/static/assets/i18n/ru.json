@@ -113,5 +113,6 @@
   "Actual": "Фактический",
   "Expected": "Ожидаемый",
   "Synchronize scrolling": "Синхронизировать прокрутку",
+  "Import project from YAML": "Импортировать проект из YAML",
   "MIME type": "Тип MIME"
 }
