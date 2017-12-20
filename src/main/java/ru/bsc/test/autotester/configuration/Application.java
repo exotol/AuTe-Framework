@@ -49,13 +49,13 @@ public class Application {
             projectsSource.setDirectoryPath(prop.getProperty(PROJECTS_PATH_PROPERTY));
             List<Project> projectList = projectsSource.getProjectList();
 
-            projectList.forEach(project -> {
+            long failedSummary = projectList.stream().mapToLong(project -> {
                 System.out.println("Project: [" + project.getCode() + "]" + project.getName());
                 AtExecutor atExecutor = new AtExecutor();
                 atExecutor.setProjectPath(prop.getProperty(PROJECTS_PATH_PROPERTY) + "/" + project.getCode() + "/");
                 Map<Scenario, List<StepResult>> result = atExecutor.executeScenarioList(project, project.getScenarioList());
 
-                int failedCount = result.entrySet().stream().map(scenarioListEntry -> {
+                return result.entrySet().stream().map(scenarioListEntry -> {
                     Scenario scenario = scenarioListEntry.getKey();
                     List<StepResult> stepResultList = scenarioListEntry.getValue();
 
@@ -67,13 +67,9 @@ public class Application {
                     }
                     return 0;
                 }).mapToInt(value -> value).sum();
+            }).sum();
 
-                if (failedCount > 0) {
-                    System.exit(1);
-                }
-            });
-
-            System.exit(0);
+            System.exit(failedSummary > 0 ? 1 : 0);
             return;
         }
         SpringApplication.run(new Class<?>[] {Application.class, SpringRootConfig.class, SpringWebConfig.class}, args);

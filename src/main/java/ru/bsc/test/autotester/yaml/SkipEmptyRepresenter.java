@@ -7,6 +7,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by sdoroshin on 03.11.2017.
@@ -19,7 +20,7 @@ class SkipEmptyRepresenter extends Representer {
         // if value of property is null, ignore it.
         if ((propertyValue == null)
                 || (propertyValue instanceof List && ((List) propertyValue).isEmpty())
-                || (propertyValue instanceof Boolean && !((Boolean) propertyValue))
+                || (propertyValue instanceof Boolean && !((Boolean) propertyValue) && !Objects.equals(property.getName(), "failed"))
                 || (propertyValue instanceof Map  && ((Map)  propertyValue).isEmpty())) {
             return null;
         } else {
