@@ -32,7 +32,6 @@ export class StepResultItemComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: ParamMap) => {
-      console.log(params);
       this.projectCode = params['projectCode'];
       this.scenarioGroup = params['scenarioGroup'];
       this.scenarioCode = params['scenarioCode'];

@@ -11,6 +11,7 @@
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
       <li [class.active]="tab == 'stand'"><a href="#" (click)="selectTab('stand')">{{'Stand' | translate}}</a></li>
+      <li [class.active]="tab == 'groupList'"><a href="#" (click)="selectTab('groupList')">{{'Groups' | translate}}</a></li>
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">{{'json' | translate}}</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
@@ -73,26 +74,24 @@
           <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span>{{'Add broker' | translate}}</button>
         </div>
       </div>
-      <!--div [style.display]="tab == 'groups' ? '' : 'none'">
-        <div *ngFor="let scenarioGroup of project.scenarioGroups">
-          <label>{{'Group name' | translate}}</label>
-          <div class="input-group">
-            <input class="form-control" title="" [(ngModel)]="scenarioGroup.name"/>
-            <span class="input-group-btn">
+      <div [style.display]="tab == 'groupList' ? '' : 'none'">
+        <div *ngFor="let group of project.groupList; let i = index;">
+          <div class="col-sm-4" style="margin-bottom: 7px;">
+            <a style="cursor: pointer; " (click)="renameGroup(project.groupList[i]); false;"><small><span class="glyphicon glyphicon-edit"></span></small> <b>{{project.groupList[i]}}</b></a>
+            <!--span class="input-group-btn">
               <button class="btn btn-default" (click)="removeScenarioGroup(scenarioGroup)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
-            </span>
+            </span-->
           </div>
         </div>
-        <button class="btn btn-default" style="margin-top: 7px;" (click)="addScenarioGroup()"><span class="glyphicon glyphicon-plus"></span>{{'Add scenario group' | translate}}</button>
-      </div-->
+        <div class="clearfix"></div>
+        <button class="btn btn-default" style="margin-top: 7px;" (click)="addGroup()"><span class="glyphicon glyphicon-plus"></span>{{'Add group' | translate}}</button>
+      </div>
       <div [style.display]="tab == 'stand' ? '' : 'none'">
         <div style="border: none;" class="list-group-item">
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Service URL' | translate}}</label>
-              <div class="input-group">
-                <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
-              </div>
+              <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
             </div>
           </div>
           <div class="row">

@@ -16,6 +16,7 @@
   "Details": "Детали",
   "Scenario groups": "Группы сценариев",
   "Stands": "Стенды",
+  "Stand": "Стенд",
   "Project name": "Название проекта",
   "Before scenario": "Перед сценарием",
   "After scenario": "После сценария",
@@ -29,7 +30,7 @@
   "Add broker": "Добавить брокер",
   "Group name": "Название группы",
   "Remove": "Удалить",
-  "Add scenario group": "Добавить группу сценариев",
+  "Add group": "Добавить группу",
   "Service URL": "URL сервиса",
   "Set as default": "Использовать по умолчанию",
   "Used by default": "Использовать по умолчанию",
@@ -114,5 +115,6 @@
   "Expected": "Ожидаемый",
   "Synchronize scrolling": "Синхронизировать прокрутку",
   "Import project from YAML": "Импортировать проект из YAML",
-  "MIME type": "Тип MIME"
+  "MIME type": "Тип MIME",
+  "Groups": "Группы"
 }

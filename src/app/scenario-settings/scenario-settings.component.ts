@@ -26,7 +26,6 @@ export class ScenarioSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: ParamMap) => {
-      console.log(params);
       this.projectCode = params['projectCode'];
 
       this.scenarioService

@@ -57,13 +57,22 @@ export class ProjectService {
     );
   }
 
-  /*
-  downloadYaml(project: Project, selectedScenarios: number[]) {
+  addNewGroup(projectCode: String, groupName: String): Observable<String[]> {
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code + '/export-selected-to-yaml',
-      selectedScenarios,
-      {responseType: ResponseContentType.Blob}
-    ).map(value => new Blob([value.blob()]));
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/group',
+      groupName,
+      {headers: this.headers}
+    ).map(value => value.json() as String[]);
   }
-  */
+
+  renameGroup(projectCode: string, oldGroupName: String, newGroupName: String) {
+    return this.http.put(
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/group',
+      {
+        oldGroupName: oldGroupName,
+        newGroupName: newGroupName
+      },
+      {headers: this.headers}
+    ).map(value => value.json() as String[]);
+  }
 }

@@ -10,4 +10,5 @@ export class Project {
   useRandomTestId: boolean;
   testIdHeaderName: string;
   amqpBroker: AmqpBroker;
+  groupList: String[];
 }

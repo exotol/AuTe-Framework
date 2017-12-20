@@ -58,10 +58,6 @@ export class ProjectSettingsComponent implements OnInit {
     return false;
   }
 
-  selectAsDefaultStand(stand: Stand): void {
-    this.project.stand = stand;
-  }
-
   addAmqpBroker() {
     this.project.amqpBroker = new AmqpBroker();
   }
@@ -69,6 +65,36 @@ export class ProjectSettingsComponent implements OnInit {
   removeAmqpBroker() {
     if (confirm('Confirm: remove AMQP broker')) {
       this.project.amqpBroker = null;
+    }
+  }
+
+  addGroup(): void {
+    let newGroupName: String;
+    if ((newGroupName = prompt('New group name')) && newGroupName && newGroupName.length > 0) {
+      const toasty = this.customToastyService.saving('Сохранение группы...', 'Сохранение может занять некоторое время...');
+      this.projectService.addNewGroup(this.project.code, newGroupName)
+        .subscribe(
+          groupList => {
+            this.project.groupList = groupList;
+            this.customToastyService.success('Сохранено', 'Новая группа создана');
+          },
+          error => this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error),
+          () => this.customToastyService.clear(toasty));
+    }
+  }
+
+  renameGroup(oldGroupName: String) {
+    let newGroupName: String;
+    if ((newGroupName = prompt('Rename group', oldGroupName.toString())) && newGroupName && newGroupName.length > 0) {
+      const toasty = this.customToastyService.saving('Сохранение группы...', 'Сохранение может занять некоторое время...');
+      this.projectService.renameGroup(this.project.code, oldGroupName, newGroupName)
+        .subscribe(
+          groupList => {
+            this.project.groupList = groupList;
+            this.customToastyService.success('Сохранено', 'Группа переименована');
+          },
+          error => this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error),
+          () => this.customToastyService.clear(toasty));
     }
   }
 }

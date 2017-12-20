@@ -73,11 +73,11 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.updateFailCountSum();
   }
 
-  selectGroup(scenarioGroup?: String): boolean {
+  selectGroup(group?: String): boolean {
     this.filter = new Scenario();
-    this.filter.scenarioGroup = scenarioGroup;
+    this.filter.scenarioGroup = group;
 
-    this.router.navigate([], {queryParams: {scenarioGroup: scenarioGroup ? scenarioGroup : -1}});
+    this.router.navigate([], {queryParams: {scenarioGroup: group ? group : -1}});
     this.updateFailCountSum();
 
     return false;

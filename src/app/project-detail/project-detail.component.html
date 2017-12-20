@@ -18,8 +18,8 @@
       <li [class.active]="filter && !filter.scenarioGroup">
         <a href="#" (click)="selectGroup()">{{'Without group' | translate}}</a>
       </li>
-      <li [class.active]="filter && scenarioGroup == filter.scenarioGroup" *ngFor="let scenarioGroup of scenarioGroupList">
-        <a href="#" (click)="selectGroup(scenarioGroup)">{{scenarioGroup}}</a>
+      <li [class.active]="filter && group == filter.scenarioGroup" *ngFor="let group of project.groupList">
+        <a href="#" (click)="selectGroup(group)">{{group}}</a>
       </li>
     </ul>
   </nav>
