@@ -19,6 +19,7 @@ public class Project extends AbstractModel implements Serializable {
     private Boolean useRandomTestId;
     private String testIdHeaderName;
     private AmqpBroker amqpBroker;
+    private List<String> groupList;
 
     public String getCode() {
         return code;
@@ -95,6 +96,14 @@ public class Project extends AbstractModel implements Serializable {
         this.amqpBroker = amqpBroker;
     }
 
+    public List<String> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<String> groupList) {
+        this.groupList = groupList;
+    }
+
     public Project copy() {
         Project project = new Project();
         project.setName(getName());
@@ -107,6 +116,11 @@ public class Project extends AbstractModel implements Serializable {
             Scenario projectScenario = scenario.copy();
             projectScenario.setScenarioGroup(scenario.getScenarioGroup());
             project.getScenarioList().add(projectScenario);
+        }
+
+        project.setGroupList(new LinkedList<>());
+        for (String group : getGroupList()) {
+            project.getGroupList().add(group);
         }
 
         project.setAmqpBroker(getAmqpBroker().copy());
