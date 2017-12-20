@@ -1,5 +1,7 @@
 package ru.bsc.test.autotester.configuration;
 
+import ch.qos.logback.classic.Level;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,10 +17,12 @@ import ru.bsc.test.autotester.component.ProjectsSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
+import java.util.Set;
+import ch.qos.logback.classic.Logger;
 /**
  * Created by sdoroshin on 23.10.2017.
  *
@@ -37,6 +41,18 @@ public class Application {
 
     public static void main(String args[]) {
         if (Arrays.asList(args).contains("execute")) {
+
+            Set<String> loggers = new HashSet<>(Arrays.asList(
+                    "org.apache.http",
+                    "ru.bsc.test.autotester.component.ProjectsSource"
+            ));
+
+            for(String log: loggers) {
+                Logger logger = (Logger)LoggerFactory.getLogger(log);
+                logger.setLevel(Level.WARN);
+                logger.setAdditive(false);
+            }
+
             Properties prop = new Properties();
             try {
                 prop.load(new FileInputStream(PROPERTIES_FILE_NAME));
@@ -64,8 +80,10 @@ public class Application {
                         System.out.println("Failed: Scenario [" + scenario.getCode() + "]" + scenario.getName());
                         stepResultList.forEach(stepResult -> System.out.println("\t" + stepResult.getResult() + ": Step [" + stepResult.getStep().getCode() + "] " + stepResult.getRequestUrl()));
                         return 1;
+                    } else {
+                        System.out.println("Success: Scenario [" + scenario.getCode() + "]" + scenario.getName());
+                        return 0;
                     }
-                    return 0;
                 }).mapToInt(value -> value).sum();
             }).sum();
 
