@@ -58,6 +58,22 @@ export class ProjectSettingsComponent implements OnInit {
     return false;
   }
 
+  addStand(): void {
+    if (!this.project.standList) {
+      this.project.standList = [];
+    }
+    this.project.standList.push(new Stand());
+  }
+
+  removeStand(stand: Stand): void {
+    if (confirm('Confirm: Remove stand')) {
+      const indexToRemove = this.project.standList.indexOf(stand);
+      if (indexToRemove > -1) {
+        this.project.standList.splice(indexToRemove, 1);
+      }
+    }
+  }
+
   addAmqpBroker() {
     this.project.amqpBroker = new AmqpBroker();
   }

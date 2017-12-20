@@ -32,7 +32,7 @@
         </select>
 
         <label>{{'Project code' | translate}}</label>
-        <input class="form-control" title="" [(ngModel)]="project.code"/>
+        <input disabled class="form-control" title="" [ngModel]="project.code"/>
 
         <hr/>
         <label style="margin-top: 8px;">
@@ -91,25 +91,65 @@
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Service URL' | translate}}</label>
-              <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
+              <input class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-4">
-              <input placeholder="{{'Data base URL' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.dbUrl"/>
+              <label>{{'Data base URL' | translate}}</label>
+              <input class="form-control" title="" [(ngModel)]="project.stand.dbUrl"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="{{'Data base User' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.dbUser"/>
+              <label>{{'Data base User' | translate}}</label>
+              <input class="form-control" title="" [(ngModel)]="project.stand.dbUser"/>
             </div>
             <div class="col-sm-4">
-              <input placeholder="{{'Data base Password' | translate}}" type="password" class="form-control" title="" [(ngModel)]="project.stand.dbPassword"/>
+              <label>{{'Data base Password' | translate}}</label>
+              <input type="password" class="form-control" title="" [(ngModel)]="project.stand.dbPassword"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <input placeholder="{{'WireMock URL' | translate}}" class="form-control" title="" [(ngModel)]="project.stand.wireMockUrl"/>
+              <label>{{'WireMock URL' | translate}}</label>
+              <input class="form-control" title="" [(ngModel)]="project.stand.wireMockUrl"/>
             </div>
           </div>
+        </div>
+        <hr/>
+        <div style="border: none;" class="list-group-item" *ngFor="let stand of project.standList; let i = index;">
+          <div class="row">
+            <div class="col-sm-2">
+              <label>{{'Stand' | translate}} {{i + 1}}</label>
+              <button class="btn btn-default" (click)="project.stand = stand">{{'Use' | translate}}</button>
+              <button class="btn btn-default" (click)="removeStand(stand)"><span class="glyphicon glyphicon-minus"></span></button>
+            </div>
+            <div class="col-sm-10">
+              <div class="row">
+                <div class="col-sm-12">
+                  <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.serviceUrl"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <input placeholder="{{'Data base URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUrl"/>
+                </div>
+                <div class="col-sm-4">
+                  <input placeholder="{{'Data base User' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUser"/>
+                </div>
+                <div class="col-sm-4">
+                  <input placeholder="{{'Data base Password' | translate}}" type="password" class="form-control" title="" [(ngModel)]="stand.dbPassword"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <input placeholder="{{'WireMock URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.wireMockUrl"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="border: none;" class="list-group-item">
+          <button class="btn btn-default" (click)="addStand()"><span class="glyphicon glyphicon-plus"></span> Add stand</button>
         </div>
       </div>
       <div [style.display]="tab == 'json' ? '' : 'none'">

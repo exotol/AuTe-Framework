@@ -7,6 +7,7 @@ export class Project {
   afterScenarioPath: String;
   code: string;
   stand: Stand;
+  standList: Stand[];
   useRandomTestId: boolean;
   testIdHeaderName: string;
   amqpBroker: AmqpBroker;
