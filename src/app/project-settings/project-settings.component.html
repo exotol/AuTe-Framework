@@ -87,7 +87,7 @@
         <button class="btn btn-default" style="margin-top: 7px;" (click)="addGroup()"><span class="glyphicon glyphicon-plus"></span>{{'Add group' | translate}}</button>
       </div>
       <div [style.display]="tab == 'stand' ? '' : 'none'">
-        <div style="border: none;" class="list-group-item">
+        <div style="border: none;" class="list-group-item" *ngIf="project.stand">
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Service URL' | translate}}</label>
