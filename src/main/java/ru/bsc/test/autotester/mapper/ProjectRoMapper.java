@@ -30,7 +30,8 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "stand", source = "stand"),
             @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
-            @Mapping(target = "testIdHeaderName", source = "testIdHeaderName")
+            @Mapping(target = "testIdHeaderName", source = "testIdHeaderName"),
+            @Mapping(target = "groupList", source = "groupList")
     })
     abstract public ProjectRo projectToProjectRo(Project project);
 
@@ -43,7 +44,8 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "amqpBroker", source = "amqpBroker"),
             @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
             @Mapping(target = "testIdHeaderName", source = "testIdHeaderName"),
-            @Mapping(target = "scenarioList", ignore = true)
+            @Mapping(target = "scenarioList", ignore = true),
+            @Mapping(target = "groupList", ignore = true)
     })
     public abstract Project updateProjectFromRo(ProjectRo projectRo);
 

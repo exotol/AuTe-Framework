@@ -34,13 +34,22 @@ public class YamlProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Project saveProject(Project project) {
+    public void saveProject(Project project) {
         projectsSource.saveProject(project);
-        return project;
     }
 
     @Override
     public void saveFullProject(Project project) throws Exception {
         projectsSource.saveFullProject(project);
+    }
+
+    @Override
+    public void addNewGroup(String projectCode, String groupName) throws Exception {
+        projectsSource.addNewGroup(projectCode, groupName);
+    }
+
+    @Override
+    public void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception {
+        projectsSource.renameGroup(projectCode, oldGroupName, newGroupName);
     }
 }

@@ -21,4 +21,8 @@ public interface ProjectService {
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
     void importProjectFormYaml(ImportProjectRo importProjectRo) throws Exception;
+
+    void addNewGroup(String projectCode, String groupName) throws Exception;
+
+    void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception;
 }

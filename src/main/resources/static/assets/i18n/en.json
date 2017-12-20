@@ -16,6 +16,7 @@
   "Details": "Details",
   "Scenario groups": "Scenario groups",
   "Stands": "Stands",
+  "Stand": "Stand",
   "Project name": "Project name",
   "Before scenario": "Before scenario",
   "After scenario": "After scenario",
@@ -29,7 +30,7 @@
   "Add broker": "Add broker",
   "Group name": "Group name",
   "Remove": "Remove",
-  "Add scenario group": "Add scenario group",
+  "Add group": "Add group",
   "Service URL": "Service URL",
   "Set as default": "Set as default",
   "Used by default": "Used by default",
@@ -114,5 +115,6 @@
   "Expected": "Expected",
   "Synchronize scrolling": "Synchronize scrolling",
   "Import project from YAML": "Import project from YAML",
-  "MIME type": "MIME type"
+  "MIME type": "MIME type",
+  "Groups": "Groups"
 }

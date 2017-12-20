@@ -1,5 +1,7 @@
 package ru.bsc.test.autotester.ro;
 
+import java.util.List;
+
 /**
  * Created by sdoroshin on 14.09.2017.
  *
@@ -16,6 +18,7 @@ public class ProjectRo extends AbstractRo {
     private Boolean useRandomTestId;
     private String testIdHeaderName;
     private AmqpBrokerRo amqpBroker;
+    private List<String> groupList;
 
     public String getCode() {
         return code;
@@ -79,5 +82,13 @@ public class ProjectRo extends AbstractRo {
 
     public void setAmqpBroker(AmqpBrokerRo amqpBroker) {
         this.amqpBroker = amqpBroker;
+    }
+
+    public List<String> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<String> groupList) {
+        this.groupList = groupList;
     }
 }

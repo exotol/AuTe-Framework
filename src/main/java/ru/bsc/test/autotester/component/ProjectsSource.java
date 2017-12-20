@@ -13,6 +13,9 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +64,7 @@ public class ProjectsSource {
     }
 
     private void readExternalFiles(Project project) {
+        Set<String> groupSet = new HashSet<>();
         File[] fileList = new File(directoryPath + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
         if (fileList != null) {
             for (File folder : fileList) {
@@ -88,9 +92,15 @@ public class ProjectsSource {
                             }
                         }
                     }
+                    if (folder.isDirectory()) {
+                        groupSet.add(folder.getName());
+                    }
                 }
             }
         }
+        List<String> groupList = new ArrayList<>(groupSet);
+        Collections.sort(groupList);
+        project.setGroupList(groupList);
     }
 
     private String readFile(String path) {
@@ -411,5 +421,27 @@ public class ProjectsSource {
         }
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
+    }
+
+    public void addNewGroup(String projectCode, String groupName) throws Exception {
+        File file = new File(directoryPath + "/" + projectCode + "/scenarios/" + groupName);
+        if (file.exists()) {
+            throw new Exception("Directory already exists");
+        } else {
+            if (!file.mkdir()) {
+                throw new Exception("Directory not created");
+            }
+        }
+    }
+
+    public void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception {
+        File file = new File(directoryPath + "/" + projectCode + "/scenarios/" + oldGroupName);
+        if (new File(file, "scenario.yml").exists() || !file.isDirectory()) {
+            throw new Exception("This is not a group");
+        } else {
+            if (!file.renameTo(new File(directoryPath + "/" + projectCode + "/scenarios/" + newGroupName))) {
+                throw new Exception("Directory not renamed");
+            }
+        }
     }
 }

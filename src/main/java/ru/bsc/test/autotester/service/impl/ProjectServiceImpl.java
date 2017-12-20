@@ -57,7 +57,8 @@ public class ProjectServiceImpl implements ProjectService {
             Project project = findOne(projectCode);
             if (project != null) {
                 project = projectRoMapper.updateProjectFromRo(projectRo);
-                project = projectRepository.saveProject(project);
+                projectRepository.saveProject(project);
+                project = projectRepository.findProject(project.getCode());
                 return projectRoMapper.projectToProjectRo(project);
             }
             return null;
@@ -70,5 +71,15 @@ public class ProjectServiceImpl implements ProjectService {
         project.setCode(importProjectRo.getProjectCode());
 
         projectRepository.saveFullProject(project);
+    }
+
+    @Override
+    public void addNewGroup(String projectCode, String groupName) throws Exception {
+        projectRepository.addNewGroup(projectCode, groupName);
+    }
+
+    @Override
+    public void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception {
+        projectRepository.renameGroup(projectCode, oldGroupName, newGroupName);
     }
 }
