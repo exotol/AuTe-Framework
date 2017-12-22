@@ -241,7 +241,9 @@ public class Step extends AbstractModel implements Serializable {
         step.setPollingJsonXPath(getPollingJsonXPath());
         step.setDisabled(getDisabled());
         step.setStepComment(getStepComment());
-        step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        if (getSavedValuesCheck() != null) {
+            step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
+        }
         step.setResponseCompareMode(getResponseCompareMode());
         step.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
