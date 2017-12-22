@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -67,24 +68,24 @@ public class ProjectsSource {
         Set<String> groupSet = new HashSet<>();
         File[] fileList = new File(directoryPath + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
         if (fileList != null) {
-            for (File folder : fileList) {
-                File scenarioYml = new File(folder, SCENARIO_YAML_FILENAME);
+            for (File directory : fileList) {
+                File scenarioYml = new File(directory, SCENARIO_YAML_FILENAME);
                 if (scenarioYml.exists()) {
                     try {
                         project.getScenarioList().add(
-                                loadScenarioFromFiles(folder, null)
+                                loadScenarioFromFiles(directory, null)
                         );
                     } catch (IOException e) {
                         LOGGER.error("Read file " + scenarioYml.getAbsolutePath(), e);
                     }
                 } else {
-                    File[] innerFileList = folder.listFiles(File::isDirectory);
+                    File[] innerFileList = directory.listFiles(File::isDirectory);
                     if (innerFileList != null) {
                         for (File scenarioYmlInGroup : innerFileList) {
                             if (new File(scenarioYmlInGroup, SCENARIO_YAML_FILENAME).exists()) {
                                 try {
                                     project.getScenarioList().add(
-                                            loadScenarioFromFiles(scenarioYmlInGroup, folder.getName())
+                                            loadScenarioFromFiles(scenarioYmlInGroup, directory.getName())
                                     );
                                 } catch (IOException e) {
                                     LOGGER.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
@@ -92,9 +93,7 @@ public class ProjectsSource {
                             }
                         }
                     }
-                    if (folder.isDirectory()) {
-                        groupSet.add(folder.getName());
-                    }
+                    groupSet.add(directory.getName());
                 }
             }
         }
@@ -254,8 +253,8 @@ public class ProjectsSource {
         return loadScenarioFromFiles(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath), pathParts.length > 1 ? pathParts[0] : null);
     }
 
-    private Scenario loadScenarioFromFiles(File scenarioFolder, String group) throws IOException {
-        File scenarioFile = new File(scenarioFolder + "/" + SCENARIO_YAML_FILENAME);
+    private Scenario loadScenarioFromFiles(File scenarioDirectory, String group) throws IOException {
+        File scenarioFile = new File(scenarioDirectory + "/" + SCENARIO_YAML_FILENAME);
         Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
         scenario.setCode(scenarioFile.getParentFile().getName());
         scenario.setScenarioGroup(group);
@@ -296,8 +295,23 @@ public class ProjectsSource {
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
         }
-        File scenarioFile = new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath + "/" + SCENARIO_YAML_FILENAME);
+        File scenarioFile = new File(directoryPath + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
+
+        // Прочитать существующий сценарий
+        Scenario existsScenario = loadScenarioFromFiles(scenarioRootDirectory, null);
+
+        // Найти шаги, которые удалены
+        existsScenario.getStepList().forEach(existsStep -> {
+            boolean isExists = scenario.getStepList().stream().filter(step -> Objects.equals(existsStep.getCode(), step.getCode())).count() > 0;
+            if (!isExists && existsStep.getCode() != null) {
+                try {
+                    FileUtils.deleteDirectory(new File(scenarioRootDirectory, "steps" + File.separatorChar + existsStep.getCode()));
+                } catch (IOException e) {
+                    LOGGER.error("Delete step directory " + scenarioRootDirectory + File.separatorChar + existsStep.getCode(), e);
+                }
+            }
+        });
 
         saveScenarioToFiles(scenario, scenarioFile, false);
         scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
