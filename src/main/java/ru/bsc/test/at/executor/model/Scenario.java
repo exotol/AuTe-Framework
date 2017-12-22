@@ -80,4 +80,13 @@ public class Scenario extends AbstractModel implements Serializable {
 
         return scenario;
     }
+
+    @Override
+    public String toString() {
+        return "Scenario{" +
+                "name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", scenarioGroup='" + scenarioGroup + '\'' +
+                '}';
+    }
 }

@@ -484,4 +484,9 @@ public class AtExecutor {
     public void setProjectPath(String projectPath) {
         this.projectPath = projectPath;
     }
+
+    @Override
+    public String toString() {
+        return "AtExecutor{}";
+    }
 }

@@ -146,4 +146,9 @@ public class Project extends AbstractModel implements Serializable {
         project.setAmqpBroker(getAmqpBroker().copy());
         return project;
     }
+
+    @Override
+    public String toString() {
+        return "Project{" + code + '}';
+    }
 }
