@@ -16,7 +16,6 @@ public class Project extends AbstractModel implements Serializable {
     private String beforeScenarioPath;
     private String afterScenarioPath;
     private Stand stand;
-    private List<Stand> standList;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
     private AmqpBroker amqpBroker;
@@ -73,14 +72,6 @@ public class Project extends AbstractModel implements Serializable {
         this.stand = stand;
     }
 
-    public List<Stand> getStandList() {
-        return standList;
-    }
-
-    public void setStandList(List<Stand> standList) {
-        this.standList = standList;
-    }
-
     public Boolean getUseRandomTestId() {
         return useRandomTestId == null ? false : useRandomTestId;
     }
@@ -133,13 +124,6 @@ public class Project extends AbstractModel implements Serializable {
             project.setGroupList(new LinkedList<>());
             for (String group : getGroupList()) {
                 project.getGroupList().add(group);
-            }
-        }
-
-        if (getStandList() != null) {
-            project.setStandList(new LinkedList<>());
-            for (Stand stand : getStandList()) {
-                project.getStandList().add(stand.copy());
             }
         }
 
