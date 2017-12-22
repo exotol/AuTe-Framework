@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
-import {Stand} from '../model/stand';
 import {Scenario} from '../model/scenario';
 import {CustomToastyService} from '../service/custom-toasty.service';
-import {AmqpBroker} from '../model/amqp-broker';
 
 @Component({
   selector: 'app-project-settings',
@@ -56,32 +54,6 @@ export class ProjectSettingsComponent implements OnInit {
   selectTab(tabName: string): boolean {
     this.tab = tabName;
     return false;
-  }
-
-  addStand(): void {
-    if (!this.project.standList) {
-      this.project.standList = [];
-    }
-    this.project.standList.push(new Stand());
-  }
-
-  removeStand(stand: Stand): void {
-    if (confirm('Confirm: Remove stand')) {
-      const indexToRemove = this.project.standList.indexOf(stand);
-      if (indexToRemove > -1) {
-        this.project.standList.splice(indexToRemove, 1);
-      }
-    }
-  }
-
-  addAmqpBroker() {
-    this.project.amqpBroker = new AmqpBroker();
-  }
-
-  removeAmqpBroker() {
-    if (confirm('Confirm: remove AMQP broker')) {
-      this.project.amqpBroker = null;
-    }
   }
 
   addGroup(): void {

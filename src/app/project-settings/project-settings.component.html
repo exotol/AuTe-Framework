@@ -41,38 +41,8 @@
         </label>
         <div class="clearfix"></div>
 
-        <label>{{'testId header name' | translate}}</label>
+        <label>{{'TestId header name' | translate}}</label>
         <input class="form-control" title="" [(ngModel)]="project.testIdHeaderName"/>
-
-        <hr/>
-        <label>{{'AMQP broker' | translate}}</label>
-        <div *ngIf="project.amqpBroker">
-          <label>{{'Broker type' | translate}}</label>
-          <div class="input-group-btn">
-            <select class="form-control" title="{{'Broker type' | translate}}" [(ngModel)]="project.amqpBroker.mqService">
-              <option [ngValue]="null">{{'disabled' | translate}}</option>
-              <option [ngValue]="'ACTIVE_MQ'">Active MQ</option>
-              <option [ngValue]="'RABBIT_MQ'">Rabbit MQ</option>
-            </select>
-          </div>
-
-          <label>Host</label>
-          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.host"/>
-
-          <label>Port</label>
-          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.port"/>
-
-          <label>{{'Username' | translate}}</label>
-          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.username"/>
-
-          <label>{{'Password' | translate}}</label>
-          <input class="form-control" title="" [(ngModel)]="project.amqpBroker.password"/>
-
-          <button class="btn btn-default" (click)="removeAmqpBroker()"><span class="glyphicon glyphicon-minus"></span>{{'Remove broker' | translate}}</button>
-        </div>
-        <div *ngIf="!project.amqpBroker">
-          <button class="btn btn-default" (click)="addAmqpBroker()"><span class="glyphicon glyphicon-plus"></span>{{'Add broker' | translate}}</button>
-        </div>
       </div>
       <div [style.display]="tab == 'groupList' ? '' : 'none'">
         <div *ngFor="let group of project.groupList; let i = index;">
@@ -84,72 +54,64 @@
           </div>
         </div>
         <div class="clearfix"></div>
-        <button class="btn btn-default" style="margin-top: 7px;" (click)="addGroup()"><span class="glyphicon glyphicon-plus"></span>{{'Add group' | translate}}</button>
+        <button class="btn btn-success" style="margin-top: 7px;" (click)="addGroup()"><span class="glyphicon glyphicon-plus"></span> {{'Add group' | translate}}</button>
       </div>
       <div [style.display]="tab == 'stand' ? '' : 'none'">
         <div style="border: none;" class="list-group-item" *ngIf="project.stand">
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Service URL' | translate}}</label>
-              <input class="form-control" title="" [(ngModel)]="project.stand.serviceUrl"/>
+              <input disabled class="form-control" title="" [ngModel]="project.stand.serviceUrl"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-4">
               <label>{{'Data base URL' | translate}}</label>
-              <input class="form-control" title="" [(ngModel)]="project.stand.dbUrl"/>
+              <input disabled class="form-control" title="" [ngModel]="project.stand.dbUrl"/>
             </div>
             <div class="col-sm-4">
               <label>{{'Data base User' | translate}}</label>
-              <input class="form-control" title="" [(ngModel)]="project.stand.dbUser"/>
+              <input disabled class="form-control" title="" [ngModel]="project.stand.dbUser"/>
             </div>
             <div class="col-sm-4">
               <label>{{'Data base Password' | translate}}</label>
-              <input type="password" class="form-control" title="" [(ngModel)]="project.stand.dbPassword"/>
+              <input disabled class="form-control" title="" [ngModel]="project.stand.dbPassword"/>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
               <label>{{'WireMock URL' | translate}}</label>
-              <input class="form-control" title="" [(ngModel)]="project.stand.wireMockUrl"/>
+              <input disabled class="form-control" title="" [ngModel]="project.stand.wireMockUrl"/>
             </div>
           </div>
         </div>
         <hr/>
-        <div style="border: none;" class="list-group-item" *ngFor="let stand of project.standList; let i = index;">
+        <label>{{'AMQP broker' | translate}}</label>
+        <div style="border: none;" class="list-group-item" *ngIf="project.amqpBroker">
           <div class="row">
-            <div class="col-sm-2">
-              <label>{{'Stand' | translate}} {{i + 1}}</label>
-              <button class="btn btn-default" (click)="project.stand = stand">{{'Use' | translate}}</button>
-              <button class="btn btn-default" (click)="removeStand(stand)"><span class="glyphicon glyphicon-minus"></span></button>
-            </div>
-            <div class="col-sm-10">
-              <div class="row">
-                <div class="col-sm-12">
-                  <input placeholder="{{'Service URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.serviceUrl"/>
-                </div>
+            <div class="col-sm-12">
+              <label>{{'Broker type' | translate}}</label>
+              <div class="input-group-btn">
+                <select disabled class="form-control" title="{{'Broker type' | translate}}" [ngModel]="project.amqpBroker.mqService">
+                  <option [ngValue]="null">{{'disabled' | translate}}</option>
+                  <option [ngValue]="'ACTIVE_MQ'">Active MQ</option>
+                  <option [ngValue]="'RABBIT_MQ'">Rabbit MQ</option>
+                </select>
               </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <input placeholder="{{'Data base URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUrl"/>
-                </div>
-                <div class="col-sm-4">
-                  <input placeholder="{{'Data base User' | translate}}" class="form-control" title="" [(ngModel)]="stand.dbUser"/>
-                </div>
-                <div class="col-sm-4">
-                  <input placeholder="{{'Data base Password' | translate}}" type="password" class="form-control" title="" [(ngModel)]="stand.dbPassword"/>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <input placeholder="{{'WireMock URL' | translate}}" class="form-control" title="" [(ngModel)]="stand.wireMockUrl"/>
-                </div>
-              </div>
+
+              <label>{{'Host' | translate}}</label>
+              <input disabled class="form-control" title="" [ngModel]="project.amqpBroker.host"/>
+
+              <label>{{'Port' | translate}}</label>
+              <input disabled class="form-control" title="" [ngModel]="project.amqpBroker.port"/>
+
+              <label>{{'Username' | translate}}</label>
+              <input disabled class="form-control" title="" [ngModel]="project.amqpBroker.username"/>
+
+              <label>{{'Password' | translate}}</label>
+              <input disabled class="form-control" title="" [ngModel]="project.amqpBroker.password"/>
             </div>
           </div>
-        </div>
-        <div style="border: none;" class="list-group-item">
-          <button class="btn btn-default" (click)="addStand()"><span class="glyphicon glyphicon-plus"></span> Add stand</button>
         </div>
       </div>
       <div [style.display]="tab == 'json' ? '' : 'none'">

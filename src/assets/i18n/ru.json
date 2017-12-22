@@ -23,7 +23,7 @@
   "disabled": "откл",
   "Project code": "Код проекта",
   "Use random testId": "Использовать случайный testId",
-  "testId header name": "название заголовка testId",
+  "TestId header name": "Название заголовка testId",
   "AMQP broker": "AMQP-брокер",
   "Broker type": "Тип брокера",
   "Remove broker": "Удалить брокер",
@@ -116,5 +116,7 @@
   "Synchronize scrolling": "Синхронизировать прокрутку",
   "Import project from YAML": "Импортировать проект из YAML",
   "MIME type": "Тип MIME",
-  "Groups": "Группы"
+  "Groups": "Группы",
+  "Host": "Хост",
+  "Port": "Порт"
 }

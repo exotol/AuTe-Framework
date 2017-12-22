@@ -23,7 +23,7 @@
   "disabled": "disabled",
   "Project code": "Project code",
   "Use random testId": "Use random testId",
-  "testId header name": "testId header name",
+  "TestId header name": "TestId header name",
   "AMQP broker": "AMQP broker",
   "Broker type": "Broker type",
   "Remove broker": "Remove broker",
@@ -116,5 +116,7 @@
   "Synchronize scrolling": "Synchronize scrolling",
   "Import project from YAML": "Import project from YAML",
   "MIME type": "MIME type",
-  "Groups": "Groups"
+  "Groups": "Groups",
+  "Host": "Host",
+  "Port": "Port"
 }
