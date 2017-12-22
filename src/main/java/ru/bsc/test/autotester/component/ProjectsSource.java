@@ -4,11 +4,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.bsc.test.at.executor.model.AmqpBroker;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
+import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
@@ -35,14 +39,14 @@ public class ProjectsSource {
     private final static String SCENARIO_YAML_FILENAME = "scenario.yml";
     private static final String FILE_ENCODING = "UTF-8";
 
-    private String directoryPath;
+    private EnvironmentProperties environmentProperties;
 
     private List<Project> loadProjects() {
         List<Project> projectList = new LinkedList<>();
 
         projectList.clear();
-        LOGGER.debug("Load projects from: {}", directoryPath);
-        File[] fileList = new File(directoryPath).listFiles(File::isDirectory);
+        LOGGER.debug("Load projects from: {}", environmentProperties.getProjectsDirectoryPath());
+        File[] fileList = new File(environmentProperties.getProjectsDirectoryPath()).listFiles(File::isDirectory);
         if (fileList != null) {
             for (File projectDirectory: fileList) {
                 LOGGER.debug("Reading directory: {}", projectDirectory.getAbsolutePath());
@@ -51,6 +55,7 @@ public class ProjectsSource {
                     try {
                         Project loadedProject = YamlUtils.loadAs(mainYaml, Project.class);
                         loadedProject.setCode(projectDirectory.getName());
+                        environmentToProject(loadedProject);
                         readExternalFiles(loadedProject);
 
                         projectList.add(loadedProject);
@@ -64,9 +69,34 @@ public class ProjectsSource {
         return projectList;
     }
 
+    private void environmentToProject(Project project) {
+        StandProperties standProperties = environmentProperties.getProjectStandMap().get(project.getCode());
+        if (standProperties != null) {
+            Stand stand = new Stand();
+            stand.setServiceUrl(standProperties.getServiceUrl());
+            stand.setWireMockUrl(standProperties.getWireMockUrl());
+            if (standProperties.getDataBase() != null) {
+                stand.setDbUrl(standProperties.getDataBase().getUrl());
+                stand.setDbUser(standProperties.getDataBase().getUser());
+                stand.setDbPassword(standProperties.getDataBase().getPassword());
+            }
+            project.setStand(stand);
+
+            if (standProperties.getAmqpBroker() != null) {
+                AmqpBroker amqpBroker = new AmqpBroker();
+                amqpBroker.setMqService(standProperties.getAmqpBroker().getMqService());
+                amqpBroker.setHost(standProperties.getAmqpBroker().getHost());
+                amqpBroker.setPort(standProperties.getAmqpBroker().getPort());
+                amqpBroker.setUsername(standProperties.getAmqpBroker().getUsername());
+                amqpBroker.setPassword(standProperties.getAmqpBroker().getPassword());
+                project.setAmqpBroker(amqpBroker);
+            }
+        }
+    }
+
     private void readExternalFiles(Project project) {
         Set<String> groupSet = new HashSet<>();
-        File[] fileList = new File(directoryPath + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
+        File[] fileList = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
         if (fileList != null) {
             for (File directory : fileList) {
                 File scenarioYml = new File(directory, SCENARIO_YAML_FILENAME);
@@ -114,10 +144,6 @@ public class ProjectsSource {
         return null;
     }
 
-    public void setDirectoryPath(String directoryPath) {
-        this.directoryPath = directoryPath;
-    }
-
     public List<Project> getProjectList() {
         synchronized (this) {
             return loadProjects();
@@ -132,7 +158,7 @@ public class ProjectsSource {
 
     public void saveFullProject(Project project) throws Exception {
         synchronized (this) {
-            File root = new File(directoryPath + "/" + project.getCode());
+            File root = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode());
             if (!root.exists()) {
                 if (root.mkdirs()) {
                     saveAllScenariosToExternalFiles(project);
@@ -146,10 +172,16 @@ public class ProjectsSource {
         }
     }
 
+    private void clearProjectBeforeSave(Project project) {
+        project.setScenarioList(null);
+        project.setStand(null);
+        project.setAmqpBroker(null);
+    }
+
     private void saveProjectToFiles(Project project) {
-        String fileName = directoryPath + "/" + project.getCode() + "/" + MAIN_YAML_FILENAME;
+        String fileName = environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/" + MAIN_YAML_FILENAME;
         try {
-            project.setScenarioList(null);
+            clearProjectBeforeSave(project);
             YamlUtils.dumpToFile(project, fileName);
         } catch (IOException e) {
             LOGGER.error("Save file " + fileName, e);
@@ -230,13 +262,13 @@ public class ProjectsSource {
     }
 
     private void saveAllScenariosToExternalFiles(Project project) throws IOException {
-        String projectPath = directoryPath + "/" + project.getCode() + "/";
+        String projectPath = environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/";
         if (new File(projectPath + "scenarios").exists()) {
             FileUtils.deleteDirectory(new File(projectPath + "scenarios"));
         }
         project.getScenarioList().forEach(scenario -> {
             try {
-                File scenarioFile = new File(directoryPath + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
+                File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
                 saveScenarioToFiles(scenario, scenarioFile, true);
             } catch (IOException e) {
                 LOGGER.error("Save project external files", e);
@@ -245,12 +277,12 @@ public class ProjectsSource {
     }
 
     public void deleteScenario(String projectCode, String scenarioPath) throws IOException {
-        FileUtils.deleteDirectory(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath));
+        FileUtils.deleteDirectory(new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + scenarioPath));
     }
 
     public Scenario findScenario(String projectCode, String scenarioPath) throws IOException {
         String[] pathParts = scenarioPath.split("/");
-        return loadScenarioFromFiles(new File(directoryPath + "/" + projectCode + "/scenarios/" + scenarioPath), pathParts.length > 1 ? pathParts[0] : null);
+        return loadScenarioFromFiles(new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + scenarioPath), pathParts.length > 1 ? pathParts[0] : null);
     }
 
     private Scenario loadScenarioFromFiles(File scenarioDirectory, String group) throws IOException {
@@ -295,7 +327,7 @@ public class ProjectsSource {
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
         }
-        File scenarioFile = new File(directoryPath + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
+        File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
         // Прочитать существующий сценарий
@@ -438,7 +470,7 @@ public class ProjectsSource {
     }
 
     public void addNewGroup(String projectCode, String groupName) throws Exception {
-        File file = new File(directoryPath + "/" + projectCode + "/scenarios/" + groupName);
+        File file = new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + groupName);
         if (file.exists()) {
             throw new Exception("Directory already exists");
         } else {
@@ -449,13 +481,21 @@ public class ProjectsSource {
     }
 
     public void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception {
-        File file = new File(directoryPath + "/" + projectCode + "/scenarios/" + oldGroupName);
+        File file = new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + oldGroupName);
         if (new File(file, "scenario.yml").exists() || !file.isDirectory()) {
             throw new Exception("This is not a group");
         } else {
-            if (!file.renameTo(new File(directoryPath + "/" + projectCode + "/scenarios/" + newGroupName))) {
+            if (!file.renameTo(new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + newGroupName))) {
                 throw new Exception("Directory not renamed");
             }
         }
+    }
+
+    public void setEnvironmentProperties(EnvironmentProperties environmentProperties) {
+        this.environmentProperties = environmentProperties;
+    }
+
+    public EnvironmentProperties getEnvironmentProperties() {
+        return environmentProperties;
     }
 }

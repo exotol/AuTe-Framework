@@ -15,7 +15,6 @@ public class ProjectRo extends AbstractRo {
     private String beforeScenarioPath;
     private String afterScenarioPath;
     private StandRo stand;
-    private List<StandRo> standList;
     private Boolean useRandomTestId;
     private String testIdHeaderName;
     private AmqpBrokerRo amqpBroker;
@@ -59,14 +58,6 @@ public class ProjectRo extends AbstractRo {
 
     public void setStand(StandRo stand) {
         this.stand = stand;
-    }
-
-    public List<StandRo> getStandList() {
-        return standList;
-    }
-
-    public void setStandList(List<StandRo> standList) {
-        this.standList = standList;
     }
 
     public Boolean getUseRandomTestId() {

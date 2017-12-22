@@ -12,19 +12,17 @@ import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
 import ru.bsc.test.autotester.component.ProjectsSource;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
+import ru.bsc.test.autotester.yaml.YamlUtils;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 public class TestLauncher {
-
-    private final static String PROPERTIES_FILE_NAME = "environment.properties";
-    private final static String PROJECTS_PATH_PROPERTY = "projects.directory.path";
 
     public void launch() {
         TestNG testNG = new TestNG();
@@ -62,32 +60,27 @@ public class TestLauncher {
     }
 
     @DataProvider
-    private Object[][] dataProvider() {
-        Properties prop = new Properties();
-        try {
-            prop.load(new FileInputStream(PROPERTIES_FILE_NAME));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+    private Object[][] dataProvider() throws IOException {
+        EnvironmentProperties environmentProperties = YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
 
         ProjectsSource projectsSource = new ProjectsSource();
-        projectsSource.setDirectoryPath(prop.getProperty(PROJECTS_PATH_PROPERTY));
+        projectsSource.setEnvironmentProperties(environmentProperties);
         List<Project> projectList = projectsSource.getProjectList();
 
         List<Object[]> scenarios = new LinkedList<>();
         projectList.forEach(project -> {
-            System.out.println("Project: [" + project.getCode() + "]" + project.getName());
+            if (environmentProperties.getProjectStandMap() == null || !environmentProperties.getProjectStandMap().containsKey(project.getCode())) {
+                return;
+            }
             AtExecutor atExecutor = new AtExecutor();
-            atExecutor.setProjectPath(prop.getProperty(PROJECTS_PATH_PROPERTY) + "/" + project.getCode() + "/");
+            atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
 
             for (Scenario scenario: project.getScenarioList()) {
                 scenarios.add(new Object[]{ scenario, project, atExecutor });
             }
-
         });
 
-        return scenarios.subList(0, 20).toArray(new Object[scenarios.subList(0, 20).size()][3]);
+        return scenarios.toArray(new Object[scenarios.size()][3]);
     }
 
     @Test(dataProvider = "dataProvider")

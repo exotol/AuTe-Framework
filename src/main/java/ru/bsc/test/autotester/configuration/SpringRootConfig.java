@@ -1,19 +1,21 @@
 package ru.bsc.test.autotester.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import ru.bsc.test.autotester.component.ProjectsSource;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.repository.yaml.YamlProjectRepositoryImpl;
 import ru.bsc.test.autotester.repository.yaml.YamlScenarioRepositoryImpl;
+import ru.bsc.test.autotester.yaml.YamlUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -21,7 +23,6 @@ import ru.bsc.test.autotester.repository.yaml.YamlScenarioRepositoryImpl;
  */
 @Configuration
 @ComponentScan("ru.bsc.test.autotester")
-@PropertySource("file:environment.properties")
 public class SpringRootConfig {
 
     private final ApplicationContext applicationContext;
@@ -29,12 +30,6 @@ public class SpringRootConfig {
     @Autowired
     public SpringRootConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-    }
-
-    //To resolve ${} in @Value
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
@@ -46,9 +41,11 @@ public class SpringRootConfig {
     }
 
     @Bean
-    public ProjectsSource projectsSource(@Value("${projects.directory.path:.}") String projectsDirectoryPath) {
+    public ProjectsSource projectsSource() throws IOException {
+        EnvironmentProperties environmentProperties = YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
+
         ProjectsSource projectsSource = new ProjectsSource();
-        projectsSource.setDirectoryPath(projectsDirectoryPath);
+        projectsSource.setEnvironmentProperties(environmentProperties);
         return projectsSource;
     }
 
