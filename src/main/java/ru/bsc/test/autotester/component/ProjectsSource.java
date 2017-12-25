@@ -330,20 +330,22 @@ public class ProjectsSource {
         File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
-        // Прочитать существующий сценарий
-        Scenario existsScenario = loadScenarioFromFiles(scenarioRootDirectory, null);
+        // Прочитать существующий сценарий (для создаваемого сценария этот файл еще не существует)
+        if (new File(scenarioRootDirectory, SCENARIO_YAML_FILENAME).exists()) {
+            Scenario existsScenario = loadScenarioFromFiles(scenarioRootDirectory, null);
 
-        // Найти шаги, которые удалены
-        existsScenario.getStepList().forEach(existsStep -> {
-            boolean isExists = scenario.getStepList().stream().filter(step -> Objects.equals(existsStep.getCode(), step.getCode())).count() > 0;
-            if (!isExists && existsStep.getCode() != null) {
-                try {
-                    FileUtils.deleteDirectory(new File(scenarioRootDirectory, "steps" + File.separatorChar + existsStep.getCode()));
-                } catch (IOException e) {
-                    LOGGER.error("Delete step directory " + scenarioRootDirectory + File.separatorChar + existsStep.getCode(), e);
+            // Найти шаги, которые удалены
+            existsScenario.getStepList().forEach(existsStep -> {
+                boolean isExists = scenario.getStepList().stream().filter(step -> Objects.equals(existsStep.getCode(), step.getCode())).count() > 0;
+                if (!isExists && existsStep.getCode() != null) {
+                    try {
+                        FileUtils.deleteDirectory(new File(scenarioRootDirectory, "steps" + File.separatorChar + existsStep.getCode()));
+                    } catch (IOException e) {
+                        LOGGER.error("Delete step directory " + scenarioRootDirectory + File.separatorChar + existsStep.getCode(), e);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         saveScenarioToFiles(scenario, scenarioFile, false);
         scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
