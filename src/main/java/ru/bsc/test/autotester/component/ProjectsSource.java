@@ -467,8 +467,10 @@ public class ProjectsSource {
         for (Step step : scenario.getStepList()) {
             saveStepToFiles(step.getCode(), step, scenarioRootDirectory, updatePaths);
         }
+        String scenarioGroupSaved = scenario.getScenarioGroup();
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
+        scenario.setScenarioGroup(scenarioGroupSaved);
     }
 
     public void addNewGroup(String projectCode, String groupName) throws Exception {
