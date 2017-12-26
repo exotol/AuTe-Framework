@@ -16,6 +16,7 @@ public class StepResultRo {
     private Integer pollingRetryCount;
     private String savedParameters;
     private String description;
+    private boolean editable;
 
     public String getTestId() {
         return testId;
@@ -103,5 +104,13 @@ public class StepResultRo {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

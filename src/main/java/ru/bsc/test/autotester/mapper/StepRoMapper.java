@@ -175,7 +175,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "requestBody", source = "requestBody"),
             @Mapping(target = "pollingRetryCount", source = "pollingRetryCount"),
             @Mapping(target = "savedParameters", source = "savedParameters"),
-            @Mapping(target = "description", source = "description")
+            @Mapping(target = "description", source = "description"),
+            @Mapping(target = "editable", source = "editable")
     })
     abstract StepResultRo stepResultToStepResultRo(StepResult stepResult);
 
