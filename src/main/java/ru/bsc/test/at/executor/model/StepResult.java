@@ -20,6 +20,7 @@ public class StepResult {
     private Integer pollingRetryCount;
     private String savedParameters;
     private String description;
+    private boolean editable;
 
     public StepResult(Step step) {
         this.step = step;
@@ -90,5 +91,13 @@ public class StepResult {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isEditable() {
+        return editable;
     }
 }

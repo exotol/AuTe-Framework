@@ -117,15 +117,27 @@ public class AtExecutor {
         // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
         Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
         if (beforeScenario != null) {
-            stepResultList.addAll(executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues));
+            stepResultList.addAll(
+                    executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues)
+                            .stream()
+                            .peek(stepResult -> stepResult.setEditable(false))
+                            .collect(Collectors.toList()));
         }
 
-        stepResultList.addAll(executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues));
+        stepResultList.addAll(
+                executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues)
+                        .stream()
+                        .peek(stepResult -> stepResult.setEditable(true))
+                        .collect(Collectors.toList()));
 
         // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
         Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
         if (afterScenario != null) {
-            stepResultList.addAll(executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues));
+            stepResultList.addAll(
+                    executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues)
+                            .stream()
+                            .peek(stepResult -> stepResult.setEditable(false))
+                            .collect(Collectors.toList()));
         }
 
         httpHelper.closeHttpConnection();
