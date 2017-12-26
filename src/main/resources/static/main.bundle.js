@@ -979,7 +979,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-primary\" *ngIf=\"state != 'executing'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" disabled>{{'Executing' | translate}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">{{'Show results' | translate}}</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-primary\" *ngIf=\"state != 'executing'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" disabled>{{'Executing' | translate}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">{{'Show results' | translate}}</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1191,7 +1191,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"search-block\" *ngIf=\"projectId\">\r\n  <input #queryInput [formControl] =\"queryField\" placeholder=\"{{placeholderText}}\"/>\r\n  <div class=\"search-result\" #searchResult *ngIf=\"scenarioList || errorFlag\">\r\n    <ol *ngIf=\"scenarioList\">\r\n      <li *ngFor=\"let scenario of scenarioList\" [routerLink]=\"['/scenario', scenario.id]\">{{scenario.name}}</li>\r\n    </ol>\r\n    <p class=\"error\" *ngIf=\"errorFlag\">{{errorMsg}}</p>\r\n  </div>\r\n</div>\r\n\r\n\r\n"
+module.exports = "<div class=\"search-block\" *ngIf=\"projectCode\">\r\n  <input #queryInput [formControl] =\"queryField\" placeholder=\"{{placeholderText}}\"/>\r\n  <div class=\"search-result\" #searchResult *ngIf=\"scenarioList || errorFlag\">\r\n    <ol *ngIf=\"scenarioList\">\r\n      <li *ngFor=\"let scenario of scenarioList\" [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.name}}</li>\r\n    </ol>\r\n    <p class=\"error\" *ngIf=\"errorFlag\">{{errorMsg}}</p>\r\n  </div>\r\n</div>\r\n\r\n\r\n"
 
 /***/ }),
 
@@ -2227,7 +2227,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">{{'Summary' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\r\n        Test id: {{stepResult.testId}}\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Saved parameters' | translate}}: {{stepResult.savedParameters}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <app-diff\r\n            [expected]=\"stepResult.expected\"\r\n            [actual]=\"stepResult.actual\">\r\n          </app-diff>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"tab == 'stepEdit' || tab == 'all'\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">{{'Summary' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\r\n        Test id: {{stepResult.testId}}\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Saved parameters' | translate}}: {{stepResult.savedParameters}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <app-diff\r\n            [expected]=\"stepResult.expected\"\r\n            [actual]=\"stepResult.actual\">\r\n          </app-diff>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2240,6 +2240,7 @@ module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n 
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__model_scenario__ = __webpack_require__("../../../../../src/app/model/scenario.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepResultItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2250,6 +2251,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -2266,8 +2268,6 @@ var StepResultItemComponent = (function () {
         var _this = this;
         this.route.params.subscribe(function (params) {
             _this.projectCode = params['projectCode'];
-            _this.scenarioGroup = params['scenarioGroup'];
-            _this.scenarioCode = params['scenarioCode'];
         });
     };
     StepResultItemComponent.prototype.selectTab = function (tabName) {
@@ -2277,7 +2277,7 @@ var StepResultItemComponent = (function () {
     StepResultItemComponent.prototype.saveStep = function () {
         var _this = this;
         var toasty = this.customToastyService.saving();
-        this.stepService.saveStep(this.projectCode, this.scenarioGroup, this.scenarioCode, this.stepResult.step)
+        this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
             .subscribe(function () {
             _this.customToastyService.success('Сохранено', 'Шаг сохранен');
         }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
@@ -2288,6 +2288,10 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_step_result__["a" /* StepResult */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_step_result__["a" /* StepResult */]) === "function" && _a || Object)
 ], StepResultItemComponent.prototype, "stepResult", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__model_scenario__["a" /* Scenario */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__model_scenario__["a" /* Scenario */]) === "function" && _b || Object)
+], StepResultItemComponent.prototype, "scenario", void 0);
 StepResultItemComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-result-item',
@@ -2299,10 +2303,10 @@ StepResultItemComponent = __decorate([
             '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object])
 ], StepResultItemComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=step-result-item.component.js.map
 
 /***/ }),
