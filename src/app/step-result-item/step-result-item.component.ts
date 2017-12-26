@@ -3,6 +3,7 @@ import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
+import {Scenario} from '../model/scenario';
 
 @Component({
   selector: 'app-step-result-item',
@@ -18,11 +19,11 @@ export class StepResultItemComponent implements OnInit {
 
   @Input()
   stepResult: StepResult;
+  @Input()
+  scenario: Scenario;
 
   tab = 'summary';
   projectCode: String;
-  scenarioGroup: String;
-  scenarioCode: String;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,8 +34,6 @@ export class StepResultItemComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: ParamMap) => {
       this.projectCode = params['projectCode'];
-      this.scenarioGroup = params['scenarioGroup'];
-      this.scenarioCode = params['scenarioCode'];
     });
   }
 
@@ -45,7 +44,7 @@ export class StepResultItemComponent implements OnInit {
 
   saveStep() {
     const toasty = this.customToastyService.saving();
-    this.stepService.saveStep(this.projectCode, this.scenarioGroup, this.scenarioCode, this.stepResult.step)
+    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));

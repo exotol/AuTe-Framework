@@ -21,7 +21,7 @@
   </div>
   <div class="row result" *ngIf="showResultDetails && stepResultList">
     <ng-container *ngFor="let stepResult of stepResultList">
-      <app-step-result-item [stepResult]="stepResult"></app-step-result-item>
+      <app-step-result-item [stepResult]="stepResult" [scenario]="scenario"></app-step-result-item>
     </ng-container>
   </div>
 </div>

@@ -13,4 +13,5 @@ export class StepResult {
   pollingRetryCount: number;
   savedParameters: string;
   description: string;
+  editable: boolean;
 }

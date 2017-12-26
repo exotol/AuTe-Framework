@@ -15,7 +15,7 @@
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">{{'Summary' | translate}}</a></li>
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
-      <li [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Edit step' | translate}}</a></li>
+      <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Edit step' | translate}}</a></li>
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
@@ -47,7 +47,7 @@
       <div *ngIf="tab == 'json' || tab == 'all'">
         <pre>{{stepResult | json}}</pre>
       </div>
-      <div *ngIf="tab == 'stepEdit' || tab == 'all'">
+      <div *ngIf="stepResult.editable && (tab == 'stepEdit' || tab == 'all')">
         <app-step-item [step]="stepResult.step"></app-step-item>
         <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
       </div>
