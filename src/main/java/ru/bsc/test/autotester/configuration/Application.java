@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ import ru.bsc.test.autotester.launcher.TestLauncher;
 @SpringBootApplication
 public class Application {
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         if (Arrays.asList(args).contains("execute")) {
 
             Set<String> loggers = new HashSet<>(Arrays.asList(
