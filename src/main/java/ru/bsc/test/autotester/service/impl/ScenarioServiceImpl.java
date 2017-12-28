@@ -5,7 +5,6 @@ import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -17,6 +16,7 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
@@ -45,20 +45,19 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
     private final ProjectService projectService;
-
-    @Value("${projects.directory.path:}")
-    private String projectsPath;
+    private final EnvironmentProperties environmentProperties;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ProjectService projectService) {
+    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ProjectService projectService, EnvironmentProperties environmentProperties) {
         this.scenarioRepository = scenarioRepository;
         this.projectService = projectService;
+        this.environmentProperties = environmentProperties;
     }
 
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
-        atExecutor.setProjectPath(projectsPath + "/" + project.getCode() + "/");
+        atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
             map.forEach((scenario, stepResults) -> {

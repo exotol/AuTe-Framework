@@ -41,11 +41,14 @@ public class SpringRootConfig {
     }
 
     @Bean
-    public ProjectsSource projectsSource() throws IOException {
-        EnvironmentProperties environmentProperties = YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
+    public EnvironmentProperties environmentProperties() throws IOException {
+        return YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
+    }
 
+    @Bean
+    public ProjectsSource projectsSource() throws IOException {
         ProjectsSource projectsSource = new ProjectsSource();
-        projectsSource.setEnvironmentProperties(environmentProperties);
+        projectsSource.setEnvironmentProperties(applicationContext.getBean(EnvironmentProperties.class));
         return projectsSource;
     }
 
