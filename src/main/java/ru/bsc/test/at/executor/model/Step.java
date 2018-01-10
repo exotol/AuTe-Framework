@@ -40,6 +40,7 @@ public class Step extends AbstractModel implements Serializable {
     private String mqMessage;
     private String mqMessageFile;
     private List<FormData> formDataList;
+    private String jsonCompareMode;
 
     public String getCode() {
         return code;
@@ -324,5 +325,13 @@ public class Step extends AbstractModel implements Serializable {
         result = 31 * result + (stepComment != null ? stepComment.hashCode() : 0);
         result = 31 * result + (savedValuesCheck != null ? savedValuesCheck.hashCode() : 0);
         return result;
+    }
+
+    public String getJsonCompareMode() {
+        return jsonCompareMode;
+    }
+
+    public void setJsonCompareMode(String jsonCompareMode) {
+        this.jsonCompareMode = jsonCompareMode;
     }
 }

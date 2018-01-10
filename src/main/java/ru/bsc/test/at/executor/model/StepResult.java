@@ -21,6 +21,8 @@ public class StepResult {
     private String savedParameters;
     private String description;
     private boolean editable;
+    private long start;
+    private long stop;
 
     public StepResult(Step step) {
         this.step = step;
@@ -99,5 +101,21 @@ public class StepResult {
 
     public boolean isEditable() {
         return editable;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getStop() {
+        return stop;
+    }
+
+    public void setStop(long stop) {
+        this.stop = stop;
     }
 }

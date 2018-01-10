@@ -39,6 +39,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -185,6 +186,7 @@ public class AtExecutor {
                 }
                 for (StepParameterSet stepParameterSet: parametersEnvironment) {
                     StepResult stepResult = new StepResult(step);
+                    stepResult.setStart(new Date().getTime());
                     stepResultList.add(stepResult);
 
                     if (stepParameterSet.getStepParameterList() != null) {
@@ -207,6 +209,8 @@ public class AtExecutor {
 
                         stepResult.setResult(StepResult.RESULT_FAIL);
                         stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
+                    } finally {
+                        stepResult.setStop(new Date().getTime());
                     }
                 }
             }
@@ -324,7 +328,7 @@ public class AtExecutor {
 
         if (!step.getExpectedResponseIgnore()) {
             if (step.getResponseCompareMode() == null) {
-                JSONComparing(expectedResponse, responseData);
+                JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
@@ -338,21 +342,21 @@ public class AtExecutor {
                         }
                         break;
                     default:
-                        JSONComparing(expectedResponse, responseData);
+                        JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
                         break;
                 }
             }
         }
     }
 
-    private void JSONComparing(String expectedResponse, ResponseHelper responseData) throws Exception {
+    private void JSONComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
         if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
                 JSONAssert.assertEquals(
                         expectedResponse.replaceAll(" ", " "),
                         responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                        new IgnoringComparator(JSONCompareMode.NON_EXTENSIBLE)
+                        new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.valueOf(jsonCompareMode))
                 );
             } catch (Error assertionError) {
                 throw new Exception(assertionError);
