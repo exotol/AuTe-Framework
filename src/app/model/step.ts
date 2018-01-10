@@ -28,4 +28,5 @@ export class Step {
   formDataList: FormData[] = [];
   mqName: string;
   mqMessage: string;
+  jsonCompareMode: String;
 }

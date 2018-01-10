@@ -74,12 +74,18 @@
         <div class="row" *ngIf="tab == 'details' || tab == 'all'">
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <label>{{'Request body type' | translate}}</label>
                 <select class="form-control" title="{{'Request body type' | translate}}" [(ngModel)]="step.requestBodyType">
                   <option [ngValue]="'JSON'">{{'JSON request body (default)' | translate}}</option>
                   <option [ngValue]="'FORM'">{{'FORM-data request body' | translate}}</option>
                 </select>
+              </div>
+              <div class="col-sm-6" style="text-align: center; padding-top: 10px;">
+                <label>
+                  <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
+                  {{'Ignore response' | translate}}
+                </label>
               </div>
             </div>
             <label>{{'Request body' | translate}}</label>
@@ -105,11 +111,9 @@
           </div>
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-sm-4" style="text-align: center; padding-top: 10px;">
-                <label>
-                  <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
-                  {{'Ignore response' | translate}}
-                </label>
+              <div class="col-sm-4">
+                <label>{{'Expected status' | translate}}</label>
+                <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
               </div>
               <div class="col-sm-4">
                 <label>{{'Compare mode' | translate}}</label>
@@ -119,9 +123,14 @@
                   <option [ngValue]="'IGNORE_MASK'">Mask *ignore*</option>
                 </select>
               </div>
-              <div class="col-sm-4">
-                <label>{{'Expected status' | translate}}</label>
-                <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
+              <div class="col-sm-4" *ngIf="step.responseCompareMode == 'JSON'">
+                <label>{{'JSON compare mode' | translate}}</label>
+                <select class="form-control" title="{{'JSON compare mode' | translate}}" [(ngModel)]="step.jsonCompareMode">
+                  <option [ngValue]="'NON_EXTENSIBLE'">NON_EXTENSIBLE (Default. Not extensible, non-strict array ordering)</option>
+                  <option [ngValue]="'STRICT'">STRICT (Not extensible, strict array ordering)</option>
+                  <option [ngValue]="'LENIENT'">LENIENT (Extensible, non-strict array ordering)</option>
+                  <option [ngValue]="'STRICT_ORDER'">STRICT_ORDER (Extensible, strict array ordering)</option>
+                </select>
               </div>
             </div>
             <label>{{'Expected response' | translate}}</label>
