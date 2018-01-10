@@ -27,7 +27,7 @@ public class RestStepController {
         this.scenarioService = scenarioService;
     }
 
-    @RequestMapping(value = { "{scenarioGroup}/{scenarioCode}/steps/{stepCode}", "{scenarioCode}/steps/{stepCode}" }, method = RequestMethod.PUT)
+    @RequestMapping(value = { "{scenarioGroup:.+}/{scenarioCode:.+}/steps/{stepCode:.+}", "{scenarioCode:.+}/steps/{stepCode:.+}" }, method = RequestMethod.PUT)
     public StepRo updateOne(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -42,7 +42,7 @@ public class RestStepController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = { "{scenarioGroup}/{scenarioCode}/steps/{stepCode}/clone", "{scenarioCode}/steps/{stepCode}/clone" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "{scenarioGroup:.+}/{scenarioCode:.+}/steps/{stepCode:.+}/clone", "{scenarioCode:.+}/steps/{stepCode:.+}/clone" }, method = RequestMethod.POST)
     public StepRo cloneStep(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,

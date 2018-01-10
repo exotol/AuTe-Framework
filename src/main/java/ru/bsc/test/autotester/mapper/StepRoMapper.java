@@ -59,7 +59,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "mqMessage", source = "mqMessage"),
             @Mapping(target = "mqMessageFile", ignore = true),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataList", source = "formDataList")
+            @Mapping(target = "formDataList", source = "formDataList"),
+            @Mapping(target = "jsonCompareMode", source = "jsonCompareMode"),
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
@@ -94,7 +95,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "stepParameterSetList", source = "stepParameterSetList"),
             @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests"),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
-            @Mapping(target = "formDataList", source = "formDataList")
+            @Mapping(target = "formDataList", source = "formDataList"),
+            @Mapping(target = "jsonCompareMode", source = "jsonCompareMode"),
     })
     public abstract StepRo stepToStepRo(Step step);
 

@@ -45,7 +45,7 @@ public class RestScenarioController {
         this.projectService = projectService;
     }
 
-    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.GET)
     public List<StepRo> findSteps(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -58,7 +58,7 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "{scenarioCode:.+}", "{scenarioGroup:.+}/{scenarioCode:.+}" }, method = RequestMethod.GET)
     public ScenarioRo findOne(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -72,7 +72,7 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.PUT)
+    @RequestMapping(value = { "{scenarioCode:.+}", "{scenarioGroup:.+}/{scenarioCode:.+}" }, method = RequestMethod.PUT)
     public ScenarioRo saveOne(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -86,7 +86,7 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = { "{scenarioCode}", "{scenarioGroup}/{scenarioCode}" }, method = RequestMethod.DELETE)
+    @RequestMapping(value = { "{scenarioCode:.+}", "{scenarioGroup:.+}/{scenarioCode:.+}" }, method = RequestMethod.DELETE)
     public void deleteOne(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -95,7 +95,7 @@ public class RestScenarioController {
         scenarioService.deleteOne(projectCode, scenarioPath);
     }
 
-    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.POST)
     public StepRo createNewStep(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -109,7 +109,7 @@ public class RestScenarioController {
         throw new ResourceNotFoundException();
     }
 
-    @RequestMapping(value = { "{scenarioCode}/steps", "{scenarioGroup}/{scenarioCode}/steps" }, method = RequestMethod.PUT)
+    @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.PUT)
     public List<StepRo> saveStepList(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
@@ -119,7 +119,7 @@ public class RestScenarioController {
         return scenarioService.updateStepListFromRo(projectCode, scenarioPath, stepRoList);
     }
 
-    @RequestMapping(value = { "{scenarioCode}/exec", "{scenarioGroup}/{scenarioCode}/exec" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "{scenarioCode:.+}/exec", "{scenarioGroup:.+}/{scenarioCode:.+}/exec" }, method = RequestMethod.POST)
     public List<StepResultRo> executing(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
