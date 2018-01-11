@@ -34,7 +34,7 @@ public class TestLauncher {
             atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + File.separator + project.getCode() + File.separator);
 
             int scenarioFailedCount = 0;
-            for (Scenario scenario: project.getScenarioList().subList(0, Math.min(project.getScenarioList().size(), 5))) {
+            for (Scenario scenario: project.getScenarioList()) {
                 scenarioFailedCount += test(scenario, project, atExecutor, reportGenerator);
             }
             return scenarioFailedCount;
