@@ -77,7 +77,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.filter = new Scenario();
     this.filter.scenarioGroup = group;
 
-    this.router.navigate([], {queryParams: {scenarioGroup: group ? group : -1}});
+    this.router.navigate([], {queryParams: {scenarioGroup: group ? group : ''}});
     this.updateFailCountSum();
 
     return false;
@@ -140,6 +140,9 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   saveNewScenario() {
     const newScenario = new Scenario();
     newScenario.name = this.newScenarioName;
+    if (this.filter && this.filter.scenarioGroup) {
+      newScenario.scenarioGroup = this.filter.scenarioGroup;
+    }
 
     const toasty = this.customToastyService.saving('Сохранение сценария...', 'Сохранение может занять некоторое время...');
     this.projectService.createScenario(this.project, newScenario)
