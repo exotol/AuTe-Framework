@@ -550,7 +550,7 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.selectGroup = function (group) {
         this.filter = new __WEBPACK_IMPORTED_MODULE_4__model_scenario__["a" /* Scenario */]();
         this.filter.scenarioGroup = group;
-        this.router.navigate([], { queryParams: { scenarioGroup: group ? group : -1 } });
+        this.router.navigate([], { queryParams: { scenarioGroup: group ? group : '' } });
         this.updateFailCountSum();
         return false;
     };
@@ -606,6 +606,9 @@ var ProjectDetailComponent = (function () {
         var _this = this;
         var newScenario = new __WEBPACK_IMPORTED_MODULE_4__model_scenario__["a" /* Scenario */]();
         newScenario.name = this.newScenarioName;
+        if (this.filter && this.filter.scenarioGroup) {
+            newScenario.scenarioGroup = this.filter.scenarioGroup;
+        }
         var toasty = this.customToastyService.saving('Сохранение сценария...', 'Сохранение может занять некоторое время...');
         this.projectService.createScenario(this.project, newScenario)
             .subscribe(function (savedScenario) {
