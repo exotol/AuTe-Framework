@@ -59,7 +59,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 TestCaseResult testCaseResult = new TestCaseResult()
                         .withName(stepResultIndex[0] + " " + scenario.getCode() + stepResult.getStep().getCode())
                         .withTitle(stepResultIndex[0] + " " + stepResult.getStep().getRelativeUrl())
-                        .withDescription(new Description().withValue(stepResult.getActual()).withType(DescriptionType.TEXT))
+                        .withDescription(new Description().withValue("Actual:\n\n" + stepResult.getActual() + "\n\nExpected:\n\n" + stepResult.getExpected()).withType(DescriptionType.TEXT))
                         .withStart(stepResult.getStart())
                         .withStop(stepResult.getStop())
                         .withStatus(StepResult.RESULT_OK.equals(stepResult.getResult()) ? Status.PASSED : Status.FAILED);
