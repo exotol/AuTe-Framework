@@ -118,5 +118,7 @@
   "MIME type": "Тип MIME",
   "Groups": "Группы",
   "Host": "Хост",
-  "Port": "Порт"
+  "Port": "Порт",
+  "Search by method name": "Поиск по наименованию метода",
+  "Nothing found": "Ничего не найдено"
 }

@@ -1194,7 +1194,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"search-block\" *ngIf=\"projectCode\">\r\n  <input #queryInput [formControl] =\"queryField\" placeholder=\"{{placeholderText}}\"/>\r\n  <div class=\"search-result\" #searchResult *ngIf=\"scenarioList || errorFlag\">\r\n    <ol *ngIf=\"scenarioList\">\r\n      <li *ngFor=\"let scenario of scenarioList\" [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.name}}</li>\r\n    </ol>\r\n    <p class=\"error\" *ngIf=\"errorFlag\">{{errorMsg}}</p>\r\n  </div>\r\n</div>\r\n\r\n\r\n"
+module.exports = "<div class=\"search-block\" *ngIf=\"projectCode\">\r\n  <input #queryInput [formControl] =\"queryField\" placeholder=\"{{'Search by method name' | translate}}\"/>\r\n  <div class=\"search-result\" #searchResult *ngIf=\"scenarioList || errorFlag\">\r\n    <ol *ngIf=\"scenarioList\">\r\n      <li *ngFor=\"let scenario of scenarioList\" [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.name}}</li>\r\n    </ol>\r\n    <p class=\"error\" *ngIf=\"errorFlag\">{{'Nothing found' | translate}}</p>\r\n  </div>\r\n</div>\r\n\r\n\r\n"
 
 /***/ }),
 
@@ -1224,8 +1224,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var SearchComponent = (function () {
     function SearchComponent(searchScenarioService) {
         this.searchScenarioService = searchScenarioService;
-        this.placeholderText = 'Поиск по наименованию метода';
-        this.errorMsg = 'Ничего не найдено';
     }
     SearchComponent.prototype.ngOnInit = function () {
         var _this = this;
