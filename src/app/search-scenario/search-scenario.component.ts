@@ -10,8 +10,6 @@ import {SearchScenarioService} from '../service/search-scenario.service';
   styleUrls: ['./search-scenario.component.css']
 })
 export class SearchComponent implements OnInit {
-  placeholderText: string;
-  errorMsg: string;
   errorFlag: boolean;
   scenarioList: Scenario[];
   queryField: FormControl;
@@ -21,10 +19,7 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private searchScenarioService: SearchScenarioService
-  ) {
-      this.placeholderText = 'Поиск по наименованию метода';
-      this.errorMsg = 'Ничего не найдено';
-  }
+  ) { }
 
   ngOnInit() {
     this.queryField = new FormControl();
