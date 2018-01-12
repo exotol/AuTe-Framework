@@ -1,4 +1,5 @@
 import {BodyPattern} from './body-pattern';
+import {BasicAuthCredentials} from 'model/basic-auth-credentials';
 
 export class RequestMapping {
   url: string;
@@ -6,6 +7,7 @@ export class RequestMapping {
   method: string;
   headers: any;
   bodyPatterns: BodyPattern[];
+  basicAuthCredentials: BasicAuthCredentials;
 }
 
 export class HeaderItem {

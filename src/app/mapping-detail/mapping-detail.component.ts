@@ -8,6 +8,8 @@ import 'rxjs/add/operator/switchMap';
 
 import {ToastyService, ToastOptions} from 'ng2-toasty';
 import {HeaderItem} from '../../model/request-mapping';
+import {BasicAuthCredentials} from '../../model/basic-auth-credentials';
+
 
 @Component({
   selector: 'app-mapping-detail',
@@ -137,5 +139,9 @@ export class MappingDetailComponent implements OnInit {
 
   deleteResponseHeader(header: HeaderItem) {
     this.customResponseHeaders = this.customResponseHeaders.filter(value => value !== header);
+  }
+
+  addBasicAuth() {
+    this.mapping.request.basicAuthCredentials = new BasicAuthCredentials();
   }
 }
