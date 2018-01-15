@@ -2285,8 +2285,8 @@ var StepResultItemComponent = (function () {
         }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
     StepResultItemComponent.prototype.isShowDiffComponent = function () {
-        return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 10000
-            && this.stepResult.actual && this.stepResult.actual.length <= 10000;
+        return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 100000
+            && this.stepResult.actual && this.stepResult.actual.length <= 100000;
     };
     return StepResultItemComponent;
 }());
