@@ -11,15 +11,33 @@ export class DiffComponent implements OnInit {
   @Input('actual') actual: string;
   expectedDiff: any[];
   actualDiff: any[];
-  syncScroll: boolean = true;
+  syncScroll = true;
+
+  private static prepareStringForComparison(str: string): string {
+    if (!str) {
+      return '';
+    }
+    const resultObject: any = DiffComponent.tryToParseAsJSON(str);
+    return resultObject ?
+      JSON.stringify(resultObject, null, 2) :
+      str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
+  }
+
+  private static tryToParseAsJSON(str: string): any {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return null;
+    }
+  }
 
   ngOnInit() {
     this.formDiff();
   }
 
   private formDiff(): void {
-    const actualResultStr: string = this.prepareStringForComparison(this.actual);
-    const expectedResultStr: string = this.prepareStringForComparison(this.expected);
+    const actualResultStr: string = DiffComponent.prepareStringForComparison(this.actual);
+    const expectedResultStr: string = DiffComponent.prepareStringForComparison(this.expected);
 
     const diff: any[] = JsDiff.diffLines(expectedResultStr, actualResultStr);
 
@@ -42,23 +60,5 @@ export class DiffComponent implements OnInit {
       }
       return item;
     });
-  }
-
-  private prepareStringForComparison(str: string): string {
-    if (!str) {
-      return '';
-    }
-    const resultObject: any = this.tryToParseAsJSON(str);
-    return resultObject ?
-      JSON.stringify(resultObject, null, 2) :
-      str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
-  }
-
-  private tryToParseAsJSON(str: string): any {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      return null;
-    }
   }
 }
