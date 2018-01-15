@@ -49,4 +49,9 @@ export class StepResultItemComponent implements OnInit {
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
+
+  public isShowDiffComponent() {
+    return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 10000
+      && this.stepResult.actual && this.stepResult.actual.length <= 10000
+  }
 }

@@ -34,7 +34,7 @@
             <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.requestBody}}</div>
           </div>
           <div class="clearfix"></div>
-          <div *ngIf="!(stepResult.expected.length <= 10000 && stepResult.actual.length <= 10000)">
+          <div *ngIf="!isShowDiffComponent()">
             <div class="col-sm-6">
               <label>Actual</label>
               <div class="form-control"
@@ -55,7 +55,7 @@
             </div>
           </div>
           <app-diff
-            *ngIf="stepResult.expected.length <= 10000 && stepResult.actual.length <= 10000"
+            *ngIf="isShowDiffComponent()"
             [expected]="stepResult.expected"
             [actual]="stepResult.actual">
           </app-diff>
