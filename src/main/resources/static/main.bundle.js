@@ -1672,7 +1672,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".form-control {\n  overflow: auto;\n  height: 180px;\n  background-color: #eee; }\n  .form-control .diff-content {\n    white-space: pre-wrap; }\n  .form-control .added-row {\n    background-color: #dfd; }\n  .form-control .removed-row {\n    background-color: #fdd; }\n  .form-control .added {\n    background-color: #afa;\n    font-weight: bold; }\n  .form-control .removed {\n    background-color: #fbb;\n    font-weight: bold; }\n", ""]);
+exports.push([module.i, ".form-control {\n  overflow: auto;\n  height: 600px;\n  background-color: #eee; }\n  .form-control .diff-content {\n    white-space: pre-wrap; }\n  .form-control .added-row {\n    background-color: #dfd; }\n  .form-control .removed-row {\n    background-color: #fdd; }\n  .form-control .added {\n    background-color: #afa;\n    font-weight: bold; }\n  .form-control .removed {\n    background-color: #fbb;\n    font-weight: bold; }\n", ""]);
 
 // exports
 
