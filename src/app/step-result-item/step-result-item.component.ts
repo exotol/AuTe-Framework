@@ -51,7 +51,7 @@ export class StepResultItemComponent implements OnInit {
   }
 
   public isShowDiffComponent() {
-    return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 10000
-      && this.stepResult.actual && this.stepResult.actual.length <= 10000
+    return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 100000
+      && this.stepResult.actual && this.stepResult.actual.length <= 100000
   }
 }
