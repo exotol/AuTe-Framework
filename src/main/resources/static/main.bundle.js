@@ -1701,16 +1701,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-var DiffComponent = (function () {
+var DiffComponent = DiffComponent_1 = (function () {
     function DiffComponent() {
         this.syncScroll = true;
     }
+    DiffComponent.prepareStringForComparison = function (str) {
+        if (!str) {
+            return '';
+        }
+        var resultObject = DiffComponent_1.tryToParseAsJSON(str);
+        return resultObject ?
+            JSON.stringify(resultObject, null, 2) :
+            str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
+    };
+    DiffComponent.tryToParseAsJSON = function (str) {
+        try {
+            return JSON.parse(str);
+        }
+        catch (e) {
+            return null;
+        }
+    };
     DiffComponent.prototype.ngOnInit = function () {
         this.formDiff();
     };
     DiffComponent.prototype.formDiff = function () {
-        var actualResultStr = this.prepareStringForComparison(this.actual);
-        var expectedResultStr = this.prepareStringForComparison(this.expected);
+        var actualResultStr = DiffComponent_1.prepareStringForComparison(this.actual);
+        var expectedResultStr = DiffComponent_1.prepareStringForComparison(this.expected);
         var diff = __WEBPACK_IMPORTED_MODULE_1_diff__["diffLines"](expectedResultStr, actualResultStr);
         diff.forEach(function (item, i, arr) {
             if (item.removed && arr[i + 1] && arr[i + 1].added) {
@@ -1730,23 +1747,6 @@ var DiffComponent = (function () {
             return item;
         });
     };
-    DiffComponent.prototype.prepareStringForComparison = function (str) {
-        if (!str) {
-            return '';
-        }
-        var resultObject = this.tryToParseAsJSON(str);
-        return resultObject ?
-            JSON.stringify(resultObject, null, 2) :
-            str.replace(/\r/g, '').replace(/\t/g, '  ').trim();
-    };
-    DiffComponent.prototype.tryToParseAsJSON = function (str) {
-        try {
-            return JSON.parse(str);
-        }
-        catch (e) {
-            return null;
-        }
-    };
     return DiffComponent;
 }());
 __decorate([
@@ -1757,7 +1757,7 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])('actual'),
     __metadata("design:type", String)
 ], DiffComponent.prototype, "actual", void 0);
-DiffComponent = __decorate([
+DiffComponent = DiffComponent_1 = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-diff',
         template: __webpack_require__("../../../../../src/app/shared/diff/diff.component.html"),
@@ -1765,6 +1765,7 @@ DiffComponent = __decorate([
     })
 ], DiffComponent);
 
+var DiffComponent_1;
 //# sourceMappingURL=diff.component.js.map
 
 /***/ }),
@@ -2228,7 +2229,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">{{'Summary' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\r\n        Test id: {{stepResult.testId}}\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Saved parameters' | translate}}: {{stepResult.savedParameters}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <app-diff\r\n            [expected]=\"stepResult.expected\"\r\n            [actual]=\"stepResult.actual\">\r\n          </app-diff>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result != 'OK'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'summary'\"><a href=\"#\" (click)=\"selectTab('summary')\">{{'Summary' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div class=\"help-block\" *ngIf=\"tab == 'summary' || tab == 'all'\">\r\n        Test id: {{stepResult.testId}}\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Saved parameters' | translate}}: {{stepResult.savedParameters}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div *ngIf=\"!(stepResult.expected.length <= 10000 && stepResult.actual.length <= 10000)\">\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 180px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\">\r\n                {{stepResult.actual}}\r\n              </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 180px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\">\r\n                {{stepResult.expected}}\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <app-diff\r\n            *ngIf=\"stepResult.expected.length <= 10000 && stepResult.actual.length <= 10000\"\r\n            [expected]=\"stepResult.expected\"\r\n            [actual]=\"stepResult.actual\">\r\n          </app-diff>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
