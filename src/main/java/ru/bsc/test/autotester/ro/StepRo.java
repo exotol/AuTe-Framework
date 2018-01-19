@@ -39,6 +39,7 @@ public class StepRo extends AbstractRo {
     private String responseCompareMode;
     private List<FormDataRo> formDataList;
     private String jsonCompareMode;
+    private String script;
 
     public String getCode() {
         return code;
@@ -262,5 +263,13 @@ public class StepRo extends AbstractRo {
 
     public void setJsonCompareMode(String jsonCompareMode) {
         this.jsonCompareMode = jsonCompareMode;
+    }
+
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
     }
 }
