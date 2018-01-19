@@ -19,6 +19,7 @@ import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.at.executor.model.StepStatus;
 import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
@@ -283,6 +284,21 @@ public class AtExecutor {
                         project.getTestIdHeaderName(),
                         testId);
             }
+
+            // Выполнить скрипт
+            if (StringUtils.isNotEmpty(step.getScript())) {
+                ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
+                scriptEngine.put("stepStatus", new StepStatus());
+                scriptEngine.put("scenarioVariables", savedValues);
+
+                scriptEngine.eval(step.getScript());
+
+                StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
+                if (StringUtils.isNotEmpty(stepStatus.getException())) {
+                    throw new Exception(stepStatus.getException());
+                }
+            }
+
             // 3.1. Polling
             if (step.getUsePolling()) {
                 retry = tryUsePolling(step, responseData);

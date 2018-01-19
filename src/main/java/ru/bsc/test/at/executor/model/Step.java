@@ -41,6 +41,7 @@ public class Step extends AbstractModel implements Serializable {
     private String mqMessageFile;
     private List<FormData> formDataList;
     private String jsonCompareMode;
+    private String script;
 
     public String getCode() {
         return code;
@@ -225,6 +226,14 @@ public class Step extends AbstractModel implements Serializable {
         this.formDataList = formDataList;
     }
 
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
+
     public Step copy() {
         Step step = new Step();
         step.setRelativeUrl(getRelativeUrl());
@@ -242,6 +251,7 @@ public class Step extends AbstractModel implements Serializable {
         step.setPollingJsonXPath(getPollingJsonXPath());
         step.setDisabled(getDisabled());
         step.setStepComment(getStepComment());
+        step.setScript(getScript());
         if (getSavedValuesCheck() != null) {
             step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
         }
