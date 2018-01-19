@@ -29,4 +29,5 @@ export class Step {
   mqName: string;
   mqMessage: string;
   jsonCompareMode: String;
+  script: String;
 }

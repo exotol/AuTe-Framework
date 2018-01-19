@@ -60,6 +60,9 @@
         <li [class.active]="tab == 'parameterSet'">
           <a href="#" (click)="selectTab('parameterSet')">{{'Test cases' | translate}} <span *ngIf="step.stepParameterSetList && step.stepParameterSetList.length != 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
+        <li [class.active]="tab == 'script'">
+          <a href="#" (click)="selectTab('script')">{{'Script' | translate}} <span *ngIf="step.script" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
@@ -69,6 +72,13 @@
           </div>
           <div class="col-sm-6">
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="5" [(ngModel)]="step.expectedResponse"></textarea>
+          </div>
+        </div>
+        <div *ngIf="tab == 'script' || tab == 'all'">
+          <label>{{'Script' | translate}}:</label>
+          <textarea placeholder="" rows="6" title="{{'Script' | translate}}" class="form-control" [(ngModel)]="step.script"></textarea>
+          <div class="help-block">
+            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.</pre>
           </div>
         </div>
         <div class="row" *ngIf="tab == 'details' || tab == 'all'">
