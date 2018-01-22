@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
@@ -116,31 +117,38 @@ public class AtExecutor {
         Map<String, String> savedValues = new HashMap<>();
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
 
-        // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
-        if (beforeScenario != null) {
-            stepResultList.addAll(
-                    executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues)
-                            .stream()
-                            .peek(stepResult -> stepResult.setEditable(false))
-                            .collect(Collectors.toList()));
-        }
+        try {
+            // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
+            Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
+            if (beforeScenario != null) {
+                stepResultList.addAll(
+                        executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues)
+                                .stream()
+                                .peek(stepResult -> stepResult.setEditable(false))
+                                .collect(Collectors.toList()));
+            }
 
-        stepResultList.addAll(
-                executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues)
-                        .stream()
-                        .peek(stepResult -> stepResult.setEditable(true))
-                        .collect(Collectors.toList()));
-
-        // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
-        if (afterScenario != null) {
             stepResultList.addAll(
-                    executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues)
+                    executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues)
                             .stream()
-                            .peek(stepResult -> stepResult.setEditable(false))
+                            .peek(stepResult -> stepResult.setEditable(true))
                             .collect(Collectors.toList()));
+
+            // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
+            Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
+            if (afterScenario != null) {
+                stepResultList.addAll(
+                        executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues)
+                                .stream()
+                                .peek(stepResult -> stepResult.setEditable(false))
+                                .collect(Collectors.toList()));
+            }
+
+        } catch (ScenarioStopException e) {
+            // Stop scenario executing
+            e.printStackTrace();
         }
+        // TODO Обработать кастомное исключение для завершения сценария.
 
         httpHelper.closeHttpConnection();
 
@@ -171,7 +179,7 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {
+    private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) throws ScenarioStopException {
         List<StepResult> stepResultList = new LinkedList<>();
         if (stepList == null) {
             return null;
@@ -212,6 +220,11 @@ public class AtExecutor {
                         stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                     } finally {
                         stepResult.setStop(new Date().getTime());
+                    }
+
+                    // TODO Проверка, если выполнение сценариев нужно остановить, то выбросить кастомное исключение
+                    if (false) {
+                        throw new ScenarioStopException();
                     }
                 }
             }
