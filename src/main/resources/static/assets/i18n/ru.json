@@ -120,5 +120,6 @@
   "Host": "Хост",
   "Port": "Порт",
   "Search by method name": "Поиск по наименованию метода",
-  "Nothing found": "Ничего не найдено"
+  "Nothing found": "Ничего не найдено",
+  "Script": "Скрипт"
 }
