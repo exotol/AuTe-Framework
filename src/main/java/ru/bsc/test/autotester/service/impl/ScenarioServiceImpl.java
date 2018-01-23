@@ -26,9 +26,11 @@ import ru.bsc.test.autotester.service.ScenarioService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -54,10 +56,15 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.environmentProperties = environmentProperties;
     }
 
+    private Map<String, Map<Scenario, List<StepResult>>> runningScriptsMap = new HashMap<>();
+
     @Override
     public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
+        Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
+        String runningUuid = UUID.randomUUID().toString();
+        runningScriptsMap.put(runningUuid, resultMap);
         Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
         synchronized (projectService) {
             map.forEach((scenario, stepResults) -> {
