@@ -223,7 +223,7 @@ public class AtExecutor {
                     }
 
                     // TODO Проверка, если выполнение сценариев нужно остановить, то выбросить кастомное исключение
-                    if (false) {
+                    if (  ) {
                         throw new ScenarioStopException();
                     }
                 }
