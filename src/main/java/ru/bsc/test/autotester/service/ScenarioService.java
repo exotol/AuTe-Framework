@@ -3,9 +3,10 @@ package ru.bsc.test.autotester.service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
-import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
 import ru.bsc.test.autotester.ro.StepRo;
 
 import java.io.IOException;
@@ -26,7 +27,13 @@ public interface ScenarioService {
 
     List<StepRo> updateStepListFromRo(String projectCode, String scenarioPath, List<StepRo> stepRoList) throws IOException;
 
-    Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList);
+    StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList);
+
+    void stopExecuting(String executingUuid);
+
+    List<String> getExecutingList();
+
+    Map<Scenario, List<StepResult>> getResult(String executingUuid);
 
     StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo) throws IOException;
 

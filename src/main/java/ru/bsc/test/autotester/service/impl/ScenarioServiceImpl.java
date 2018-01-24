@@ -20,17 +20,23 @@ import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
+import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -56,34 +62,66 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.environmentProperties = environmentProperties;
     }
 
-    private Map<String, Map<Scenario, List<StepResult>>> runningScriptsMap = new HashMap<>();
+    private final ConcurrentMap<String, Map<Scenario, List<StepResult>>> runningScriptsMap = new ConcurrentHashMap<>();
+    private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Override
-    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
+    public StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList) {
+        StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
         Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
-        String runningUuid = UUID.randomUUID().toString();
+        final String runningUuid = UUID.randomUUID().toString();
+        startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, resultMap);
-        Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
-        synchronized (projectService) {
-            map.forEach((scenario, stepResults) -> {
-                String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
-                try {
-                    Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                    scenarioToUpdate.setFailed(
-                            stepResults
-                                    .stream()
-                                    .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
-                                    .count() > 0
-                    );
-                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
-                } catch (IOException e) {
-                    LOGGER.error("", e);
-                }
-            });
-        }
-        return map;
+
+        new Thread(() -> atExecutor.executeScenarioList(
+                project,
+                scenarioList,
+                resultMap,
+                () -> {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return stopExecutingSet.contains(runningUuid);
+                },
+                scenarioResultListMap -> {
+                    synchronized (projectService) {
+                        scenarioResultListMap.forEach((scenario, stepResults) -> {
+                            String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
+                            try {
+                                Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
+                                scenarioToUpdate.setFailed(
+                                        stepResults
+                                                .stream()
+                                                .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+                                                .count() > 0
+                                );
+                                scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
+                            } catch (IOException e) {
+                                LOGGER.error("", e);
+                            }
+                        });
+                    }
+                })).start();
+        return startScenarioInfoRo;
+    }
+
+    @Override
+    public void stopExecuting(String executingUuid) {
+        stopExecutingSet.add(executingUuid);
+    }
+
+    @Override
+    public List<String> getExecutingList() {
+        return new LinkedList<>(runningScriptsMap.keySet());
+    }
+
+    @Override
+    public Map<Scenario, List<StepResult>> getResult(String executingUuid) {
+        return runningScriptsMap.get(executingUuid);
     }
 
     @Override
