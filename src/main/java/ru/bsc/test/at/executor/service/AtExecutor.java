@@ -290,6 +290,7 @@ public class AtExecutor {
                 ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                 scriptEngine.put("stepStatus", new StepStatus());
                 scriptEngine.put("scenarioVariables", savedValues);
+                scriptEngine.put("response", responseData);
 
                 scriptEngine.eval(step.getScript());
 
