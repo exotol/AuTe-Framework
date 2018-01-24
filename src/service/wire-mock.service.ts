@@ -12,16 +12,15 @@ import {Properties} from '../model/properties';
 export class WireMockService {
 
   // URL to WireMock
-  public serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
+  public serviceUrl: string;
   // public serviceUrl = 'http://localhost:7770';
-  public adminUrl = this.serviceUrl + '/__admin';
+  public adminUrl: string;
   private headers = new Headers({'Content-Type': 'text/plain'});
 
   constructor(private http: Http) {
     this.http.get('./assets/properties.json')
       .map(value => value.json() as Properties)
       .subscribe(properties => {
-        console.log(properties);
         this.serviceUrl = properties.serviceUrl;
         this.adminUrl = this.serviceUrl + '/__admin';
       });
