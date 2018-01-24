@@ -67,7 +67,7 @@ public class AtExecutor {
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
     private String projectPath;
 
-    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
+    public void executeScenarioList(Project project, List<Scenario> scenarioExecuteList, Map<Scenario, List<StepResult>> scenarioResultListMap, IStopObserver stopObserver, IExecutingFinishObserver executingFinishObserver) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
@@ -90,13 +90,11 @@ public class AtExecutor {
             standConnectionMap.put(stand, connection);
         }
 
-        Map<Scenario, List<StepResult>> scenarioResultList = new HashMap<>();
         try {
             for (Scenario scenario : scenarioExecuteList) {
-                scenarioResultList.put(
-                        scenario,
-                        executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()))
-                );
+                List<StepResult> stepResultList = new LinkedList<>();
+                scenarioResultListMap.put(scenario, stepResultList);
+                executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
             }
         } finally {
             standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
@@ -108,11 +106,10 @@ public class AtExecutor {
                 }
             });
         }
-        return scenarioResultList;
+        executingFinishObserver.finish(scenarioResultListMap);
     }
 
-    private List<StepResult> executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
-        List<StepResult> stepResultList = new LinkedList<>();
+    private void executeScenario(Project project, Scenario scenario, Stand stand, Connection connection, List<StepResult> stepResultList, IStopObserver stopObserver) {
         HttpHelper httpHelper = new HttpHelper();
         Map<String, String> savedValues = new HashMap<>();
         savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
@@ -121,38 +118,23 @@ public class AtExecutor {
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
             Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
             if (beforeScenario != null) {
-                stepResultList.addAll(
-                        executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues)
-                                .stream()
-                                .peek(stepResult -> stepResult.setEditable(false))
-                                .collect(Collectors.toList()));
+                executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues, stepResultList, false, stopObserver);
             }
 
-            stepResultList.addAll(
-                    executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues)
-                            .stream()
-                            .peek(stepResult -> stepResult.setEditable(true))
-                            .collect(Collectors.toList()));
+            executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues, stepResultList, true, stopObserver);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
             Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
             if (afterScenario != null) {
-                stepResultList.addAll(
-                        executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues)
-                                .stream()
-                                .peek(stepResult -> stepResult.setEditable(false))
-                                .collect(Collectors.toList()));
+                executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues, stepResultList, false, stopObserver);
             }
 
         } catch (ScenarioStopException e) {
             // Stop scenario executing
             e.printStackTrace();
         }
-        // TODO Обработать кастомное исключение для завершения сценария.
 
         httpHelper.closeHttpConnection();
-
-        return stepResultList;
     }
 
     private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
@@ -179,10 +161,9 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) throws ScenarioStopException {
-        List<StepResult> stepResultList = new LinkedList<>();
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException {
         if (stepList == null) {
-            return null;
+            return;
         }
         for (Step step: stepList) {
             if (!step.getDisabled()) {
@@ -196,6 +177,7 @@ public class AtExecutor {
                 for (StepParameterSet stepParameterSet: parametersEnvironment) {
                     StepResult stepResult = new StepResult(step);
                     stepResult.setStart(new Date().getTime());
+                    stepResult.setEditable(stepEditable);
                     stepResultList.add(stepResult);
 
                     if (stepParameterSet.getStepParameterList() != null) {
@@ -222,14 +204,12 @@ public class AtExecutor {
                         stepResult.setStop(new Date().getTime());
                     }
 
-                    // TODO Проверка, если выполнение сценариев нужно остановить, то выбросить кастомное исключение
-                    if (  ) {
+                    if (stopObserver != null && stopObserver.stop()) {
                         throw new ScenarioStopException();
                     }
                 }
             }
         }
-        return stepResultList;
     }
 
     private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
