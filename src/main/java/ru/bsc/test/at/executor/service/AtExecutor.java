@@ -237,6 +237,9 @@ public class AtExecutor {
         requestBody = evaluateExpressions(requestBody);
         stepResult.setRequestBody(requestBody);
 
+        // 2.3 Подстановка переменных сценария в заголовки запроса
+        String requestHeaders = insertSavedValues(step.getRequestHeaders(), savedValues);
+
         int retryCounter = 0;
         boolean retry = false;
         ResponseHelper responseData;
@@ -248,7 +251,7 @@ public class AtExecutor {
                         step.getRequestMethod(),
                         requestUrl,
                         requestBody,
-                        step.getRequestHeaders(),
+                        requestHeaders,
                         project.getTestIdHeaderName(),
                         testId);
             } else {
@@ -273,7 +276,7 @@ public class AtExecutor {
                         projectPath,
                         requestUrl,
                         step.getFormDataList(),
-                        step.getRequestHeaders(),
+                        requestHeaders,
                         project.getTestIdHeaderName(),
                         testId);
             }
@@ -283,6 +286,7 @@ public class AtExecutor {
                 ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                 scriptEngine.put("stepStatus", new StepStatus());
                 scriptEngine.put("scenarioVariables", savedValues);
+                scriptEngine.put("response", responseData);
 
                 scriptEngine.eval(step.getScript());
 
@@ -363,7 +367,7 @@ public class AtExecutor {
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
                 JSONAssert.assertEquals(
-                        expectedResponse.replaceAll(" ", " "),
+                        expectedResponse == null ? "" : expectedResponse.replaceAll(" ", " "),
                         responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
                         new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.valueOf(jsonCompareMode))
                 );

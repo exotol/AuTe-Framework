@@ -36,7 +36,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -134,8 +138,19 @@ public class HttpHelper {
     private ResponseHelper execute(HttpRequestBase httpRequest, String headers) throws IOException {
         setHeaders(httpRequest, headers);
         try (CloseableHttpResponse response = httpClient.execute(httpRequest, context)) {
+            Map<String, List<String>> responseHeaders = new HashMap<>();
+            Arrays.stream(response.getAllHeaders()).forEach(header -> {
+                List<String> values = responseHeaders.get(header.getName());
+                if (values != null) {
+                    values.add(header.getValue());
+                } else {
+                    List<String> list = new LinkedList<>();
+                    list.add(header.getValue());
+                    responseHeaders.put(header.getName(), list);
+                }
+            });
             String theString = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
-            return new ResponseHelper(response.getStatusLine().getStatusCode(), theString);
+            return new ResponseHelper(response.getStatusLine().getStatusCode(), theString, responseHeaders);
         }
     }
 
