@@ -185,7 +185,10 @@ public class AtExecutor {
                                 .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    try (WireMockAdmin wireMockAdmin = StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                    try (WireMockAdmin wireMockAdmin = stand != null && StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                        if (stand == null) {
+                            throw new Exception("Stand is not configured.");
+                        }
                         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
                         stepResult.setTestId(testId);
                         executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
