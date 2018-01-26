@@ -83,12 +83,6 @@ public class ScenarioServiceImpl implements ScenarioService {
                 scenarioList,
                 resultMap,
                 () -> {
-                    // TODO Это для дебага. Убрать после отладки.
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     boolean stop = stopExecutingSet.contains(runningUuid);
                     if (stop) {
                         stopExecutingSet.remove(runningUuid);
