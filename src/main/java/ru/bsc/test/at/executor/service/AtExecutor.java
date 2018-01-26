@@ -244,6 +244,9 @@ public class AtExecutor {
         requestBody = evaluateExpressions(requestBody);
         stepResult.setRequestBody(requestBody);
 
+        // 2.3 Подстановка переменных сценария в заголовки запроса
+        String requestHeaders = insertSavedValues(step.getRequestHeaders(), savedValues);
+
         int retryCounter = 0;
         boolean retry = false;
         ResponseHelper responseData;
@@ -255,7 +258,7 @@ public class AtExecutor {
                         step.getRequestMethod(),
                         requestUrl,
                         requestBody,
-                        step.getRequestHeaders(),
+                        requestHeaders,
                         project.getTestIdHeaderName(),
                         testId);
             } else {
@@ -280,7 +283,7 @@ public class AtExecutor {
                         projectPath,
                         requestUrl,
                         step.getFormDataList(),
-                        step.getRequestHeaders(),
+                        requestHeaders,
                         project.getTestIdHeaderName(),
                         testId);
             }
