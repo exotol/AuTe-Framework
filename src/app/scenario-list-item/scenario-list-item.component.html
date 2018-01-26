@@ -12,11 +12,14 @@
       <div *ngIf="state == 'executing'" style="color: gray">...</div>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-primary" *ngIf="state != 'executing'" (click)="runScenario()">{{'Run' | translate}}</button>
-      <button class="btn btn-warning" *ngIf="state == 'executing'" disabled>{{'Executing' | translate}}</button>
+      <button class="btn btn-primary" *ngIf="state != 'executing' && state != 'starting'" (click)="runScenario()">{{'Run' | translate}}</button>
+      <button class="btn btn-warning" *ngIf="state == 'executing'" (click)="stop()">{{'Stop' | translate}}</button>
+      <button class="btn btn-warning" *ngIf="state == 'starting'" disabled>{{'Starting' | translate}}...</button>
+
+      <button style="display: none;" class="btn btn-xs" (click)="checkState()">checkState() {{state}}</button>
     </div>
     <div class="col-sm-2">
-      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Show results' | translate}}</button>
+      <button class="btn btn-" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>
     </div>
   </div>
   <div class="row result" *ngIf="showResultDetails && stepResultList">

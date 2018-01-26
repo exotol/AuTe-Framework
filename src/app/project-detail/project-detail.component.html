@@ -39,11 +39,11 @@
         <div class="progress" style="background-color: #fff;">
           <div class="progress-bar progress-bar-striped"
                role="progressbar"
-               [class.active]="executingStateExecuting > 0"
-               [style.display]="(executingStateExecuting + executingStateFinished) > 0 ? '' : 'none'"
-               [style.width]="(5 + executingStateFinished / (executingStateExecuting + executingStateFinished) * 95) + '%'">
-            {{Math.round(executingStateFinished / (executingStateExecuting + executingStateFinished) * 100)}} %
-            {{executingStateExecuting > 0 ? '(left: ' + executingStateExecuting + ')' : ''}}
+               [class.active]="executingStateExecuted != executingStateTotal"
+               [style.display]="executingStateTotal > 0 ? '' : 'none'"
+               [style.width]="(5 + executingStateExecuted / executingStateTotal * 95) + '%'">
+            {{Math.round(executingStateExecuted / executingStateTotal * 100)}}%
+            {{executingStateExecuted > 0 ? '(' + executingStateExecuted + '/' + executingStateTotal + ')' : ''}}
           </div>
         </div>
       </div>

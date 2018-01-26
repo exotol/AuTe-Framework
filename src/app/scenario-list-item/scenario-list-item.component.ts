@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {ScenarioService} from '../service/scenario.service';
 import {StepResult} from '../model/step-result';
+import {StartScenarioInfo} from '../model/start-scenario-info';
 
 @Component({
   selector: 'app-scenario-list-item',
@@ -22,6 +23,10 @@ export class ScenarioListItemComponent implements OnInit {
 
   state = 'none';
   showResultDetails = false;
+  private startScenarioInfo: StartScenarioInfo;
+  resultCheckTimeout = 333;
+  executedSteps: number;
+  totalSteps: number;
 
   constructor(
     private scenarioService: ScenarioService
@@ -32,25 +37,68 @@ export class ScenarioListItemComponent implements OnInit {
   }
 
   stateChanged() {
-    this.onStateChange.emit({state: this.state})
+    this.onStateChange.emit({state: this.state, executedSteps: this.executedSteps, totalSteps: this.totalSteps})
   }
 
   runScenario() {
     if (this.state !== 'executing') {
-      this.state = 'executing';
+      this.state = 'starting';
       this.stateChanged();
       this.scenarioService.run(this.projectCode, this.scenario)
-        .subscribe(stepResultList => {
-          this.stepResultList = stepResultList;
-          this.state = 'finished';
+        .subscribe(startScenarioInfo => {
+          this.startScenarioInfo = startScenarioInfo;
+          this.state = 'executing';
           this.stateChanged();
-          this.scenario.failed = stepResultList.filter(result => result.result === 'Fail').length > 0;
+          this.checkState();
+        });
+    }
+  }
+
+  checkState() {
+    if (this.startScenarioInfo) {
+      this.scenarioService.executionStatus(this.startScenarioInfo.runningUuid)
+        .subscribe(executionResult => {
+          if (executionResult.scenarioResultList && executionResult.scenarioResultList[0]) {
+            const scenarioResult = executionResult.scenarioResultList[0];
+            this.stepResultList = scenarioResult.stepResultList;
+            this.scenario.failed = this.stepResultList != null && this.stepResultList.filter(result => result.result === 'Fail').length > 0;
+
+            this.executedSteps = scenarioResult.stepResultList.filter(stepResult => stepResult.editable).length;
+            this.totalSteps = scenarioResult.totalSteps;
+
+            if (executionResult.finished) {
+              this.state = 'finished';
+            } else {
+              setTimeout(() => {
+                this.checkState();
+              }, this.resultCheckTimeout);
+            }
+            this.stateChanged();
+          } else {
+            setTimeout(() => {
+              this.checkState();
+            }, this.resultCheckTimeout);
+          }
+        }, error => {
+          if (error.message && !error.message.contains('Unexpected end of JSON input')) {
+            setTimeout(() => {
+              this.checkState();
+            }, this.resultCheckTimeout);
+          }
         });
     }
   }
 
   resultDetailsToggle() {
     this.showResultDetails = !this.showResultDetails;
+  }
+
+  stop(): void {
+    if (this.startScenarioInfo) {
+      this.scenarioService
+        .stop(this.startScenarioInfo.runningUuid)
+        .subscribe();
+    }
   }
 
   getMapStyleForScenario(): string {

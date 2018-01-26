@@ -26,8 +26,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   scenarioGroupList: String[] = [];
 
   @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
-  executingStateExecuting = 0;
-  executingStateFinished = 0;
+  executingStateExecuted = 0;
+  executingStateTotal = 0;
 
   constructor(
     public globals: Globals,
@@ -124,12 +124,16 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   }
 
   updateExecutionStatus() {
-    this.executingStateExecuting = this.scenarioComponentList
-      .filter(item => item.state === 'executing')
-      .length;
-    this.executingStateFinished = this.scenarioComponentList
-      .filter(item => item.state === 'finished')
-      .length;
+    this.executingStateExecuted = this.scenarioComponentList
+      .filter(item => item.state === 'executing' || item.state === 'finished' || item.state === 'starting')
+      .filter(item => item.executedSteps)
+      .map(item => item.executedSteps)
+      .reduce((a, b) => a + b, 0);
+    this.executingStateTotal = this.scenarioComponentList
+      .filter(item => item.state === 'executing' || item.state === 'finished' || item.state === 'starting')
+      .filter(item => item.totalSteps)
+      .map(item => item.totalSteps)
+      .reduce((a, b) => a + b, 0);
   }
 
   // noinspection JSUnusedLocalSymbols

@@ -121,5 +121,8 @@
   "Port": "Порт",
   "Search by method name": "Поиск по наименованию метода",
   "Nothing found": "Ничего не найдено",
-  "Script": "Скрипт"
+  "Script": "Скрипт",
+  "Results": "Результаты",
+  "Starting": "Запуск",
+  "Stop": "Стоп"
 }
