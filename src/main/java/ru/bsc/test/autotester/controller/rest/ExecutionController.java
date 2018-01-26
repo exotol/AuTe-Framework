@@ -7,14 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bsc.test.autotester.mapper.ProjectRoMapper;
-import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
-import ru.bsc.test.autotester.mapper.StepRoMapper;
-import ru.bsc.test.autotester.ro.ScenarioResultRo;
+import ru.bsc.test.autotester.mapper.ExecutionResultRoMapper;
+import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.service.ScenarioService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 23.01.2018.
@@ -25,8 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/rest/execution/")
 public class ExecutionController {
 
-    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private ExecutionResultRoMapper executionResultRoMapper = Mappers.getMapper(ExecutionResultRoMapper.class);
     private final ScenarioService scenarioService;
 
     @Autowired
@@ -39,16 +33,9 @@ public class ExecutionController {
         scenarioService.stopExecuting(executionUuid);
     }
 
-    @RequestMapping(value = "{executionUuid}/result", method = RequestMethod.GET)
-    public List<ScenarioResultRo> getResult(@PathVariable String executionUuid) {
-        return scenarioService.getResult(executionUuid)
-                .entrySet()
-                .stream()
-                .map(scenarioListEntry -> new ScenarioResultRo()
-                        .withScenario(projectRoMapper.scenarioToScenarioRo("", scenarioListEntry.getKey()))
-                        .withStepResultRo(stepRoMapper.convertStepResultListToStepResultRo(scenarioListEntry.getValue()))
-                )
-                .collect(Collectors.toList());
+    @RequestMapping(value = "{executionUuid}/status", method = RequestMethod.GET)
+    public ExecutionResultRo getResult(@PathVariable String executionUuid) {
+        return executionResultRoMapper.map(scenarioService.getResult(executionUuid));
     }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)

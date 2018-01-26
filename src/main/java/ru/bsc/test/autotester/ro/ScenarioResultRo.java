@@ -12,6 +12,7 @@ public class ScenarioResultRo extends AbstractRo {
 
     private ScenarioRo scenario;
     private List<StepResultRo> stepResultList;
+    private Integer totalSteps;
 
     public ScenarioRo getScenario() {
         return scenario;
@@ -36,6 +37,19 @@ public class ScenarioResultRo extends AbstractRo {
 
     public ScenarioResultRo withStepResultRo(List<StepResultRo> stepResultList) {
         setStepResultList(stepResultList);
+        return this;
+    }
+
+    public Integer getTotalSteps() {
+        return totalSteps;
+    }
+
+    public void setTotalSteps(Integer totalSteps) {
+        this.totalSteps = totalSteps;
+    }
+
+    public ScenarioResultRo withTotalSteps(Integer totalSteps) {
+        setTotalSteps(totalSteps);
         return this;
     }
 }

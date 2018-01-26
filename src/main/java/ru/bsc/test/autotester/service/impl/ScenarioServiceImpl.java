@@ -16,6 +16,7 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
+import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
@@ -62,7 +63,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.environmentProperties = environmentProperties;
     }
 
-    private final ConcurrentMap<String, Map<Scenario, List<StepResult>>> runningScriptsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
     private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Override
@@ -70,24 +71,32 @@ public class ScenarioServiceImpl implements ScenarioService {
         StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
+        ExecutionResult executionResult = new ExecutionResult();
         Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
+        executionResult.setScenarioStepResultListMap(resultMap);
         final String runningUuid = UUID.randomUUID().toString();
         startScenarioInfoRo.setRunningUuid(runningUuid);
-        runningScriptsMap.put(runningUuid, resultMap);
+        runningScriptsMap.put(runningUuid, executionResult);
 
         new Thread(() -> atExecutor.executeScenarioList(
                 project,
                 scenarioList,
                 resultMap,
                 () -> {
+                    // TODO Это для дебага. Убрать после отладки.
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return stopExecutingSet.contains(runningUuid);
+                    boolean stop = stopExecutingSet.contains(runningUuid);
+                    if (stop) {
+                        stopExecutingSet.remove(runningUuid);
+                    }
+                    return stop;
                 },
                 scenarioResultListMap -> {
+                    executionResult.setFinished(true);
                     synchronized (projectService) {
                         scenarioResultListMap.forEach((scenario, stepResults) -> {
                             String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
@@ -120,7 +129,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public Map<Scenario, List<StepResult>> getResult(String executingUuid) {
+    public ExecutionResult getResult(String executingUuid) {
         return runningScriptsMap.get(executingUuid);
     }
 
