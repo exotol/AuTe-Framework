@@ -1,7 +1,8 @@
 <div class="form-group" >
   <div class="col-sm-1">
     <span class="glyphicon glyphicon-ok-circle" style="color: green;" *ngIf="stepResult.result == 'OK'"></span>
-    <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result != 'OK'"></span>
+    <span class="glyphicon glyphicon-time" style="color: orange;" *ngIf="stepResult.result != 'OK' && stepResult.result != 'Fail'"></span>
+    <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result == 'Fail'"></span>
     {{stepResult.result}}
   </div>
   <div class="col-sm-11">{{stepResult.step.stepComment}} {{stepResult.description}}</div>
