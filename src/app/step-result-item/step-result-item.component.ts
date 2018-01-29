@@ -22,8 +22,9 @@ export class StepResultItemComponent implements OnInit {
   @Input()
   scenario: Scenario;
 
-  tab = 'summary';
+  tab = 'details';
   projectCode: String;
+  displayDetails = false;
 
   constructor(
     private route: ActivatedRoute,

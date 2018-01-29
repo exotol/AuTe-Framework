@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Headers, Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {StepResult} from '../model/step-result';
 import 'rxjs/add/operator/map';
 import {Step} from '../model/step';
 import {Globals} from '../globals';
+import {StartScenarioInfo} from '../model/start-scenario-info';
+import {ExecutionResult} from '../model/execution-result';
 
 @Injectable()
 export class ScenarioService {
@@ -18,13 +19,27 @@ export class ScenarioService {
     private http: Http
   ) { }
 
-  run(projectCode: String, scenario: Scenario): Observable<StepResult[]> {
+  run(projectCode: String, scenario: Scenario): Observable<StartScenarioInfo> {
     const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/exec',
+      this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/start',
       {},
       {headers: this.headers}
-    ).map(value => value.json() as StepResult[]);
+    ).map(value => value.json() as StartScenarioInfo);
+  }
+
+  executionStatus(runningUuid: string): Observable<ExecutionResult> {
+    return this.http.get(
+      this.globals.serviceBaseUrl + '/rest/execution/' + runningUuid + '/status'
+    ).map(value => value.json() as ExecutionResult);
+  }
+
+  stop(runningUuid: string): Observable<any> {
+    return this.http.post(
+      this.globals.serviceBaseUrl + '/rest/execution/' + runningUuid + '/stop',
+      {},
+      {headers: this.headers}
+    );
   }
 
   findOne(projectCode: String, scenarioGroup: String, scenarioCode: String): Observable<Scenario> {
