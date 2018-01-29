@@ -41,6 +41,7 @@ public abstract class ExecutionResultRoMapper {
                                     .getKey()
                                     .getStepList()
                                     .stream()
+                                    .filter(step -> !step.getDisabled())
                                     .mapToInt(value -> value.getStepParameterSetList() != null ? (value.getStepParameterSetList().size() == 0 ? 1 : value.getStepParameterSetList().size()) : 1).sum())
                     )
                     .collect(Collectors.toList());
