@@ -71,13 +71,19 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
-            long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+            boolean useMultipartFormData;
+            if (multipartFormData == null) {
+                long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+                useMultipartFormData = count > 0;
+            } else {
+                useMultipartFormData = multipartFormData;
+            }
             HttpEntity httpEntity;
-            if (count > 0) {
+            if (useMultipartFormData) {
                 httpEntity = setEntity(formData, projectPath).build();
             } else {
                 List<NameValuePair> params = formData
