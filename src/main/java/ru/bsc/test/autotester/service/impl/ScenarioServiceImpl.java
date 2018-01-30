@@ -18,6 +18,8 @@ import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
+import ru.bsc.test.autotester.report.AbstractReportGenerator;
+import ru.bsc.test.autotester.report.AllureReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
@@ -25,8 +27,11 @@ import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
+import ru.bsc.test.autotester.utils.ZipUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +43,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -125,6 +131,27 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public ExecutionResult getResult(String executingUuid) {
         return runningScriptsMap.get(executingUuid);
+    }
+
+    @Override
+    public void getReport(String executingUuid, ZipOutputStream outputStream) throws Exception {
+        AbstractReportGenerator reportGenerator = new AllureReportGenerator();
+        ExecutionResult result = runningScriptsMap.get(executingUuid);
+        if (result != null) {
+            result.getScenarioStepResultListMap().forEach(reportGenerator::add);
+            String tmpRandom = UUID.randomUUID().toString();
+            File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
+            if (tmpDirectory.mkdirs()) {
+                reportGenerator.generate(tmpDirectory);
+
+                // TODO:
+                ZipUtils.pack(new File(tmpDirectory, "output"), outputStream);
+            } else {
+                throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
+            }
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
 
     @Override

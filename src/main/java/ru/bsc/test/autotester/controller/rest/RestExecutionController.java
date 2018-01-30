@@ -11,6 +11,9 @@ import ru.bsc.test.autotester.mapper.ExecutionResultRoMapper;
 import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.zip.ZipOutputStream;
+
 /**
  * Created by sdoroshin on 23.01.2018.
  *
@@ -18,13 +21,13 @@ import ru.bsc.test.autotester.service.ScenarioService;
 
 @RestController
 @RequestMapping("/rest/execution/")
-public class ExecutionController {
+public class RestExecutionController {
 
     private ExecutionResultRoMapper executionResultRoMapper = Mappers.getMapper(ExecutionResultRoMapper.class);
     private final ScenarioService scenarioService;
 
     @Autowired
-    public ExecutionController(ScenarioService scenarioService) {
+    public RestExecutionController(ScenarioService scenarioService) {
         this.scenarioService = scenarioService;
     }
 
@@ -34,8 +37,18 @@ public class ExecutionController {
     }
 
     @RequestMapping(value = "{executionUuid}/status", method = RequestMethod.GET)
-    public ExecutionResultRo getResult(@PathVariable String executionUuid) {
+    public ExecutionResultRo getStatus(@PathVariable String executionUuid) {
         return executionResultRoMapper.map(scenarioService.getResult(executionUuid));
+    }
+
+    @RequestMapping(value = "{executionUuid}/report", method = RequestMethod.GET, produces="application/zip")
+    public void getReport(@PathVariable String executionUuid, HttpServletResponse response) throws Exception {
+
+        response.addHeader("Content-Disposition", "attachment; filename=\"test.zip\"");
+
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())) {
+            scenarioService.getReport(executionUuid, zipOutputStream);
+        }
     }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
