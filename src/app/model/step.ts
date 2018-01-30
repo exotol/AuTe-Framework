@@ -26,6 +26,7 @@ export class Step {
   stepParameterSetList: StepParameterSet[] = [];
   responseCompareMode: string;
   formDataList: FormData[] = [];
+  multipartFormData: boolean;
   mqName: string;
   mqMessage: string;
   jsonCompareMode: String;
