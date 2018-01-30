@@ -12,6 +12,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,14 +46,21 @@ public class TestLauncher {
     }
 
     private int test(Scenario scenarioToExecute, Project project, AtExecutor atExecutor, AbstractReportGenerator reportGenerator) {
-        Map<Scenario, List<StepResult>> result = atExecutor.executeScenarioList(project, Collections.singletonList(scenarioToExecute));
+        Map<Scenario, List<StepResult>> result = new HashMap<>();
+        int[] sum = { 0 };
 
-        return result.entrySet().stream().mapToInt(value -> {
-            Scenario scenario = value.getKey();
-            List<StepResult> stepResultList = value.getValue();
-
-            reportGenerator.add(scenario, stepResultList);
-            return stepResultList.stream().mapToInt(stepResult -> (StepResult.RESULT_OK.equals(stepResult.getResult())) ? 0 : 1).sum();
-        }).sum();
+        atExecutor.executeScenarioList(
+                project,
+                Collections.singletonList(scenarioToExecute),
+                result,
+                () -> false,
+                scenarioResultListMap -> sum[0] = scenarioResultListMap.entrySet().stream().mapToInt(value -> {
+                    Scenario scenario = value.getKey();
+                    List<StepResult> stepResultList = value.getValue();
+                    reportGenerator.add(scenario, stepResultList);
+                    return stepResultList.stream().mapToInt(stepResult -> (StepResult.RESULT_OK.equals(stepResult.getResult())) ? 0 : 1).sum();
+                }).sum()
+        );
+        return sum[0];
     }
 }
