@@ -103,6 +103,11 @@
               <textarea title="{{'Request body' | translate}}" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
             </div>
             <div *ngIf="step.requestBodyType == 'FORM'">
+              <label>
+                <input title="" type="checkbox" [(ngModel)]="step.multipartFormData">
+                {{'multipart/form-data' | translate}}
+              </label>
+              <div class="clearfix"></div>
               <div *ngFor="let formData of step.formDataList" class="request-body-field">
                 <input class="form-control request-body-field__name" placeholder="{{'Field name' | translate}}" title="" [(ngModel)]="formData.fieldName"/>
                 <select class="form-control request-body-field__type" title="{{'Field type' | translate}}" [(ngModel)]="formData.fieldType">
