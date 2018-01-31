@@ -38,6 +38,7 @@ public class StepRo extends AbstractRo {
     private String mqMessageFile;
     private String responseCompareMode;
     private List<FormDataRo> formDataList;
+    private Boolean multipartFormData;
     private String jsonCompareMode;
     private String script;
 
@@ -255,6 +256,14 @@ public class StepRo extends AbstractRo {
 
     public void setFormDataList(List<FormDataRo> formDataList) {
         this.formDataList = formDataList;
+    }
+
+    public Boolean getMultipartFormData() {
+        return multipartFormData;
+    }
+
+    public void setMultipartFormData(Boolean multipartFormData) {
+        this.multipartFormData = multipartFormData;
     }
 
     public String getJsonCompareMode() {
