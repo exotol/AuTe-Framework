@@ -39,6 +39,7 @@ public class Step extends AbstractModel implements Serializable {
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
+    private Boolean multipartFormData;
     private List<FormData> formDataList;
     private String jsonCompareMode;
     private String script;
@@ -220,6 +221,14 @@ public class Step extends AbstractModel implements Serializable {
 
     public List<FormData> getFormDataList() {
         return formDataList;
+    }
+
+    public Boolean getMultipartFormData() {
+        return multipartFormData;
+    }
+
+    public void setMultipartFormData(Boolean multipartFormData) {
+        this.multipartFormData = multipartFormData;
     }
 
     public void setFormDataList(List<FormData> formDataList) {

@@ -278,6 +278,7 @@ public class AtExecutor {
                         step.getRequestMethod(),
                         projectPath,
                         requestUrl,
+                        step.getMultipartFormData(),
                         step.getFormDataList(),
                         requestHeaders,
                         project.getTestIdHeaderName(),
