@@ -26,6 +26,8 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.tika.Tika;
+import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
@@ -35,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException, TikaException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
@@ -123,7 +124,7 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws URISyntaxException, IOException {
+    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws URISyntaxException, IOException, TikaException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData formData : formDataList) {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
@@ -133,7 +134,7 @@ public class HttpHelper {
                 entity.addBinaryBody(
                         formData.getFieldName(),
                         file,
-                        ContentType.parse( StringUtils.isEmpty(formData.getMimeType()) ? Files.probeContentType(file.toPath()) : formData.getMimeType()),
+                        ContentType.parse( StringUtils.isEmpty(formData.getMimeType()) ? new Tika().detect(file) : formData.getMimeType()),
                         file.getName()
                 );
             }
