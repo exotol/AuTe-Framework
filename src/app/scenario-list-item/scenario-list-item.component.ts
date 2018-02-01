@@ -24,7 +24,7 @@ export class ScenarioListItemComponent implements OnInit {
   state = 'none';
   showResultDetails = false;
   startScenarioInfo: StartScenarioInfo;
-  resultCheckTimeout = 333;
+  resultCheckTimeout = 5000;
   executedSteps: number;
   totalSteps: number;
 
@@ -42,6 +42,8 @@ export class ScenarioListItemComponent implements OnInit {
 
   runScenario() {
     if (this.state !== 'executing') {
+      this.executedSteps = 0;
+      // this.totalSteps = 0;
       this.state = 'starting';
       this.stateChanged();
       this.scenarioService.run(this.projectCode, this.scenario)

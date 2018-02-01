@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Scenario} from '../model/scenario';
-import {Headers, Http} from '@angular/http';
+import {Headers, Http, ResponseContentType} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {Step} from '../model/step';
 import {Globals} from '../globals';
 import {StartScenarioInfo} from '../model/start-scenario-info';
 import {ExecutionResult} from '../model/execution-result';
+import {MultipleReportsRequest} from '../model/multiple-reports-request';
 
 @Injectable()
 export class ScenarioService {
@@ -79,5 +80,15 @@ export class ScenarioService {
     return this.http.delete(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath
     );
+  }
+
+  downloadReport(executionUuidList: string[]): Observable<Blob> {
+    const multipleReportsRequest = new MultipleReportsRequest();
+    multipleReportsRequest.executionUuidList = executionUuidList;
+    return this.http.post(
+      this.globals.serviceBaseUrl + '/rest/execution/multiple-reports',
+      multipleReportsRequest,
+      {responseType: ResponseContentType.Blob }
+    ).map(data => data.blob());
   }
 }

@@ -31,6 +31,7 @@
           <input class="select-all" type="checkbox" title="{{'Select' | translate}}" (click)="selectAll()" />
         </label>
         <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">{{'Execute selected scenarios' | translate}}</button>
+        <button class="btn btn-sm btn-default" (click)="getReportsBySelectedScenarios()">{{'Get report on selected scenarios' | translate}}</button>
       </div>
       <div class="col-sm-1" style="font-weight: bold;" [style.color]="failCount > 0 ? 'red' : ''">
         {{failCount}}

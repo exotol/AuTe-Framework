@@ -8,6 +8,7 @@ import {Globals} from '../globals';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import { saveAs } from 'file-saver/FileSaver';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {ScenarioService} from '../service/scenario.service';
 
 @Component({
   selector: 'app-project-detail',
@@ -34,7 +35,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
-    private customToastyService: CustomToastyService
+    private customToastyService: CustomToastyService,
+    private scenarioService: ScenarioService
   ) {
     this.Math = Math;
   }
@@ -108,7 +110,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   selectAll() {
     this.selectAllFlag = !this.selectAllFlag;
-    this.scenarioComponentList.forEach(item => item.scenario._selected = this.selectAllFlag);
+    this.scenarioComponentList.forEach(item => item.scenario._selected = this.selectAllFlag && this.isDisplayScenario(item.scenario));
   }
 
   updateFailCountSum() {
@@ -127,7 +129,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.executingStateExecuted = this.scenarioComponentList
       .filter(item => item.state === 'executing' || item.state === 'finished' || item.state === 'starting')
       .filter(item => item.executedSteps)
-      .map(item => item.executedSteps)
+      .map(item => item.executedSteps - (item.state === 'finished' ? 0 : 1))
       .reduce((a, b) => a + b, 0);
     this.executingStateTotal = this.scenarioComponentList
       .filter(item => item.state === 'executing' || item.state === 'finished' || item.state === 'starting')
@@ -155,5 +157,21 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
         this.newScenarioName = '';
         this.customToastyService.success('Сохранено', 'Сценарий создан');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+  }
+
+  getReportsBySelectedScenarios() {
+    const executionUuidList = [];
+    this.scenarioComponentList
+      .filter(item => item.scenario._selected && this.isDisplayScenario(item.scenario))
+      .filter(item => item.state === 'finished' && item.startScenarioInfo)
+      .forEach(scenarioItemComponent => {
+        executionUuidList.push(scenarioItemComponent.startScenarioInfo.runningUuid);
+      });
+
+    this.scenarioService
+      .downloadReport(executionUuidList)
+      .subscribe(blobReport => {
+        saveAs(blobReport, 'reports.zip')
+      });
   }
 }

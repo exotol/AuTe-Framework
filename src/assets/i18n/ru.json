@@ -124,5 +124,6 @@
   "Script": "Скрипт",
   "Results": "Результаты",
   "Starting": "Запуск",
-  "Stop": "Стоп"
+  "Stop": "Стоп",
+  "Get report on selected scenarios": "Скачать отчет по выбранным сценариям"
 }
