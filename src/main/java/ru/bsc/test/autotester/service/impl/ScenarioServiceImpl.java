@@ -136,29 +136,33 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public void getReport(String executingUuid, ZipOutputStream outputStream) throws Exception {
-        AbstractReportGenerator reportGenerator = new AllureReportGenerator();
-        ExecutionResult result = runningScriptsMap.get(executingUuid);
-        if (result != null) {
-            result.getScenarioStepResultListMap().forEach(reportGenerator::add);
-            String tmpRandom = UUID.randomUUID().toString();
-            File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
-            if (tmpDirectory.mkdirs()) {
-                reportGenerator.generate(tmpDirectory);
-
-                //noinspection ResultOfMethodCallIgnored
-                FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
-                ZipUtils.pack(tmpDirectory, outputStream);
-            } else {
-                throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
-            }
-        } else {
-            throw new ResourceNotFoundException();
-        }
+        getReportList(Collections.singletonList(executingUuid), outputStream);
     }
 
     @Override
-    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) {
-        executionUuidList.toString();
+    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
+        AbstractReportGenerator reportGenerator = new AllureReportGenerator();
+        int[] reportCounter = { 0 };
+        runningScriptsMap.forEach((s, executionResult) -> {
+            if (executionUuidList.contains(s)) {
+                executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);
+                reportCounter[0]++;
+            }
+        });
+        if (reportCounter[0] == 0) {
+            throw new ResourceNotFoundException();
+        }
+
+        String tmpRandom = UUID.randomUUID().toString();
+        File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
+        if (tmpDirectory.mkdirs()) {
+            reportGenerator.generate(tmpDirectory);
+
+            FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
+            ZipUtils.pack(tmpDirectory, zipOutputStream);
+        } else {
+            throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
+        }
     }
 
     @Override

@@ -51,5 +51,5 @@ public interface ScenarioService {
 
     void getReport(String uuid, ZipOutputStream executionUuid) throws Exception;
 
-    void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream);
+    void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception;
 }

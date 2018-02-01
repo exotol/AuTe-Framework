@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.autotester.mapper.ExecutionResultRoMapper;
 import ru.bsc.test.autotester.ro.ExecutionResultRo;
+import ru.bsc.test.autotester.ro.MultipleReportsRequestRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -54,12 +54,12 @@ public class RestExecutionController {
     }
 
     @RequestMapping(value = "multiple-reports", method = RequestMethod.POST, produces="application/zip")
-    public void getMultipleReports(@RequestBody MultipleReportsRequest List<String> executionUuidList, HttpServletResponse response) throws Exception {
+    public void getMultipleReports(@RequestBody MultipleReportsRequestRo multipleReportsRequestRo, HttpServletResponse response) throws Exception {
 
         response.addHeader("Content-Disposition", "attachment; filename=\"report.zip\"");
 
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())) {
-            scenarioService.getReportList(executionUuidList, zipOutputStream);
+            scenarioService.getReportList(multipleReportsRequestRo.getExecutionUuidList(), zipOutputStream);
         }
     }
 
