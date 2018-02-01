@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.service.ScenarioService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -44,10 +46,20 @@ public class RestExecutionController {
     @RequestMapping(value = "{executionUuid}/report", method = RequestMethod.GET, produces="application/zip")
     public void getReport(@PathVariable String executionUuid, HttpServletResponse response) throws Exception {
 
-        response.addHeader("Content-Disposition", "attachment; filename=\"test.zip\"");
+        response.addHeader("Content-Disposition", "attachment; filename=\"report.zip\"");
 
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())) {
             scenarioService.getReport(executionUuid, zipOutputStream);
+        }
+    }
+
+    @RequestMapping(value = "multiple-reports", method = RequestMethod.POST, produces="application/zip")
+    public void getMultipleReports(@RequestBody MultipleReportsRequest List<String> executionUuidList, HttpServletResponse response) throws Exception {
+
+        response.addHeader("Content-Disposition", "attachment; filename=\"report.zip\"");
+
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())) {
+            scenarioService.getReportList(executionUuidList, zipOutputStream);
         }
     }
 

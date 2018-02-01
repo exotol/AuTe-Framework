@@ -50,4 +50,6 @@ public interface ScenarioService {
     ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException;
 
     void getReport(String uuid, ZipOutputStream executionUuid) throws Exception;
+
+    void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream);
 }

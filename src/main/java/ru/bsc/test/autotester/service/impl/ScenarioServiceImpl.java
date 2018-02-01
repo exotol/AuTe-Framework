@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
@@ -144,14 +145,20 @@ public class ScenarioServiceImpl implements ScenarioService {
             if (tmpDirectory.mkdirs()) {
                 reportGenerator.generate(tmpDirectory);
 
-                // TODO:
-                ZipUtils.pack(new File(tmpDirectory, "output"), outputStream);
+                //noinspection ResultOfMethodCallIgnored
+                FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
+                ZipUtils.pack(tmpDirectory, outputStream);
             } else {
                 throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
             }
         } else {
             throw new ResourceNotFoundException();
         }
+    }
+
+    @Override
+    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) {
+        executionUuidList.toString();
     }
 
     @Override

@@ -33,7 +33,8 @@ public class Application {
 
             Set<String> loggers = new HashSet<>(Arrays.asList(
                     "org.apache.http",
-                    "ru.bsc.test.autotester.component.ProjectsSource"
+                    "ru.bsc.test.autotester.component.ProjectsSource",
+                    "org.apache.commons.beanutils.converters"
             ));
 
             for (String log : loggers) {
