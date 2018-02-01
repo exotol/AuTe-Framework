@@ -23,7 +23,7 @@ export class ScenarioListItemComponent implements OnInit {
 
   state = 'none';
   showResultDetails = false;
-  private startScenarioInfo: StartScenarioInfo;
+  startScenarioInfo: StartScenarioInfo;
   resultCheckTimeout = 333;
   executedSteps: number;
   totalSteps: number;
@@ -102,7 +102,7 @@ export class ScenarioListItemComponent implements OnInit {
   }
 
   getMapStyleForScenario(): string {
-    if (this.state !== 'executing') {
+    if (this.state !== 'executing' && this.state !== 'starting') {
       if (this.scenario.failed) { return 'failedScenario'; }
       if (this.scenario.failed === false) { return 'passedScenario'; }
     }
