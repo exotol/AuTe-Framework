@@ -363,6 +363,21 @@ var MockServiceResponse = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/model/multiple-reports-request.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MultipleReportsRequest; });
+var MultipleReportsRequest = (function () {
+    function MultipleReportsRequest() {
+    }
+    return MultipleReportsRequest;
+}());
+
+//# sourceMappingURL=multiple-reports-request.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/model/scenario.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -466,7 +481,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/project-detail/project-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item active\">{{project.code}}. {{project.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"project.code\"></app-search>\r\n  </div>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.code + '/settings']\">{{'Settings' | translate}}</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">{{'All' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">{{'Without group' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && group == filter.scenarioGroup\" *ngFor=\"let group of project.groupList\">\r\n        <a href=\"#\" (click)=\"selectGroup(group)\">{{group}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-7\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"{{'Select' | translate}}\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">{{'Execute selected scenarios' | translate}}</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuted != executingStateTotal\"\r\n               [style.display]=\"executingStateTotal > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateExecuted / executingStateTotal * 95) + '%'\">\r\n            {{Math.round(executingStateExecuted / executingStateTotal * 100)}}%\r\n            {{executingStateExecuted > 0 ? '(' + executingStateExecuted + '/' + executingStateTotal + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"project.code\" (onStateChange)=\"onStateChange($event, scenario)\" [isLinkTitleScenario] = \"true\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <a class=\"btn btn-default\" target=\"_blank\" [attr.href]=\"globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'\">{{'Download project as YAML' | translate}}</a>\r\n        <!--button class=\"btn btn-default\" (click)=\"downloadSelectedAsYaml()\">{{ 'Download selected scenarios as YAML' | translate}}</button-->\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>{{'Create new scenario' | translate}}</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"{{'Scenario name' | translate}}\" class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n"
+module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item active\">{{project.code}}. {{project.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"project.code\"></app-search>\r\n  </div>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.code + '/settings']\">{{'Settings' | translate}}</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">{{'All' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">{{'Without group' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && group == filter.scenarioGroup\" *ngFor=\"let group of project.groupList\">\r\n        <a href=\"#\" (click)=\"selectGroup(group)\">{{group}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-7\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"{{'Select' | translate}}\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">{{'Execute selected scenarios' | translate}}</button>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"getReportsBySelectedScenarios()\">{{'Get report on selected scenarios' | translate}}</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuted != executingStateTotal\"\r\n               [style.display]=\"executingStateTotal > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateExecuted / executingStateTotal * 95) + '%'\">\r\n            {{Math.round(executingStateExecuted / executingStateTotal * 100)}}%\r\n            {{executingStateExecuted > 0 ? '(' + executingStateExecuted + '/' + executingStateTotal + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"project.code\" (onStateChange)=\"onStateChange($event, scenario)\" [isLinkTitleScenario] = \"true\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <a class=\"btn btn-default\" target=\"_blank\" [attr.href]=\"globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'\">{{'Download project as YAML' | translate}}</a>\r\n        <!--button class=\"btn btn-default\" (click)=\"downloadSelectedAsYaml()\">{{ 'Download selected scenarios as YAML' | translate}}</button-->\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>{{'Create new scenario' | translate}}</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"{{'Scenario name' | translate}}\" class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n"
 
 /***/ }),
 
@@ -482,7 +497,10 @@ module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_scenario__ = __webpack_require__("../../../../../src/app/model/scenario.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__globals__ = __webpack_require__("../../../../../src/app/globals.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scenario_list_item_scenario_list_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__ = __webpack_require__("../../../../file-saver/FileSaver.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -501,13 +519,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var ProjectDetailComponent = (function () {
-    function ProjectDetailComponent(globals, route, router, projectService, customToastyService) {
+    function ProjectDetailComponent(globals, route, router, projectService, customToastyService, scenarioService) {
         this.globals = globals;
         this.route = route;
         this.router = router;
         this.projectService = projectService;
         this.customToastyService = customToastyService;
+        this.scenarioService = scenarioService;
         this.selectAllFlag = false;
         this.failCount = 0;
         this.newScenarioName = '';
@@ -575,7 +596,7 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.selectAll = function () {
         var _this = this;
         this.selectAllFlag = !this.selectAllFlag;
-        this.scenarioComponentList.forEach(function (item) { return item.scenario._selected = _this.selectAllFlag; });
+        this.scenarioComponentList.forEach(function (item) { return item.scenario._selected = _this.selectAllFlag && _this.isDisplayScenario(item.scenario); });
     };
     ProjectDetailComponent.prototype.updateFailCountSum = function () {
         var _this = this;
@@ -594,7 +615,7 @@ var ProjectDetailComponent = (function () {
         this.executingStateExecuted = this.scenarioComponentList
             .filter(function (item) { return item.state === 'executing' || item.state === 'finished' || item.state === 'starting'; })
             .filter(function (item) { return item.executedSteps; })
-            .map(function (item) { return item.executedSteps; })
+            .map(function (item) { return item.executedSteps - (item.state === 'finished' ? 0 : 1); })
             .reduce(function (a, b) { return a + b; }, 0);
         this.executingStateTotal = this.scenarioComponentList
             .filter(function (item) { return item.state === 'executing' || item.state === 'finished' || item.state === 'starting'; })
@@ -621,6 +642,21 @@ var ProjectDetailComponent = (function () {
             _this.customToastyService.success('Сохранено', 'Сценарий создан');
         }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
     };
+    ProjectDetailComponent.prototype.getReportsBySelectedScenarios = function () {
+        var _this = this;
+        var executionUuidList = [];
+        this.scenarioComponentList
+            .filter(function (item) { return item.scenario._selected && _this.isDisplayScenario(item.scenario); })
+            .filter(function (item) { return item.state === 'finished' && item.startScenarioInfo; })
+            .forEach(function (scenarioItemComponent) {
+            executionUuidList.push(scenarioItemComponent.startScenarioInfo.runningUuid);
+        });
+        this.scenarioService
+            .downloadReport(executionUuidList)
+            .subscribe(function (blobReport) {
+            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__["saveAs"])(blobReport, 'reports.zip');
+        });
+    };
     return ProjectDetailComponent;
 }());
 __decorate([
@@ -633,10 +669,10 @@ ProjectDetailComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/project-detail/project-detail.component.html"),
         styles: [__webpack_require__("../../../../../src/app/project-detail/project-detail.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_7__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */]) === "function" && _g || Object])
 ], ProjectDetailComponent);
 
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=project-detail.component.js.map
 
 /***/ }),
@@ -986,7 +1022,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button class=\"btn btn-\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" />\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"startScenarioInfo && startScenarioInfo.runningUuid && state == 'finished'\"><a href=\"/rest/execution/{{startScenarioInfo.runningUuid}}/report\" target=\"_blank\">Get report</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1017,7 +1053,7 @@ var ScenarioListItemComponent = (function () {
         this.onStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.state = 'none';
         this.showResultDetails = false;
-        this.resultCheckTimeout = 333;
+        this.resultCheckTimeout = 5000;
     }
     ScenarioListItemComponent.prototype.ngOnInit = function () {
         this.scenario._selected = false;
@@ -1028,6 +1064,8 @@ var ScenarioListItemComponent = (function () {
     ScenarioListItemComponent.prototype.runScenario = function () {
         var _this = this;
         if (this.state !== 'executing') {
+            this.executedSteps = 0;
+            // this.totalSteps = 0;
             this.state = 'starting';
             this.stateChanged();
             this.scenarioService.run(this.projectCode, this.scenario)
@@ -1085,7 +1123,7 @@ var ScenarioListItemComponent = (function () {
         }
     };
     ScenarioListItemComponent.prototype.getMapStyleForScenario = function () {
-        if (this.state !== 'executing') {
+        if (this.state !== 'executing' && this.state !== 'starting') {
             if (this.scenario.failed) {
                 return 'failedScenario';
             }
@@ -1507,6 +1545,7 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__("../../../../../src/app/globals.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_multiple_reports_request__ = __webpack_require__("../../../../../src/app/model/multiple-reports-request.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1517,6 +1556,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1561,6 +1601,11 @@ var ScenarioService = (function () {
     ScenarioService.prototype.deleteOne = function (projectCode, scenario) {
         var scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
         return this.http.delete(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath);
+    };
+    ScenarioService.prototype.downloadReport = function (executionUuidList) {
+        var multipleReportsRequest = new __WEBPACK_IMPORTED_MODULE_4__model_multiple_reports_request__["a" /* MultipleReportsRequest */]();
+        multipleReportsRequest.executionUuidList = executionUuidList;
+        return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/multiple-reports', multipleReportsRequest, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (data) { return data.blob(); });
     };
     return ScenarioService;
 }());
