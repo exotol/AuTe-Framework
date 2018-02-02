@@ -11,6 +11,7 @@ import ru.bsc.test.autotester.ro.StepRo;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by sdoroshin on 03.03.2017.
@@ -47,4 +48,8 @@ public interface ScenarioService {
     List<Scenario> findAllByProject(String projectCode);
 
     ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException;
+
+    void getReport(String uuid, ZipOutputStream executionUuid) throws Exception;
+
+    void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception;
 }
