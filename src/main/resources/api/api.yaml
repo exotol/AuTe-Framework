@@ -38,7 +38,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Project'
-  '/projects/{projectId}':
+  '/projects/{projectCode}':
     get:
       tags:
         - Project
@@ -97,7 +97,7 @@ paths:
           description: 'Updated project-object'
           schema:
             $ref: '#/definitions/Project'
-  '/projects/{projectId}/scenarios':
+  '/projects/{projectCode}/scenarios':
     get:
       tags:
         - Scenario
@@ -144,7 +144,7 @@ paths:
           description: Scenario created
           schema:
             $ref: '#/definitions/Scenario'
-  '/projects/{projectId}/search':
+  '/projects/{projectCode}/search':
       post:
         tags:
           - Scenario
@@ -170,41 +170,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/Scenario'
-  '/projects/{projectId}/export-selected-to-yaml':
-    post:
-      tags:
-        - Project
-      summary: Download YAML
-      consumes:
-        - multipart/form-data
-      parameters:
-        - name: projectId
-          in: path
-          type: integer
-          required: true
-          description: Project id
-        - name: selectedScenarios
-          in: formData
-          type: array
-          items:
-            type: integer
-      responses:
-        404:
-          description: Project not found
-        200:
-          description: Project YAML
-  '/scenarios/{scenarioId}':
+  '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}':
     get:
       tags:
         - Scenario
       summary: Get Scenario details
       operationId: getScenarioDetail
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
       responses:
         404:
           description: Scenario not found
@@ -218,11 +203,19 @@ paths:
       summary: Update Scenario details
       operationId: saveScenarioDetails
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -241,17 +234,25 @@ paths:
       summary: Delete Scenario
       operationId: deleteScenario
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
       responses:
         404:
           description: Scenario not found
         200:
           description: Scenario deleted
-  '/scenarios/{scenarioId}/steps':
+  '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}/steps':
     get:
       tags:
         - Step
@@ -259,11 +260,19 @@ paths:
       summary: Get Step list
       operationId: getSteps
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
       responses:
         200:
           description: Step list
@@ -280,11 +289,19 @@ paths:
       summary: Create new step
       operationId: createStep
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -303,11 +320,19 @@ paths:
         - Scenario
       summary: Save step list
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
-          type: integer
+          type: string
           required: true
-          description: Scenario id
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -324,22 +349,33 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Step'
-  '/steps/{stepId}':
+  '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}/steps/{stepCode}':
     put:
       tags:
         - Step
       summary: Update Step details
       operationId: updateStep
       parameters:
-        - name: stepId
+        - name: projectCode
+          in: path
+          type: string
+          required: true
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
+        - name: stepCode
           in: path
           required: true
-          description: Step id
-          type: integer
+          type: string
         - name: body
           in: body
           required: true
-          description: Step to update
           schema:
             $ref: '#/definitions/Step'
       responses:
