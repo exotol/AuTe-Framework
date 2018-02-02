@@ -1,12 +1,12 @@
 swagger: '2.0'
 info:
   description: AutoTester-UI REST API
-  version: 1.0.0
+  version: 4.0.0
   title: AutoTester-UI REST API
   contact:
     email: Stanislav.Doroshin@bsc-ideas.com
 host: piphagor.bscmsc.ru
-basePath: /autotester/rest
+basePath: /rest
 tags:
   - name: Project
     description: Autotes project, contains Scenario list
@@ -14,7 +14,7 @@ tags:
     description: Scenario of Project, contains Step list
   - name: Step
     description: Step of Scenario, contains details about one request to service
-  - name: Test executing
+  - name: Test execution
     description: ''
 schemes:
   - http
@@ -349,70 +349,248 @@ paths:
           description: Step updated
           schema:
             $ref: '#/definitions/Step'
-  '/scenarios/{scenarioId}/exec':
+  '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}/start':
     post:
       tags:
-        - Test executing
+        - Test execution
       summary: Start executing
       parameters:
-        - name: scenarioId
+        - name: projectCode
           in: path
           required: true
-          type: integer
+          type: string
+        - name: scenarioGroup
+          in: path
+          required: true
+          type: string
+          description: not required
+        - name: scenarioCode
+          in: path
+          required: true
+          type: string
       responses:
         404:
           description: Scenario not found
         200:
-          description: Test finished
+          description: 'Test execution information: executionUuid'
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/StepResult'
+            $ref: '#/definitions/StartScenarioInfo'
+  '/execution/{executionUuid}/stop':
+    post:
+      tags:
+        - Test execution
+      summary: Stop scenario execution
+      parameters:
+        - name: executionUuid
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: empty
+  '/execution/{executionUuid}/status':
+      get:
+        tags:
+          - Test execution
+        summary: Get execution status
+        parameters:
+          - name: executionUuid
+            in: path
+            required: true
+            type: string
+        responses:
+          200:
+            description: empty
+            schema:
+              $ref: '#/definitions/ExecutionResult'
+  '/execution/{executionUuid}/report':
+    get:
+      tags:
+        - Reports
+      summary: Get Allure report
+      parameters:
+        - name: executionUuid
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Zip archive
+  '/execution/multiple-reports':
+    post:
+      tags:
+        - Reports
+      summary: Get Allure reports by multiple executionUuid
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MultipleReportsRequest'
+      responses:
+        200:
+          description: Zip archive
 definitions:
   Project:
     type: object
     properties:
-      id:
-        type: integer
+      code:
+        type: string
       name:
         type: string
+      beforeScenarioPath:
+        type: string
+      afterScenarioPath:
+        type: string
+      stand:
+        $ref: '#/definitions/Stand'
+      useRandomTestId:
+        type: boolean
+      testIdHeaderName:
+        type: string
+      amqpBroker:
+        $ref: '#/definitions/AmqpBroker'
+      groupList:
+        type: array
+        items:
+          type: string
   Stand:
     type: object
     properties:
-      id:
-        type: integer
       url:
         type: string
-  ScenarioGroup:
+  AmqpBroker:
     type: object
     properties:
-      id:
+      mqService:
+        type: string
+      host:
+        type: string
+      port:
         type: integer
-      name:
+      username:
+        type: string
+      password:
         type: string
   Scenario:
     type: object
     properties:
-      id:
-        type: integer
+      code:
+        type: string
+      projectCode:
+        type: string
       name:
         type: string
+      scenarioGroup:
+        type: string
+      stepList:
+        type: array
+        items:
+          $ref: '#/definitions/Step'
+      beforeScenarioIgnore:
+        type: boolean
+      afterScenarioIgnore:
+        type: boolean
+      failed:
+        type: boolean
   Step:
     type: object
     properties:
-      id:
+      code:
+        type: string
+      relativeUrl:
+        type: string
+      requestMethod:
+        type: string
+      request:
+        type: string
+      requestFile:
+        type: string
+      requestHeaders:
+        type: string
+      expectedResponse:
+        type: string
+      expectedResponseFile:
+        type: string
+      expectedResponseIgnore:
+        type: boolean
+      expectedStatusCode:
         type: integer
-      url:
+      sql:
+        type: string
+      sqlSavedParameter:
+        type: string
+      jsonXPath:
+        type: string
+      requestBodyType:
+        type: string
+      usePolling:
+        type: boolean
+      pollingJsonXPath:
+        type: string
+      mockServiceResponseList:
+        type: object
+        description: 'Map<String, String>'
+      disabled:
+        type: boolean
+      stepComment:
+        type: string
+      savedValuesCheck:
+        type: object
+        description: 'Map<String, String>'
+      stepParameterSetList:
+        type: array
+        items:
+          $ref: '#/definitions/StepParameterSet'
+      expectedServiceRequestList:
+        type: array
+        items:
+          $ref: '#/definitions/ExpectedServiceRequest'
+      mqName:
+        type: string
+      mqMessage:
+        type: string
+      mqMessageFile:
+        type: string
+      responseCompareMode:
+        type: string
+      formDataList:
+        type: array
+        items:
+          $ref: '#/definitions/FormData'
+      multipartFormData:
+        type: boolean
+      jsonCompareMode:
+        type: string
+      script:
         type: string
   StepResult:
     type: object
     properties:
+      testId:
+        type: string
       step:
         $ref: '#/definitions/Step'
-      actual:
+      result:
+        type: string
+      details:
         type: string
       expected:
         type: string
+      actual:
+        type: string
+      requestUrl:
+        type: string
+      requestBody:
+        type: string
+      pollingRetryCount:
+        type: integer
+      savedParameters:
+        type: string
+      description:
+        type: string
+      editable:
+        type: boolean
   ProjectSearchRo:
     type: object
     properties:
@@ -421,8 +599,6 @@ definitions:
   FormData:
     type: object
     properties:
-      id:
-        type: integer
       fieldName:
         type: string
       fieldType:
@@ -430,6 +606,70 @@ definitions:
       value:
         type: string
       filePath:
+        type: string
+      mimeType:
+        type: string
+  ExecutionResult:
+    type: object
+    properties:
+      scenarioResultList:
+        type: array
+        items:
+          $ref: '#/definitions/ScenarioResult'
+      finished:
+        type: boolean
+  ScenarioResult:
+    type: object
+    properties:
+      scenario:
+        $ref: '#/definitions/Scenario'
+      stepResultList:
+        type: array
+        items:
+          $ref: '#/definitions/StepResult'
+      totalSteps:
+        type: integer
+  StepParameterSet:
+    type: object
+    properties:
+      stepParameterList:
+        type: array
+        items:
+          $ref: '#/definitions/StepParameter'
+      description:
+        type: string
+  StepParameter:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+  ExpectedServiceRequest:
+    type: object
+    properties:
+      code:
+        type: string
+      serviceName:
+        type: string
+      expectedServiceRequest:
+        type: string
+      expectedServiceRequestFile:
+        type: string
+      ignoredTags:
+        type: string
+  MultipleReportsRequest:
+    type: object
+    description: Request for get report by multiple executionUuid
+    properties:
+      executionUuidList:
+        type: array
+        items:
+          type: string
+  StartScenarioInfo:
+    type: object
+    properties:
+      runningUuid:
         type: string
 externalDocs:
   description: Find out more about Swagger
