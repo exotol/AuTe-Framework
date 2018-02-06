@@ -41,6 +41,7 @@ public class StepRo extends AbstractRo {
     private Boolean multipartFormData;
     private String jsonCompareMode;
     private String script;
+    private String numberRepetitions;
 
     public String getCode() {
         return code;
@@ -280,5 +281,13 @@ public class StepRo extends AbstractRo {
 
     public void setScript(String script) {
         this.script = script;
+    }
+
+    public String getNumberRepetitions() {
+        return numberRepetitions;
+    }
+
+    public void setNumberRepetitions(String numberRepetitions) {
+        this.numberRepetitions = numberRepetitions;
     }
 }

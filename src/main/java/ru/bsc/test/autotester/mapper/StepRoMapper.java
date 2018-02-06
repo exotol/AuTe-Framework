@@ -62,6 +62,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "formDataList", source = "formDataList"),
             @Mapping(target = "multipartFormData", source = "multipartFormData"),
             @Mapping(target = "jsonCompareMode", source = "jsonCompareMode"),
+            @Mapping(target = "numberRepetitions", source = "numberRepetitions"),
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
