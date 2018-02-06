@@ -91,7 +91,11 @@
                   <option [ngValue]="'FORM'">{{'FORM-data request body' | translate}}</option>
                 </select>
               </div>
-              <div class="col-sm-6" style="text-align: center; padding-top: 10px;">
+              <div class="col-sm-3">
+                <label>{{'Number of repetitions' | translate}}</label>
+                <input title="" placeholder="N or variable" class="form-control" [(ngModel)]="step.numberRepetitions"/>
+              </div>
+              <div class="col-sm-3" style="text-align: center; padding-top: 10px;">
                 <label>
                   <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
                   {{'Ignore response' | translate}}

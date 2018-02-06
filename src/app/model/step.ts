@@ -31,4 +31,5 @@ export class Step {
   mqMessage: string;
   jsonCompareMode: String;
   script: String;
+  numberRepetitions: String;
 }
