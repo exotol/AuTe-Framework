@@ -379,6 +379,7 @@ public class AtExecutor {
                     numberRepetitions = 1;
                 }
             }
+            numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
         } while (repetitionCounter < numberRepetitions);
     }
 
