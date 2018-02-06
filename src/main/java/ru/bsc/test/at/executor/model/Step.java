@@ -43,6 +43,7 @@ public class Step extends AbstractModel implements Serializable {
     private List<FormData> formDataList;
     private String jsonCompareMode;
     private String script;
+    private String numberRepetitions;
 
     public String getCode() {
         return code;
@@ -241,6 +242,14 @@ public class Step extends AbstractModel implements Serializable {
 
     public void setScript(String script) {
         this.script = script;
+    }
+
+    public String getNumberRepetitions() {
+        return numberRepetitions;
+    }
+
+    public void setNumberRepetitions(String numberRepetitions) {
+        this.numberRepetitions = numberRepetitions;
     }
 
     public Step copy() {

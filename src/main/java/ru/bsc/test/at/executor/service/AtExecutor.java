@@ -245,6 +245,7 @@ public class AtExecutor {
 
         int retryCounter = 0;
         boolean retry = false;
+        int numberRepetitions;
         ResponseHelper responseData;
         do {
             retryCounter++;
@@ -304,7 +305,19 @@ public class AtExecutor {
             if (step.getUsePolling()) {
                 retry = tryUsePolling(step, responseData);
             }
-        } while (retry && retryCounter <= POLLING_RETRY_COUNT);
+
+            // 3.2. Cyclic sending request, COM-84
+            try {
+                numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
+            } catch (NumberFormatException e) {
+                try {
+                    numberRepetitions = Integer.parseInt(savedValues.get(step.getNumberRepetitions()));
+                } catch (NumberFormatException ex) {
+                    numberRepetitions = 1;
+                }
+            }
+
+        } while ((retry && retryCounter <= POLLING_RETRY_COUNT) || (retryCounter < numberRepetitions ) );
 
         stepResult.setPollingRetryCount(retryCounter);
         stepResult.setActual(responseData.getContent());
