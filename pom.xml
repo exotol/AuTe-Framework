@@ -146,7 +146,7 @@
             <artifactId>com.ibm.mq.allclient</artifactId>
             <version>8.0.0.5</version>
             <scope>system</scope>
-            <systemPath>C:/work/at-standalone/rest-at-executor/lib/com.ibm.mq.allclient.jar</systemPath>
+            <systemPath>${basedir}/lib/com.ibm.mq.allclient.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
