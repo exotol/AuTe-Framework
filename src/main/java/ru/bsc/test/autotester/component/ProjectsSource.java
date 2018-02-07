@@ -1,5 +1,17 @@
 package ru.bsc.test.autotester.component;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,18 +26,6 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.yaml.YamlUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 27.10.2017.
@@ -89,6 +89,10 @@ public class ProjectsSource {
                 amqpBroker.setPort(standProperties.getAmqpBroker().getPort());
                 amqpBroker.setUsername(standProperties.getAmqpBroker().getUsername());
                 amqpBroker.setPassword(standProperties.getAmqpBroker().getPassword());
+                amqpBroker.setQueueManager(standProperties.getAmqpBroker().getQueueManager());
+                amqpBroker.setChannel(standProperties.getAmqpBroker().getChannel());
+                amqpBroker.setCcsid(standProperties.getAmqpBroker().getCcsid());
+                amqpBroker.setTransportType(standProperties.getAmqpBroker().getTransportType());
                 project.setAmqpBroker(amqpBroker);
             }
         }
