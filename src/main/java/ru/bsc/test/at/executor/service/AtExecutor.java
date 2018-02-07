@@ -1,5 +1,31 @@
 package ru.bsc.test.at.executor.service;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -28,31 +54,7 @@ import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import static java.util.Optional.ofNullable;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -409,6 +411,10 @@ public class AtExecutor {
             mqManager.setPort(project.getAmqpBroker().getPort());
             mqManager.setUsername(project.getAmqpBroker().getUsername());
             mqManager.setPassword(project.getAmqpBroker().getPassword());
+            mqManager.setQueueManager(project.getAmqpBroker().getQueueManager());
+            mqManager.setCcid(ofNullable(project.getAmqpBroker().getCcsid()).orElse(0));
+            mqManager.setCannel(project.getAmqpBroker().getChannel());
+            mqManager.setTransportType(ofNullable(project.getAmqpBroker().getTransportType()).orElse(0));
 
             String message = insertSavedValues(step.getMqMessage(), savedValues);
             mqManager.sendTextMessage(step.getMqName(), message);

@@ -1,13 +1,13 @@
 package ru.bsc.test.at.executor.mq;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 class ActiveMqManager implements IMqManager {
 
@@ -32,6 +32,18 @@ class ActiveMqManager implements IMqManager {
     public void setPassword(String password) {
         connectionFactory.setPassword(password);
     }
+
+    @Override
+    public void setCcid(int ccid) {}
+
+    @Override
+    public void setCannel(String channel) {}
+
+    @Override
+    public void setQueueManager(String queueManager) {}
+
+    @Override
+    public void setTransportType(int transportType) {}
 
     public void sendTextMessage(String queueName, String message) throws Exception {
         Connection connection = connectionFactory.createConnection();

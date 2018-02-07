@@ -10,6 +10,10 @@ public class AmqpBroker extends AbstractModel {
     private Integer port;
     private String username;
     private String password;
+    private Integer ccsid;
+    private String channel;
+    private String queueManager;
+    private Integer transportType;
 
     public MqService getMqService() {
         return mqService;
@@ -51,6 +55,38 @@ public class AmqpBroker extends AbstractModel {
         this.password = password;
     }
 
+    public Integer getCcsid() {
+        return ccsid;
+    }
+
+    public void setCcsid(Integer ccsid) {
+        this.ccsid = ccsid;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getQueueManager() {
+        return queueManager;
+    }
+
+    public void setQueueManager(String queueManager) {
+        this.queueManager = queueManager;
+    }
+
+    public Integer getTransportType() {
+        return transportType;
+    }
+
+    public void setTransportType(Integer transportType) {
+        this.transportType = transportType;
+    }
+
     public AmqpBroker copy() {
         AmqpBroker copy = new AmqpBroker();
         copy.setMqService(getMqService());
@@ -58,6 +94,10 @@ public class AmqpBroker extends AbstractModel {
         copy.setPort(getPort());
         copy.setUsername(getUsername());
         copy.setPassword(getPassword());
+        copy.setCcsid(getCcsid());
+        copy.setQueueManager(getQueueManager());
+        copy.setChannel(getChannel());
+        copy.setTransportType(getTransportType());
         return copy;
     }
 }
