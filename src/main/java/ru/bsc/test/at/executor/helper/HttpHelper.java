@@ -44,6 +44,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,17 +75,17 @@ public class HttpHelper {
             // set up a TrustManager that trusts everything
             sslContext.init(null, new TrustManager[]{new X509TrustManager() {
                 @Override
-                public void checkClientTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
                     System.out.println("checkClientTrusted =============");
                 }
 
                 @Override
-                public void checkServerTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
                     System.out.println("checkServerTrusted =============");
                 }
 
                 @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
 
