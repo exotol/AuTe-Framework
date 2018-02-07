@@ -8,7 +8,6 @@ public class AmqpBrokerRo extends AbstractRo {
     private Integer port;
     private String username;
     private String password;
-    // TODO если поджход правильный, то перенести сюда 
 
     public String getMqService() {
         return mqService;
