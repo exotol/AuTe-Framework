@@ -54,8 +54,6 @@ import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 
-import static java.util.Optional.ofNullable;
-
 /**
  * Created by sdoroshin on 21.03.2017.
  *
@@ -411,10 +409,6 @@ public class AtExecutor {
             mqManager.setPort(project.getAmqpBroker().getPort());
             mqManager.setUsername(project.getAmqpBroker().getUsername());
             mqManager.setPassword(project.getAmqpBroker().getPassword());
-            mqManager.setQueueManager(project.getAmqpBroker().getQueueManager());
-            mqManager.setCcid(ofNullable(project.getAmqpBroker().getCcsid()).orElse(0));
-            mqManager.setCannel(project.getAmqpBroker().getChannel());
-            mqManager.setTransportType(ofNullable(project.getAmqpBroker().getTransportType()).orElse(0));
 
             String message = insertSavedValues(step.getMqMessage(), savedValues);
             mqManager.sendTextMessage(step.getMqName(), message);

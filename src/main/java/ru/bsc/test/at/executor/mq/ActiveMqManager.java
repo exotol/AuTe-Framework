@@ -33,18 +33,6 @@ class ActiveMqManager implements IMqManager {
         connectionFactory.setPassword(password);
     }
 
-    @Override
-    public void setCcid(int ccid) {}
-
-    @Override
-    public void setCannel(String channel) {}
-
-    @Override
-    public void setQueueManager(String queueManager) {}
-
-    @Override
-    public void setTransportType(int transportType) {}
-
     public void sendTextMessage(String queueName, String message) throws Exception {
         Connection connection = connectionFactory.createConnection();
         connection.start();

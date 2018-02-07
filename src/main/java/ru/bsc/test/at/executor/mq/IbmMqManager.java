@@ -10,6 +10,7 @@ import com.ibm.mq.jms.MQQueueConnection;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.mq.jms.MQQueueSender;
 import com.ibm.mq.jms.MQQueueSession;
+import com.ibm.msg.client.wmq.WMQConstants;
 
 
 public class IbmMqManager implements IMqManager {
@@ -66,34 +67,11 @@ public class IbmMqManager implements IMqManager {
     }
 
     @Override
-    public void setCcid(int ccid) {
-        this.ccid = ccid;
-    }
-
-    @Override
-    public void setCannel(String channel) {
-        this.channel = channel;
-    }
-
-    @Override
-    public void setQueueManager(String queueManager) {
-        this.queueManager = queueManager;
-    }
-
-    @Override
-    public void setTransportType(int transportType) {
-        this.transportType = transportType;
-    }
-
-    @Override
     public void sendTextMessage(String queueName, String message) throws Exception {
 
         connectionFactory.setHostName(host);
         connectionFactory.setPort(port);
-        connectionFactory.setCCSID(ccid);
-        connectionFactory.setChannel(channel);
-        connectionFactory.setQueueManager(queueManager);
-        connectionFactory.setTransportType(transportType);  // WMQConstants
+        connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
 
         MQQueueConnection connection = (MQQueueConnection) connectionFactory.createConnection(username, password);
         MQQueueSession session = (MQQueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

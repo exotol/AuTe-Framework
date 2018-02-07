@@ -24,18 +24,6 @@ class RabbitMqManager implements IMqManager {
         connectionFactory.setPassword(password);
     }
 
-    @Override
-    public void setCcid(int ccid) {}
-
-    @Override
-    public void setCannel(String channel) {}
-
-    @Override
-    public void setTransportType(int transportType) {}
-
-    @Override
-    public void setQueueManager(String queueManager) {}
-
     public void sendTextMessage(String queueName, String message) throws Exception {
         Connection connection = connectionFactory.newConnection();
         Channel channel = connection.createChannel();
