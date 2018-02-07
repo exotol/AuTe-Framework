@@ -62,31 +62,37 @@ public class HttpHelper {
     private final CloseableHttpClient httpClient;
     private HttpClientContext context;
 
-    public HttpHelper() throws NoSuchAlgorithmException, KeyManagementException {
+    public HttpHelper() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
         CookieStore cookieStore = new BasicCookieStore();
         context = HttpClientContext.create();
 
-        SSLContext sslContext = SSLContext.getInstance("SSL");
+        SSLContext sslContext;
+        try {
+            sslContext = SSLContext.getInstance("SSL");
 
-        // set up a TrustManager that trusts everything
-        sslContext.init(null, new TrustManager[] { new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
-                System.out.println("checkClientTrusted =============");
-            }
+            // set up a TrustManager that trusts everything
+            sslContext.init(null, new TrustManager[]{new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    System.out.println("checkClientTrusted =============");
+                }
 
-            @Override
-            public void checkServerTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
-                System.out.println("checkServerTrusted =============");
-            }
+                @Override
+                public void checkServerTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    System.out.println("checkServerTrusted =============");
+                }
 
-            @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
 
-        } }, new SecureRandom());
+            }}, new SecureRandom());
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            e.printStackTrace();
+            sslContext = null;
+        }
 
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).setSSLContext(sslContext).build();
     }
