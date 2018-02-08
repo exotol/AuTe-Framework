@@ -243,12 +243,25 @@ public class AtExecutor {
         // 2.3 Подстановка переменных сценария в заголовки запроса
         String requestHeaders = insertSavedValues(step.getRequestHeaders(), savedValues);
 
+        // 2.4 Cyclic sending request, COM-84
         int numberRepetitions;
-        int repetitionCounter = 0;
-        do {
-            repetitionCounter++;
+        try {
+            numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
+        } catch (NumberFormatException e) {
+            try {
+                numberRepetitions = Integer.parseInt(savedValues.get(step.getNumberRepetitions()));
+            } catch (NumberFormatException ex) {
+                numberRepetitions = 1;
+            }
+        }
+        numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
+
+        for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
+
+            // Polling
             int retryCounter = 0;
             boolean retry = false;
+
             ResponseHelper responseData;
             do {
                 retryCounter++;
@@ -368,19 +381,7 @@ public class AtExecutor {
                     }
                 }
             }
-
-            // 3.2. Cyclic sending request, COM-84
-            try {
-                numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
-            } catch (NumberFormatException e) {
-                try {
-                    numberRepetitions = Integer.parseInt(savedValues.get(step.getNumberRepetitions()));
-                } catch (NumberFormatException ex) {
-                    numberRepetitions = 1;
-                }
-            }
-            numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
-        } while (repetitionCounter < numberRepetitions);
+        }
     }
 
     private void JSONComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
