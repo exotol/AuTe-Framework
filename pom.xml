@@ -141,12 +141,5 @@
             <artifactId>tika-core</artifactId>
             <version>1.17</version>
         </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq.allclient</artifactId>
-            <version>8.0.0.5</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/com.ibm.mq.allclient.jar</systemPath>
-        </dependency>
     </dependencies>
 </project>
