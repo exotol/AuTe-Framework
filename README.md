@@ -36,6 +36,7 @@ java -Dloader.path=lib/ -Dfile.encoding=UTF-8 -jar autotester-4.0.0-SNAPSHOT.jar
 
 Параметр `--server.port` указывает, какой порт используется для работы.
 
+Подключение обязательно если необходима работа с IBM MQ.
 Параметр `-Dloader.path` указывает на путь к папке с библиотеками для ibm mq
 com.ibm.mq.allclient.jar
 jms.jar
