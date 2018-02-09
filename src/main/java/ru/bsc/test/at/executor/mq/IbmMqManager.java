@@ -52,12 +52,9 @@ public class IbmMqManager implements IMqManager {
         sender.close();
         session.close();
         connection.close();
-
-
     }
 
-
-    protected void fillConnectionFactory() throws Exception {
+    private void fillConnectionFactory() throws Exception {
         try {
             connectionFactory = (QueueConnectionFactory) Class.forName("com.ibm.mq.jms.MQQueueConnectionFactory").newInstance();
         } catch (ClassNotFoundException e){
@@ -69,14 +66,14 @@ public class IbmMqManager implements IMqManager {
         invoke(connectionFactory, "setTransportType", 1);
     }
 
-    private void invoke(Object obj, String mthd, Object val) throws Exception{
+    private void invoke(Object obj, String methodName, Object val) throws Exception {
         Method method;
-        if(val instanceof Integer){
-             method = ReflectionUtils.findMethod(obj.getClass(), mthd, int.class );
-        }else{
-             method = ReflectionUtils.findMethod(obj.getClass(), mthd, val.getClass());
+        if (val instanceof Integer){
+            method = ReflectionUtils.findMethod(obj.getClass(), methodName, int.class);
+        } else {
+            method = ReflectionUtils.findMethod(obj.getClass(), methodName, val.getClass());
         }
 
-        method.invoke(obj, new Object[]{val});
+        method.invoke(obj, val);
     }
 }
