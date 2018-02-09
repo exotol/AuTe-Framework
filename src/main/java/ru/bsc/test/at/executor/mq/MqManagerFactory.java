@@ -7,6 +7,8 @@ public class MqManagerFactory {
             return new ActiveMqManager();
         } else if (MqService.RABBIT_MQ.equals(mqService)) {
             return new RabbitMqManager();
+        } else if(MqService.IBM_MQ.equals(mqService)) {
+            return new IbmMqManager();
         } else {
             throw new UnsupportedOperationException("MqService " + mqService + " is not supported");
         }
