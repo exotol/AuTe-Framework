@@ -36,9 +36,10 @@ java -Dloader.path=lib/ -Dfile.encoding=UTF-8 -jar autotester-4.0.0-SNAPSHOT.jar
 
 Параметр `--server.port` указывает, какой порт используется для работы.
 
-Параметр `-Dloader.path` указывает на относительный путь к библиотекам для ibm mq
+Параметр `-Dloader.path` указывает на путь к папке с библиотеками для ibm mq
 com.ibm.mq.allclient.jar
 jms.jar
+Библиотеки можно скачать по адресу http://intra.b-s-c.ru/wiki/display/CAT/IBM+MQ
 
 
 После запуска приложения необходимо открыть в браузере: http://localhost:8080/
