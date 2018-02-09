@@ -26,15 +26,21 @@ projects.directory.path=c:\\projects\\bcs-test\\
 
 ### 2. Запуск ###
 
-Для работы необходимо запустить `autotester-3.0.0-SNAPSHOT.jar`. 
+Для работы необходимо запустить `autotester-4.0.0-SNAPSHOT.jar`.
 
 Запускать в Windows удобней с помощью файла bat. Пример `run.bat`:
 
 ```
-java -Dfile.encoding=UTF-8 -jar autotester-3.0.0-SNAPSHOT.jar --server.port=8080
+java -Dloader.path=lib/ -Dfile.encoding=UTF-8 -jar autotester-4.0.0-SNAPSHOT.jar --server.port=8080
 ```
 
 Параметр `--server.port` указывает, какой порт используется для работы.
+
+Параметр `-Dloader.path` указывает на путь к папке с библиотеками для ibm mq
+com.ibm.mq.allclient.jar
+jms.jar
+Библиотеки можно скачать по адресу http://intra.b-s-c.ru/wiki/display/CAT/IBM+MQ
+
 
 После запуска приложения необходимо открыть в браузере: http://localhost:8080/
 
