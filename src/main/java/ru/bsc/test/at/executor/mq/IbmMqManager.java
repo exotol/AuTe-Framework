@@ -1,16 +1,14 @@
 package ru.bsc.test.at.executor.mq;
 
+import org.springframework.util.ReflectionUtils;
 
-import com.ibm.mq.jms.*;
-import com.ibm.msg.client.wmq.WMQConstants;
-
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
+import java.lang.reflect.Method;
 
 
 public class IbmMqManager implements IMqManager {
 
-    private MQConnectionFactory connectionFactory = new MQQueueConnectionFactory();
+    private QueueConnectionFactory connectionFactory;
 
     private String username;
     private String password;
@@ -40,24 +38,45 @@ public class IbmMqManager implements IMqManager {
     @Override
     public void sendTextMessage(String queueName, String message) throws Exception {
 
-        connectionFactory.setHostName(host);
-        connectionFactory.setPort(port);
-        connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+        fillConnectionFactory();
 
-        MQQueueConnection connection = (MQQueueConnection) connectionFactory.createConnection(username, password);
-        MQQueueSession session = (MQQueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        MQQueue queue = (MQQueue) session.createQueue(queueName);
-        MQQueueSender sender = (MQQueueSender) session.createSender(queue);
-        TextMessage msg = session.createTextMessage(message);
-
+        QueueConnection connection = (QueueConnection) connectionFactory.createConnection(username, password);
+        QueueSession  session = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Queue queue = session.createQueue(queueName);
+        QueueSender sender = session.createSender(queue);
+        Message msg = session.createTextMessage(message);
         connection.start();
+
         sender.send(msg);
 
         sender.close();
         session.close();
         connection.close();
 
+
     }
 
 
+    protected void fillConnectionFactory() throws Exception {
+        try {
+            connectionFactory = (QueueConnectionFactory) Class.forName("com.ibm.mq.jms.MQQueueConnectionFactory").newInstance();
+        } catch (ClassNotFoundException e){
+            throw new ClassNotFoundException(e.getMessage() + ": set class path for library for Ibm Mq provider", e);
+        }
+
+        invoke(connectionFactory, "setHostName", host);
+        invoke(connectionFactory, "setPort", port);
+        invoke(connectionFactory, "setTransportType", 1);
+    }
+
+    private void invoke(Object obj, String mthd, Object val) throws Exception{
+        Method method;
+        if(val instanceof Integer){
+             method = ReflectionUtils.findMethod(obj.getClass(), mthd, int.class );
+        }else{
+             method = ReflectionUtils.findMethod(obj.getClass(), mthd, val.getClass());
+        }
+
+        method.invoke(obj, new Object[]{val});
+    }
 }
