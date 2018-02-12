@@ -16,7 +16,7 @@ webpackEmptyContext.id = "../../../../../src async recursive";
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">BSC AutoTester</a>\r\n    </div>\r\n    <div class=\"navbar-locale\">\r\n      <select [(ngModel)]=\"locale\" (change)=\"changeLocale()\">\r\n        <option *ngFor=\"let lang of langs\" [value]=\"lang\">{{lang}}</option>\r\n      </select>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/']\">{{'Projects' | translate}}</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<router-outlet></router-outlet>\r\n\r\n<div class=\"help-block\" *ngIf=\"version\">{{version.implementationVersion}} {{version.implementationDate}}</div>\r\n<ng2-toasty [position]=\"'top-right'\"></ng2-toasty>\r\n"
+module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">BSC AutoTester</a>\r\n    </div>\r\n    <div class=\"navbar-locale\">\r\n      <select [(ngModel)]=\"locale\" (change)=\"changeLocale()\">\r\n        <option *ngFor=\"let lang of langs\" [value]=\"lang\">{{lang}}</option>\r\n      </select>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/']\">{{'Projects' | translate}}</a></li>\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/help']\">{{'Help' | translate}}</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<router-outlet></router-outlet>\r\n\r\n<div class=\"help-block\" *ngIf=\"version\">{{version.implementationVersion}} {{version.implementationDate}}</div>\r\n<ng2-toasty [position]=\"'top-right'\"></ng2-toasty>\r\n"
 
 /***/ }),
 
@@ -129,6 +129,7 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__service_search_scenario_service__ = __webpack_require__("../../../../../src/app/service/search-scenario.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__ = __webpack_require__("../../../../../src/app/shared/directives/sync-scroll.directive.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__ = __webpack_require__("../../../../../src/app/shared/directives/text-select.directive.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__help_help_component__ = __webpack_require__("../../../../../src/app/help/help.component.ts");
 /* unused harmony export HttpLoaderFactory */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -167,11 +168,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 function HttpLoaderFactory(http) {
     return new __WEBPACK_IMPORTED_MODULE_3__ngx_translate_http_loader__["a" /* TranslateHttpLoader */](http);
 }
 var routes = [
     { path: '', component: __WEBPACK_IMPORTED_MODULE_7__project_list_project_list_component__["a" /* ProjectListComponent */] },
+    { path: 'help', component: __WEBPACK_IMPORTED_MODULE_30__help_help_component__["a" /* HelpComponent */] },
     { path: 'project/:projectCode', component: __WEBPACK_IMPORTED_MODULE_8__project_detail_project_detail_component__["a" /* ProjectDetailComponent */] },
     { path: 'project/:projectCode/settings', component: __WEBPACK_IMPORTED_MODULE_22__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */] },
     { path: 'project/:projectCode/scenario/:scenarioCode/settings', component: __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] },
@@ -201,7 +204,8 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_10__shared_diff_diff_component__["a" /* DiffComponent */],
             __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__["a" /* SyncScrollDirective */],
             __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__["a" /* SearchComponent */],
-            __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__["a" /* TextSelectDirective */]
+            __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__["a" /* TextSelectDirective */],
+            __WEBPACK_IMPORTED_MODULE_30__help_help_component__["a" /* HelpComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -251,6 +255,48 @@ Globals = __decorate([
 ], Globals);
 
 //# sourceMappingURL=globals.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/help/help.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<pre style=\"word-wrap: normal; word-break: normal; white-space: pre-wrap;\">\nИнструкция по интерфейсу Автотестера:\n  <h4>1. Список проектов</h4>\n    Настройки проекта\n      Шаги \"перед\" и \"после\" сценариев.\n        В случаях, когда перед и после сценариев необходимо всегда выполнять одни и те же шаги, например, авторизация и логаут,\n        их можно вынести в отдельные сценарии, затем в настройках проекта указать их для выполнения перед и после каждого сценария.\n      Использование http-заголовока testId\n        Сервис заглушек должен иметь возможность отличать запросы, направляемые в рамках разных шагов, для их проверки и отправки заданных в шаге ответов.\n        Для этого к каждому запросу от Автотестера к тестируемому порталу добавляется http-заголовок со случайно генерируемым уникальным ID.\n        Портал должен пересылать указанный ID в сервис заглушек.\n        Название http-заголовка указывается в поле \"TestId header name\".\n      Стенд\n        На вкладке \"Стенд\" отображаются параметры стенда, заданные в env.yml.\n        Редактирование на форме недоступно. Изменить параметры можно только непосредственно в файле env.yml.\n      Группы\n        На вкладке \"Группы\" доступно переименование и создание новых групп.\n  <h4>2. Список сценариев в проекте</h4>\n    Настройки сценария:\n      В настройках сценария можно изменить его заголовок.\n      В случае, если необходимо отключить выполнение сценариев \"перед\" и \"после\", указанные в настройках проекта, необходимо отметить соответствующие чекбоксы.\n    Группы\n      Группы сценариев соответствуют директориям, вложенным в /&lt;project_dir>/scenarios/\n      Поддерживается один уровень вложенности.\n    Создание сценария\n      Для создания нового сценария необходимо указать его название и нажать кнопку \"Создать\". Сценарий будет создан в текущей выбранной группе.\n    Выполнение сценариев:\n      Для выполнения сценария необходимо нажать \"Выполнить\".\n      После выполнения можно просмотреть результат. В результатах отображаются статусы выполнения каждого шага с возможность просмотра тела запроса, фактического и ожидаемого результатов с выделением различающихся строк и детали с описанием возникшей ошибки.\n  <h4>3. Список шагов в сценарии</h4>\n    Один шаг сценария содержит следующий набор возможностей:\n    <h5>3.1 URL, http-headers</h5>\n      В поле адреса указывается относительный адрес возможность подстановки в него сохраненных значений, пример: /rest/items/&#123;itemId\t&#125;\n    <h5>3.2 Запрос, ответ и режим сравнения</h5>\n      Доступны два типа тела запроса:\n      - raw\n        Отправляется текстовое тело запроса\n      - form-data\n        Отправляется форма с текстовыми полями или с файлами. В случае отправки файла указывается путь к нему относительно директории с проектом.\n        Пример: файл расположен в директории /projects/&lt; project_dir >/files/img/photo.jpg, в форме необходимо указать: files/img/photo.jpg\n\n      Режим сравнения ответа с ожидаемым результатом:\n      - JSON (по умолчанию)\n        Сравнение двух JSON-объектов. Для гибкой настройки используются различные режимы:\n        - NON_EXTENSIBLE (По умолчанию. Не расширяемый, нестрогий порядок элементов в массивах)\n        - STRICT (Не расширяемый, строгий порядок элементов в массивах)\n        - LENIENT (Расширяемый, нестрогий порядок элементов в массивах)\n        - STRICT_ORDER (Расширяемый, строгий порядок элементов в массивах)\n      - Full match\n        Полное соответствие ответа ожидаемому результату\n      - Mask *ignore*\n        Сравнение как строк с возможностью игнорирования части строки.\n        Игнорируемая часть строки указывается ключевым словом *ignore*.\n        Пример:\n          Ожидаемый результат: &lt;xml>&lt;datetime>*ignore*&lt;/datetime>&lt;name>Item name&lt;/name>&lt;/xml>\n          Фактический результат: &lt;xml>&lt;datetime>2018-01-22 17:50:24&lt;/datetime>&lt;name>Item name&lt;/name>&lt;/xml>\n    <h5>3.3 Сохраняемые значения</h5>\n      После получения ответа поля из JSON можно сохранить для использования в последующих шагах, а также проверить их значение.\n      Обращение к полям происходит с помощью JSON XPath. Пример:\n      parameterName = $.element.items[2].title\n    <h5>3.4 SQL</h5>\n      Отправка SQL-запроса к базе данных, полученные поля соответственно записываются в сохраняемые значения.\n      В текст SQL-запроса можно вставлять сохраненные значения.\n      Пример:\n        Сохраняемые значения: tradeId, tradeSum\n        Запрос SQL: SELECT ID, CNT * PRICE FROM TRADES WHERE USER_ID = %userId% ORDER BY ID DESC\n      Полученные поля будут записаны в соответствующие сохраняемые значения.\n      Работает, если в env.yml указаны настройки подключения к базе данных тестируемого портала. Параметр \"dataBase\".\n      Запросы, изменяющие записи в базе данных, запрещены.\n    <h5>3.5 Моки</h5>\n      - Проверка запросов, отправляемых поратлом в заглушки.\n      - Указание ответов, которые заглушка возвращает на запросы портала.\n      Работает, если:\n      - В настройках проекта включен параметр \"Использовать случайный testId\" и указано название http-заголовка;\n      - Тестируемый портал \"пробрасывает\" http-заголовок в заглушки.\n    <h5>3.6 Очереди сообщений</h5>\n      Отправляется сообщение в очередь с указанными названиям и телом сообщения.\n      Работает, если в env.yml указаны настройки подключения к серверу: параметр \"amqpBroker\".\n    <h5>3.7 Поллинг</h5>\n      Выполнение запроса многократно до тех пор, пока указанный JSON-параметр не будет найден.\n      Запросы повторяются с периодом: 1 секунда, максимум: 50 раз.\n      Для указания искомого параметра используется JSON XPath. Пример: $.body.items\n    <h5>3.8 Тест-кейсы</h5>\n      Позволяет выполнять шаг многократно с различнымы наборами сохраненных значений. В колонках указываются названия переменных, в строках - значения.\n</pre>\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/help/help.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HelpComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var HelpComponent = (function () {
+    function HelpComponent() {
+    }
+    HelpComponent.prototype.ngOnInit = function () {
+    };
+    return HelpComponent;
+}());
+HelpComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
+        selector: 'app-help',
+        template: __webpack_require__("../../../../../src/app/help/help.component.html")
+    }),
+    __metadata("design:paramtypes", [])
+], HelpComponent);
+
+//# sourceMappingURL=help.component.js.map
 
 /***/ }),
 
@@ -2182,6 +2228,7 @@ StepItemComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/step-item/step-item.component.html"),
         styles: [
             '.nav-tabs > li > a { padding-top: 3px; padding-bottom: 3px; }',
+            '.nav>li>a { padding: 10px 7px; }',
             '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
             '.row { margin-bottom: 5px; }',
             '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
