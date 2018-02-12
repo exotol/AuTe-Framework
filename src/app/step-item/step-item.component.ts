@@ -10,6 +10,7 @@ import {FormData} from '../model/form-data';
   templateUrl: './step-item.component.html',
   styles: [
     '.nav-tabs > li > a { padding-top: 3px; padding-bottom: 3px; }',
+    '.nav>li>a { padding: 10px 7px; }',
     '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
     '.row { margin-bottom: 5px; }',
     '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
