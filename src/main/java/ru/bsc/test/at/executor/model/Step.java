@@ -44,6 +44,9 @@ public class Step extends AbstractModel implements Serializable {
     private String jsonCompareMode;
     private String script;
     private String numberRepetitions;
+    private String parseMockRequestUrl;
+    private String parseMockRequestXPath;
+    private String parseMockRequestScenarioVariable;
 
     public String getCode() {
         return code;
@@ -361,5 +364,29 @@ public class Step extends AbstractModel implements Serializable {
 
     public void setJsonCompareMode(String jsonCompareMode) {
         this.jsonCompareMode = jsonCompareMode;
+    }
+
+    public String getParseMockRequestUrl() {
+        return parseMockRequestUrl;
+    }
+
+    public void setParseMockRequestUrl(String parseMockRequestUrl) {
+        this.parseMockRequestUrl = parseMockRequestUrl;
+    }
+
+    public String getParseMockRequestXPath() {
+        return parseMockRequestXPath;
+    }
+
+    public void setParseMockRequestXPath(String parseMockRequestXPath) {
+        this.parseMockRequestXPath = parseMockRequestXPath;
+    }
+
+    public String getParseMockRequestScenarioVariable() {
+        return parseMockRequestScenarioVariable;
+    }
+
+    public void setParseMockRequestScenarioVariable(String parseMockRequestScenarioVariable) {
+        this.parseMockRequestScenarioVariable = parseMockRequestScenarioVariable;
     }
 }

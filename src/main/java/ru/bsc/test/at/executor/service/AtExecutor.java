@@ -2,6 +2,7 @@ package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -27,10 +28,14 @@ import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -380,6 +385,33 @@ public class AtExecutor {
                             break;
                     }
                 }
+            }
+        }
+
+        // 7. Прочитать, что тестируемый сервис отправлял в заглушку.
+        parseMockRequests(project, step, wireMockAdmin, savedValues, testId);
+    }
+
+    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, String> savedValues, String testId) throws IOException, XPathExpressionException {
+        if (step.getParseMockRequestUrl() != null) {
+            MockRequest mockRequest = new MockRequest();
+            mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
+                put("equalTo", testId);
+            }});
+            mockRequest.setUrl(step.getParseMockRequestUrl());
+            RequestList list = wireMockAdmin.findRequests(mockRequest);
+            if (list.getRequests() != null && !list.getRequests().isEmpty()) {
+
+                // Parse request
+                WireMockRequest request = list.getRequests().get(0);
+
+
+                String valueFromMock = (String) JXPathContext.newContext("").
+                        getValue("locations[address/zipCode='90210']/address", String.class);
+
+                // valueFromMock = xpath.evaluate(step.getParseMockRequestXPath(), new InputSource(new StringReader(request.getBody())));
+
+                savedValues.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
             }
         }
     }
