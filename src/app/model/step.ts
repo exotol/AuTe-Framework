@@ -32,4 +32,7 @@ export class Step {
   jsonCompareMode: String;
   script: String;
   numberRepetitions: String;
+  parseMockRequestUrl: String;
+  parseMockRequestXPath: String;
+  parseMockRequestScenarioVariable: String;
 }

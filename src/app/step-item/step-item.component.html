@@ -63,6 +63,9 @@
         <li [class.active]="tab == 'script'">
           <a href="#" (click)="selectTab('script')">{{'Script' | translate}} <span *ngIf="step.script" class="glyphicon glyphicon-tag"></span></a>
         </li>
+        <li [class.active]="tab == 'parse-mock-requests'">
+          <a href="#" (click)="selectTab('parse-mock-requests')">{{'Parse mock requests' | translate}} <span *ngIf="step.parseMockRequestUrl" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
@@ -239,6 +242,22 @@
           <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
         </div>
         <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
+        <div *ngIf="tab == 'parse-mock-requests'">
+          <div class="row">
+            <div class="col-sm-12">
+              <label>{{'Mock URL' | translate}}</label>
+              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'XML XPath' | translate}}</label>
+              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'Scenario variable name' | translate}}</label>
+              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
+            </div>
+          </div>
+        </div>
         <div *ngIf="tab == 'savedValues' || tab == 'sql' || tab == 'all'">
           <div class="row">
             <div class="col-sm-12">
