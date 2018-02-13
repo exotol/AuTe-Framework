@@ -1,5 +1,6 @@
 package ru.bsc.filter;
 
+import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -8,7 +9,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by sdoroshin on 03.08.2017.
@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 public class CorsFilter implements Filter {
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
+    public void init(FilterConfig filterConfig) {
+        //no initialization logic
     }
 
     @Override
@@ -28,7 +28,6 @@ public class CorsFilter implements Filter {
         ((HttpServletResponse)response).addHeader("Allow", "GET, POST, PUT, DELETE, OPTIONS");
         if ("OPTIONS".equals(((HttpServletRequest)request).getMethod())) {
             ((HttpServletResponse)response).setStatus(200);
-
             return;
         }
         chain.doFilter(request, response);
@@ -36,6 +35,6 @@ public class CorsFilter implements Filter {
 
     @Override
     public void destroy() {
-
+        //no destroy logic
     }
 }

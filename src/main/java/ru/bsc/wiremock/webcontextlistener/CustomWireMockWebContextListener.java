@@ -1,5 +1,11 @@
 package ru.bsc.wiremock.webcontextlistener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import com.github.tomakehurst.wiremock.common.Notifier;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockApp;
@@ -7,23 +13,21 @@ import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import com.github.tomakehurst.wiremock.servlet.WireMockWebContextListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.bsc.wiremock.webcontextlistener.configuration.CustomWarConfiguration;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import static com.google.common.base.MoreObjects.firstNonNull;
+import static ru.bsc.wiremock.Constants.VELOCITY_PROPERTIES;
 
 /**
  * Created by sdoroshin on 24.07.2017.
  *
  */
 public class CustomWireMockWebContextListener extends WireMockWebContextListener {
+    private final Logger logger = LoggerFactory.getLogger(CustomWireMockWebContextListener.class);
 
-    public static final String APP_CONTEXT_KEY = "WireMockApp";
+    private static final String APP_CONTEXT_KEY = "WireMockApp";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -34,11 +38,11 @@ public class CustomWireMockWebContextListener extends WireMockWebContextListener
 
         Properties properties = new Properties();
         String wireMockMappingPath = "";
-        try (final InputStream stream = this.getClass().getResourceAsStream("/velocity.properties")) {
+        try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES)) {
             properties.load(stream);
             wireMockMappingPath = properties.getProperty("wiremock.mapping.path");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error while loading properties", e);
         }
 
         WireMockApp wireMockApp = new WireMockApp(new CustomWarConfiguration(context, wireMockMappingPath), new NotImplementedContainer());

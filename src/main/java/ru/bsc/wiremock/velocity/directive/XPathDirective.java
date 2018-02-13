@@ -1,19 +1,16 @@
 package ru.bsc.wiremock.velocity.directive;
 
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.node.Node;
-import org.xml.sax.InputSource;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.velocity.context.InternalContextAdapter;
+import org.apache.velocity.runtime.directive.Directive;
+import org.apache.velocity.runtime.parser.node.Node;
+import org.xml.sax.InputSource;
 
 /**
  * Created by sdoroshin on 26.07.2017.
@@ -32,7 +29,7 @@ public class XPathDirective extends Directive {
     }
 
     @Override
-    public boolean render(InternalContextAdapter context, Writer writer, Node node ) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(InternalContextAdapter context, Writer writer, Node node ) throws IOException {
         String variableName = node.jjtGetChild(0).getFirstToken().image.substring(1);
         String xmlDocument = String.valueOf(node.jjtGetChild(1).value(context));
         String xpathString = String.valueOf(node.jjtGetChild(2).value(context));
@@ -42,7 +39,7 @@ public class XPathDirective extends Directive {
             String evaluatedValue = xpath.evaluate(xpathString, new InputSource(new StringReader(xmlDocument)));
             context.put(variableName, evaluatedValue);
         } catch (XPathExpressionException e) {
-            throw new IOException( "cannot evaluate xpath: " + e.getMessage() );
+            throw new IOException("cannot evaluate xpath: " + e.getMessage(), e);
         }
         return true;
     }

@@ -1,28 +1,33 @@
 package ru.bsc.wiremock.webcontextlistener.configuration;
 
-import com.github.tomakehurst.wiremock.common.FileSource;
-import com.github.tomakehurst.wiremock.core.MappingsSaver;
-import com.github.tomakehurst.wiremock.extension.Extension;
-import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
-import com.github.tomakehurst.wiremock.servlet.WarConfiguration;
-import org.apache.velocity.app.Velocity;
-import ru.bsc.wiremock.transformers.CustomVelocityResponseTransformer;
-
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import javax.servlet.ServletContext;
+
+import com.github.tomakehurst.wiremock.common.FileSource;
+import com.github.tomakehurst.wiremock.core.MappingsSaver;
+import com.github.tomakehurst.wiremock.extension.Extension;
+import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
+import com.github.tomakehurst.wiremock.servlet.WarConfiguration;
+import org.apache.velocity.app.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.bsc.wiremock.transformers.CustomVelocityResponseTransformer;
+
+import static ru.bsc.wiremock.Constants.VELOCITY_PROPERTIES;
 
 /**
  * Created by sdoroshin on 04.08.2017.
  *
  */
 public class CustomWarConfiguration extends WarConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(CustomWarConfiguration.class);
 
-    private String fileSourceRoot;
+    private final String fileSourceRoot;
 
     public CustomWarConfiguration(ServletContext servletContext, String fileSourceRoot) {
         super(servletContext);
@@ -37,10 +42,10 @@ public class CustomWarConfiguration extends WarConfiguration {
 
             // VelocityResponseTransformer configuration
             Properties properties = new Properties();
-            try (final InputStream stream = this.getClass().getResourceAsStream("/velocity.properties")) {
+            try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES)) {
                 properties.load(stream);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error while loading properties", e);
             }
             Velocity.init(properties);
 
