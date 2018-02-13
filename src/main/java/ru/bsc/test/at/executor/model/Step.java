@@ -47,6 +47,7 @@ public class Step extends AbstractModel implements Serializable {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
+    private StepMode stepMode;
 
     public String getCode() {
         return code;
@@ -388,5 +389,13 @@ public class Step extends AbstractModel implements Serializable {
 
     public void setParseMockRequestScenarioVariable(String parseMockRequestScenarioVariable) {
         this.parseMockRequestScenarioVariable = parseMockRequestScenarioVariable;
+    }
+
+    public StepMode getStepMode() {
+        return stepMode;
+    }
+
+    public void setStepMode(StepMode stepMode) {
+        this.stepMode = stepMode;
     }
 }
