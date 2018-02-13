@@ -116,22 +116,22 @@ public class AtExecutor {
 
     private void executeScenario(Project project, Scenario scenario, Stand stand, Connection connection, List<StepResult> stepResultList, IStopObserver stopObserver) {
         HttpHelper httpHelper = new HttpHelper();
-        Map<String, String> savedValues = new HashMap<>();
-        savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
+        Map<String, Object> scenarioVariables = new HashMap<>();
+        scenarioVariables.put("__random", RandomStringUtils.randomAlphabetic(40));
 
         try {
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
             Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
             if (beforeScenario != null) {
-                executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues, stepResultList, false, stopObserver);
+                executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, false, stopObserver);
             }
 
-            executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues, stepResultList, true, stopObserver);
+            executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, true, stopObserver);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
             Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
             if (afterScenario != null) {
-                executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues, stepResultList, false, stopObserver);
+                executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, false, stopObserver);
             }
 
         } catch (ScenarioStopException e) {
@@ -166,7 +166,7 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException {
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException {
         if (stepList == null) {
             return;
         }
@@ -187,7 +187,7 @@ public class AtExecutor {
 
                     if (stepParameterSet.getStepParameterList() != null) {
                         stepParameterSet.getStepParameterList()
-                                .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
+                                .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
                     try (WireMockAdmin wireMockAdmin = stand != null && StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
@@ -196,7 +196,7 @@ public class AtExecutor {
                         }
                         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
                         stepResult.setTestId(testId);
-                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, scenarioVariables, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
@@ -220,33 +220,33 @@ public class AtExecutor {
         }
     }
 
-    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
-        stepResult.setSavedParameters(savedValues.toString());
+        stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
-        executeSql(connection, step, savedValues);
-        stepResult.setSavedParameters(savedValues.toString());
+        executeSql(connection, step, scenarioVariables);
+        stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step, savedValues);
+        sendMessageToQuery(project, step, scenarioVariables);
 
         // 2. Подстановка сохраненных параметров в строку запроса
-        String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
+        String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), scenarioVariables);
         stepResult.setRequestUrl(requestUrl);
 
         // 2.1 Подстановка сохраненных параметров в тело запроса
-        String requestBody = insertSavedValues(step.getRequest(), savedValues);
+        String requestBody = insertSavedValues(step.getRequest(), scenarioVariables);
 
         // 2.2 Вычислить функции в теле запроса
         requestBody = evaluateExpressions(requestBody);
         stepResult.setRequestBody(requestBody);
 
         // 2.3 Подстановка переменных сценария в заголовки запроса
-        String requestHeaders = insertSavedValues(step.getRequestHeaders(), savedValues);
+        String requestHeaders = insertSavedValues(step.getRequestHeaders(), scenarioVariables);
 
         // 2.4 Cyclic sending request, COM-84
         int numberRepetitions;
@@ -254,7 +254,7 @@ public class AtExecutor {
             numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
         } catch (NumberFormatException e) {
             try {
-                numberRepetitions = Integer.parseInt(savedValues.get(step.getNumberRepetitions()));
+                numberRepetitions = Integer.parseInt(String.valueOf(scenarioVariables.get(step.getNumberRepetitions())));
             } catch (NumberFormatException ex) {
                 numberRepetitions = 1;
             }
@@ -311,10 +311,13 @@ public class AtExecutor {
                 if (StringUtils.isNotEmpty(step.getScript())) {
                     ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                     scriptEngine.put("stepStatus", new StepStatus());
-                    scriptEngine.put("scenarioVariables", savedValues);
+                    scriptEngine.put("scenarioVariables", scenarioVariables);
                     scriptEngine.put("response", responseData);
 
                     scriptEngine.eval(step.getScript());
+
+                    // Привести все переменные сценария к строковому типу
+                    scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
 
                     StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
                     if (StringUtils.isNotEmpty(stepStatus.getException())) {
@@ -333,19 +336,19 @@ public class AtExecutor {
             stepResult.setExpected(step.getExpectedResponse());
 
             // 4. Сохранить полученные значения
-            saveValuesByJsonXPath(step, responseData, savedValues);
+            saveValuesByJsonXPath(step, responseData, scenarioVariables);
 
-            stepResult.setSavedParameters(savedValues.toString());
+            stepResult.setSavedParameters(scenarioVariables.toString());
 
             // 4.1 Проверить сохраненные значения
             if (step.getSavedValuesCheck() != null) {
                 for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
                     String valueExpected = entry.getValue() == null ? "" : entry.getValue();
-                    for (Map.Entry<String, String> savedVal : savedValues.entrySet()) {
+                    for (Map.Entry<String, Object> savedVal : scenarioVariables.entrySet()) {
                         String key = String.format("%%%s%%", savedVal.getKey());
-                        valueExpected = valueExpected.replaceAll(key, savedVal.getValue());
+                        valueExpected = valueExpected.replaceAll(key, String.valueOf(savedVal.getValue()));
                     }
-                    String valueActual = savedValues.get(entry.getKey());
+                    String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
                     if (!valueExpected.equals(valueActual)) {
                         throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
                     }
@@ -353,7 +356,7 @@ public class AtExecutor {
             }
 
             // 5. Подставить сохраненые значения в ожидаемый результат
-            String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
+            String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
             // 5.1. Расчитать выражения <f></f>
             expectedResponse = evaluateExpressions(expectedResponse);
             stepResult.setExpected(expectedResponse);
@@ -389,10 +392,10 @@ public class AtExecutor {
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в заглушку.
-        parseMockRequests(project, step, wireMockAdmin, savedValues, testId);
+        parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
     }
 
-    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, String> savedValues, String testId) throws IOException, XPathExpressionException {
+    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException {
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
             mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
@@ -411,7 +414,7 @@ public class AtExecutor {
 
                 // valueFromMock = xpath.evaluate(step.getParseMockRequestXPath(), new InputSource(new StringReader(request.getBody())));
 
-                savedValues.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
+                scenarioVariables.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
             }
         }
     }
@@ -431,7 +434,7 @@ public class AtExecutor {
         }
     }
 
-    private void sendMessageToQuery(Project project, Step step, Map<String, String> savedValues) throws Exception {
+    private void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables) throws Exception {
         if (step.getMqName() != null && step.getMqMessage() != null) {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
@@ -443,12 +446,12 @@ public class AtExecutor {
             mqManager.setUsername(project.getAmqpBroker().getUsername());
             mqManager.setPassword(project.getAmqpBroker().getPassword());
 
-            String message = insertSavedValues(step.getMqMessage(), savedValues);
+            String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
             mqManager.sendTextMessage(step.getMqName(), message);
         }
     }
 
-    private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
+    private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, Object> scenarioVariables) {
         if (StringUtils.isNotEmpty(responseData.getContent())) {
             if (StringUtils.isNotEmpty(step.getJsonXPath())) {
 
@@ -459,7 +462,7 @@ public class AtExecutor {
                     String jsonXPath = lineParts[1];
 
                     // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
-                    savedValues.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
+                    scenarioVariables.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
                 }
             }
         }
@@ -498,12 +501,12 @@ public class AtExecutor {
         return retry;
     }
 
-    private void executeSql(Connection connection, Step step, Map<String, String> savedValues) throws SQLException {
+    private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException {
         if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
             try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
-                // Вставить в запрос параметры из savedValues, если они есть.
-                for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
-                    statement.setString(savedValue.getKey(), savedValue.getValue());
+                // Вставить в запрос параметры из scenarioVariables, если они есть.
+                for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
+                    statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     int columnCount = rs.getMetaData().getColumnCount();
@@ -517,7 +520,7 @@ public class AtExecutor {
                             if (i > columnCount) {
                                 break;
                             }
-                            savedValues.put(parameterName.trim(), rs.getString(i));
+                            scenarioVariables.put(parameterName.trim(), rs.getString(i));
                             i++;
                         }
                     }
@@ -526,21 +529,21 @@ public class AtExecutor {
         }
     }
 
-    private String insertSavedValues(String template, Map<String, String> savedValues) {
+    private String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
         if (template != null) {
-            for (Map.Entry<String, String> value : savedValues.entrySet()) {
+            for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : value.getValue()));
+                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : String.valueOf(value.getValue())));
             }
         }
         return template;
     }
 
-    private String insertSavedValuesToURL(String template, Map<String, String> savedValues) throws UnsupportedEncodingException {
+    private String insertSavedValuesToURL(String template, Map<String, Object> scenarioVariables) throws UnsupportedEncodingException {
         if (template != null) {
-            for (Map.Entry<String, String> value : savedValues.entrySet()) {
+            for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : value.getValue(), "UTF-8")));
+                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : String.valueOf(value.getValue()), "UTF-8")));
             }
         }
         return template;
