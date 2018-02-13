@@ -2,10 +2,12 @@ package ru.bsc.test.at.executor.step.executor;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
@@ -31,8 +33,14 @@ import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Connection;
@@ -46,7 +54,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("Duplicates")
 public class RestStepExecutor implements IStepExecutor {
 
     private final static int POLLING_RETRY_COUNT = 50;
@@ -233,7 +240,7 @@ public class RestStepExecutor implements IStepExecutor {
         return step.getStepMode() == null || StepMode.REST.equals(step.getStepMode());
     }
 
-    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException {
+    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
             mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
@@ -246,11 +253,11 @@ public class RestStepExecutor implements IStepExecutor {
                 // Parse request
                 WireMockRequest request = list.getRequests().get(0);
 
-
-                String valueFromMock = (String) JXPathContext.newContext("").
-                        getValue("locations[address/zipCode='90210']/address", String.class);
-
-                // valueFromMock = xpath.evaluate(step.getParseMockRequestXPath(), new InputSource(new StringReader(request.getBody())));
+                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = builderFactory.newDocumentBuilder();
+                Document xmlDocument = builder.parse(new InputSource(new StringReader(request.getBody())));
+                XPath xPath = XPathFactory.newInstance().newXPath();
+                String valueFromMock = xPath.compile(step.getParseMockRequestXPath()).evaluate(xmlDocument);
 
                 scenarioVariables.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
             }
