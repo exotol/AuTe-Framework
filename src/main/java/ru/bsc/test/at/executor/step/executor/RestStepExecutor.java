@@ -11,7 +11,6 @@ import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.model.StepStatus;
-import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 
 import javax.script.ScriptEngine;
@@ -27,8 +26,6 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
     @Override
     public void execute(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper httpHelper, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
-
-        stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
@@ -55,23 +52,11 @@ public class RestStepExecutor extends AbstractStepExecutor {
         String requestHeaders = insertSavedValues(step.getRequestHeaders(), scenarioVariables);
 
         // 2.4 Cyclic sending request, COM-84
-        int numberRepetitions;
-        try {
-            numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
-        } catch (NumberFormatException e) {
-            try {
-                numberRepetitions = Integer.parseInt(String.valueOf(scenarioVariables.get(step.getNumberRepetitions())));
-            } catch (NumberFormatException ex) {
-                numberRepetitions = 1;
-            }
-        }
-        numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
-
+        int numberRepetitions = calculateNumberRepetitions(step, scenarioVariables);
         for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
 
             // Polling
             int retryCounter = 0;
-            boolean retry = false;
 
             ResponseHelper responseData;
             do {
@@ -131,35 +116,19 @@ public class RestStepExecutor extends AbstractStepExecutor {
                     }
                 }
 
-                // 3.1. Polling
-                if (step.getUsePolling()) {
-                    retry = tryUsePolling(step, responseData);
-                }
-            } while (retry && retryCounter <= POLLING_RETRY_COUNT);
+            } while (tryUsePolling(step, responseData.getContent()) && retryCounter <= POLLING_RETRY_COUNT);
 
             stepResult.setPollingRetryCount(retryCounter);
             stepResult.setActual(responseData.getContent());
             stepResult.setExpected(step.getExpectedResponse());
 
             // 4. Сохранить полученные значения
-            saveValuesByJsonXPath(step, responseData, scenarioVariables);
+            saveValuesByJsonXPath(step, responseData.getContent(), scenarioVariables);
 
             stepResult.setSavedParameters(scenarioVariables.toString());
 
             // 4.1 Проверить сохраненные значения
-            if (step.getSavedValuesCheck() != null) {
-                for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
-                    String valueExpected = entry.getValue() == null ? "" : entry.getValue();
-                    for (Map.Entry<String, Object> savedVal : scenarioVariables.entrySet()) {
-                        String key = String.format("%%%s%%", savedVal.getKey());
-                        valueExpected = valueExpected.replaceAll(key, String.valueOf(savedVal.getValue()));
-                    }
-                    String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
-                    if (!valueExpected.equals(valueActual)) {
-                        throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
-                    }
-                }
-            }
+            checkScenarioVariables(step, scenarioVariables);
 
             // 5. Подставить сохраненые значения в ожидаемый результат
             String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
@@ -174,27 +143,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
             }
 
-            if (!step.getExpectedResponseIgnore()) {
-                if (step.getResponseCompareMode() == null) {
-                    JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-                } else {
-                    switch (step.getResponseCompareMode()) {
-                        case FULL_MATCH:
-                            if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
-                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                            }
-                            break;
-                        case IGNORE_MASK:
-                            if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
-                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                            }
-                            break;
-                        default:
-                            JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-                            break;
-                    }
-                }
-            }
+            checkResponseBody(step, expectedResponse, responseData.getContent());
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в заглушку.

@@ -9,13 +9,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
-import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
+import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
@@ -89,13 +89,13 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void JSONComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
-        if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
-                (!responseData.getContent().equals(expectedResponse))) {
+    private void JSONComparing(String expectedResponse, String responseContent, String jsonCompareMode) throws Exception {
+        if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseContent)) &&
+                (!responseContent.equals(expectedResponse))) {
             try {
                 JSONAssert.assertEquals(
                         expectedResponse == null ? "" : expectedResponse.replaceAll(" ", " "),
-                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
+                        responseContent.replaceAll(" ", " "), // Fix broken space in response
                         new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.valueOf(jsonCompareMode))
                 );
             } catch (Error assertionError) {
@@ -104,8 +104,8 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, Object> scenarioVariables) {
-        if (StringUtils.isNotEmpty(responseData.getContent())) {
+    void saveValuesByJsonXPath(Step step, String responseContent, Map<String, Object> scenarioVariables) {
+        if (StringUtils.isNotEmpty(responseContent)) {
             if (StringUtils.isNotEmpty(step.getJsonXPath())) {
 
                 String lines[] = step.getJsonXPath().split("\\r?\\n");
@@ -115,7 +115,7 @@ abstract class AbstractStepExecutor implements IStepExecutor {
                     String jsonXPath = lineParts[1];
 
                     // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
-                    scenarioVariables.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
+                    scenarioVariables.put(parameterName, JsonPath.read(responseContent, jsonXPath).toString());
                 }
             }
         }
@@ -139,10 +139,13 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
+    boolean tryUsePolling(Step step, String responseContent) throws InterruptedException {
+        if (!step.getUsePolling()) {
+            return false;
+        }
         boolean retry = true;
         try {
-            if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
+            if (JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
@@ -214,5 +217,60 @@ abstract class AbstractStepExecutor implements IStepExecutor {
             }
         }
         return template;
+    }
+
+    int calculateNumberRepetitions(Step step, Map<String, Object> scenarioVariables) {
+        int numberRepetitions;
+        try {
+            numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
+        } catch (NumberFormatException e) {
+            try {
+                numberRepetitions = Integer.parseInt(String.valueOf(scenarioVariables.get(step.getNumberRepetitions())));
+            } catch (NumberFormatException ex) {
+                numberRepetitions = 1;
+            }
+        }
+        numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
+        return numberRepetitions;
+    }
+
+    void checkScenarioVariables(Step step, Map<String, Object> scenarioVariables) throws Exception {
+        if (step.getSavedValuesCheck() != null) {
+            for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
+                String valueExpected = entry.getValue() == null ? "" : entry.getValue();
+                for (Map.Entry<String, Object> savedVal : scenarioVariables.entrySet()) {
+                    String key = String.format("%%%s%%", savedVal.getKey());
+                    valueExpected = valueExpected.replaceAll(key, String.valueOf(savedVal.getValue()));
+                }
+                String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
+                if (!valueExpected.equals(valueActual)) {
+                    throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+                }
+            }
+        }
+    }
+
+    void checkResponseBody(Step step, String expectedResponse, String actualResponse) throws Exception {
+        if (!step.getExpectedResponseIgnore()) {
+            if (step.getResponseCompareMode() == null) {
+                JSONComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
+            } else {
+                switch (step.getResponseCompareMode()) {
+                    case FULL_MATCH:
+                        if (!StringUtils.equals(expectedResponse, actualResponse)) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + actualResponse);
+                        }
+                        break;
+                    case IGNORE_MASK:
+                        if (!MaskComparator.compare(expectedResponse, actualResponse)) {
+                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + actualResponse);
+                        }
+                        break;
+                    default:
+                        JSONComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
+                        break;
+                }
+            }
+        }
     }
 }

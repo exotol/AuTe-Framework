@@ -167,6 +167,7 @@ public class AtExecutor {
 
                         for (IStepExecutor stepExecutor : stepExecutorList) {
                             if (stepExecutor.support(step)) {
+                                stepResult.setSavedParameters(scenarioVariables.toString());
                                 stepExecutor.execute(wireMockAdmin, connection, stand, httpHelper, scenarioVariables, testId, project, step, stepResult, projectPath);
                                 break;
                             }
