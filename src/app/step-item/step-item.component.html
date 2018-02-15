@@ -36,8 +36,8 @@
       <ul class="nav nav-tabs">
         <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">{{'Summary' | translate}}</a></li>
         <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
-        <li [class.active]="tab == 'savedValues'">
-          <a href="#" (click)="selectTab('savedValues')">{{'Saved values' | translate}} <span *ngIf="step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)" class="glyphicon glyphicon-tag"></span></a>
+        <li [class.active]="tab == 'scenarioVariables'">
+          <a href="#" (click)="selectTab('scenarioVariables')">{{'Scenario variables' | translate}} <span *ngIf="step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'headers'">
           <a href="#" (click)="selectTab('headers')">{{'Headers' | translate}} <span *ngIf="step.requestHeaders" class="glyphicon glyphicon-tag"></span></a>
@@ -159,14 +159,14 @@
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
         </div>
-        <div *ngIf="tab == 'savedValues' || tab == 'all'">
+        <div *ngIf="tab == 'scenarioVariables' || tab == 'all'">
           <div class="row">
             <div class="col-sm-6">
               <label>{{'Expected response' | translate}}</label>
               <textarea title="{{'Expected response' | translate}}" class="form-control" rows="13" [(ngModel)]="step.expectedResponse"></textarea>
             </div>
             <div class="col-sm-6">
-              <label>{{'Saved values' | translate}} (JSON XPath):</label>
+              <label>{{'Scenario variables' | translate}} (JSON XPath):</label>
               <textarea placeholder="parameterName = $.element.items[2].title" rows="13" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.jsonXPath"></textarea>
             </div>
           </div>
@@ -258,11 +258,11 @@
             </div>
           </div>
         </div>
-        <div *ngIf="tab == 'savedValues' || tab == 'sql' || tab == 'all'">
+        <div *ngIf="tab == 'scenarioVariables' || tab == 'sql' || tab == 'all'">
           <div class="row">
             <div class="col-sm-12">
               <hr/>
-              <label>{{'Check saved values' | translate}}</label>
+              <label>{{'Check scenario variables' | translate}}</label>
             </div>
           </div>
           <div class="row" *ngFor="let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])">
