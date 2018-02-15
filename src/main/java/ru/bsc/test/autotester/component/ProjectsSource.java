@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.component;
 
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -206,8 +207,8 @@ public class ProjectsSource {
             }
         }
 
-        String result = nname.toString().replaceAll("[^a-zA-Z0-9.-]", "_");
-        result = result.substring(0, Math.min(result.length(), 30));
+        String result = nname.toString().replaceAll("[^a-zA-Z0-9.-]", "-");
+        result = result.substring(0, Math.min(result.length(), 40));
         return result;
     }
 
@@ -218,7 +219,8 @@ public class ProjectsSource {
                 result += scenario.getScenarioGroup() + "/";
             }
             if (scenario.getCode() == null) {
-                scenario.setCode(UUID.randomUUID().toString().substring(0, 6) + "-" + translit(scenario.getName()));
+                // TODO Проверять, существует ли такая директория
+                scenario.setCode(translit(scenario.getName()));
             }
             result += scenario.getCode() + "/";
         } else {
@@ -326,6 +328,16 @@ public class ProjectsSource {
     public void saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
+        } else {
+            if (!scenario.getCode().equals(translit(scenario.getName()))) {
+                File existsScenarioDirectory = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar);
+                scenario.setCode(null);
+                scenarioPath = scenarioPath(scenario);
+                boolean renameResult = existsScenarioDirectory.renameTo(new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar));
+                if (!renameResult) {
+                    throw new FileExistsException("Директория с таким именем уже существует");
+                }
+            }
         }
         File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
         File scenarioRootDirectory = scenarioFile.getParentFile();
