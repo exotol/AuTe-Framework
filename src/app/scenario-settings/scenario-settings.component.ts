@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {ScenarioService} from '../service/scenario.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -18,6 +18,7 @@ export class ScenarioSettingsComponent implements OnInit {
   projectCode: String;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private projectService: ProjectService,
@@ -43,7 +44,14 @@ export class ScenarioSettingsComponent implements OnInit {
     this.scenarioService.saveOne(this.project.code, this.scenario)
       .subscribe(value => {
         this.scenario = value;
+        const scenarioPath = this.scenario.scenarioGroup ? this.scenario.scenarioGroup : '';
+        this.router.navigate([
+          '/project', this.scenario.projectCode,
+          'scenario', scenarioPath, this.scenario.code,
+          'settings'], {replaceUrl: false});
         this.customToastyService.success('Сохранено', 'Сценарий сохранен');
-      }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+      },
+        error => this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error),
+        () => this.customToastyService.clear(toasty));
   }
 }
