@@ -242,7 +242,7 @@ public class AtExecutor {
         String requestBody = insertSavedValues(step.getRequest(), scenarioVariables);
 
         // 2.2 Вычислить функции в теле запроса
-        requestBody = evaluateExpressions(requestBody);
+        requestBody = evaluateExpressions(requestBody, scenarioVariables, null);
         stepResult.setRequestBody(requestBody);
 
         // 2.3 Подстановка переменных сценария в заголовки запроса
@@ -358,7 +358,7 @@ public class AtExecutor {
             // 5. Подставить сохраненые значения в ожидаемый результат
             String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
             // 5.1. Расчитать выражения <f></f>
-            expectedResponse = evaluateExpressions(expectedResponse);
+            expectedResponse = evaluateExpressions(expectedResponse, scenarioVariables, responseData);
             stepResult.setExpected(expectedResponse);
 
             // 6. Проверить код статуса ответа
@@ -551,15 +551,17 @@ public class AtExecutor {
         return template;
     }
 
-    private String evaluateExpressions(String template) throws ScriptException {
+    private String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
         if (template != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
             Matcher m = p.matcher(template);
             while (m.find()) {
                 ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("js");
-                // TODO Добавить переменные окружения для расчета выражений
-                Object result = engine.eval(m.group(1));
+                ScriptEngine scriptEngine = manager.getEngineByName("js");
+                scriptEngine.put("scenarioVariables", scenarioVariables);
+                scriptEngine.put("response", responseData);
+                Object result = scriptEngine.eval(m.group(1));
+
                 template = template.replaceFirst("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
             }
         }
