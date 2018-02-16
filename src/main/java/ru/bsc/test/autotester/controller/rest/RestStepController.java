@@ -19,8 +19,8 @@ import java.io.IOException;
 @RequestMapping("/rest/projects/{projectCode}/scenarios")
 public class RestStepController {
 
+    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
     private final ScenarioService scenarioService;
-    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
 
     @Autowired
     public RestStepController(ScenarioService scenarioService) {
@@ -35,11 +35,11 @@ public class RestStepController {
             @PathVariable String stepCode,
             @RequestBody StepRo stepRo) throws IOException {
         String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
-        stepRo = scenarioService.updateStepFromRo(projectCode, scenarioPath, stepCode, stepRo);
-        if (stepRo != null) {
-            return stepRo;
+        StepRo updatedStep = scenarioService.updateStepFromRo(projectCode, scenarioPath, stepCode, stepRo);
+        if (updatedStep == null) {
+            throw new ResourceNotFoundException();
         }
-        throw new ResourceNotFoundException();
+        return updatedStep;
     }
 
     @RequestMapping(value = { "{scenarioGroup:.+}/{scenarioCode:.+}/steps/{stepCode:.+}/clone", "{scenarioCode:.+}/steps/{stepCode:.+}/clone" }, method = RequestMethod.POST)

@@ -12,7 +12,7 @@ import org.yaml.snakeyaml.serializer.AnchorGenerator;
  */
 class AutotesterAnchorGenerator implements AnchorGenerator {
 
-    private long lastAnchorId = 0;
+    private long lastAnchorId;
 
     @Override
     public String nextAnchor(Node node) {

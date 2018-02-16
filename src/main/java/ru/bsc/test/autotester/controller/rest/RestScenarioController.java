@@ -34,8 +34,8 @@ import java.util.Map;
 @RequestMapping("/rest/projects/{projectCode}/scenarios")
 public class RestScenarioController {
 
-    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
+    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private final ScenarioService scenarioService;
     private final ProjectService projectService;
 
@@ -79,11 +79,11 @@ public class RestScenarioController {
             @PathVariable String scenarioCode,
             @RequestBody ScenarioRo scenarioRo) throws IOException {
         String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
-        scenarioRo = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
-        if (scenarioRo != null) {
-            return scenarioRo;
+        ScenarioRo savedScenario = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
+        if (savedScenario == null) {
+            throw new ResourceNotFoundException();
         }
-        throw new ResourceNotFoundException();
+        return savedScenario;
     }
 
     @RequestMapping(value = { "{scenarioCode:.+}", "{scenarioGroup:.+}/{scenarioCode:.+}" }, method = RequestMethod.DELETE)
@@ -102,11 +102,11 @@ public class RestScenarioController {
             @PathVariable String scenarioCode,
             @RequestBody StepRo stepRo) throws IOException {
         String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
-        stepRo = scenarioService.addStepToScenario(projectCode, scenarioPath, stepRo);
-        if (stepRo != null) {
-            return stepRo;
+        StepRo savedStep = scenarioService.addStepToScenario(projectCode, scenarioPath, stepRo);
+        if (savedStep == null) {
+            throw new ResourceNotFoundException();
         }
-        throw new ResourceNotFoundException();
+        return savedStep;
     }
 
     @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.PUT)

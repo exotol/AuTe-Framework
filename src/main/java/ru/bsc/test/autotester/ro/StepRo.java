@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class StepRo extends AbstractRo {
+public class StepRo implements AbstractRo {
 
     private static final long serialVersionUID = -4795596079038167133L;
 

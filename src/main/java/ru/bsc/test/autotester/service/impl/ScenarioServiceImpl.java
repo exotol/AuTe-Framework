@@ -37,10 +37,10 @@ import java.util.Objects;
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ScenarioServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioServiceImpl.class);
 
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
+    private final ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
@@ -65,14 +65,11 @@ public class ScenarioServiceImpl implements ScenarioService {
                 try {
                     Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
                     scenarioToUpdate.setFailed(
-                            stepResults
-                                    .stream()
-                                    .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
-                                    .count() > 0
+                            stepResults.stream().anyMatch(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
                     );
                     scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
                 } catch (IOException e) {
-                    LOGGER.error("", e);
+                    logger.error("", e);
                 }
             });
         }
@@ -174,7 +171,6 @@ public class ScenarioServiceImpl implements ScenarioService {
                     .orElse(null);
             stepRoMapper.updateStep(stepRo, existsStep);
             scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
-            // existsStep = scenarioRepository.saveStep(projectCode, scenarioPath, stepCode, existsStep);
             return stepRoMapper.stepToStepRo(existsStep);
         }
     }
