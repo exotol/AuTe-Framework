@@ -8,9 +8,9 @@ import java.util.Map;
  *
  */
 public class ResponseHelper {
-    private int statusCode;
-    private String content;
-    private Map<String, List<String>> headers;
+    private final int statusCode;
+    private final String content;
+    private final Map<String, List<String>> headers;
 
     ResponseHelper(int statusCode, String content, Map<String, List<String>> responseHeaders) {
         this.statusCode = statusCode;

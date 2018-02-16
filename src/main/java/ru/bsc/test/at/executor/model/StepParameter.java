@@ -5,7 +5,7 @@ package ru.bsc.test.at.executor.model;
  *
  */
 @SuppressWarnings("WeakerAccess")
-public class StepParameter extends AbstractModel {
+public class StepParameter implements AbstractModel {
 
     private String name;
     private String value;

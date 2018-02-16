@@ -8,7 +8,8 @@ import java.util.List;
  * Created by sdoroshin on 10.05.2017.
  */
 @SuppressWarnings("WeakerAccess")
-public class Project extends AbstractModel implements Serializable {
+public class Project implements Serializable, AbstractModel {
+    private static final long serialVersionUID = 7331632683933716938L;
 
     private String code;
     private String name;
@@ -73,7 +74,7 @@ public class Project extends AbstractModel implements Serializable {
     }
 
     public Boolean getUseRandomTestId() {
-        return useRandomTestId == null ? false : useRandomTestId;
+        return useRandomTestId != null && useRandomTestId;
     }
 
     public void setUseRandomTestId(Boolean useRandomTestId) {

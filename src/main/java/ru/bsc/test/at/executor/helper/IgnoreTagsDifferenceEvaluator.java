@@ -35,7 +35,7 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private String getNameSpaceFromPrefix(Node node) {
-        final int beginIndex = node.getNodeValue().indexOf(":");
+        final int beginIndex = node.getNodeValue().indexOf(':');
         if (beginIndex == -1) {
             return "";
         }
@@ -43,7 +43,7 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
     }
 
     private String getNameWithoutPrefix(Node controlNode) {
-        final int beginIndex = controlNode.getNodeValue().indexOf(":");
+        final int beginIndex = controlNode.getNodeValue().indexOf(':');
         if (beginIndex == -1) {
             return controlNode.getNodeValue();
         }
@@ -56,20 +56,21 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
             return outcome;
         }
         if (outcome == ComparisonResult.DIFFERENT) {
-            if (ComparisonType.ATTR_VALUE.equals(comparison.getType()) || ComparisonType.ATTR_NAME_LOOKUP.equals(comparison.getType())) {
-                String parentNodeName = ((Attr) comparison.getControlDetails().getTarget()).getOwnerElement().getLocalName();
+            if (ComparisonType.ATTR_VALUE.equals(comparison.getType()) ||
+                ComparisonType.ATTR_NAME_LOOKUP.equals(comparison.getType())) {
+                String parentNodeName =
+                    ((Attr) comparison.getControlDetails().getTarget()).getOwnerElement().getLocalName();
                 if (ignoredTags.contains(parentNodeName)) {
-                    outcome = ComparisonResult.EQUAL;
-                    return outcome;
+                    return ComparisonResult.EQUAL;
                 }
             }
+
             switch (comparison.getType()) {
                 case NAMESPACE_PREFIX:
                 case NAMESPACE_URI:
                 case NO_NAMESPACE_SCHEMA_LOCATION:
                 case SCHEMA_LOCATION:
-                    outcome = ComparisonResult.EQUAL;
-                    return outcome;
+                    return ComparisonResult.EQUAL;
                 default:
                     break;
             }
@@ -79,7 +80,6 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
         final Node testNode = comparison.getTestDetails().getTarget();
 
         if (comparison.getType() == ComparisonType.ATTR_VALUE && isXSIType(controlNode) && isXSIType(testNode)) {
-
             if (getNameSpaceFromPrefix(controlNode).compareTo(getNameSpaceFromPrefix(testNode)) != 0) {
                 return ComparisonResult.DIFFERENT;
             }
@@ -92,49 +92,64 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
             }
         }
 
-        if (controlNode != null)
-            if (ignoredTags != null) {
-                for (String ignoredTag : this.ignoredTags) {
-                    if (ignoredTag.matches("\\s*\\w+\\s*\\(\\s*\\w+\\s*=\\s*[\\w#]+\\s*\\)")) {
-                        Pattern p = Pattern.compile("\\s*(\\w+)\\s*\\(\\s*(\\w+)\\s*=\\s*([\\w#]+)\\s*\\)");
-                        Matcher m = p.matcher(ignoredTag);
-                        if (m.find()) {
-                            String parent = m.group(1);
-                            String childKey = m.group(2);
-                            String childValue = m.group(3);
+        if(controlNode == null || ignoredTags == null) {
+            return outcome;
+        }
 
-                            if (controlNode.getParentNode() instanceof Element) {
-                                Element controlElement = (Element) controlNode.getParentNode();
-                                if (controlElement.getParentNode() instanceof Element) {
-                                    Element parentElement = (Element) controlElement.getParentNode();
+        Pattern pattern = Pattern.compile("\\s*(\\w+)\\s*\\(\\s*(\\w+)\\s*=\\s*([\\w#]+)\\s*\\)");
+        for (String ignoredTag : this.ignoredTags) {
+            if(!ignoredTag.matches("\\s*\\w+\\s*\\(\\s*\\w+\\s*=\\s*[\\w#]+\\s*\\)")) {
+                if(!(controlNode.getParentNode() instanceof Element)) {
+                    continue;
+                }
 
-                                    if (parentElement.getTagName().equals(parent)) {
-                                        if (parentElement.hasChildNodes()) {
-                                            NodeList childNodes = parentElement.getElementsByTagName(childKey);
-                                            if (childNodes.getLength() > 0) {
-                                                for (int i = 0; i < childNodes.getLength(); i++) {
-                                                    if (childNodes.item(i) instanceof Element && ((Element) childNodes.item(i)).getTagName().equals(childKey)) {
-                                                        Element childElement = (Element) childNodes.item(i);
+                Element element = (Element) controlNode.getParentNode();
+                if (ignoredTag.equals(element.getTagName())) {
+                    return ComparisonResult.EQUAL;
+                }
+                continue;
+            }
 
-                                                        if (childElement.getTagName().equals(childKey) && childElement.getTextContent().equals(childValue))
-                                                            return ComparisonResult.EQUAL;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if (controlNode.getParentNode() instanceof Element) {
-                            Element element = (Element) controlNode.getParentNode();
-                            if (ignoredTag.equals(element.getTagName()))
-                                return ComparisonResult.EQUAL;
-                        }
-                    }
+            Matcher matcher = pattern.matcher(ignoredTag);
+            if(!matcher.find()) {
+                continue;
+            }
+
+            String parent = matcher.group(1);
+            String childKey = matcher.group(2);
+            String childValue = matcher.group(3);
+            if(!(controlNode.getParentNode() instanceof Element)) {
+                continue;
+            }
+
+            Element controlElement = (Element) controlNode.getParentNode();
+            if(!(controlElement.getParentNode() instanceof Element)) {
+                continue;
+            }
+
+            Element parentElement = (Element) controlElement.getParentNode();
+            if(!parentElement.getTagName().equals(parent) || !parentElement.hasChildNodes()) {
+                continue;
+            }
+
+            NodeList childNodes = parentElement.getElementsByTagName(childKey);
+            if(childNodes.getLength() <= 0) {
+                continue;
+            }
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                if(!(childNodes.item(i) instanceof Element) ||
+                    !((Element) childNodes.item(i)).getTagName().equals(childKey)) {
+                    continue;
+                }
+
+                Element childElement = (Element) childNodes.item(i);
+                if (childElement.getTagName().equals(childKey) &&
+                    childElement.getTextContent().equals(childValue)) {
+                    return ComparisonResult.EQUAL;
                 }
             }
+
+        }
         return outcome;
     }
 }

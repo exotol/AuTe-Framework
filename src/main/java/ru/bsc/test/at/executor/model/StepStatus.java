@@ -2,7 +2,7 @@ package ru.bsc.test.at.executor.model;
 
 public class StepStatus {
 
-    private String exception = null;
+    private String exception;
 
     public String getException() {
         return exception;

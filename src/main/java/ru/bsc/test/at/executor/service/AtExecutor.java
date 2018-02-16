@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
@@ -73,9 +75,10 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class AtExecutor {
+    private static final int POLLING_RETRY_COUNT = 50;
+    private static final int POLLING_RETRY_TIMEOUT_MS = 1000;
 
-    private final static int POLLING_RETRY_COUNT = 50;
-    private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
+    private final Logger logger = LoggerFactory.getLogger(AtExecutor.class);
 
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
     private String projectPath;
@@ -90,17 +93,17 @@ public class AtExecutor {
         Map<Stand, Connection> standConnectionMap = new HashMap<>();
         // Создать подключение для каждого используемого стенда
         for (Stand stand: standSet) {
-            Connection connection = null;
             if (StringUtils.isNotEmpty(stand.getDbUrl())) {
                 try {
-                    connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
+                    Connection connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
                     connection.setAutoCommit(false);
                     connection.setReadOnly(true);
+                    standConnectionMap.put(stand, connection);
                 } catch (SQLException e) {
-                    connection = null;
+                    logger.warn("sql exception", e);
+                    standConnectionMap.put(stand, null);
                 }
             }
-            standConnectionMap.put(stand, connection);
         }
 
         try {
@@ -115,7 +118,7 @@ public class AtExecutor {
                     connection.rollback();
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error while rollback", e);
                 }
             });
         }
@@ -485,9 +488,7 @@ public class AtExecutor {
                 mockDefinition.getRequest().setMethod("POST"); // SOAP always POST
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
-                mockDefinition.getResponse().setHeaders(new HashMap<String, String>() {{
-                    put("Content-Type", "text/xml");
-                }});
+                mockDefinition.getResponse().getHeaders().put("Content-Type", "text/xml");
 
                 wireMockAdmin.addMapping(mockDefinition);
             }

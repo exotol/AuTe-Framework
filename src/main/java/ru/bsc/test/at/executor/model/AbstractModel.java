@@ -6,5 +6,5 @@ package ru.bsc.test.at.executor.model;
  */
 
 @SuppressWarnings("WeakerAccess")
-public abstract class AbstractModel {
+public interface AbstractModel {
 }

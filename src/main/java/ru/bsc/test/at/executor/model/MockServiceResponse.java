@@ -2,10 +2,9 @@ package ru.bsc.test.at.executor.model;
 
 /**
  * Created by sdoroshin on 27.07.2017.
- *
  */
 @SuppressWarnings("WeakerAccess")
-public class MockServiceResponse extends AbstractModel {
+public class MockServiceResponse implements AbstractModel {
 
     private String code;
     private String serviceUrl;
@@ -16,30 +15,39 @@ public class MockServiceResponse extends AbstractModel {
     public String getCode() {
         return code;
     }
+
     public void setCode(String code) {
         this.code = code;
     }
+
     public String getServiceUrl() {
         return serviceUrl;
     }
+
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
+
     public String getResponseBody() {
         return responseBody;
     }
+
     public void setResponseBody(String responseBody) {
         this.responseBody = responseBody;
     }
+
     public String getResponseBodyFile() {
         return responseBodyFile;
     }
+
     public void setResponseBodyFile(String responseBodyFile) {
         this.responseBodyFile = responseBodyFile;
     }
+
     public Integer getHttpStatus() {
         return httpStatus;
     }
+
     public void setHttpStatus(Integer httpStatus) {
         this.httpStatus = httpStatus;
     }
@@ -60,10 +68,15 @@ public class MockServiceResponse extends AbstractModel {
 
         MockServiceResponse that = (MockServiceResponse) o;
 
-        if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null) return false;
-        if (responseBody != null ? !responseBody.equals(that.responseBody) : that.responseBody != null) return false;
-        if (responseBodyFile != null ? !responseBodyFile.equals(that.responseBodyFile) : that.responseBodyFile != null)
+        if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null) {
             return false;
+        }
+        if (responseBody != null ? !responseBody.equals(that.responseBody) : that.responseBody != null) {
+            return false;
+        }
+        if (responseBodyFile != null ? !responseBodyFile.equals(that.responseBodyFile) : that.responseBodyFile != null) {
+            return false;
+        }
         return httpStatus != null ? httpStatus.equals(that.httpStatus) : that.httpStatus == null;
     }
 

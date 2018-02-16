@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class ServiceRequestsComparatorHelper {
 
         // Список актуальных запросов к сервисам
         MockRequest mockRequest = new MockRequest();
-        mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{ put("equalTo", testId); }});
+        mockRequest.getHeaders().put(project.getTestIdHeaderName(), createEqualToHeader(testId));
         List<WireMockRequest> actualRequestList = wireMockAdmin.findRequests(mockRequest).getRequests();
 
         // compare request size
@@ -77,5 +78,11 @@ public class ServiceRequestsComparatorHelper {
                 throw new Exception("Service " + expectedRequest.getServiceName() + " is not called");
             }
         }
+    }
+
+    private Map<String, String> createEqualToHeader(String testId) {
+        Map<String, String> header = new HashMap<>();
+        header.put("equalTo", testId);
+        return header;
     }
 }
