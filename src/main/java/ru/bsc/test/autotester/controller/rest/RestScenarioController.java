@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.ro.ScenarioRo;
-import ru.bsc.test.autotester.ro.StepResultRo;
+import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
@@ -23,7 +22,6 @@ import ru.bsc.test.autotester.service.ScenarioService;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sdoroshin on 14.09.2017.
@@ -119,8 +117,8 @@ public class RestScenarioController {
         return scenarioService.updateStepListFromRo(projectCode, scenarioPath, stepRoList);
     }
 
-    @RequestMapping(value = { "{scenarioCode:.+}/exec", "{scenarioGroup:.+}/{scenarioCode:.+}/exec" }, method = RequestMethod.POST)
-    public List<StepResultRo> executing(
+    @RequestMapping(value = { "{scenarioCode:.+}/start", "{scenarioGroup:.+}/{scenarioCode:.+}/start" }, method = RequestMethod.POST)
+    public StartScenarioInfoRo executing(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
             @PathVariable String scenarioCode) throws IOException {
@@ -128,11 +126,7 @@ public class RestScenarioController {
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
         Project project = projectService.findOne(projectCode);
         if (scenario != null) {
-            Map<Scenario, List<StepResult>> scenarioResultMap =
-                    scenarioService.executeScenarioList(project, Collections.singletonList(scenario));
-            if (scenarioResultMap.containsKey(scenario)) {
-                return stepRoMapper.convertStepResultListToStepResultRo(scenarioResultMap.get(scenario));
-            }
+            return scenarioService.startScenarioExecutingList(project, Collections.singletonList(scenario));
         }
         throw new ResourceNotFoundException();
     }

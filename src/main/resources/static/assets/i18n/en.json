@@ -121,5 +121,9 @@
   "Port": "Port",
   "Search by method name": "Search by method name",
   "Nothing found": "Nothing found",
-  "Script": "Script"
+  "Script": "Script",
+  "Results": "Results",
+  "Starting": "Starting",
+  "Stop": "Stop",
+  "Get report on selected scenarios": "Get report on selected scenarios"
 }
