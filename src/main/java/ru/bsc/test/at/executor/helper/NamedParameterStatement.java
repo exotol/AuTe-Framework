@@ -12,8 +12,7 @@ import java.util.Map;
 /**
  * Created by sdoroshin on 05.06.2017.
  *
- * http://www.javaworld.com/article/2077706/core-java/named-parameters-for-preparedstatement.html
- *
+ * @see <a href="http://www.javaworld.com/article/2077706/core-java/named-parameters-for-preparedstatement.html">Article</a>
  */
 public class NamedParameterStatement implements AutoCloseable {
     private final PreparedStatement statement;
@@ -52,8 +51,10 @@ public class NamedParameterStatement implements AutoCloseable {
                         j++;
                     }
                     String name = query.substring(i + 1, j);
-                    c = '?'; // replace the parameter with a question mark
-                    i += name.length(); // skip past the end if the parameter
+                    // replace the parameter with a question mark
+                    c = '?';
+                    // skip past the end if the parameter
+                    i += name.length();
 
                     List<Integer> indexList = paramMap.computeIfAbsent(name, k -> new LinkedList<>());
                     indexList.add(index);

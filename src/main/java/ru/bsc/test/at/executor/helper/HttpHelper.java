@@ -27,7 +27,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.tika.Tika;
-import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
@@ -50,10 +49,10 @@ import java.util.stream.Collectors;
  *
  */
 public class HttpHelper {
+    private final Logger logger = LoggerFactory.getLogger(HttpHelper.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
     private final CloseableHttpClient httpClient;
-    private HttpClientContext context;
+    private final HttpClientContext context;
 
     public HttpHelper() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
@@ -62,7 +61,7 @@ public class HttpHelper {
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequestBody, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+    public ResponseHelper request(String method, String url, String jsonRequestBody, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase && jsonRequestBody != null) {
@@ -72,7 +71,7 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException, TikaException {
+    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
@@ -124,7 +123,7 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws URISyntaxException, IOException, TikaException {
+    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws IOException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData formData : formDataList) {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
@@ -163,12 +162,13 @@ public class HttpHelper {
 
     private void setHeaders(HttpRequestBase request, String headers) {
         if (headers != null && !headers.isEmpty()) {
-            Scanner scanner = new Scanner(headers);
-            while (scanner.hasNextLine()) {
-                String header = scanner.nextLine();
-                String[] headerDetail = header.split(":");
-                if (headerDetail.length >= 2) {
-                    request.addHeader(headerDetail[0].trim(), headerDetail[1].trim());
+            try (Scanner scanner = new Scanner(headers)) {
+                while (scanner.hasNextLine()) {
+                    String header = scanner.nextLine();
+                    String[] headerDetail = header.split(":");
+                    if (headerDetail.length >= 2) {
+                        request.addHeader(headerDetail[0].trim(), headerDetail[1].trim());
+                    }
                 }
             }
         }
@@ -178,8 +178,7 @@ public class HttpHelper {
         try {
             httpClient.close();
         } catch (IOException e) {
-            LOGGER.error(e.getLocalizedMessage());
-            e.printStackTrace();
+            logger.error("Error while closing http connection", e);
         }
     }
 }

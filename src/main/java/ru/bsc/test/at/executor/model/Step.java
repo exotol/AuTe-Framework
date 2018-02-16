@@ -8,10 +8,10 @@ import java.util.Map;
 
 /**
  * Created by sdoroshin on 10.05.2017.
- *
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Step extends AbstractModel implements Serializable {
+public class Step implements Serializable, AbstractModel {
+    private static final long serialVersionUID = 1670286319126044952L;
 
     private String code;
     private List<ExpectedServiceRequest> expectedServiceRequests;
@@ -47,72 +47,95 @@ public class Step extends AbstractModel implements Serializable {
     public String getCode() {
         return code;
     }
+
     public void setCode(String code) {
         this.code = code;
     }
+
     public String getRelativeUrl() {
         return relativeUrl;
     }
+
     public void setRelativeUrl(String relativeUrl) {
         this.relativeUrl = relativeUrl;
     }
+
     public String getRequestMethod() {
         return requestMethod;
     }
+
     public void setRequestMethod(String requestMethod) {
         this.requestMethod = requestMethod;
     }
+
     public String getRequestHeaders() {
         return requestHeaders;
     }
+
     public void setRequestHeaders(String requestHeaders) {
         this.requestHeaders = requestHeaders;
     }
+
     public String getRequest() {
         return request;
     }
+
     public void setRequest(String request) {
         this.request = request;
     }
+
     public String getRequestFile() {
         return requestFile;
     }
+
     public void setRequestFile(String requestFile) {
         this.requestFile = requestFile;
     }
+
     public String getExpectedResponse() {
         return expectedResponse;
     }
+
     public void setExpectedResponse(String expectedResponse) {
         this.expectedResponse = expectedResponse;
     }
+
     public String getExpectedResponseFile() {
         return expectedResponseFile;
     }
+
     public void setExpectedResponseFile(String expectedResponseFile) {
         this.expectedResponseFile = expectedResponseFile;
     }
+
     public Integer getExpectedStatusCode() {
         return expectedStatusCode;
     }
+
     public void setExpectedStatusCode(Integer expectedStatusCode) {
         this.expectedStatusCode = expectedStatusCode;
     }
+
     public String getSql() {
         return sql;
     }
+
     public void setSql(String sql) {
         this.sql = sql;
     }
+
     public String getSqlSavedParameter() {
         return sqlSavedParameter;
     }
+
     public void setSqlSavedParameter(String sqlSavedParameter) {
         this.sqlSavedParameter = sqlSavedParameter;
     }
+
     public String getJsonXPath() {
         return jsonXPath;
     }
+
     public void setJsonXPath(String jsonXPath) {
         this.jsonXPath = jsonXPath;
     }
@@ -123,90 +146,109 @@ public class Step extends AbstractModel implements Serializable {
         }
         return expectedServiceRequests;
     }
+
     public void setExpectedServiceRequests(List<ExpectedServiceRequest> expectedServiceRequests) {
         this.expectedServiceRequests = expectedServiceRequests;
     }
+
     public RequestBodyType getRequestBodyType() {
         return requestBodyType;
     }
+
     public void setRequestBodyType(RequestBodyType requestBodyType) {
         this.requestBodyType = requestBodyType;
     }
+
     public Boolean getExpectedResponseIgnore() {
-        return expectedResponseIgnore == null ? false : expectedResponseIgnore;
+        return expectedResponseIgnore != null && expectedResponseIgnore;
     }
+
     public void setExpectedResponseIgnore(Boolean expectedResponseIgnore) {
         this.expectedResponseIgnore = expectedResponseIgnore;
     }
+
     public Boolean getUsePolling() {
-        return usePolling == null ? false : usePolling;
+        return usePolling != null && usePolling;
     }
+
     public void setUsePolling(Boolean usePolling) {
         this.usePolling = usePolling;
     }
+
     public String getPollingJsonXPath() {
         return pollingJsonXPath;
     }
+
     public void setPollingJsonXPath(String pollingJsonXPath) {
         this.pollingJsonXPath = pollingJsonXPath;
     }
+
     public List<MockServiceResponse> getMockServiceResponseList() {
         if (mockServiceResponseList == null) {
             mockServiceResponseList = new LinkedList<>();
         }
         return mockServiceResponseList;
     }
+
     public void setMockServiceResponseList(List<MockServiceResponse> mockServiceResponseList) {
-        if (mockServiceResponseList == null) {
-            mockServiceResponseList = new LinkedList<>();
-        }
-        this.mockServiceResponseList = mockServiceResponseList;
+        this.mockServiceResponseList = mockServiceResponseList != null ? mockServiceResponseList : new LinkedList<>();
     }
+
     public Boolean getDisabled() {
-        return disabled == null ? false : disabled;
+        return disabled != null && disabled;
     }
+
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
+
     public String getStepComment() {
         return stepComment;
     }
+
     public void setStepComment(String stepComment) {
         this.stepComment = stepComment;
     }
+
     public Map<String, String> getSavedValuesCheck() {
         return savedValuesCheck;
     }
+
     public void setSavedValuesCheck(Map<String, String> savedValuesCheck) {
-        if (savedValuesCheck == null) {
-            savedValuesCheck = new HashMap<>();
-        }
-        this.savedValuesCheck = savedValuesCheck;
+        this.savedValuesCheck = savedValuesCheck != null ? savedValuesCheck : new HashMap<>();
     }
+
     public List<StepParameterSet> getStepParameterSetList() {
         if (stepParameterSetList == null) {
             stepParameterSetList = new LinkedList<>();
         }
         return stepParameterSetList;
     }
+
     public void setStepParameterSetList(List<StepParameterSet> stepParameterSetList) {
         this.stepParameterSetList = stepParameterSetList;
     }
+
     public String getMqName() {
         return mqName;
     }
+
     public void setMqName(String mqName) {
         this.mqName = mqName;
     }
+
     public String getMqMessage() {
         return mqMessage;
     }
+
     public void setMqMessage(String mqMessage) {
         this.mqMessage = mqMessage;
     }
+
     public String getMqMessageFile() {
         return mqMessageFile;
     }
+
     public void setMqMessageFile(String mqMessageFile) {
         this.mqMessageFile = mqMessageFile;
     }
@@ -266,11 +308,11 @@ public class Step extends AbstractModel implements Serializable {
         }
         step.setResponseCompareMode(getResponseCompareMode());
         step.setExpectedServiceRequests(new LinkedList<>());
-        for (ExpectedServiceRequest expectedServiceRequest: getExpectedServiceRequests()) {
+        for (ExpectedServiceRequest expectedServiceRequest : getExpectedServiceRequests()) {
             step.getExpectedServiceRequests().add(expectedServiceRequest.copy());
         }
         step.setMockServiceResponseList(new LinkedList<>());
-        for (MockServiceResponse mockServiceResponse: getMockServiceResponseList()) {
+        for (MockServiceResponse mockServiceResponse : getMockServiceResponseList()) {
             step.getMockServiceResponseList().add(mockServiceResponse.copy());
         }
         step.setStepParameterSetList(new LinkedList<>());
@@ -295,31 +337,57 @@ public class Step extends AbstractModel implements Serializable {
 
         Step step = (Step) o;
 
-        if (relativeUrl != null ? !relativeUrl.equals(step.relativeUrl) : step.relativeUrl != null) return false;
-        if (requestMethod != null ? !requestMethod.equals(step.requestMethod) : step.requestMethod != null)
+        if (relativeUrl != null ? !relativeUrl.equals(step.relativeUrl) : step.relativeUrl != null) {
             return false;
-        if (request != null ? !request.equals(step.request) : step.request != null) return false;
-        if (requestFile != null ? !requestFile.equals(step.requestFile) : step.requestFile != null) return false;
-        if (requestHeaders != null ? !requestHeaders.equals(step.requestHeaders) : step.requestHeaders != null)
+        }
+        if (requestMethod != null ? !requestMethod.equals(step.requestMethod) : step.requestMethod != null) {
             return false;
-        if (expectedResponse != null ? !expectedResponse.equals(step.expectedResponse) : step.expectedResponse != null)
+        }
+        if (request != null ? !request.equals(step.request) : step.request != null) {
             return false;
-        if (expectedResponseFile != null ? !expectedResponseFile.equals(step.expectedResponseFile) : step.expectedResponseFile != null)
+        }
+        if (requestFile != null ? !requestFile.equals(step.requestFile) : step.requestFile != null) {
             return false;
-        if (expectedResponseIgnore != null ? !expectedResponseIgnore.equals(step.expectedResponseIgnore) : step.expectedResponseIgnore != null)
+        }
+        if (requestHeaders != null ? !requestHeaders.equals(step.requestHeaders) : step.requestHeaders != null) {
             return false;
-        if (expectedStatusCode != null ? !expectedStatusCode.equals(step.expectedStatusCode) : step.expectedStatusCode != null)
+        }
+        if (expectedResponse != null ? !expectedResponse.equals(step.expectedResponse) : step.expectedResponse != null) {
             return false;
-        if (sql != null ? !sql.equals(step.sql) : step.sql != null) return false;
-        if (sqlSavedParameter != null ? !sqlSavedParameter.equals(step.sqlSavedParameter) : step.sqlSavedParameter != null)
+        }
+        if (expectedResponseFile != null ? !expectedResponseFile.equals(step.expectedResponseFile) : step.expectedResponseFile != null) {
             return false;
-        if (jsonXPath != null ? !jsonXPath.equals(step.jsonXPath) : step.jsonXPath != null) return false;
-        if (requestBodyType != step.requestBodyType) return false;
-        if (usePolling != null ? !usePolling.equals(step.usePolling) : step.usePolling != null) return false;
-        if (pollingJsonXPath != null ? !pollingJsonXPath.equals(step.pollingJsonXPath) : step.pollingJsonXPath != null)
+        }
+        if (expectedResponseIgnore != null ? !expectedResponseIgnore.equals(step.expectedResponseIgnore) : step.expectedResponseIgnore != null) {
             return false;
-        if (disabled != null ? !disabled.equals(step.disabled) : step.disabled != null) return false;
-        if (stepComment != null ? !stepComment.equals(step.stepComment) : step.stepComment != null) return false;
+        }
+        if (expectedStatusCode != null ? !expectedStatusCode.equals(step.expectedStatusCode) : step.expectedStatusCode != null) {
+            return false;
+        }
+        if (sql != null ? !sql.equals(step.sql) : step.sql != null) {
+            return false;
+        }
+        if (sqlSavedParameter != null ? !sqlSavedParameter.equals(step.sqlSavedParameter) : step.sqlSavedParameter != null) {
+            return false;
+        }
+        if (jsonXPath != null ? !jsonXPath.equals(step.jsonXPath) : step.jsonXPath != null) {
+            return false;
+        }
+        if (requestBodyType != step.requestBodyType) {
+            return false;
+        }
+        if (usePolling != null ? !usePolling.equals(step.usePolling) : step.usePolling != null) {
+            return false;
+        }
+        if (pollingJsonXPath != null ? !pollingJsonXPath.equals(step.pollingJsonXPath) : step.pollingJsonXPath != null) {
+            return false;
+        }
+        if (disabled != null ? !disabled.equals(step.disabled) : step.disabled != null) {
+            return false;
+        }
+        if (stepComment != null ? !stepComment.equals(step.stepComment) : step.stepComment != null) {
+            return false;
+        }
         return savedValuesCheck != null ? savedValuesCheck.equals(step.savedValuesCheck) : step.savedValuesCheck == null;
     }
 

@@ -2,8 +2,11 @@ package ru.bsc.test.at.executor.model;
 
 import ru.bsc.test.at.executor.mq.MqService;
 
+import java.io.Serializable;
+
 @SuppressWarnings("WeakerAccess")
-public class AmqpBroker extends AbstractModel {
+public class AmqpBroker implements AbstractModel, Serializable {
+    private static final long serialVersionUID = 2205108669600359668L;
 
     private MqService mqService;
     private String host;

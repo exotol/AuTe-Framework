@@ -8,7 +8,7 @@ import java.util.List;
  *
  */
 @SuppressWarnings("WeakerAccess")
-public class StepParameterSet extends AbstractModel {
+public class StepParameterSet implements AbstractModel {
 
     private List<StepParameter> stepParameterList;
     private String description;

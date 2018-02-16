@@ -25,13 +25,14 @@ import java.util.List;
  */
 public class WireMockAdmin implements Closeable {
 
-    private String wireMockAdminUrl;
-    private List<String> mockIdList = new LinkedList<>();
+    private final String wireMockAdminUrl;
+    private final List<String> mockIdList = new LinkedList<>();
+
     public WireMockAdmin(String wireMockAdminUrl) {
         this.wireMockAdminUrl = wireMockAdminUrl;
     }
 
-    private void clearSavedMappings() throws IOException {
+    private void clearSavedMappings() {
         mockIdList.forEach(s -> sendDelete("/mappings/" + s));
     }
 

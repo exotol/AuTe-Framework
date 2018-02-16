@@ -1,6 +1,8 @@
 package ru.bsc.test.at.executor.mq;
 
-public class MqManagerFactory {
+public final class MqManagerFactory {
+
+    private MqManagerFactory() { }
 
     public static IMqManager getMqManager(MqService mqService) {
         if (MqService.ACTIVE_MQ.equals(mqService)) {

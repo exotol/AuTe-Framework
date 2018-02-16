@@ -1,7 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
 @SuppressWarnings("WeakerAccess")
-public class FormData extends AbstractModel {
+public class FormData implements AbstractModel {
 
     private String fieldName;
     private FieldType fieldType;

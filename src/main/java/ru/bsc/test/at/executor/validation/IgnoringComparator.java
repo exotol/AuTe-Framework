@@ -19,14 +19,16 @@ public class IgnoringComparator extends DefaultComparator {
 
     @Override
     public void compareValues(String prefix, Object expectedValue, Object actualValue, JSONCompareResult result) throws JSONException {
-        if (!expectedValue.equals(IGNORE)) {
-            if (expectedValue instanceof String && actualValue instanceof String && ((String) expectedValue).contains(IGNORE)) {
-                if (!MaskComparator.compare((String)expectedValue, (String)actualValue)) {
-                    result.fail(prefix, expectedValue, actualValue);
-                }
-            } else {
-                super.compareValues(prefix, expectedValue, actualValue, result);
+        if (IGNORE.equals(expectedValue)) {
+            return;
+        }
+
+        if (expectedValue instanceof String && actualValue instanceof String && ((String) expectedValue).contains(IGNORE)) {
+            if (!MaskComparator.compare((String)expectedValue, (String)actualValue)) {
+                result.fail(prefix, expectedValue, actualValue);
             }
+        } else {
+            super.compareValues(prefix, expectedValue, actualValue, result);
         }
     }
 }
