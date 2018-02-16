@@ -11,20 +11,31 @@ import java.util.Objects;
 
 /**
  * Created by sdoroshin on 03.11.2017.
- *
  */
 
 class SkipEmptyRepresenter extends Representer {
     @Override
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
-        // if value of property is null, ignore it.
-        if ((propertyValue == null)
-                || (propertyValue instanceof List && ((List) propertyValue).isEmpty())
-                || (propertyValue instanceof Boolean && !((Boolean) propertyValue) && !Objects.equals(property.getName(), "failed"))
-                || (propertyValue instanceof Map  && ((Map)  propertyValue).isEmpty())) {
+        if (isInvalidType(property, propertyValue)) {
             return null;
-        } else {
-            return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
         }
+        return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean isInvalidType(Property property, Object propertyValue) {
+        if (propertyValue == null) {
+            return true;
+        }
+        if (propertyValue instanceof List && ((List) propertyValue).isEmpty()) {
+            return true;
+        }
+        if (propertyValue instanceof Map && ((Map) propertyValue).isEmpty()) {
+            return true;
+        }
+        if (propertyValue instanceof Boolean && !((Boolean) propertyValue) && !Objects.equals(property.getName(), "failed")) {
+            return true;
+        }
+        return false;
     }
 }

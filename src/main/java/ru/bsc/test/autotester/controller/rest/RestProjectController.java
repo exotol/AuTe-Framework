@@ -32,10 +32,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/rest/projects")
 public class RestProjectController {
-
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private final ProjectService projectService;
-    private ScenarioService scenarioService;
+    private final ScenarioService scenarioService;
 
     @Autowired
     public RestProjectController(ProjectService projectService, ScenarioService scenarioService) {
@@ -69,26 +68,24 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.POST)
     public ScenarioRo newScenario(@PathVariable String projectCode, @RequestBody ScenarioRo scenarioRo) throws IOException {
-        scenarioRo = scenarioService.addScenarioToProject(projectCode, scenarioRo);
-        if (scenarioRo != null) {
-            return scenarioRo;
+        ScenarioRo savedScenario = scenarioService.addScenarioToProject(projectCode, scenarioRo);
+        if (savedScenario == null) {
+            throw new ResourceNotFoundException();
         }
-        throw new ResourceNotFoundException();
+        return savedScenario;
     }
 
     @RequestMapping(value = "{projectCode}/group", method = RequestMethod.POST)
     public List<String> newGroup(@PathVariable String projectCode, @RequestBody String groupName) throws Exception {
         Project project = projectService.findOne(projectCode);
-        if (project != null) {
-            if (StringUtils.isNotEmpty(groupName)) {
-                projectService.addNewGroup(projectCode, groupName);
+        if (project != null && StringUtils.isNotEmpty(groupName)) {
+            projectService.addNewGroup(projectCode, groupName);
 
-                project = projectService.findOne(projectCode);
-                if (project != null) {
-                    return project.getGroupList();
-                } else {
-                    throw new ResourceNotFoundException();
-                }
+            project = projectService.findOne(projectCode);
+            if (project != null) {
+                return project.getGroupList();
+            } else {
+                throw new ResourceNotFoundException();
             }
         }
         throw new ResourceNotFoundException();
@@ -97,16 +94,14 @@ public class RestProjectController {
     @RequestMapping(value = "{projectCode}/group", method = RequestMethod.PUT)
     public List<String> renameGroup(@PathVariable String projectCode, @RequestBody Map<String, String> groupNames) throws Exception {
         Project project = projectService.findOne(projectCode);
-        if (project != null) {
-            if (StringUtils.isNotEmpty(groupNames.get("newGroupName"))) {
-                projectService.renameGroup(projectCode, groupNames.get("oldGroupName"), groupNames.get("newGroupName"));
+        if (project != null && StringUtils.isNotEmpty(groupNames.get("newGroupName"))) {
+            projectService.renameGroup(projectCode, groupNames.get("oldGroupName"), groupNames.get("newGroupName"));
 
-                project = projectService.findOne(projectCode);
-                if (project != null) {
-                    return project.getGroupList();
-                } else {
-                    throw new ResourceNotFoundException();
-                }
+            project = projectService.findOne(projectCode);
+            if (project != null) {
+                return project.getGroupList();
+            } else {
+                throw new ResourceNotFoundException();
             }
         }
         throw new ResourceNotFoundException();
@@ -124,10 +119,7 @@ public class RestProjectController {
 
     @RequestMapping(value = "{projectCode}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
     @ResponseBody
-    public String getYaml(
-            @PathVariable String projectCode,
-            HttpServletResponse response
-    ) throws IOException {
+    public String getYaml(@PathVariable String projectCode, HttpServletResponse response) {
         Project project = projectService.findOne(projectCode);
         if (project != null) {
             response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getCode() + ".yml\"");

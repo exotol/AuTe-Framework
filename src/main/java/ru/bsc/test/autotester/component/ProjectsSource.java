@@ -28,17 +28,21 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.io.File.separator;
+import static java.io.File.separatorChar;
+
 /**
  * Created by sdoroshin on 27.10.2017.
  *
  */
 
 public class ProjectsSource {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(ProjectsSource.class);
-    private final static String MAIN_YAML_FILENAME = "main.yml";
-    private final static String SCENARIO_YAML_FILENAME = "scenario.yml";
+    private static final String MAIN_YML_FILENAME = "main.yml";
+    private static final String SCENARIO_YML_FILENAME = "scenario.yml";
     private static final String FILE_ENCODING = "UTF-8";
+    private static final String REQUEST_JSON = "request.json";
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectsSource.class);
 
     private EnvironmentProperties environmentProperties;
 
@@ -46,23 +50,25 @@ public class ProjectsSource {
         List<Project> projectList = new LinkedList<>();
 
         projectList.clear();
-        LOGGER.debug("Load projects from: {}", environmentProperties.getProjectsDirectoryPath());
+        logger.debug("Load projects from: {}", environmentProperties.getProjectsDirectoryPath());
         File[] fileList = new File(environmentProperties.getProjectsDirectoryPath()).listFiles(File::isDirectory);
         if (fileList != null) {
             for (File projectDirectory: fileList) {
-                LOGGER.debug("Reading directory: {}", projectDirectory.getAbsolutePath());
-                File mainYaml = new File(projectDirectory.getAbsolutePath() + "/" + MAIN_YAML_FILENAME);
-                if (mainYaml.exists()) {
-                    try {
-                        Project loadedProject = YamlUtils.loadAs(mainYaml, Project.class);
-                        loadedProject.setCode(projectDirectory.getName());
-                        environmentToProject(loadedProject);
-                        readExternalFiles(loadedProject);
+                logger.debug("Reading directory: {}", projectDirectory.getAbsolutePath());
+                File mainYml = new File(projectDirectory.getAbsolutePath() + "/" + MAIN_YML_FILENAME);
+                if (!mainYml.exists()) {
+                    continue;
+                }
 
-                        projectList.add(loadedProject);
-                    } catch (IOException e) {
-                        LOGGER.error("Main project file not found", e);
-                    }
+                try {
+                    Project loadedProject = YamlUtils.loadAs(mainYml, Project.class);
+                    loadedProject.setCode(projectDirectory.getName());
+                    environmentToProject(loadedProject);
+                    readExternalFiles(loadedProject);
+
+                    projectList.add(loadedProject);
+                } catch (IOException e) {
+                    logger.error("Main project file not found", e);
                 }
             }
         }
@@ -100,26 +106,22 @@ public class ProjectsSource {
         File[] fileList = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/scenarios").listFiles(File::isDirectory);
         if (fileList != null) {
             for (File directory : fileList) {
-                File scenarioYml = new File(directory, SCENARIO_YAML_FILENAME);
+                File scenarioYml = new File(directory, SCENARIO_YML_FILENAME);
                 if (scenarioYml.exists()) {
                     try {
-                        project.getScenarioList().add(
-                                loadScenarioFromFiles(directory, null)
-                        );
+                        project.getScenarioList().add(loadScenarioFromFiles(directory, null));
                     } catch (IOException e) {
-                        LOGGER.error("Read file " + scenarioYml.getAbsolutePath(), e);
+                        logger.error("Read file " + scenarioYml.getAbsolutePath(), e);
                     }
                 } else {
                     File[] innerFileList = directory.listFiles(File::isDirectory);
                     if (innerFileList != null) {
                         for (File scenarioYmlInGroup : innerFileList) {
-                            if (new File(scenarioYmlInGroup, SCENARIO_YAML_FILENAME).exists()) {
+                            if (new File(scenarioYmlInGroup, SCENARIO_YML_FILENAME).exists()) {
                                 try {
-                                    project.getScenarioList().add(
-                                            loadScenarioFromFiles(scenarioYmlInGroup, directory.getName())
-                                    );
+                                    project.getScenarioList().add(loadScenarioFromFiles(scenarioYmlInGroup, directory.getName()));
                                 } catch (IOException e) {
-                                    LOGGER.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
+                                    logger.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
                                 }
                             }
                         }
@@ -138,8 +140,8 @@ public class ProjectsSource {
             File file = new File(path);
             return FileUtils.readFileToString(file, FILE_ENCODING);
         } catch (IOException e) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Reading file " + path, e);
+            if (logger.isErrorEnabled()) {
+                logger.error("Reading file " + path, e);
             }
         }
         return null;
@@ -180,12 +182,12 @@ public class ProjectsSource {
     }
 
     private void saveProjectToFiles(Project project) {
-        String fileName = environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/" + MAIN_YAML_FILENAME;
+        String fileName = environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/" + MAIN_YML_FILENAME;
         try {
             clearProjectBeforeSave(project);
             YamlUtils.dumpToFile(project, fileName);
         } catch (IOException e) {
-            LOGGER.error("Save file " + fileName, e);
+            logger.error("Save file " + fileName, e);
         }
     }
 
@@ -233,10 +235,6 @@ public class ProjectsSource {
         return "steps/" + step.getCode() + "/";
     }
 
-    private String stepRequestFile() {
-        return "request.json";
-    }
-
     private String stepExpectedResponseFile(Step step) {
         return "expected-response." + extByContent(step.getExpectedResponse());
     }
@@ -270,10 +268,10 @@ public class ProjectsSource {
         }
         project.getScenarioList().forEach(scenario -> {
             try {
-                File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YAML_FILENAME);
+                File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/scenarios/" + scenarioPath(scenario) + "/" + SCENARIO_YML_FILENAME);
                 saveScenarioToFiles(scenario, scenarioFile, true);
             } catch (IOException e) {
-                LOGGER.error("Save project external files", e);
+                logger.error("Save project external files", e);
             }
         });
     }
@@ -288,7 +286,7 @@ public class ProjectsSource {
     }
 
     private Scenario loadScenarioFromFiles(File scenarioDirectory, String group) throws IOException {
-        File scenarioFile = new File(scenarioDirectory + "/" + SCENARIO_YAML_FILENAME);
+        File scenarioFile = new File(scenarioDirectory + "/" + SCENARIO_YML_FILENAME);
         Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
         scenario.setCode(scenarioFile.getParentFile().getName());
         scenario.setScenarioGroup(group);
@@ -339,21 +337,23 @@ public class ProjectsSource {
                 }
             }
         }
-        File scenarioFile = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar + SCENARIO_YAML_FILENAME);
+
+        String pathname = String.join(separator, environmentProperties.getProjectsDirectoryPath(), projectCode, "scenarios", scenarioPath, SCENARIO_YML_FILENAME);
+        File scenarioFile = new File(pathname);
         File scenarioRootDirectory = scenarioFile.getParentFile();
 
         // Прочитать существующий сценарий (для создаваемого сценария этот файл еще не существует)
-        if (new File(scenarioRootDirectory, SCENARIO_YAML_FILENAME).exists()) {
+        if (new File(scenarioRootDirectory, SCENARIO_YML_FILENAME).exists()) {
             Scenario existsScenario = loadScenarioFromFiles(scenarioRootDirectory, null);
 
             // Найти шаги, которые удалены
             existsScenario.getStepList().forEach(existsStep -> {
-                boolean isExists = scenario.getStepList().stream().filter(step -> Objects.equals(existsStep.getCode(), step.getCode())).count() > 0;
+                boolean isExists = scenario.getStepList().stream().anyMatch(step -> Objects.equals(existsStep.getCode(), step.getCode()));
                 if (!isExists && existsStep.getCode() != null) {
                     try {
-                        FileUtils.deleteDirectory(new File(scenarioRootDirectory, "steps" + File.separatorChar + existsStep.getCode()));
+                        FileUtils.deleteDirectory(new File(scenarioRootDirectory, "steps" + separatorChar + existsStep.getCode()));
                     } catch (IOException e) {
-                        LOGGER.error("Delete step directory " + scenarioRootDirectory + File.separatorChar + existsStep.getCode(), e);
+                        logger.error("Delete step directory " + scenarioRootDirectory + separatorChar + existsStep.getCode(), e);
                     }
                 }
             });
@@ -372,13 +372,13 @@ public class ProjectsSource {
         if (step.getRequest() != null) {
             try {
                 if (step.getRequestFile() == null || updatePaths) {
-                    step.setRequestFile(stepPath(step) + stepRequestFile());
+                    step.setRequestFile(stepPath(step) + REQUEST_JSON);
                 }
                 File file = new File(scenarioRootDirectory + "/" + step.getRequestFile());
                 FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
                 step.setRequest(null);
             } catch (IOException e) {
-                LOGGER.error("Save file " + scenarioRootDirectory + "/" + step.getRequestFile(), e);
+                logger.error("Save file " + scenarioRootDirectory + "/" + step.getRequestFile(), e);
             }
         } else {
             step.setRequestFile(null);
@@ -393,7 +393,7 @@ public class ProjectsSource {
                 FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
                 step.setExpectedResponse(null);
             } catch (IOException e) {
-                LOGGER.error("Save file " + scenarioRootDirectory + "/" + step.getExpectedResponseFile(), e);
+                logger.error("Save file " + scenarioRootDirectory + "/" + step.getExpectedResponseFile(), e);
             }
         } else {
             step.setExpectedResponseFile(null);
@@ -408,7 +408,7 @@ public class ProjectsSource {
                 FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
                 step.setMqMessage(null);
             } catch (IOException e) {
-                LOGGER.error("Save file " + scenarioRootDirectory + "/" + step.getMqMessageFile(), e);
+                logger.error("Save file " + scenarioRootDirectory + "/" + step.getMqMessageFile(), e);
             }
         } else {
             step.setMqMessageFile(null);
@@ -424,7 +424,7 @@ public class ProjectsSource {
                     FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
                     mockServiceResponse.setResponseBody(null);
                 } catch (IOException e) {
-                    LOGGER.error("Save file " + scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile(), e);
+                    logger.error("Save file " + scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile(), e);
                 }
             } else {
                 mockServiceResponse.setResponseBodyFile(null);
@@ -441,7 +441,7 @@ public class ProjectsSource {
                     FileUtils.writeStringToFile(file, expectedServiceRequest.getExpectedServiceRequest(), FILE_ENCODING);
                     expectedServiceRequest.setExpectedServiceRequest(null);
                 } catch (IOException e) {
-                    LOGGER.error("Save file " + scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile(), e);
+                    logger.error("Save file " + scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile(), e);
                 }
             } else {
                 expectedServiceRequest.setExpectedServiceRequest(null);

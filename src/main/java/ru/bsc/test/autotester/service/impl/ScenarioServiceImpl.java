@@ -53,10 +53,10 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ScenarioServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioServiceImpl.class);
 
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
+    private final ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
@@ -78,17 +78,14 @@ public class ScenarioServiceImpl implements ScenarioService {
         StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
-        ExecutionResult executionResult = new ExecutionResult();
-        Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
+        ExecutionResult executionResult = new ExecutionResult();Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
         executionResult.setScenarioStepResultListMap(resultMap);
         final String runningUuid = UUID.randomUUID().toString();
         startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, executionResult);
 
-        new Thread(() -> atExecutor.executeScenarioList(
-                project,
-                scenarioList,
-                resultMap,
+        new Thread(() -> atExecutor.executeScenarioList(project, scenarioList,
+        resultMap,
                 () -> {
                     boolean stop = stopExecutingSet.contains(runningUuid);
                     if (stop) {
@@ -97,24 +94,22 @@ public class ScenarioServiceImpl implements ScenarioService {
                     return stop;
                 },
                 scenarioResultListMap -> {
-                    executionResult.setFinished(true);
-                    synchronized (projectService) {
-                        scenarioResultListMap.forEach((scenario, stepResults) -> {
-                            String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
-                            try {
-                                Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                                scenarioToUpdate.setFailed(
-                                        stepResults
-                                                .stream()
-                                                .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
-                                                .count() > 0
-                                );
-                                scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
-                            } catch (IOException e) {
-                                LOGGER.error("", e);
-                            }
-                        });
-                    }
+                    executionResult.setFinished(true);synchronized (projectService) {
+            scenarioResultListMap.forEach((scenario, stepResults) -> {
+                String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
+                try {
+                    Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
+                    scenarioToUpdate.setFailed(
+                            stepResults
+                                    .stream()
+                                    .anyMatch(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+
+                    );
+                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
+                } catch (IOException e) {
+                    logger.error("", e);
+                }
+            });}
                 })).start();
         return startScenarioInfoRo;
     }
@@ -260,7 +255,6 @@ public class ScenarioServiceImpl implements ScenarioService {
                     .orElse(null);
             stepRoMapper.updateStep(stepRo, existsStep);
             scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
-            // existsStep = scenarioRepository.saveStep(projectCode, scenarioPath, stepCode, existsStep);
             return stepRoMapper.stepToStepRo(existsStep);
         }
     }

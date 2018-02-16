@@ -6,7 +6,7 @@ import java.util.List;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class StepParameterSetRo extends AbstractRo {
+public class StepParameterSetRo implements AbstractRo {
 
     private static final long serialVersionUID = -8505680675142636322L;
 

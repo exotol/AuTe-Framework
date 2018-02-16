@@ -1,6 +1,6 @@
 package ru.bsc.test.autotester.ro;
 
-public class ImportProjectRo extends AbstractRo {
+public class ImportProjectRo implements AbstractRo {
 
     private static final long serialVersionUID = -3629008469971044019L;
 

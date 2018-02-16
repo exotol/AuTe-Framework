@@ -10,10 +10,14 @@ import java.util.Map;
 
 public abstract class AbstractReportGenerator {
 
-    Map<Scenario, List<StepResult>> scenarioStepResultMap = new LinkedHashMap<>();
+    private final Map<Scenario, List<StepResult>> scenarioStepResultMap = new LinkedHashMap<>();
 
     public void add(Scenario scenario, List<StepResult> stepResultList) {
         scenarioStepResultMap.put(scenario, stepResultList);
+    }
+
+    public Map<Scenario, List<StepResult>> getScenarioStepResultMap() {
+        return scenarioStepResultMap;
     }
 
     public abstract void generate(File directory) throws Exception;

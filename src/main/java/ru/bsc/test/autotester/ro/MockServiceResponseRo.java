@@ -4,7 +4,7 @@ package ru.bsc.test.autotester.ro;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class MockServiceResponseRo extends AbstractRo {
+public class MockServiceResponseRo implements AbstractRo {
 
     private static final long serialVersionUID = -7918346254164488513L;
 

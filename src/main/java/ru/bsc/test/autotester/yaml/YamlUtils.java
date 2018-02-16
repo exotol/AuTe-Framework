@@ -15,10 +15,11 @@ import java.io.IOException;
  * Created by sdoroshin on 03.11.2017.
  *
  */
+public final class YamlUtils {
 
-public class YamlUtils {
+    private static final Logger logger = LoggerFactory.getLogger(YamlUtils.class);
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(YamlUtils.class);
+    private YamlUtils() { }
 
     public static void dumpToFile(Object data, String fileName) throws IOException {
         DumperOptions dumperOptions = new DumperOptions();
@@ -27,10 +28,8 @@ public class YamlUtils {
 
 
         File file = new File(fileName);
-        if (!file.exists()) {
-            if (!file.getParentFile().mkdirs()) {
-                LOGGER.info("Directory {} not created", file.getParentFile());
-            }
+        if (!file.exists() && !file.getParentFile().mkdirs()) {
+            logger.info("Directory {} not created", file.getParentFile());
         }
         try(FileWriter fileWriter = new FileWriter(file)) {
             new Yaml(new SkipEmptyRepresenter(), dumperOptions)
