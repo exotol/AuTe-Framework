@@ -464,20 +464,22 @@ public class AtExecutor {
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     int columnCount = rs.getMetaData().getColumnCount();
-                    if (rs.next()) {
-                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
-                        int i = 1;
-                        for (String parameterName: sqlSavedParameterList) {
-                            if (parameterName.trim().isEmpty()) {
-                                continue;
-                            }
-                            if (i > columnCount) {
-                                break;
-                            }
-                            savedValues.put(parameterName.trim(), rs.getString(i));
-                            i++;
-                        }
+                    List<String> columnNameList = new LinkedList<>();
+                    for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                        columnNameList.add(rs.getMetaData().getColumnName(i));
                     }
+
+                    List<Map<String, Object>> resultData = new LinkedList<>();
+                    String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
+                    while (rs.next()) {
+                        Map<String, Object> resultColumnData = new HashMap<>();
+
+                        for (String columnName: columnNameList) {
+                            resultColumnData.put(columnName, rs.getObject(columnName));
+                        }
+                        resultData.add(resultColumnData);
+                    }
+                    savedValues.put(step.getSqlSavedParameter(), resultData);
                 }
             }
         }
@@ -510,8 +512,9 @@ public class AtExecutor {
             while (m.find()) {
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine engine = manager.getEngineByName("js");
+                // TODO Добавить переменные окружения для расчета выражений
                 Object result = engine.eval(m.group(1));
-                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
+                template = template.replaceFirst("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
             }
         }
         return template;
