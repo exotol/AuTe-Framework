@@ -519,7 +519,7 @@ public class AtExecutor {
                 try (ResultSet rs = statement.executeQuery()) {
                     int columnCount = rs.getMetaData().getColumnCount();
                     List<String> columnNameList = new LinkedList<>();
-                    for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                         columnNameList.add(rs.getMetaData().getColumnName(i));
                     }
 
