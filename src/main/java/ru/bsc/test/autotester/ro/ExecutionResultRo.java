@@ -2,7 +2,7 @@ package ru.bsc.test.autotester.ro;
 
 import java.util.List;
 
-public class ExecutionResultRo extends AbstractRo {
+public class ExecutionResultRo implements AbstractRo {
 
     private List<ScenarioResultRo> scenarioResultList;
     private boolean finished;

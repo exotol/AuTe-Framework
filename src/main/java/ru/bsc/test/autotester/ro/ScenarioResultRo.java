@@ -6,7 +6,7 @@ import java.util.List;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class ScenarioResultRo extends AbstractRo {
+public class ScenarioResultRo implements AbstractRo {
 
     private static final long serialVersionUID = 3389416118467296472L;
 
