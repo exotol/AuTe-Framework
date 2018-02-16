@@ -2,10 +2,12 @@ package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
@@ -26,10 +28,14 @@ import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
+import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -66,7 +72,7 @@ public class AtExecutor {
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
     private String projectPath;
 
-    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioExecuteList) {
+    public void executeScenarioList(Project project, List<Scenario> scenarioExecuteList, Map<Scenario, List<StepResult>> scenarioResultListMap, IStopObserver stopObserver, IExecutingFinishObserver executingFinishObserver) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
@@ -89,13 +95,11 @@ public class AtExecutor {
             standConnectionMap.put(stand, connection);
         }
 
-        Map<Scenario, List<StepResult>> scenarioResultList = new HashMap<>();
         try {
             for (Scenario scenario : scenarioExecuteList) {
-                scenarioResultList.put(
-                        scenario,
-                        executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()))
-                );
+                List<StepResult> stepResultList = new LinkedList<>();
+                scenarioResultListMap.put(scenario, stepResultList);
+                executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
             }
         } finally {
             standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
@@ -107,44 +111,35 @@ public class AtExecutor {
                 }
             });
         }
-        return scenarioResultList;
+        executingFinishObserver.finish(scenarioResultListMap);
     }
 
-    private List<StepResult> executeScenario(Project project, Scenario scenario, Stand stand, Connection connection) {
-        List<StepResult> stepResultList = new LinkedList<>();
+    private void executeScenario(Project project, Scenario scenario, Stand stand, Connection connection, List<StepResult> stepResultList, IStopObserver stopObserver) {
         HttpHelper httpHelper = new HttpHelper();
-        Map<String, String> savedValues = new HashMap<>();
-        savedValues.put("__random", RandomStringUtils.randomAlphabetic(40));
+        Map<String, Object> scenarioVariables = new HashMap<>();
+        scenarioVariables.put("__random", RandomStringUtils.randomAlphabetic(40));
 
-        // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
-        Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
-        if (beforeScenario != null) {
-            stepResultList.addAll(
-                    executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, savedValues)
-                            .stream()
-                            .peek(stepResult -> stepResult.setEditable(false))
-                            .collect(Collectors.toList()));
-        }
+        try {
+            // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
+            Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
+            if (beforeScenario != null) {
+                executeSteps(connection, stand, beforeScenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, false, stopObserver);
+            }
 
-        stepResultList.addAll(
-                executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, savedValues)
-                        .stream()
-                        .peek(stepResult -> stepResult.setEditable(true))
-                        .collect(Collectors.toList()));
+            executeSteps(connection, stand, scenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, true, stopObserver);
 
-        // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
-        Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
-        if (afterScenario != null) {
-            stepResultList.addAll(
-                    executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, savedValues)
-                            .stream()
-                            .peek(stepResult -> stepResult.setEditable(false))
-                            .collect(Collectors.toList()));
+            // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
+            Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
+            if (afterScenario != null) {
+                executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, false, stopObserver);
+            }
+
+        } catch (ScenarioStopException e) {
+            // Stop scenario executing
+            e.printStackTrace();
         }
 
         httpHelper.closeHttpConnection();
-
-        return stepResultList;
     }
 
     private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
@@ -171,10 +166,9 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private List<StepResult> executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, String> savedValues) {
-        List<StepResult> stepResultList = new LinkedList<>();
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException {
         if (stepList == null) {
-            return null;
+            return;
         }
         for (Step step: stepList) {
             if (!step.getDisabled()) {
@@ -188,11 +182,12 @@ public class AtExecutor {
                 for (StepParameterSet stepParameterSet: parametersEnvironment) {
                     StepResult stepResult = new StepResult(step);
                     stepResult.setStart(new Date().getTime());
+                    stepResult.setEditable(stepEditable);
                     stepResultList.add(stepResult);
 
                     if (stepParameterSet.getStepParameterList() != null) {
                         stepParameterSet.getStepParameterList()
-                                .forEach(stepParameter -> savedValues.put(stepParameter.getName(), stepParameter.getValue()));
+                                .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
                     try (WireMockAdmin wireMockAdmin = stand != null && StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
@@ -201,7 +196,7 @@ public class AtExecutor {
                         }
                         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
                         stepResult.setTestId(testId);
-                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, savedValues, testId, project, step, stepResult);
+                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, scenarioVariables, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
@@ -216,159 +211,210 @@ public class AtExecutor {
                     } finally {
                         stepResult.setStop(new Date().getTime());
                     }
+
+                    if (stopObserver != null && stopObserver.stop()) {
+                        throw new ScenarioStopException();
+                    }
                 }
             }
         }
-        return stepResultList;
     }
 
-    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, String> savedValues, String testId, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
-        stepResult.setSavedParameters(savedValues.toString());
+        stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
-        executeSql(connection, step, savedValues);
-        stepResult.setSavedParameters(savedValues.toString());
+        executeSql(connection, step, scenarioVariables);
+        stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step, savedValues);
+        sendMessageToQuery(project, step, scenarioVariables);
 
         // 2. Подстановка сохраненных параметров в строку запроса
-        String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), savedValues);
+        String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), scenarioVariables);
         stepResult.setRequestUrl(requestUrl);
 
         // 2.1 Подстановка сохраненных параметров в тело запроса
-        String requestBody = insertSavedValues(step.getRequest(), savedValues);
+        String requestBody = insertSavedValues(step.getRequest(), scenarioVariables);
 
         // 2.2 Вычислить функции в теле запроса
         requestBody = evaluateExpressions(requestBody);
         stepResult.setRequestBody(requestBody);
 
         // 2.3 Подстановка переменных сценария в заголовки запроса
-        String requestHeaders = insertSavedValues(step.getRequestHeaders(), savedValues);
+        String requestHeaders = insertSavedValues(step.getRequestHeaders(), scenarioVariables);
 
-        int retryCounter = 0;
-        boolean retry = false;
-        ResponseHelper responseData;
-        do {
-            retryCounter++;
-            // 3. Выполнить запрос
-            if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
-                responseData = http.request(
-                        step.getRequestMethod(),
-                        requestUrl,
-                        requestBody,
-                        requestHeaders,
-                        project.getTestIdHeaderName(),
-                        testId);
-            } else {
-                if (step.getFormDataList() == null) {
-                    step.setFormDataList(Collections.emptyList());
+        // 2.4 Cyclic sending request, COM-84
+        int numberRepetitions;
+        try {
+            numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
+        } catch (NumberFormatException e) {
+            try {
+                numberRepetitions = Integer.parseInt(String.valueOf(scenarioVariables.get(step.getNumberRepetitions())));
+            } catch (NumberFormatException ex) {
+                numberRepetitions = 1;
+            }
+        }
+        numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
+
+        for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
+
+            // Polling
+            int retryCounter = 0;
+            boolean retry = false;
+
+            ResponseHelper responseData;
+            do {
+                retryCounter++;
+                // 3. Выполнить запрос
+                if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
+                    responseData = http.request(
+                            step.getRequestMethod(),
+                            requestUrl,
+                            requestBody,
+                            requestHeaders,
+                            project.getTestIdHeaderName(),
+                            testId);
+                } else {
+                    if (step.getFormDataList() == null) {
+                        step.setFormDataList(Collections.emptyList());
+                    }
+                    stepResult.setRequestBody(
+                            step.getFormDataList()
+                                    .stream()
+                                    .map(formData -> {
+                                        String result = formData.getFieldName() + " = ";
+                                        if (FieldType.TEXT.equals(formData.getFieldType()) || formData.getFieldType() == null) {
+                                            result += formData.getValue();
+                                        } else {
+                                            result += (projectPath == null ? "" : projectPath) + formData.getFilePath();
+                                        }
+                                        return result;
+                                    })
+                                    .collect(Collectors.joining("\r\n")));
+                    responseData = http.request(
+                            step.getRequestMethod(),
+                            projectPath,
+                            requestUrl,
+                            step.getMultipartFormData(),
+                            step.getFormDataList(),
+                            requestHeaders,
+                            project.getTestIdHeaderName(),
+                            testId);
                 }
-                stepResult.setRequestBody(
-                        step.getFormDataList()
-                                .stream()
-                                .map(formData -> {
-                                    String result = formData.getFieldName() + " = ";
-                                    if (FieldType.TEXT.equals(formData.getFieldType()) || formData.getFieldType() == null) {
-                                        result += formData.getValue();
-                                    } else {
-                                        result += (projectPath == null ? "" : projectPath) + formData.getFilePath();
-                                    }
-                                    return result;
-                                })
-                                .collect(Collectors.joining("\r\n")));
-                responseData = http.request(
-                        step.getRequestMethod(),
-                        projectPath,
-                        requestUrl,
-                        step.getMultipartFormData(),
-                        step.getFormDataList(),
-                        requestHeaders,
-                        project.getTestIdHeaderName(),
-                        testId);
+
+                // Выполнить скрипт
+                if (StringUtils.isNotEmpty(step.getScript())) {
+                    ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
+                    scriptEngine.put("stepStatus", new StepStatus());
+                    scriptEngine.put("scenarioVariables", scenarioVariables);
+                    scriptEngine.put("response", responseData);
+
+                    scriptEngine.eval(step.getScript());
+
+                    // Привести все переменные сценария к строковому типу
+                    scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
+
+                    StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
+                    if (StringUtils.isNotEmpty(stepStatus.getException())) {
+                        throw new Exception(stepStatus.getException());
+                    }
+                }
+
+                // 3.1. Polling
+                if (step.getUsePolling()) {
+                    retry = tryUsePolling(step, responseData);
+                }
+            } while (retry && retryCounter <= POLLING_RETRY_COUNT);
+
+            stepResult.setPollingRetryCount(retryCounter);
+            stepResult.setActual(responseData.getContent());
+            stepResult.setExpected(step.getExpectedResponse());
+
+            // 4. Сохранить полученные значения
+            saveValuesByJsonXPath(step, responseData, scenarioVariables);
+
+            stepResult.setSavedParameters(scenarioVariables.toString());
+
+            // 4.1 Проверить сохраненные значения
+            if (step.getSavedValuesCheck() != null) {
+                for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
+                    String valueExpected = entry.getValue() == null ? "" : entry.getValue();
+                    for (Map.Entry<String, Object> savedVal : scenarioVariables.entrySet()) {
+                        String key = String.format("%%%s%%", savedVal.getKey());
+                        valueExpected = valueExpected.replaceAll(key, String.valueOf(savedVal.getValue()));
+                    }
+                    String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
+                    if (!valueExpected.equals(valueActual)) {
+                        throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+                    }
+                }
             }
 
-            // Выполнить скрипт
-            if (StringUtils.isNotEmpty(step.getScript())) {
-                ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
-                scriptEngine.put("stepStatus", new StepStatus());
-                scriptEngine.put("scenarioVariables", savedValues);
-                scriptEngine.put("response", responseData);
+            // 5. Подставить сохраненые значения в ожидаемый результат
+            String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
+            // 5.1. Расчитать выражения <f></f>
+            expectedResponse = evaluateExpressions(expectedResponse);
+            stepResult.setExpected(expectedResponse);
 
-                scriptEngine.eval(step.getScript());
+            // 6. Проверить код статуса ответа
+            if ((step.getExpectedStatusCode() != null)
+                    && (step.getExpectedStatusCode() != responseData.getStatusCode())) {
+                throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
 
-                StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
-                if (StringUtils.isNotEmpty(stepStatus.getException())) {
-                    throw new Exception(stepStatus.getException());
-                }
             }
 
-            // 3.1. Polling
-            if (step.getUsePolling()) {
-                retry = tryUsePolling(step, responseData);
-            }
-        } while (retry && retryCounter <= POLLING_RETRY_COUNT);
-
-        stepResult.setPollingRetryCount(retryCounter);
-        stepResult.setActual(responseData.getContent());
-        stepResult.setExpected(step.getExpectedResponse());
-
-        // 4. Сохранить полученные значения
-        saveValuesByJsonXPath(step, responseData, savedValues);
-
-        stepResult.setSavedParameters(savedValues.toString());
-
-        // 4.1 Проверить сохраненные значения
-        if (step.getSavedValuesCheck() != null) {
-            for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
-                String valueExpected = entry.getValue() == null ? "" : entry.getValue();
-                for (Map.Entry<String, String> savedVal : savedValues.entrySet()) {
-                    String key = String.format("%%%s%%", savedVal.getKey());
-                    valueExpected = valueExpected.replaceAll(key, savedVal.getValue());
-                }
-                String valueActual = savedValues.get(entry.getKey());
-                if (!valueExpected.equals(valueActual)) {
-                    throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+            if (!step.getExpectedResponseIgnore()) {
+                if (step.getResponseCompareMode() == null) {
+                    JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
+                } else {
+                    switch (step.getResponseCompareMode()) {
+                        case FULL_MATCH:
+                            if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
+                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                            }
+                            break;
+                        case IGNORE_MASK:
+                            if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
+                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                            }
+                            break;
+                        default:
+                            JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
+                            break;
+                    }
                 }
             }
         }
 
-        // 5. Подставить сохраненые значения в ожидаемый результат
-        String expectedResponse = insertSavedValues(step.getExpectedResponse(), savedValues);
-        // 5.1. Расчитать выражения <f></f>
-        expectedResponse = evaluateExpressions(expectedResponse);
-        stepResult.setExpected(expectedResponse);
+        // 7. Прочитать, что тестируемый сервис отправлял в заглушку.
+        parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
+    }
 
-        // 6. Проверить код статуса ответа
-        if ((step.getExpectedStatusCode() != null)
-                && (step.getExpectedStatusCode() != responseData.getStatusCode())) {
-            throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
+    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException {
+        if (step.getParseMockRequestUrl() != null) {
+            MockRequest mockRequest = new MockRequest();
+            mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
+                put("equalTo", testId);
+            }});
+            mockRequest.setUrl(step.getParseMockRequestUrl());
+            RequestList list = wireMockAdmin.findRequests(mockRequest);
+            if (list.getRequests() != null && !list.getRequests().isEmpty()) {
 
-        }
+                // Parse request
+                WireMockRequest request = list.getRequests().get(0);
 
-        if (!step.getExpectedResponseIgnore()) {
-            if (step.getResponseCompareMode() == null) {
-                JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-            } else {
-                switch (step.getResponseCompareMode()) {
-                    case FULL_MATCH:
-                        if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
-                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                        }
-                        break;
-                    case IGNORE_MASK:
-                        if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
-                            throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                        }
-                        break;
-                    default:
-                        JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-                        break;
-                }
+
+                String valueFromMock = (String) JXPathContext.newContext("").
+                        getValue("locations[address/zipCode='90210']/address", String.class);
+
+                // valueFromMock = xpath.evaluate(step.getParseMockRequestXPath(), new InputSource(new StringReader(request.getBody())));
+
+                scenarioVariables.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
             }
         }
     }
@@ -388,7 +434,7 @@ public class AtExecutor {
         }
     }
 
-    private void sendMessageToQuery(Project project, Step step, Map<String, String> savedValues) throws Exception {
+    private void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables) throws Exception {
         if (step.getMqName() != null && step.getMqMessage() != null) {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
@@ -400,12 +446,12 @@ public class AtExecutor {
             mqManager.setUsername(project.getAmqpBroker().getUsername());
             mqManager.setPassword(project.getAmqpBroker().getPassword());
 
-            String message = insertSavedValues(step.getMqMessage(), savedValues);
+            String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
             mqManager.sendTextMessage(step.getMqName(), message);
         }
     }
 
-    private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, String> savedValues) {
+    private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, Object> scenarioVariables) {
         if (StringUtils.isNotEmpty(responseData.getContent())) {
             if (StringUtils.isNotEmpty(step.getJsonXPath())) {
 
@@ -416,7 +462,7 @@ public class AtExecutor {
                     String jsonXPath = lineParts[1];
 
                     // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
-                    savedValues.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
+                    scenarioVariables.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
                 }
             }
         }
@@ -455,12 +501,12 @@ public class AtExecutor {
         return retry;
     }
 
-    private void executeSql(Connection connection, Step step, Map<String, String> savedValues) throws SQLException {
+    private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException {
         if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
             try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
-                // Вставить в запрос параметры из savedValues, если они есть.
-                for (Map.Entry<String, String> savedValue : savedValues.entrySet()) {
-                    statement.setString(savedValue.getKey(), savedValue.getValue());
+                // Вставить в запрос параметры из scenarioVariables, если они есть.
+                for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
+                    statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     int columnCount = rs.getMetaData().getColumnCount();
@@ -479,27 +525,27 @@ public class AtExecutor {
                         }
                         resultData.add(resultColumnData);
                     }
-                    savedValues.put(step.getSqlSavedParameter(), resultData);
+                    scenarioVariables.put(step.getSqlSavedParameter(), resultData);
                 }
             }
         }
     }
 
-    private String insertSavedValues(String template, Map<String, String> savedValues) {
+    private String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
         if (template != null) {
-            for (Map.Entry<String, String> value : savedValues.entrySet()) {
+            for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : value.getValue()));
+                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : String.valueOf(value.getValue())));
             }
         }
         return template;
     }
 
-    private String insertSavedValuesToURL(String template, Map<String, String> savedValues) throws UnsupportedEncodingException {
+    private String insertSavedValuesToURL(String template, Map<String, Object> scenarioVariables) throws UnsupportedEncodingException {
         if (template != null) {
-            for (Map.Entry<String, String> value : savedValues.entrySet()) {
+            for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : value.getValue(), "UTF-8")));
+                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : String.valueOf(value.getValue()), "UTF-8")));
             }
         }
         return template;
