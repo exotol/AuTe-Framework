@@ -1,7 +1,8 @@
 <div class="form-group" >
   <div class="col-sm-1">
     <span class="glyphicon glyphicon-ok-circle" style="color: green;" *ngIf="stepResult.result == 'OK'"></span>
-    <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result != 'OK'"></span>
+    <span class="glyphicon glyphicon-time" style="color: orange;" *ngIf="stepResult.result != 'OK' && stepResult.result != 'Fail'"></span>
+    <span class="glyphicon glyphicon-remove-circle" style="color: red;" *ngIf="stepResult.result == 'Fail'"></span>
     {{stepResult.result}}
   </div>
   <div class="col-sm-11">{{stepResult.step.stepComment}} {{stepResult.description}}</div>
@@ -10,23 +11,23 @@
     {{stepResult.step.requestMethod}}
     {{stepResult.requestUrl}}
   </div>
-  <div class="clearfix"></div>
   <div class="col-sm-11 col-sm-offset-1">
+    <a href="#" style="text-decoration: none; border-bottom: 1px dashed;" (click)="displayDetails = !displayDetails; false;">{{'Details' | translate}} <span class="glyphicon" [class.glyphicon-chevron-right]="!displayDetails" [class.glyphicon-chevron-down]="displayDetails"></span></a>
+  </div>
+  <div class="clearfix"></div>
+  <div class="col-sm-11 col-sm-offset-1" *ngIf="displayDetails">
     <ul class="nav nav-tabs">
-      <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">{{'Summary' | translate}}</a></li>
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
       <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Edit step' | translate}}</a></li>
       <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
     </ul>
     <div class="tab-content" style="padding: 10px;">
-      <div class="help-block" *ngIf="tab == 'summary' || tab == 'all'">
-        Test id: {{stepResult.testId}}
-      </div>
       <div *ngIf="tab == 'details' || tab == 'all'">
         <div class="row">
           <div class="col-sm-12" style="color: gray;">
             <div *ngIf="stepResult.pollingRetryCount > 1">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>
-            {{'Saved parameters' | translate}}: {{stepResult.savedParameters}}
+            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>
+            Test id: {{stepResult.testId}}
           </div>
           <div class="clearfix"></div>
           <div class="col-sm-12">

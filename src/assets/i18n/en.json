@@ -60,7 +60,7 @@
   "Summary": "Summary",
   "Edit step": "Edit step",
   "Polling retry count": "Polling retry count",
-  "Saved parameters": "Saved parameters",
+  "Scenario variables": "Scenario variables",
   "Request body": "Request body",
   "Save step": "Save step",
   "Case description": "Case description",
@@ -75,7 +75,6 @@
   "Disabled": "Disabled",
   "Clone": "Clone",
   "Disabled toggle": "Disabled toggle",
-  "Saved values": "Saved values",
   "Headers": "Headers",
   "Mock responses": "Mock responses",
   "Expected mock requests": "Expected mock requests",
@@ -108,7 +107,7 @@
   "Queue message": "Queue message",
   "Use polling": "Use polling",
   "Waiting for json element exists. Example": "Waiting for json element exists. Example",
-  "Check saved values": "Check saved values",
+  "Check scenario variables": "Check scenario variables",
   "Checked value": "Checked value",
   "Add": "Add",
   "Actual": "Actual",
@@ -121,5 +120,9 @@
   "Port": "Port",
   "Search by method name": "Search by method name",
   "Nothing found": "Nothing found",
-  "Script": "Script"
+  "Script": "Script",
+  "Results": "Results",
+  "Starting": "Starting",
+  "Stop": "Stop",
+  "Get report on selected scenarios": "Get report on selected scenarios"
 }

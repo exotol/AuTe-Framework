@@ -29,6 +29,7 @@ import { SearchComponent } from './search-scenario/search-scenario.component';
 import {SearchScenarioService} from './service/search-scenario.service';
 import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
 import {TextSelectDirective} from './shared/directives/text-select.directive';
+import { HelpComponent } from './help/help.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http);
@@ -36,6 +37,7 @@ export function HttpLoaderFactory(http: Http) {
 
 const routes: Routes = [
   { path: '', component: ProjectListComponent },
+  { path: 'help', component: HelpComponent },
   { path: 'project/:projectCode', component: ProjectDetailComponent },
   { path: 'project/:projectCode/settings', component: ProjectSettingsComponent },
   { path: 'project/:projectCode/scenario/:scenarioCode/settings', component: ScenarioSettingsComponent },
@@ -61,7 +63,8 @@ const routes: Routes = [
     DiffComponent,
     SyncScrollDirective,
     SearchComponent,
-    TextSelectDirective
+    TextSelectDirective,
+    HelpComponent
   ],
   imports: [
     BrowserModule,

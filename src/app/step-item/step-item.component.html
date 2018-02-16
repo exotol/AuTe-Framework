@@ -36,8 +36,8 @@
       <ul class="nav nav-tabs">
         <li [class.active]="tab == 'summary'"><a href="#" (click)="selectTab('summary')">{{'Summary' | translate}}</a></li>
         <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
-        <li [class.active]="tab == 'savedValues'">
-          <a href="#" (click)="selectTab('savedValues')">{{'Saved values' | translate}} <span *ngIf="step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)" class="glyphicon glyphicon-tag"></span></a>
+        <li [class.active]="tab == 'scenarioVariables'">
+          <a href="#" (click)="selectTab('scenarioVariables')">{{'Scenario variables' | translate}} <span *ngIf="step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'headers'">
           <a href="#" (click)="selectTab('headers')">{{'Headers' | translate}} <span *ngIf="step.requestHeaders" class="glyphicon glyphicon-tag"></span></a>
@@ -63,6 +63,9 @@
         <li [class.active]="tab == 'script'">
           <a href="#" (click)="selectTab('script')">{{'Script' | translate}} <span *ngIf="step.script" class="glyphicon glyphicon-tag"></span></a>
         </li>
+        <li [class.active]="tab == 'parse-mock-requests'">
+          <a href="#" (click)="selectTab('parse-mock-requests')">{{'Parse mock requests' | translate}} <span *ngIf="step.parseMockRequestUrl" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
@@ -78,7 +81,7 @@
           <label>{{'Script' | translate}}:</label>
           <textarea placeholder="" rows="6" title="{{'Script' | translate}}" class="form-control" [(ngModel)]="step.script"></textarea>
           <div class="help-block">
-            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.</pre>
+            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>
           </div>
         </div>
         <div class="row" *ngIf="tab == 'details' || tab == 'all'">
@@ -91,7 +94,11 @@
                   <option [ngValue]="'FORM'">{{'FORM-data request body' | translate}}</option>
                 </select>
               </div>
-              <div class="col-sm-6" style="text-align: center; padding-top: 10px;">
+              <div class="col-sm-3">
+                <label>{{'Number of repetitions' | translate}}</label>
+                <input title="" placeholder="N or variable" class="form-control" [(ngModel)]="step.numberRepetitions"/>
+              </div>
+              <div class="col-sm-3" style="text-align: center; padding-top: 10px;">
                 <label>
                   <input title="" type="checkbox" [(ngModel)]="step.expectedResponseIgnore"><br/>
                   {{'Ignore response' | translate}}
@@ -152,14 +159,14 @@
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
         </div>
-        <div *ngIf="tab == 'savedValues' || tab == 'all'">
+        <div *ngIf="tab == 'scenarioVariables' || tab == 'all'">
           <div class="row">
             <div class="col-sm-6">
               <label>{{'Expected response' | translate}}</label>
               <textarea title="{{'Expected response' | translate}}" class="form-control" rows="13" [(ngModel)]="step.expectedResponse"></textarea>
             </div>
             <div class="col-sm-6">
-              <label>{{'Saved values' | translate}} (JSON XPath):</label>
+              <label>{{'Scenario variables' | translate}} (JSON XPath):</label>
               <textarea placeholder="parameterName = $.element.items[2].title" rows="13" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.jsonXPath"></textarea>
             </div>
           </div>
@@ -235,11 +242,27 @@
           <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
         </div>
         <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
-        <div *ngIf="tab == 'savedValues' || tab == 'sql' || tab == 'all'">
+        <div *ngIf="tab == 'parse-mock-requests'">
+          <div class="row">
+            <div class="col-sm-12">
+              <label>{{'Mock URL' | translate}}</label>
+              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'XML XPath' | translate}}</label>
+              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'Scenario variable name' | translate}}</label>
+              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="tab == 'scenarioVariables' || tab == 'sql' || tab == 'all'">
           <div class="row">
             <div class="col-sm-12">
               <hr/>
-              <label>{{'Check saved values' | translate}}</label>
+              <label>{{'Check scenario variables' | translate}}</label>
             </div>
           </div>
           <div class="row" *ngFor="let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])">
