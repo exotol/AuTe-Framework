@@ -4,7 +4,7 @@ package ru.bsc.test.autotester.ro;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class StandRo extends AbstractRo {
+public class StandRo implements AbstractRo {
 
     private static final long serialVersionUID = 4390819697062478918L;
 

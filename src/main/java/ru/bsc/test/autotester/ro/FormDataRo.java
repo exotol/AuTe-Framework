@@ -1,6 +1,6 @@
 package ru.bsc.test.autotester.ro;
 
-public class FormDataRo extends AbstractRo {
+public class FormDataRo implements AbstractRo {
 
     private static final long serialVersionUID = -7730693222002977456L;
 

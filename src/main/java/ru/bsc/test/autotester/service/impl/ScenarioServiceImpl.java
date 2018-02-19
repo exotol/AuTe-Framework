@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
@@ -16,19 +17,34 @@ import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
+import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
+import ru.bsc.test.autotester.report.AbstractReportGenerator;
+import ru.bsc.test.autotester.report.AllureReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
+import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
 import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
+import ru.bsc.test.autotester.utils.ZipUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by sdoroshin on 21.03.2017.
@@ -37,10 +53,10 @@ import java.util.Objects;
 @Service
 public class ScenarioServiceImpl implements ScenarioService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ScenarioServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioServiceImpl.class);
 
     private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
+    private final ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
     private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
 
     private final ScenarioRepository scenarioRepository;
@@ -54,29 +70,94 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.environmentProperties = environmentProperties;
     }
 
+    private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
+    private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+
     @Override
-    public Map<Scenario, List<StepResult>> executeScenarioList(Project project, List<Scenario> scenarioList) {
+    public StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList) {
+        StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
-        Map<Scenario, List<StepResult>> map = atExecutor.executeScenarioList(project, scenarioList);
-        synchronized (projectService) {
-            map.forEach((scenario, stepResults) -> {
+        ExecutionResult executionResult = new ExecutionResult();Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
+        executionResult.setScenarioStepResultListMap(resultMap);
+        final String runningUuid = UUID.randomUUID().toString();
+        startScenarioInfoRo.setRunningUuid(runningUuid);
+        runningScriptsMap.put(runningUuid, executionResult);
+
+        new Thread(() -> atExecutor.executeScenarioList(project, scenarioList,
+        resultMap,
+                () -> {
+                    boolean stop = stopExecutingSet.contains(runningUuid);
+                    if (stop) {
+                        stopExecutingSet.remove(runningUuid);
+                    }
+                    return stop;
+                },
+                scenarioResultListMap -> {
+                    executionResult.setFinished(true);synchronized (projectService) {
+            scenarioResultListMap.forEach((scenario, stepResults) -> {
                 String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
                 try {
                     Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
                     scenarioToUpdate.setFailed(
                             stepResults
                                     .stream()
-                                    .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
-                                    .count() > 0
+                                    .anyMatch(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+
                     );
                     scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
                 } catch (IOException e) {
-                    LOGGER.error("", e);
+                    logger.error("", e);
                 }
-            });
+            });}
+                })).start();
+        return startScenarioInfoRo;
+    }
+
+    @Override
+    public void stopExecuting(String executingUuid) {
+        stopExecutingSet.add(executingUuid);
+    }
+
+    @Override
+    public List<String> getExecutingList() {
+        return new LinkedList<>(runningScriptsMap.keySet());
+    }
+
+    @Override
+    public ExecutionResult getResult(String executingUuid) {
+        return runningScriptsMap.get(executingUuid);
+    }
+
+    @Override
+    public void getReport(String executingUuid, ZipOutputStream outputStream) throws Exception {
+        getReportList(Collections.singletonList(executingUuid), outputStream);
+    }
+
+    @Override
+    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
+        AbstractReportGenerator reportGenerator = new AllureReportGenerator();
+        int[] reportCounter = { 0 };
+        runningScriptsMap.forEach((s, executionResult) -> {
+            if (executionUuidList.contains(s)) {
+                executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);
+                reportCounter[0]++;
+            }
+        });
+        if (reportCounter[0] == 0) {
+            throw new ResourceNotFoundException();
         }
-        return map;
+
+        String tmpRandom = UUID.randomUUID().toString();
+        File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
+        if (tmpDirectory.mkdirs()) {
+            reportGenerator.generate(tmpDirectory);
+
+            FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
+            ZipUtils.pack(tmpDirectory, zipOutputStream);
+        } else {
+            throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
+        }
     }
 
     @Override
@@ -169,7 +250,6 @@ public class ScenarioServiceImpl implements ScenarioService {
                     .orElse(null);
             stepRoMapper.updateStep(stepRo, existsStep);
             scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
-            // existsStep = scenarioRepository.saveStep(projectCode, scenarioPath, stepCode, existsStep);
             return stepRoMapper.stepToStepRo(existsStep);
         }
     }

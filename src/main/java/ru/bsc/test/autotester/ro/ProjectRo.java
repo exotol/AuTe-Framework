@@ -6,7 +6,7 @@ import java.util.List;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class ProjectRo extends AbstractRo {
+public class ProjectRo implements AbstractRo {
 
     private static final long serialVersionUID = 3953325934454830833L;
 

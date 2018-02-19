@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by sdoroshin on 14.09.2017.
  *
  */
-public class StepRo extends AbstractRo {
+public class StepRo implements AbstractRo {
 
     private static final long serialVersionUID = -4795596079038167133L;
 
@@ -41,6 +41,10 @@ public class StepRo extends AbstractRo {
     private Boolean multipartFormData;
     private String jsonCompareMode;
     private String script;
+    private String numberRepetitions;
+    private String parseMockRequestUrl;
+    private String parseMockRequestXPath;
+    private String parseMockRequestScenarioVariable;
 
     public String getCode() {
         return code;
@@ -280,5 +284,37 @@ public class StepRo extends AbstractRo {
 
     public void setScript(String script) {
         this.script = script;
+    }
+
+    public String getNumberRepetitions() {
+        return numberRepetitions;
+    }
+
+    public void setNumberRepetitions(String numberRepetitions) {
+        this.numberRepetitions = numberRepetitions;
+    }
+
+    public String getParseMockRequestUrl() {
+        return parseMockRequestUrl;
+    }
+
+    public void setParseMockRequestUrl(String parseMockRequestUrl) {
+        this.parseMockRequestUrl = parseMockRequestUrl;
+    }
+
+    public String getParseMockRequestXPath() {
+        return parseMockRequestXPath;
+    }
+
+    public void setParseMockRequestXPath(String parseMockRequestXPath) {
+        this.parseMockRequestXPath = parseMockRequestXPath;
+    }
+
+    public String getParseMockRequestScenarioVariable() {
+        return parseMockRequestScenarioVariable;
+    }
+
+    public void setParseMockRequestScenarioVariable(String parseMockRequestScenarioVariable) {
+        this.parseMockRequestScenarioVariable = parseMockRequestScenarioVariable;
     }
 }
