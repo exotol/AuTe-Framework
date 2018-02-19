@@ -355,6 +355,7 @@ public class AtExecutor {
             saveValuesByJsonXPath(step, responseData, scenarioVariables);
 
             stepResult.setSavedParameters(scenarioVariables.toString());
+            stepResult.setCookies(http.getCookies().stream().map(cookie -> cookie.getName() + ": " + cookie.getValue()).collect(Collectors.joining(", ")));
 
             // 4.1 Проверить сохраненные значения
             if (step.getSavedValuesCheck() != null) {

@@ -22,6 +22,7 @@ public class StepResult {
     private boolean editable;
     private long start;
     private long stop;
+    private String cookies;
 
     public StepResult(Step step) {
         this.step = step;
@@ -137,5 +138,13 @@ public class StepResult {
 
     public void setStop(long stop) {
         this.stop = stop;
+    }
+
+    public void setCookies(String cookies) {
+        this.cookies = cookies;
+    }
+
+    public String getCookies() {
+        return cookies;
     }
 }
