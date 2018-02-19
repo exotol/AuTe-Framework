@@ -253,7 +253,7 @@ public class AtExecutor {
         String requestBody = insertSavedValues(step.getRequest(), scenarioVariables);
 
         // 2.2 Вычислить функции в теле запроса
-        requestBody = evaluateExpressions(requestBody);
+        requestBody = evaluateExpressions(requestBody, scenarioVariables, null);
         stepResult.setRequestBody(requestBody);
 
         // 2.3 Подстановка переменных сценария в заголовки запроса
@@ -369,7 +369,7 @@ public class AtExecutor {
             // 5. Подставить сохраненые значения в ожидаемый результат
             String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
             // 5.1. Расчитать выражения <f></f>
-            expectedResponse = evaluateExpressions(expectedResponse);
+            expectedResponse = evaluateExpressions(expectedResponse, scenarioVariables, responseData);
             stepResult.setExpected(expectedResponse);
 
             // 6. Проверить код статуса ответа
@@ -519,20 +519,22 @@ public class AtExecutor {
                 }
                 try (ResultSet rs = statement.executeQuery()) {
                     int columnCount = rs.getMetaData().getColumnCount();
-                    if (rs.next()) {
-                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
-                        int i = 1;
-                        for (String parameterName: sqlSavedParameterList) {
-                            if (parameterName.trim().isEmpty()) {
-                                continue;
-                            }
-                            if (i > columnCount) {
-                                break;
-                            }
-                            scenarioVariables.put(parameterName.trim(), rs.getString(i));
-                            i++;
-                        }
+                    List<String> columnNameList = new LinkedList<>();
+                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                        columnNameList.add(rs.getMetaData().getColumnName(i));
                     }
+
+                    List<Map<String, Object>> resultData = new LinkedList<>();
+                    String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
+                    while (rs.next()) {
+                        Map<String, Object> resultColumnData = new HashMap<>();
+
+                        for (String columnName: columnNameList) {
+                            resultColumnData.put(columnName, rs.getObject(columnName));
+                        }
+                        resultData.add(resultColumnData);
+                    }
+                    scenarioVariables.put(step.getSqlSavedParameter(), resultData);
                 }
             }
         }
@@ -558,15 +560,18 @@ public class AtExecutor {
         return template;
     }
 
-    private String evaluateExpressions(String template) throws ScriptException {
+    private String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
         if (template != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
             Matcher m = p.matcher(template);
             while (m.find()) {
                 ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("js");
-                Object result = engine.eval(m.group(1));
-                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
+                ScriptEngine scriptEngine = manager.getEngineByName("js");
+                scriptEngine.put("scenarioVariables", scenarioVariables);
+                scriptEngine.put("response", responseData);
+                Object result = scriptEngine.eval(m.group(1));
+
+                template = template.replaceFirst("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
             }
         }
         return template;
