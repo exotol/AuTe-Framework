@@ -35,4 +35,5 @@ export class Step {
   parseMockRequestUrl: String;
   parseMockRequestXPath: String;
   parseMockRequestScenarioVariable: String;
+  timeoutMs: number;
 }

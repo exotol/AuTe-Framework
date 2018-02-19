@@ -1,7 +1,10 @@
 <div class="container-fluid" style="padding-bottom: 30px;">
   <div class="row">
-    <div class="col-sm-11">
+    <div class="col-sm-10">
       <input style="font-weight: bold; border-width: 0; box-shadow: none;" placeholder="{{'Step description' | translate}}" class="form-control" title="" [(ngModel)]="step.stepComment" />
+    </div>
+    <div class="col-sm-1">
+      <input style="padding: 6px 1px;" placeholder="{{'Timeout (ms)' | translate}}" class="form-control" title="" [(ngModel)]="step.timeoutMs" />
     </div>
     <div class="col-sm-1 text-right" *ngIf="showUpDownDeleteCloneButtons">
       <button class="btn btn-xs btn-block btn-default" (click)="upStep()"><span class="glyphicon glyphicon-hand-up"></span> {{'Up' | translate}}</button>
