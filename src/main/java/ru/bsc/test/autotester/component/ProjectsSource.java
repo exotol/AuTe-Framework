@@ -325,11 +325,11 @@ public class ProjectsSource {
         });
     }
 
-    public void saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
+    public void saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException {
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
         } else {
-            if (!scenario.getCode().equals(translit(scenario.getName()))) {
+            if (updateDirectoryName && !scenario.getCode().equals(translit(scenario.getName()))) {
                 File existsScenarioDirectory = new File(environmentProperties.getProjectsDirectoryPath() + File.separatorChar + projectCode + File.separatorChar + "scenarios" + File.separatorChar + scenarioPath + File.separatorChar);
                 scenario.setCode(null);
                 scenarioPath = scenarioPath(scenario);

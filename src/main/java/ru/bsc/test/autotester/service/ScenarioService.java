@@ -34,8 +34,6 @@ public interface ScenarioService {
 
     List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);
 
-    void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException;
-
     StepRo updateStepFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) throws IOException;
 
     List<Scenario> findAllByProject(String projectCode);

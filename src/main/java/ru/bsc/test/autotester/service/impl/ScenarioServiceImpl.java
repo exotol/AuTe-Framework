@@ -70,7 +70,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                                     .filter(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
                                     .count() > 0
                     );
-                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
+                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
                 } catch (IOException e) {
                     LOGGER.error("", e);
                 }
@@ -86,7 +86,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             if (scenario != null) {
                 Step newStep = stepRoMapper.convertStepRoToStep(stepRo);
                 scenario.getStepList().add(newStep);
-                scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+                scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
                 return stepRoMapper.stepToStepRo(newStep);
             }
             return null;
@@ -106,7 +106,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
             if (scenario != null) {
                 scenario = scenarioRoMapper.updateScenario(scenarioRo, scenario);
-                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, true);
                 return projectRoMapper.scenarioToScenarioRo(projectCode, scenario);
             }
             return null;
@@ -143,7 +143,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             Scenario scenario = findOne(projectCode, scenarioPath);
             if (scenario != null) {
                 stepRoMapper.updateScenarioStepList(stepRoList, scenario);
-                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
                 return stepRoMapper.convertStepListToStepRoList(scenario.getStepList());
             }
             throw new ResourceNotFoundException();
@@ -160,11 +160,6 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public void save(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
-        scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
-    }
-
-    @Override
     public StepRo updateStepFromRo(String projectCode, String scenarioPath, String stepCode, StepRo stepRo) throws IOException {
         synchronized (projectService) {
             Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
@@ -173,7 +168,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                     .findAny()
                     .orElse(null);
             stepRoMapper.updateStep(stepRo, existsStep);
-            scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
+            scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
             // existsStep = scenarioRepository.saveStep(projectCode, scenarioPath, stepCode, existsStep);
             return stepRoMapper.stepToStepRo(existsStep);
         }
@@ -189,7 +184,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException {
         synchronized (this) {
             Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
-            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario);
+            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario, false);
             return projectRoMapper.scenarioToScenarioRo(projectCode, newScenario);
         }
     }
