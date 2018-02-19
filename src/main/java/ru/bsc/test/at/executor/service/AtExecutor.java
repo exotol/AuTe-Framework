@@ -145,7 +145,7 @@ public class AtExecutor {
                 executeSteps(connection, stand, afterScenario.getStepList(), project, httpHelper, scenarioVariables, stepResultList, false, stopObserver);
             }
 
-        } catch (ScenarioStopException e) {
+        } catch (ScenarioStopException | InterruptedException e) {
             // Stop scenario executing
             e.printStackTrace();
         }
@@ -177,7 +177,7 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException {
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
         if (stepList == null) {
             return;
         }
@@ -195,6 +195,11 @@ public class AtExecutor {
                     stepResult.setStart(new Date().getTime());
                     stepResult.setEditable(stepEditable);
                     stepResultList.add(stepResult);
+
+                    // COM-123 Timeout
+                    if (step.getTimeoutMs() != null && step.getTimeoutMs() > 0) {
+                        Thread.sleep(step.getTimeoutMs());
+                    }
 
                     if (stepParameterSet.getStepParameterList() != null) {
                         stepParameterSet.getStepParameterList()

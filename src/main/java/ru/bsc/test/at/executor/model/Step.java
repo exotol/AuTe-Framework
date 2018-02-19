@@ -47,6 +47,7 @@ public class Step implements Serializable, AbstractModel {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
+    private Long timeoutMs;
 
     public String getCode() {
         return code;
@@ -456,5 +457,13 @@ public class Step implements Serializable, AbstractModel {
 
     public void setParseMockRequestScenarioVariable(String parseMockRequestScenarioVariable) {
         this.parseMockRequestScenarioVariable = parseMockRequestScenarioVariable;
+    }
+
+    public Long getTimeoutMs() {
+        return timeoutMs;
+    }
+
+    public void setTimeoutMs(Long timeoutMs) {
+        this.timeoutMs = timeoutMs;
     }
 }
