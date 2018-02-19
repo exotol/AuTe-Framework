@@ -571,7 +571,7 @@ public class AtExecutor {
                 scriptEngine.put("response", responseData);
                 Object result = scriptEngine.eval(m.group(1));
 
-                template = template.replaceFirst("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
+                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
             }
         }
         return template;
