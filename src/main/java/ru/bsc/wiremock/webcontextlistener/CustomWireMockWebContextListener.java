@@ -38,7 +38,7 @@ public class CustomWireMockWebContextListener extends WireMockWebContextListener
 
         Properties properties = new Properties();
         String wireMockMappingPath = "";
-        try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES)) {
+        try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
             properties.load(stream);
             wireMockMappingPath = properties.getProperty("wiremock.mapping.path");
         } catch (IOException e) {
