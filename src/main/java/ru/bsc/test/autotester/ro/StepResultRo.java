@@ -17,6 +17,7 @@ public class StepResultRo {
     private String savedParameters;
     private String description;
     private boolean editable;
+    private String cookies;
 
     public String getTestId() {
         return testId;
@@ -112,5 +113,13 @@ public class StepResultRo {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public String getCookies() {
+        return cookies;
+    }
+
+    public void setCookies(String cookies) {
+        this.cookies = cookies;
     }
 }
