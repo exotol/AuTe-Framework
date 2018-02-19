@@ -66,6 +66,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "parseMockRequestUrl", source = "parseMockRequestUrl"),
             @Mapping(target = "parseMockRequestXPath", source = "parseMockRequestXPath"),
             @Mapping(target = "parseMockRequestScenarioVariable", source = "parseMockRequestScenarioVariable"),
+            @Mapping(target = "timeoutMs", source = "timeoutMs"),
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 

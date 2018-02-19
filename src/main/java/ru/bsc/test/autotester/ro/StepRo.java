@@ -45,6 +45,7 @@ public class StepRo implements AbstractRo {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
+    private Long timeoutMs;
 
     public String getCode() {
         return code;
@@ -316,5 +317,13 @@ public class StepRo implements AbstractRo {
 
     public void setParseMockRequestScenarioVariable(String parseMockRequestScenarioVariable) {
         this.parseMockRequestScenarioVariable = parseMockRequestScenarioVariable;
+    }
+
+    public Long getTimeoutMs() {
+        return timeoutMs;
+    }
+
+    public void setTimeoutMs(Long timeoutMs) {
+        this.timeoutMs = timeoutMs;
     }
 }
