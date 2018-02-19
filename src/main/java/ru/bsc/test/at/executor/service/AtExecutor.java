@@ -198,7 +198,7 @@ public class AtExecutor {
 
                     // COM-123 Timeout
                     if (step.getTimeoutMs() != null && step.getTimeoutMs() > 0) {
-                        Thread.sleep(step.getTimeoutMs());
+                        Thread.sleep(Math.min(step.getTimeoutMs(), 60*1000));
                     }
 
                     if (stepParameterSet.getStepParameterList() != null) {
