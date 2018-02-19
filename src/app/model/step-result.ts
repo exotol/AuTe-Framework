@@ -14,4 +14,5 @@ export class StepResult {
   savedParameters: string;
   description: string;
   editable: boolean;
+  cookies: String;
 }
