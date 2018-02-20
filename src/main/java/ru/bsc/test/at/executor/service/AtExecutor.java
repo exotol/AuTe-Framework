@@ -517,9 +517,9 @@ public class AtExecutor {
         return retry;
     }
 
-    private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException {
+    private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
         if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
-            try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
+            try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(step.getSql(), scenarioVariables, null)) ) {
                 // Вставить в запрос параметры из scenarioVariables, если они есть.
                 for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
                     statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
