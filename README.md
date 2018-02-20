@@ -10,7 +10,17 @@
 
 ## Настройка ##
 
-velocity.properties
+В файле настроек Томката conf/catalina.properties необходимо указать в параметре shared.loader путь к директории с файлом настроек WireMock - velocity.properties.
+
+Пример:
+
+```
+...
+shared.loader=c:/projects/RC/conf/
+...
+```
+
+Файл velocity.properties необходимо расположить в указанной выше директории (shared.loader). Содержимое файла:
 
 ```
 userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective,ru.bsc.wiremock.velocity.directive.GroovyDirective
