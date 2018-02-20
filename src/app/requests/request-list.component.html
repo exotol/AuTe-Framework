@@ -28,7 +28,7 @@
         <td>{{request.request.method}}</td>
         <td>{{request.request.absoluteUrl}}</td>
         <td>{{request.response.status}}</td>
-        <td>{{request.request.headers['testidheader'] ? 'AT' : ''}}</td>
+        <td>{{request.request.headers.hasOwnProperty('testidheader') ? 'AT' : ''}}</td>
       </tr>
     </tbody>
   </table>

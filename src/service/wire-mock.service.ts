@@ -6,25 +6,17 @@ import {Mapping} from '../model/mapping';
 import {Observable} from 'rxjs/Observable';
 import {RequestList} from '../model/request-list';
 import 'rxjs/add/operator/map';
-import {Properties} from '../model/properties';
 
 @Injectable()
 export class WireMockService {
 
   // URL to WireMock
-  public serviceUrl: string;
+  public serviceUrl: string = window['serviceUrl'];
   // public serviceUrl = 'http://localhost:7770';
-  public adminUrl: string;
+  public adminUrl: string = window['serviceUrl'] + '/__admin';
   private headers = new Headers({'Content-Type': 'text/plain'});
 
-  constructor(private http: Http) {
-    this.http.get('./assets/properties.json')
-      .map(value => value.json() as Properties)
-      .subscribe(properties => {
-        this.serviceUrl = properties.serviceUrl;
-        this.adminUrl = this.serviceUrl + '/__admin';
-      });
-  }
+  constructor(private http: Http) { }
 
   getMappingList(): Promise<Mapping[]> {
     return this.http
