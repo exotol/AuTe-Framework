@@ -2,6 +2,7 @@ package ru.bsc.test.at.executor.helper;
 
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class ServiceRequestsComparatorHelper {
 
-    private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws Exception {
+    private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
         Diff diff = DiffBuilder.compare(expectedRequest)
                 .withTest(actualRequest)
                 .checkForIdentical()
@@ -33,7 +34,7 @@ public class ServiceRequestsComparatorHelper {
                 .build();
 
         if (diff.hasDifferences()) {
-            throw new Exception("Service request error (request differences):\n" + diff.toString() + "\n ====== Expected ===== \n" + expectedRequest + "\n ====== Actual ===== \n" + actualRequest);
+            throw new ComparisonException(diff, expectedRequest, actualRequest);
         }
     }
 
@@ -55,7 +56,11 @@ public class ServiceRequestsComparatorHelper {
         // compare request size
         if (expectedRequestList.size() != actualRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
-            throw new Exception("Invalid number of service requests: expected: " + expectedRequestList.size() + ", actual: " + actualRequestList.size());
+            throw new Exception(String.format(
+                    "Invalid number of service requests: expected: %d, actual: %d",
+                    expectedRequestList.size(),
+                    actualRequestList.size()
+            ));
         }
 
         for (ExpectedServiceRequest expectedRequest: expectedRequestList) {
@@ -75,7 +80,7 @@ public class ServiceRequestsComparatorHelper {
                                         .collect(Collectors.toList())) : null
                 );
             } else {
-                throw new Exception("Service " + expectedRequest.getServiceName() + " is not called");
+                throw new Exception(String.format("Service %s is not called", expectedRequest.getServiceName()));
             }
         }
     }

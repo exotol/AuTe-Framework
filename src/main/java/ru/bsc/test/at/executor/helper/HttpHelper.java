@@ -8,14 +8,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.cookie.Cookie;
@@ -32,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
+import ru.bsc.test.at.executor.model.Step;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -43,14 +37,8 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +46,7 @@ import java.util.stream.Collectors;
  *
  */
 public class HttpHelper {
-    private final Logger logger = LoggerFactory.getLogger(HttpHelper.class);
+    private final Logger log = LoggerFactory.getLogger(HttpHelper.class);
 
     private final CloseableHttpClient httpClient;
     private final HttpClientContext context;
@@ -75,13 +63,13 @@ public class HttpHelper {
             // set up a TrustManager that trusts everything
             sslContext.init(null, new TrustManager[]{new X509TrustManager() {
                 @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    System.out.println("checkClientTrusted =============");
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+                    log.info("checkClientTrusted =============");
                 }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    System.out.println("checkServerTrusted =============");
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+                    log.info("checkServerTrusted =============");
                 }
 
                 @Override
@@ -91,7 +79,7 @@ public class HttpHelper {
 
             }}, new SecureRandom());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            e.printStackTrace();
+            log.error("Error while init SSL context", e);
             sslContext = null;
         }
 
@@ -112,22 +100,22 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
+    public ResponseHelper request(String projectPath, Step step, String url, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
-        HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
+        HttpRequestBase httpRequest = createRequest(step.getRequestMethod(), uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
             boolean useMultipartFormData;
-            if (multipartFormData == null) {
-                long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+            if (step.getMultipartFormData() == null) {
+                long count = step.getFormDataList().stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
                 useMultipartFormData = count > 0;
             } else {
-                useMultipartFormData = multipartFormData;
+                useMultipartFormData = step.getMultipartFormData();
             }
             HttpEntity httpEntity;
             if (useMultipartFormData) {
-                httpEntity = setEntity(formData, projectPath).build();
+                httpEntity = setEntity(step.getFormDataList(), projectPath).build();
             } else {
-                List<NameValuePair> params = formData
+                List<NameValuePair> params = step.getFormDataList()
                         .stream()
                         .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), formData1.getValue()))
                         .collect(Collectors.toList());
@@ -202,14 +190,16 @@ public class HttpHelper {
     }
 
     private void setHeaders(HttpRequestBase request, String headers) {
-        if (headers != null && !headers.isEmpty()) {
-            try (Scanner scanner = new Scanner(headers)) {
-                while (scanner.hasNextLine()) {
-                    String header = scanner.nextLine();
-                    String[] headerDetail = header.split(":");
-                    if (headerDetail.length >= 2) {
-                        request.addHeader(headerDetail[0].trim(), headerDetail[1].trim());
-                    }
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
+
+        try (Scanner scanner = new Scanner(headers)) {
+            while (scanner.hasNextLine()) {
+                String header = scanner.nextLine();
+                String[] headerDetail = header.split(":");
+                if (headerDetail.length >= 2) {
+                    request.addHeader(headerDetail[0].trim(), headerDetail[1].trim());
                 }
             }
         }
@@ -219,7 +209,7 @@ public class HttpHelper {
         try {
             httpClient.close();
         } catch (IOException e) {
-            logger.error("Error while closing http connection", e);
+            log.error("Error while closing http connection", e);
         }
     }
 }

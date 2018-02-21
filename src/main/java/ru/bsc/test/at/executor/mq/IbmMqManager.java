@@ -37,11 +37,10 @@ public class IbmMqManager implements IMqManager {
 
     @Override
     public void sendTextMessage(String queueName, String message) throws Exception {
-
         fillConnectionFactory();
 
         QueueConnection connection = (QueueConnection) connectionFactory.createConnection(username, password);
-        QueueSession  session = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        QueueSession session = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Queue queue = session.createQueue(queueName);
         QueueSender sender = session.createSender(queue);
         Message msg = session.createTextMessage(message);
@@ -54,10 +53,10 @@ public class IbmMqManager implements IMqManager {
         connection.close();
     }
 
-    private void fillConnectionFactory() throws Exception {
+    private void fillConnectionFactory() throws ReflectiveOperationException {
         try {
             connectionFactory = (QueueConnectionFactory) Class.forName("com.ibm.mq.jms.MQQueueConnectionFactory").newInstance();
-        } catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException(e.getMessage() + ": set class path for library for Ibm Mq provider", e);
         }
 
@@ -66,9 +65,9 @@ public class IbmMqManager implements IMqManager {
         invoke(connectionFactory, "setTransportType", 1);
     }
 
-    private void invoke(Object obj, String methodName, Object val) throws Exception {
+    private void invoke(Object obj, String methodName, Object val) throws ReflectiveOperationException {
         Method method;
-        if (val instanceof Integer){
+        if (val instanceof Integer) {
             method = ReflectionUtils.findMethod(obj.getClass(), methodName, int.class);
         } else {
             method = ReflectionUtils.findMethod(obj.getClass(), methodName, val.getClass());

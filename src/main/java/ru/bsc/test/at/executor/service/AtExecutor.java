@@ -69,6 +69,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 /**
  * Created by sdoroshin on 21.03.2017.
  *
@@ -93,7 +95,7 @@ public class AtExecutor {
         Map<Stand, Connection> standConnectionMap = new HashMap<>();
         // Создать подключение для каждого используемого стенда
         for (Stand stand: standSet) {
-            if (StringUtils.isNotEmpty(stand.getDbUrl())) {
+            if (isNotEmpty(stand.getDbUrl())) {
                 try {
                     Connection connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
                     connection.setAutoCommit(false);
@@ -198,7 +200,7 @@ public class AtExecutor {
 
                     // COM-123 Timeout
                     if (step.getTimeoutMs() != null && step.getTimeoutMs() > 0) {
-                        Thread.sleep(Math.min(step.getTimeoutMs(), 60*1000));
+                        Thread.sleep(Math.min(step.getTimeoutMs(), 60000L));
                     }
 
                     if (stepParameterSet.getStepParameterList() != null) {
@@ -206,7 +208,7 @@ public class AtExecutor {
                                 .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    try (WireMockAdmin wireMockAdmin = stand != null && StringUtils.isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                    try (WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
                         if (stand == null) {
                             throw new Exception("Stand is not configured.");
                         }
@@ -294,7 +296,8 @@ public class AtExecutor {
                             requestBody,
                             requestHeaders,
                             project.getTestIdHeaderName(),
-                            testId);
+                            testId
+                    );
                 } else {
                     if (step.getFormDataList() == null) {
                         step.setFormDataList(Collections.emptyList());
@@ -313,18 +316,17 @@ public class AtExecutor {
                                     })
                                     .collect(Collectors.joining("\r\n")));
                     responseData = http.request(
-                            step.getRequestMethod(),
                             projectPath,
+                            step,
                             requestUrl,
-                            step.getMultipartFormData(),
-                            step.getFormDataList(),
                             requestHeaders,
                             project.getTestIdHeaderName(),
-                            testId);
+                            testId
+                    );
                 }
 
                 // Выполнить скрипт
-                if (StringUtils.isNotEmpty(step.getScript())) {
+                if (isNotEmpty(step.getScript())) {
                     ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                     scriptEngine.put("stepStatus", new StepStatus());
                     scriptEngine.put("scenarioVariables", scenarioVariables);
@@ -336,7 +338,7 @@ public class AtExecutor {
                     scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
 
                     StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
-                    if (StringUtils.isNotEmpty(stepStatus.getException())) {
+                    if (isNotEmpty(stepStatus.getException())) {
                         throw new Exception(stepStatus.getException());
                     }
                 }
@@ -379,45 +381,54 @@ public class AtExecutor {
             stepResult.setExpected(expectedResponse);
 
             // 6. Проверить код статуса ответа
-            if ((step.getExpectedStatusCode() != null)
-                    && (step.getExpectedStatusCode() != responseData.getStatusCode())) {
-                throw new Exception("Expected status code: " + step.getExpectedStatusCode() + ". Actual status code: " + responseData.getStatusCode());
-
+            Integer expectedStatusCode = step.getExpectedStatusCode();
+            if ((expectedStatusCode != null) && (expectedStatusCode != responseData.getStatusCode())) {
+                throw new Exception(String.format(
+                        "Expected status code: %d. Actual status code: %d",
+                        expectedStatusCode,
+                        responseData.getStatusCode()
+                ));
             }
 
-            if (!step.getExpectedResponseIgnore()) {
-                if (step.getResponseCompareMode() == null) {
-                    JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-                } else {
-                    switch (step.getResponseCompareMode()) {
-                        case FULL_MATCH:
-                            if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
-                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                            }
-                            break;
-                        case IGNORE_MASK:
-                            if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
-                                throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
-                            }
-                            break;
-                        default:
-                            JSONComparing(expectedResponse, responseData, step.getJsonCompareMode());
-                            break;
-                    }
-                }
-            }
+            compareResponse(step, expectedResponse, responseData);
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в заглушку.
         parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
     }
 
+    private void compareResponse(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+        if (step.getExpectedResponseIgnore()) {
+            return;
+        }
+
+        if (step.getResponseCompareMode() == null) {
+            jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
+        } else {
+            switch (step.getResponseCompareMode()) {
+                case FULL_MATCH:
+                    if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
+                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                    }
+                    break;
+                case IGNORE_MASK:
+                    if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
+                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                    }
+                    break;
+                default:
+                    jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
+                    break;
+            }
+        }
+    }
+
     private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
-            mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
-                put("equalTo", testId);
-            }});
+            HashMap<String, String> headerValue = new HashMap<>();
+            headerValue.put("equalTo", testId);
+            mockRequest.getHeaders().put(project.getTestIdHeaderName(), headerValue);
             mockRequest.setUrl(step.getParseMockRequestUrl());
             RequestList list = wireMockAdmin.findRequests(mockRequest);
             if (list.getRequests() != null && !list.getRequests().isEmpty()) {
@@ -436,14 +447,17 @@ public class AtExecutor {
         }
     }
 
-    private void JSONComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
-        if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseData.getContent())) &&
+    private void jsonComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
+        if ((isNotEmpty(expectedResponse) || isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
                 JSONAssert.assertEquals(
                         expectedResponse == null ? "" : expectedResponse.replaceAll(" ", " "),
-                        responseData.getContent().replaceAll(" ", " "), // Fix broken space in response
-                        new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ? JSONCompareMode.NON_EXTENSIBLE : JSONCompareMode.valueOf(jsonCompareMode))
+                        // Fix broken space in response
+                        responseData.getContent().replaceAll(" ", " "),
+                        new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ?
+                                               JSONCompareMode.NON_EXTENSIBLE :
+                                               JSONCompareMode.valueOf(jsonCompareMode))
                 );
             } catch (Error assertionError) {
                 throw new Exception(assertionError);
@@ -469,18 +483,13 @@ public class AtExecutor {
     }
 
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, Object> scenarioVariables) {
-        if (StringUtils.isNotEmpty(responseData.getContent())) {
-            if (StringUtils.isNotEmpty(step.getJsonXPath())) {
-
-                String lines[] = step.getJsonXPath().split("\\r?\\n");
-                for (String line: lines) {
-                    String[] lineParts = line.split("=", 2);
-                    String parameterName = lineParts[0].trim();
-                    String jsonXPath = lineParts[1];
-
-                    // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
-                    scenarioVariables.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
-                }
+        if (isNotEmpty(responseData.getContent()) && isNotEmpty(step.getJsonXPath())) {
+            String[] lines = step.getJsonXPath().split("\\r?\\n");
+            for (String line : lines) {
+                String[] lineParts = line.split("=", 2);
+                String parameterName = lineParts[0].trim();
+                String jsonXPath = lineParts[1];
+                scenarioVariables.put(parameterName, JsonPath.read(responseData.getContent(), jsonXPath).toString());
             }
         }
     }
@@ -491,7 +500,8 @@ public class AtExecutor {
             for (MockServiceResponse mockServiceResponse : responseList) {
                 MockDefinition mockDefinition = new MockDefinition(priority--, project.getTestIdHeaderName(), testId);
                 mockDefinition.getRequest().setUrl(mockServiceResponse.getServiceUrl());
-                mockDefinition.getRequest().setMethod("POST"); // SOAP always POST
+                // SOAP always POST
+                mockDefinition.getRequest().setMethod("POST");
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
                 mockDefinition.getResponse().setHeaders(new HashMap<>());
@@ -509,6 +519,7 @@ public class AtExecutor {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
+            logger.error("", e);
             retry = true;
         }
         if (retry) {
@@ -548,40 +559,53 @@ public class AtExecutor {
     }
 
     private String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
-        if (template != null) {
+        String result = template;
+        if (result != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : String.valueOf(value.getValue())));
+                result = result.replaceAll(
+                        key,
+                        Matcher.quoteReplacement(value.getValue() == null ? "" : String.valueOf(value.getValue()))
+                );
             }
         }
-        return template;
+        return result;
     }
 
     private String insertSavedValuesToURL(String template, Map<String, Object> scenarioVariables) throws UnsupportedEncodingException {
-        if (template != null) {
+        String result = template;
+        if (result != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
-                template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : String.valueOf(value.getValue()), "UTF-8")));
+                result = result.replaceAll(key,
+                        Matcher.quoteReplacement(URLEncoder.encode(
+                                value.getValue() == null ? "" : String.valueOf(value.getValue()),
+                                "UTF-8"
+                        ))
+                );
             }
         }
-        return template;
+        return result;
     }
 
     private String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
-        if (template != null) {
+        String result = template;
+        if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
-            Matcher m = p.matcher(template);
+            Matcher m = p.matcher(result);
             while (m.find()) {
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine scriptEngine = manager.getEngineByName("js");
                 scriptEngine.put("scenarioVariables", scenarioVariables);
                 scriptEngine.put("response", responseData);
-                Object result = scriptEngine.eval(m.group(1));
-
-                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
+                Object evalResult = scriptEngine.eval(m.group(1));
+                result = result.replace(
+                        "<f>" + m.group(1) + "</f>",
+                        Matcher.quoteReplacement(String.valueOf(evalResult))
+                );
             }
         }
-        return template;
+        return result;
     }
 
     public String getProjectPath() {
