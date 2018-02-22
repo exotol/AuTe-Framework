@@ -32,14 +32,19 @@ import java.util.Map;
 @RestController
 @RequestMapping("/rest/projects")
 public class RestProjectController {
-    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private final ProjectService projectService;
     private final ScenarioService scenarioService;
+    private final ProjectRoMapper projectRoMapper;
 
     @Autowired
-    public RestProjectController(ProjectService projectService, ScenarioService scenarioService) {
+    public RestProjectController(
+            ProjectService projectService,
+            ScenarioService scenarioService,
+            ProjectRoMapper projectRoMapper
+    ) {
         this.projectService = projectService;
         this.scenarioService = scenarioService;
+        this.projectRoMapper = projectRoMapper;
     }
 
     @RequestMapping("")

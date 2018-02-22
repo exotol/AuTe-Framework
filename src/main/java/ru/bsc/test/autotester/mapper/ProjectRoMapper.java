@@ -3,7 +3,6 @@ package ru.bsc.test.autotester.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
 import ru.bsc.test.at.executor.model.AmqpBroker;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -20,7 +19,7 @@ import java.util.List;
  *
  */
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(config = Config.class)
 public abstract class ProjectRoMapper {
 
     @Mappings({

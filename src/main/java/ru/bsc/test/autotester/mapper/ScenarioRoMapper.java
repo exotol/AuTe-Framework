@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(config = Config.class)
 public abstract class ScenarioRoMapper {
 
     @Mappings({
