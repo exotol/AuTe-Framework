@@ -52,6 +52,15 @@
         <url-pattern>/__admin/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>wiremock-version-servlet</servlet-name>
+        <servlet-class>ru.bsc.servlet.VersionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>wiremock-version-servlet</servlet-name>
+        <url-pattern>/__version</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.json</welcome-file>
         <welcome-file>index.xml</welcome-file>
