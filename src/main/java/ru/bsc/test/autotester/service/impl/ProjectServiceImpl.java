@@ -1,6 +1,5 @@
 package ru.bsc.test.autotester.service.impl;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
@@ -21,13 +20,13 @@ import java.util.List;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
-
     private final ProjectRepository projectRepository;
+    private final ProjectRoMapper projectRoMapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectRoMapper projectRoMapper) {
         this.projectRepository = projectRepository;
+        this.projectRoMapper = projectRoMapper;
     }
 
     @Override

@@ -32,15 +32,22 @@ import java.util.List;
 @RequestMapping("/rest/projects/{projectCode}/scenarios")
 public class RestScenarioController {
 
-    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
     private final ScenarioService scenarioService;
     private final ProjectService projectService;
+    private final StepRoMapper stepRoMapper;
+    private final ProjectRoMapper projectRoMapper;
 
     @Autowired
-    public RestScenarioController(ScenarioService scenarioService, ProjectService projectService) {
+    public RestScenarioController(
+            ScenarioService scenarioService,
+            ProjectService projectService,
+            StepRoMapper stepRoMapper,
+            ProjectRoMapper projectRoMapper
+    ) {
         this.scenarioService = scenarioService;
         this.projectService = projectService;
+        this.stepRoMapper = stepRoMapper;
+        this.projectRoMapper = projectRoMapper;
     }
 
     @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.GET)

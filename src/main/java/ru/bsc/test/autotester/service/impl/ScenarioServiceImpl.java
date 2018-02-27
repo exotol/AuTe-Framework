@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.service.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
-
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
@@ -33,15 +31,7 @@ import ru.bsc.test.autotester.utils.ZipUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipOutputStream;
@@ -55,19 +45,29 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     private static final Logger logger = LoggerFactory.getLogger(ScenarioServiceImpl.class);
 
-    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
-    private final ScenarioRoMapper scenarioRoMapper = Mappers.getMapper(ScenarioRoMapper.class);
-    private final ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
+    private final StepRoMapper stepRoMapper;
+    private final ScenarioRoMapper scenarioRoMapper;
+    private final ProjectRoMapper projectRoMapper;
 
     private final ScenarioRepository scenarioRepository;
     private final ProjectService projectService;
     private final EnvironmentProperties environmentProperties;
 
     @Autowired
-    public ScenarioServiceImpl(ScenarioRepository scenarioRepository, ProjectService projectService, EnvironmentProperties environmentProperties) {
+    public ScenarioServiceImpl(
+            ScenarioRepository scenarioRepository,
+            ProjectService projectService,
+            EnvironmentProperties environmentProperties,
+            StepRoMapper stepRoMapper,
+            ScenarioRoMapper scenarioRoMapper,
+            ProjectRoMapper projectRoMapper
+    ) {
         this.scenarioRepository = scenarioRepository;
         this.projectService = projectService;
         this.environmentProperties = environmentProperties;
+        this.stepRoMapper = stepRoMapper;
+        this.scenarioRoMapper = scenarioRoMapper;
+        this.projectRoMapper = projectRoMapper;
     }
 
     private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();

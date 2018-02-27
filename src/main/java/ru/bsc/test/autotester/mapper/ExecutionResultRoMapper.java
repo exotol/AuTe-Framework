@@ -3,8 +3,7 @@ package ru.bsc.test.autotester.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.ro.ScenarioResultRo;
@@ -12,16 +11,20 @@ import ru.bsc.test.autotester.ro.ScenarioResultRo;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(config = Config.class)
 public abstract class ExecutionResultRoMapper {
 
-    private ProjectRoMapper projectRoMapper = Mappers.getMapper(ProjectRoMapper.class);
-    private StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
+    @Autowired
+    private ProjectRoMapper projectRoMapper;
+    @Autowired
+    private StepRoMapper stepRoMapper;
 
     @Mappings({
             @Mapping(target = "finished", source = "finished"),
             @Mapping(target = "scenarioResultList", ignore = true),
     })
+
+    /* default */
     abstract ExecutionResultRo executionResultToRo(ExecutionResult executionResult);
 
     public ExecutionResultRo map(ExecutionResult executionResult) {

@@ -4,22 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
-import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
-import ru.bsc.test.at.executor.model.FormData;
-import ru.bsc.test.at.executor.model.MockServiceResponse;
-import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.model.StepParameter;
-import ru.bsc.test.at.executor.model.StepParameterSet;
-import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.autotester.ro.ExpectedServiceRequestRo;
-import ru.bsc.test.autotester.ro.FormDataRo;
-import ru.bsc.test.autotester.ro.MockServiceResponseRo;
-import ru.bsc.test.autotester.ro.StepParameterRo;
-import ru.bsc.test.autotester.ro.StepParameterSetRo;
-import ru.bsc.test.autotester.ro.StepResultRo;
-import ru.bsc.test.autotester.ro.StepRo;
+import ru.bsc.test.at.executor.model.*;
+import ru.bsc.test.autotester.ro.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +15,7 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("unused")
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(config = Config.class)
 public abstract class StepRoMapper {
 
     @Mappings({
@@ -106,7 +92,7 @@ public abstract class StepRoMapper {
     })
     public abstract StepRo stepToStepRo(Step step);
 
-    abstract public List<StepRo> convertStepListToStepRoList(List<Step> stepList);
+    public abstract List<StepRo> convertStepListToStepRoList(List<Step> stepList);
 
     @Mappings({
             @Mapping(target = "serviceName", source = "serviceName"),
@@ -131,33 +117,6 @@ public abstract class StepRoMapper {
 
     private StepParameterSet updateStepParameterSet(StepParameterSetRo stepParameterSetRo) {
         return updateStepParameterSetFromRo(stepParameterSetRo);
-
-        /*
-        if (stepParameterSet.getStepParameterList() == null) {
-            stepParameterSet.setStepParameterList(new LinkedList<>());
-        }
-        if (stepParameterSetRo.getStepParameterList() == null) {
-            stepParameterSetRo.setStepParameterList(new LinkedList<>());
-        }
-        List<StepParameter> setStepParameterList = new LinkedList<>(stepParameterSet.getStepParameterList());
-        stepParameterSet.getStepParameterList().clear();
-        stepParameterSet.getStepParameterList().addAll(stepParameterSetRo.getStepParameterList().stream()
-                .map(stepParameterRo -> setStepParameterList.stream()
-                        .filter(stepParameter -> Objects.equals(stepParameter.getId(), stepParameterRo.getId()))
-                        .map(stepParameter -> updateStepParameterFromRo(stepParameterRo, stepParameter))
-                        .findAny()
-                        .orElseGet(() -> {
-                            StepParameter newParameter = new StepParameter();
-                            updateStepParameterFromRo(stepParameterRo, newParameter);
-                            newParameter.setStepParameterSet(stepParameterSet);
-                            return newParameter;
-                        })
-                )
-                .collect(Collectors.toList())
-        );
-        */
-
-        // return stepParameterSet;
     }
 
     abstract List<StepParameterRo> convertStepParameterToStepParameterRo(List<StepParameter> stepParameterList);

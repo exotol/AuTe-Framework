@@ -19,12 +19,13 @@ import java.io.IOException;
 @RequestMapping("/rest/projects/{projectCode}/scenarios")
 public class RestStepController {
 
-    private final StepRoMapper stepRoMapper = Mappers.getMapper(StepRoMapper.class);
     private final ScenarioService scenarioService;
+    private final StepRoMapper stepRoMapper;
 
     @Autowired
-    public RestStepController(ScenarioService scenarioService) {
+    public RestStepController(ScenarioService scenarioService, StepRoMapper stepRoMapper) {
         this.scenarioService = scenarioService;
+        this.stepRoMapper = stepRoMapper;
     }
 
     @RequestMapping(value = { "{scenarioGroup:.+}/{scenarioCode:.+}/steps/{stepCode:.+}", "{scenarioCode:.+}/steps/{stepCode:.+}" }, method = RequestMethod.PUT)

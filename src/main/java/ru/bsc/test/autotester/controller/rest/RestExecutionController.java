@@ -25,12 +25,13 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping("/rest/execution/")
 public class RestExecutionController {
 
-    private ExecutionResultRoMapper executionResultRoMapper = Mappers.getMapper(ExecutionResultRoMapper.class);
     private final ScenarioService scenarioService;
+    private final ExecutionResultRoMapper executionResultRoMapper;
 
     @Autowired
-    public RestExecutionController(ScenarioService scenarioService) {
+    public RestExecutionController(ScenarioService scenarioService, ExecutionResultRoMapper executionResultRoMapper) {
         this.scenarioService = scenarioService;
+        this.executionResultRoMapper = executionResultRoMapper;
     }
 
     @RequestMapping(value = "{executionUuid}/stop", method = RequestMethod.POST)
