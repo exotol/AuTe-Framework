@@ -4,20 +4,11 @@ import com.google.gson.Gson;
 import io.qameta.allure.ConfigurationBuilder;
 import io.qameta.allure.ReportGenerator;
 import io.qameta.allure.core.Configuration;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.yandex.qatools.allure.model.Description;
-import ru.yandex.qatools.allure.model.DescriptionType;
-import ru.yandex.qatools.allure.model.Failure;
-import ru.yandex.qatools.allure.model.Label;
-import ru.yandex.qatools.allure.model.Parameter;
-import ru.yandex.qatools.allure.model.ParameterKind;
-import ru.yandex.qatools.allure.model.Status;
-import ru.yandex.qatools.allure.model.TestCaseResult;
-import ru.yandex.qatools.allure.model.TestSuiteResult;
+import ru.yandex.qatools.allure.model.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,9 +20,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+@Slf4j
 public class AllureReportGenerator extends AbstractReportGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(AllureReportGenerator.class);
-
     @Override
     public void generate(File directory) throws Exception {
         File resultDirectory = new File(directory + File.separator + "results-directory");
@@ -55,7 +45,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             try (FileWriter writer = new FileWriter(new File(resultDirectory + File.separator + UUID.randomUUID() + "-testsuite.json"))) {
                 new Gson().toJson(testSuiteResult, writer);
             } catch (IOException e) {
-                logger.error("Could not convert testSuiteResult {} to json", testSuiteResult, e);
+                log.error("Could not convert testSuiteResult {} to json", testSuiteResult, e);
             }
         }
 

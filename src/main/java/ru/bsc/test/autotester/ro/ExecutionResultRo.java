@@ -1,25 +1,13 @@
 package ru.bsc.test.autotester.ro;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class ExecutionResultRo implements AbstractRo {
-
     private List<ScenarioResultRo> scenarioResultList;
     private boolean finished;
-
-    public List<ScenarioResultRo> getScenarioResultList() {
-        return scenarioResultList;
-    }
-
-    public void setScenarioResultList(List<ScenarioResultRo> scenarioResultList) {
-        this.scenarioResultList = scenarioResultList;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
-    }
 }

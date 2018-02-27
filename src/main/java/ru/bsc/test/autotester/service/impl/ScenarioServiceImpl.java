@@ -1,9 +1,8 @@
 package ru.bsc.test.autotester.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
@@ -41,10 +40,8 @@ import java.util.zip.ZipOutputStream;
  *
  */
 @Service
+@Slf4j
 public class ScenarioServiceImpl implements ScenarioService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ScenarioServiceImpl.class);
-
     private final StepRoMapper stepRoMapper;
     private final ScenarioRoMapper scenarioRoMapper;
     private final ProjectRoMapper projectRoMapper;
@@ -107,7 +104,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                     );
                     scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
                 } catch (IOException e) {
-                    logger.error("", e);
+                    log.error("", e);
                 }
             });}
                 })).start();

@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.ro.ScenarioResultRo;
@@ -37,15 +38,18 @@ public abstract class ExecutionResultRoMapper {
             List<ScenarioResultRo> scenarioResultList = executionResult.getScenarioStepResultListMap()
                     .entrySet()
                     .stream()
-                    .map(scenarioListEntry -> new ScenarioResultRo()
-                            .withScenario(projectRoMapper.scenarioToScenarioRo("", scenarioListEntry.getKey()))
-                            .withStepResultRo(stepRoMapper.convertStepResultListToStepResultRo(scenarioListEntry.getValue()))
-                            .withTotalSteps(scenarioListEntry
+                    .map(scenarioListEntry -> ScenarioResultRo.builder()
+                            .scenario(projectRoMapper.scenarioToScenarioRo("", scenarioListEntry.getKey()))
+                            .stepResultList(stepRoMapper.convertStepResultListToStepResultRo(scenarioListEntry.getValue()))
+                            .totalSteps(scenarioListEntry
                                     .getKey()
                                     .getStepList()
                                     .stream()
                                     .filter(step -> !step.getDisabled())
-                                    .mapToInt(value -> value.getStepParameterSetList() != null ? (value.getStepParameterSetList().size() == 0 ? 1 : value.getStepParameterSetList().size()) : 1).sum())
+                                    .map(Step::getStepParameterSetList)
+                                    .mapToInt(list -> list != null ? (list.size() == 0 ? 1 : list.size()) : 1)
+                                    .sum()
+                            ).build()
                     )
                     .collect(Collectors.toList());
             executionResultRo.setScenarioResultList(scenarioResultList);

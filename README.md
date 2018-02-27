@@ -48,3 +48,6 @@ jms.jar
 ### Дополнения ###
 
 Для выполнения тестов используется библиотека [at-executor](https://bitbucket.org/bscideas/rest-at-executor)
+
+В проекте используется библиотека [lombok](https://projectlombok.org). 
+Для комфортной работы необходим Lombok Plugin for IntelliJ IDEA ([github](https://github.com/mplushnikov/lombok-intellij-plugin), [JetBrains Plugins](https://plugins.jetbrains.com/plugin/6317-lombok-plugin))
