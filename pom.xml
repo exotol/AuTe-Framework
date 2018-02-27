@@ -11,6 +11,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.16.20</lombok.version>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <timestamp>${maven.build.timestamp}</timestamp>
     </properties>
 
     <build>
@@ -54,11 +56,6 @@
             </resource>
         </resources>
     </build>
-
-    <properties>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <timestamp>${maven.build.timestamp}</timestamp>
-    </properties>
 
     <dependencies>
         <!-- https://github.com/json-path/JsonPath -->
