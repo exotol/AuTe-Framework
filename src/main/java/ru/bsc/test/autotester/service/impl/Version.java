@@ -11,8 +11,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Version {
-    static final String UNKNOWN = "UNKNOWN";
+    private static final String UNKNOWN = "UNKNOWN";
 
     private String implementationVersion;
     private String implementationDate;
+
+    public static Version unknown() {
+        return new Version(UNKNOWN, UNKNOWN);
+    }
 }

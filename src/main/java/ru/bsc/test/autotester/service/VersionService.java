@@ -7,5 +7,7 @@ import ru.bsc.test.autotester.service.impl.Version;
  */
 public interface VersionService {
 
-	Version getVersion();
+    Version getManagerVersion();
+
+    Version getExecutorVersion();
 }

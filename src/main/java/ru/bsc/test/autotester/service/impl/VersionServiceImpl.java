@@ -2,6 +2,8 @@ package ru.bsc.test.autotester.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.autotester.service.VersionService;
 
@@ -15,24 +17,39 @@ import java.util.Properties;
 public class VersionServiceImpl implements VersionService {
     private static final String BUILD_IMPL_VERSION = "buildnumber";
     private static final String BUILD_DATE = "builddate";
+    private static final String MANAGER_VERSION_PROPERTIES = "version.properties";
+    private static final String EXECUTOR_VERSION_PROPERTIES = "at-executor.version.properties";
+
+    private Version managerVersion;
+    private Version executorVersion;
 
     @Override
-    public Version getVersion() {
-        return findVersion();
+    public Version getManagerVersion() {
+        if (managerVersion == null) {
+            managerVersion = findVersion(MANAGER_VERSION_PROPERTIES);
+        }
+        return managerVersion;
     }
 
-    private Version findVersion() {
+    public Version getExecutorVersion() {
+        if (executorVersion == null) {
+            executorVersion = findVersion(EXECUTOR_VERSION_PROPERTIES);
+        }
+        return executorVersion;
+    }
+
+    private Version findVersion(String propertyFile) {
         Properties prop = new Properties();
         try {
-            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("version.properties"));
+            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertyFile));
+            String version = prop.getProperty(BUILD_IMPL_VERSION);
+            String date = prop.getProperty(BUILD_DATE);
+            if (StringUtils.isNotBlank(version) && StringUtils.isNotBlank(date)) {
+                return new Version(version, date);
+            }
         } catch (Exception e) {
-            log.error("Error while loading properties", e);
+            log.error("Error while loading properties: {}", propertyFile, e);
         }
-        String implVer = prop.getProperty(BUILD_IMPL_VERSION);
-        String dateStr = prop.getProperty(BUILD_DATE);
-        if (StringUtils.isNotBlank(implVer) && StringUtils.isNotBlank(dateStr)) {
-            return new Version(implVer, dateStr);
-        }
-        return new Version(Version.UNKNOWN, Version.UNKNOWN);
+        return Version.unknown();
     }
 }

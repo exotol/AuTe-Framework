@@ -23,8 +23,13 @@ public class RestVersionController {
         this.versionService = versionService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public Version findSteps() {
-        return versionService.getVersion();
+    @RequestMapping(value = "/manager", method = RequestMethod.GET)
+    public Version managerVersion() {
+        return versionService.getManagerVersion();
+    }
+
+    @RequestMapping(value = "/executor", method = RequestMethod.GET)
+    public Version executorVersion() {
+        return versionService.getExecutorVersion();
     }
 }
