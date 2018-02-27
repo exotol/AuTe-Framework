@@ -29,3 +29,7 @@
 ### Версия 3.0.0-SNAPSHOT ###
 
 Id из всех моделей перенесены в AbstractModel
+
+### Дополнительно ###
+В проекте используется библиотека [lombok](https://projectlombok.org). 
+Для комфортной работы необходим Lombok Plugin for IntelliJ IDEA ([github](https://github.com/mplushnikov/lombok-intellij-plugin), [JetBrains Plugins](https://plugins.jetbrains.com/plugin/6317-lombok-plugin))

@@ -1,10 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.bsc.test.at.executor.mq.MqService;
 
 import java.io.Serializable;
 
-@SuppressWarnings("WeakerAccess")
+@Getter
+@Setter
 public class AmqpBroker implements AbstractModel, Serializable {
     private static final long serialVersionUID = 2205108669600359668L;
 
@@ -13,46 +16,6 @@ public class AmqpBroker implements AbstractModel, Serializable {
     private Integer port;
     private String username;
     private String password;
-
-    public MqService getMqService() {
-        return mqService;
-    }
-
-    public void setMqService(MqService mqService) {
-        this.mqService = mqService;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public AmqpBroker copy() {
         AmqpBroker copy = new AmqpBroker();

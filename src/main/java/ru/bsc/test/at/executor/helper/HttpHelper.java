@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.helper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -21,8 +22,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.tika.Tika;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.at.executor.model.Step;
@@ -45,9 +44,8 @@ import java.util.stream.Collectors;
  * Created by sdoroshin on 22/05/17.
  *
  */
+@Slf4j
 public class HttpHelper {
-    private final Logger log = LoggerFactory.getLogger(HttpHelper.class);
-
     private final CloseableHttpClient httpClient;
     private final HttpClientContext context;
 

@@ -10,7 +10,6 @@ import org.skyscreamer.jsonassert.comparator.DefaultComparator;
  * Project name bcs-rest-at
  */
 public class IgnoringComparator extends DefaultComparator {
-
     private static final String IGNORE = "*ignore*";
 
     public IgnoringComparator(JSONCompareMode mode) {

@@ -1,5 +1,8 @@
 package ru.bsc.test.at.executor.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,13 +10,14 @@ import java.util.List;
 /**
  * Created by sdoroshin on 10.05.2017.
  */
-@SuppressWarnings("WeakerAccess")
+@Getter
+@Setter
 public class Project implements Serializable, AbstractModel {
     private static final long serialVersionUID = 7331632683933716938L;
 
     private String code;
     private String name;
-    private List<Scenario> scenarioList;
+    private List<Scenario> scenarioList = new LinkedList<>();
     private String beforeScenarioPath;
     private String afterScenarioPath;
     private Stand stand;
@@ -21,89 +25,6 @@ public class Project implements Serializable, AbstractModel {
     private String testIdHeaderName;
     private AmqpBroker amqpBroker;
     private List<String> groupList;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getBeforeScenarioPath() {
-        return beforeScenarioPath;
-    }
-
-    public void setBeforeScenarioPath(String beforeScenarioPath) {
-        this.beforeScenarioPath = beforeScenarioPath;
-    }
-
-    public String getAfterScenarioPath() {
-        return afterScenarioPath;
-    }
-
-    public void setAfterScenarioPath(String afterScenarioPath) {
-        this.afterScenarioPath = afterScenarioPath;
-    }
-
-    public List<Scenario> getScenarioList() {
-        if (scenarioList == null) {
-            scenarioList = new LinkedList<>();
-        }
-        return scenarioList;
-    }
-
-    public void setScenarioList(List<Scenario> scenarioList) {
-        this.scenarioList = scenarioList;
-    }
-
-    public Stand getStand() {
-        return stand;
-    }
-
-    public void setStand(Stand stand) {
-        this.stand = stand;
-    }
-
-    public Boolean getUseRandomTestId() {
-        return useRandomTestId != null && useRandomTestId;
-    }
-
-    public void setUseRandomTestId(Boolean useRandomTestId) {
-        this.useRandomTestId = useRandomTestId;
-    }
-
-    public String getTestIdHeaderName() {
-        return testIdHeaderName;
-    }
-
-    public void setTestIdHeaderName(String testIdHeaderName) {
-        this.testIdHeaderName = testIdHeaderName;
-    }
-
-    public AmqpBroker getAmqpBroker() {
-        return amqpBroker;
-    }
-
-    public void setAmqpBroker(AmqpBroker amqpBroker) {
-        this.amqpBroker = amqpBroker;
-    }
-
-    public List<String> getGroupList() {
-        return groupList;
-    }
-
-    public void setGroupList(List<String> groupList) {
-        this.groupList = groupList;
-    }
 
     public Project copy() {
         Project project = new Project();

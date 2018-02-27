@@ -2,6 +2,9 @@ package ru.bsc.test.at.executor.service;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -10,22 +13,11 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.helper.HttpHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
-import ru.bsc.test.at.executor.model.FieldType;
-import ru.bsc.test.at.executor.model.MockServiceResponse;
-import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.RequestBodyType;
-import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.Stand;
-import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.model.StepParameterSet;
-import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.model.StepStatus;
+import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
@@ -45,26 +37,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -75,14 +54,15 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * Created by sdoroshin on 21.03.2017.
  *
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@Slf4j
+@SuppressWarnings("unused")
 public class AtExecutor {
     private static final int POLLING_RETRY_COUNT = 50;
     private static final int POLLING_RETRY_TIMEOUT_MS = 1000;
 
-    private final Logger logger = LoggerFactory.getLogger(AtExecutor.class);
-
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
+    @Getter
+    @Setter
     private String projectPath;
 
     public void executeScenarioList(Project project, List<Scenario> scenarioExecuteList, Map<Scenario, List<StepResult>> scenarioResultListMap, IStopObserver stopObserver, IExecutingFinishObserver executingFinishObserver) {
@@ -102,7 +82,7 @@ public class AtExecutor {
                     connection.setReadOnly(true);
                     standConnectionMap.put(stand, connection);
                 } catch (SQLException e) {
-                    logger.warn("sql exception", e);
+                    log.warn("sql exception", e);
                     standConnectionMap.put(stand, null);
                 }
             }
@@ -120,7 +100,7 @@ public class AtExecutor {
                     connection.rollback();
                     connection.close();
                 } catch (SQLException e) {
-                    logger.error("Error while rollback", e);
+                    log.error("Error while rollback", e);
                 }
             });
         }
@@ -519,7 +499,7 @@ public class AtExecutor {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
-            logger.error("", e);
+            log.error("", e);
             retry = true;
         }
         if (retry) {
@@ -606,14 +586,6 @@ public class AtExecutor {
             }
         }
         return result;
-    }
-
-    public String getProjectPath() {
-        return projectPath;
-    }
-
-    public void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
     }
 
     @Override

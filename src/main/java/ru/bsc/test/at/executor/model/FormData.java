@@ -1,6 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @SuppressWarnings("WeakerAccess")
+@Getter
+@Setter
+@ToString
 public class FormData implements AbstractModel {
 
     private String fieldName;
@@ -57,16 +64,5 @@ public class FormData implements AbstractModel {
         formData.setValue(getValue());
         formData.setMimeType(getMimeType());
         return formData;
-    }
-
-    @Override
-    public String toString() {
-        return "FormData{" +
-                ", fieldName='" + fieldName + '\'' +
-                ", fieldType=" + fieldType +
-                ", value='" + value + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", mimeType='" + mimeType + '\'' +
-                '}';
     }
 }

@@ -1,8 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by sdoroshin on 12.05.2017.
  */
+@Getter
+@Setter
 public class StepResult {
 
     public static final String RESULT_OK = "OK";
@@ -26,125 +31,5 @@ public class StepResult {
 
     public StepResult(Step step) {
         this.step = step;
-    }
-
-    public String getTestId() {
-        return testId;
-    }
-
-    public void setTestId(String testId) {
-        this.testId = testId;
-    }
-
-    public Step getStep() {
-        return step;
-    }
-
-    public void setStep(Step step) {
-        this.step = step;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public String getExpected() {
-        return expected;
-    }
-
-    public void setExpected(String expected) {
-        this.expected = expected;
-    }
-
-    public String getActual() {
-        return actual;
-    }
-
-    public void setActual(String actual) {
-        this.actual = actual;
-    }
-
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = requestUrl;
-    }
-
-    public String getRequestUrl() {
-        return requestUrl;
-    }
-
-    public String getRequestBody() {
-        return requestBody;
-    }
-
-    public void setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
-    }
-
-    public void setPollingRetryCount(Integer pollingRetryCount) {
-        this.pollingRetryCount = pollingRetryCount;
-    }
-
-    public Integer getPollingRetryCount() {
-        return pollingRetryCount;
-    }
-
-    public String getSavedParameters() {
-        return savedParameters;
-    }
-
-    public void setSavedParameters(String savedParameters) {
-        this.savedParameters = savedParameters;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public long getStart() {
-        return start;
-    }
-
-    public void setStart(long start) {
-        this.start = start;
-    }
-
-    public long getStop() {
-        return stop;
-    }
-
-    public void setStop(long stop) {
-        this.stop = stop;
-    }
-
-    public void setCookies(String cookies) {
-        this.cookies = cookies;
-    }
-
-    public String getCookies() {
-        return cookies;
     }
 }
