@@ -42,7 +42,7 @@ public class CustomWarConfiguration extends WarConfiguration {
 
             // VelocityResponseTransformer configuration
             Properties properties = new Properties();
-            try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES)) {
+            try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
                 properties.load(stream);
             } catch (IOException e) {
                 logger.error("Error while loading properties", e);
