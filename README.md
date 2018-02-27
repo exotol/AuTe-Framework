@@ -115,3 +115,7 @@ Account: $out
 * Очистить журнал запросов: POST [http://piphagor.bscmsc.ru/bsc-wire-mock/__admin/requests/reset](http://piphagor.bscmsc.ru/bsc-wire-mock/__admin/requests/reset)
 
 Документация по WireMock API доступна по ссылке: [http://wiremock.org/docs/api/](http://wiremock.org/docs/api/) 
+
+## Дополнительно ##
+В проекте используется библиотека [lombok](https://projectlombok.org). 
+Для комфортной работы необходим Lombok Plugin for IntelliJ IDEA ([github](https://github.com/mplushnikov/lombok-intellij-plugin), [JetBrains Plugins](https://plugins.jetbrains.com/plugin/6317-lombok-plugin))

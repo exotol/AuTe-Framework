@@ -1,5 +1,11 @@
 package ru.bsc.wiremock.webcontextlistener.configuration;
 
+import com.github.tomakehurst.wiremock.core.MappingsSaver;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.google.common.io.Files;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.Charsets;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,22 +15,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import com.github.tomakehurst.wiremock.core.MappingsSaver;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import com.google.common.io.Files;
-import org.apache.commons.codec.Charsets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static ru.bsc.wiremock.Constants.VELOCITY_PROPERTIES;
 
 /**
  * Created by sdoroshin on 04.08.2017.
  *
  */
+@Slf4j
 class BscMappingSaver implements MappingsSaver {
-    private final Logger log = LoggerFactory.getLogger(BscMappingSaver.class);
-
     private final String mappingPath;
     private final SimpleDateFormat dateFormat;
 
