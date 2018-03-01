@@ -92,4 +92,20 @@ public class Step implements Serializable, AbstractModel {
         }
         return step;
     }
+
+    public Boolean getExpectedResponseIgnore() {
+        return expectedResponseIgnore != null && expectedResponseIgnore;
+    }
+
+    public Boolean getUsePolling() {
+        return usePolling != null && usePolling;
+    }
+
+    public Boolean getDisabled() {
+        return disabled != null && disabled;
+    }
+
+    public Boolean getMultipartFormData() {
+        return multipartFormData != null && multipartFormData;
+    }
 }

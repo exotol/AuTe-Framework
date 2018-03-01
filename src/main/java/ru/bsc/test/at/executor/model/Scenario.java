@@ -34,4 +34,16 @@ public class Scenario implements Serializable, AbstractModel {
 
         return scenario;
     }
+
+    public Boolean getBeforeScenarioIgnore() {
+        return beforeScenarioIgnore != null && beforeScenarioIgnore;
+    }
+
+    public Boolean getAfterScenarioIgnore() {
+        return afterScenarioIgnore != null && afterScenarioIgnore;
+    }
+
+    public Boolean getFailed() {
+        return failed != null && failed;
+    }
 }

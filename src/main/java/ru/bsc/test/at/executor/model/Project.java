@@ -57,4 +57,8 @@ public class Project implements Serializable, AbstractModel {
     public String toString() {
         return "Project{" + code + '}';
     }
+
+    public Boolean getUseRandomTestId() {
+        return useRandomTestId != null && useRandomTestId;
+    }
 }

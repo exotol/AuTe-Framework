@@ -129,7 +129,7 @@ public class AtExecutor {
 
         } catch (ScenarioStopException | InterruptedException e) {
             // Stop scenario executing
-            e.printStackTrace();
+            log.error("Error during scenario execution", e);
         }
 
         httpHelper.closeHttpConnection();
@@ -516,14 +516,12 @@ public class AtExecutor {
                     statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                 }
                 try (ResultSet rs = statement.executeQuery()) {
-                    int columnCount = rs.getMetaData().getColumnCount();
                     List<String> columnNameList = new LinkedList<>();
                     for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                         columnNameList.add(rs.getMetaData().getColumnName(i));
                     }
 
                     List<Map<String, Object>> resultData = new LinkedList<>();
-                    String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
                     while (rs.next()) {
                         Map<String, Object> resultColumnData = new HashMap<>();
 
