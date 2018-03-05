@@ -48,5 +48,5 @@ public class StepRo implements AbstractRo {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
-    private Long timeoutMs;
+    private String timeoutMs;
 }
