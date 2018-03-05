@@ -27,7 +27,7 @@ public class GroovyDirective extends Directive {
     }
 
     @Override
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(InternalContextAdapter context, Writer writer, Node node) {
         String groovyScript = node.jjtGetChild(0).getFirstToken().image;
 
         Binding binding = new Binding();

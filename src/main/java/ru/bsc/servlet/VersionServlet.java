@@ -24,14 +24,15 @@ public class VersionServlet extends HttpServlet {
     private static final String CONTENT_TYPE = "application/json";
     private static final String VERSION_PROPERTIES = "version.properties";
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private Version version;
 
     @Override
     public void init() throws ServletException {
         super.init();
         Properties properties = new Properties();
-        try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(VERSION_PROPERTIES)) {
+        try (InputStream resourceAsStream =
+                     Thread.currentThread().getContextClassLoader().getResourceAsStream(VERSION_PROPERTIES)) {
             properties.load(resourceAsStream);
             version = new Version(properties.getProperty("buildnumber"), properties.getProperty("builddate"));
             logger.info("Version loaded from file: {}", version);
