@@ -46,7 +46,7 @@ public class Step implements Serializable, AbstractModel {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
-    private Long timeoutMs;
+    private String timeoutMs;
 
     public Step copy() {
         Step step = new Step();
