@@ -6,9 +6,9 @@ import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package ru.bsc.test.at.executor.wiremock.mockdefinition;
+package ru.bsc.test.at.executor.ei.wiremock.model;
 
 import lombok.Getter;
 import lombok.Setter;

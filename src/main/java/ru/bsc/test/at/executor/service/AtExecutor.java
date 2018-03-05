@@ -22,11 +22,11 @@ import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
