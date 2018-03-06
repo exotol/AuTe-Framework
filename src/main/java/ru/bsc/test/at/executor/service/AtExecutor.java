@@ -322,9 +322,6 @@ public class AtExecutor {
 
                     scriptEngine.eval(step.getScript());
 
-                    // Привести все переменные сценария к строковому типу
-                    scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
-
                     StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
                     if (isNotEmpty(stepStatus.getException())) {
                         throw new Exception(stepStatus.getException());
