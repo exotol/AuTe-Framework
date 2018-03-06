@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MockMessage {
+public class MqMockDefinition {
     private String guid;
 
     private String sourceQueueName;
