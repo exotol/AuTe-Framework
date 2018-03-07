@@ -17,6 +17,7 @@ public class MockServiceResponse implements AbstractModel {
     private String responseBody;
     private String responseBodyFile;
     private Integer httpStatus;
+    private String contentType;
 
     protected MockServiceResponse copy() {
         MockServiceResponse response = new MockServiceResponse();
@@ -24,6 +25,7 @@ public class MockServiceResponse implements AbstractModel {
         response.setResponseBody(getResponseBody());
         // TODO: cloned.setResponseBodyFile(getResponseBodyFile());
         response.setHttpStatus(getHttpStatus());
+        response.setContentType(getContentType());
         return response;
     }
 }
