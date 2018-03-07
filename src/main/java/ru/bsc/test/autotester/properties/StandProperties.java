@@ -8,6 +8,7 @@ import lombok.Setter;
 public class StandProperties {
     private String serviceUrl;
     private String wireMockUrl;
+    private String mqMockUrl;
     private DataBaseProperties dataBase;
     private AmqpBrokerProperties amqpBroker;
 }
