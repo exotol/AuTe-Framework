@@ -72,7 +72,7 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                             try {
                                 scenarios.add(loadScenarioFromFiles(scenarioYmlInGroup, directory.getName(), false));
                             } catch (IOException e) {
-                                log.error("Read file " + scenarioYmlInGroup.getAbsolutePath(), e);
+                                log.error("Read file {}", scenarioYmlInGroup, e);
                             }
                         }
                     }
@@ -154,7 +154,12 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
-        FileUtils.deleteDirectory(new File(environmentProperties.getProjectsDirectoryPath() + "/" + projectCode + "/scenarios/" + scenarioPath));
+        Files.deleteIfExists(Paths.get(
+                environmentProperties.getProjectsDirectoryPath(),
+                projectCode,
+                "scenarios",
+                scenarioPath
+        ));
     }
 
     private boolean checkSteps(Scenario scenario, String relativeUrl) {
