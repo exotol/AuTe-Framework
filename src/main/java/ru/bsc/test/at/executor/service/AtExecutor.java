@@ -506,14 +506,16 @@ public class AtExecutor {
     }
 
     private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList) throws IOException {
-        for (MqMockResponse mqMockResponse : mqMockResponseList) {
-            MqMockDefinition mockMessage = new MqMockDefinition();
-            mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
-            mockMessage.setResponseBody(mqMockResponse.getResponseBody());
-            mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
-            mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
-            mockMessage.setTestId(testId);
-            mqMockerAdmin.addMock(mockMessage);
+        if (mqMockResponseList != null) {
+            for (MqMockResponse mqMockResponse : mqMockResponseList) {
+                MqMockDefinition mockMessage = new MqMockDefinition();
+                mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
+                mockMessage.setResponseBody(mqMockResponse.getResponseBody());
+                mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
+                mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
+                mockMessage.setTestId(testId);
+                mqMockerAdmin.addMock(mockMessage);
+            }
         }
     }
 

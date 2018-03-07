@@ -58,7 +58,7 @@ public class MqMockerAdmin implements Closeable {
     }
 
     private void clearMockList() {
-        mockGuidList.forEach(guid -> sendDelete("/mappings/" + guid));
+        // mockGuidList.forEach(guid -> sendDelete("/mappings/" + guid));
     }
 
     private String sendDelete(String url) {

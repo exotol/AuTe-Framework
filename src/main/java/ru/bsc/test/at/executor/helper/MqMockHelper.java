@@ -23,11 +23,14 @@ public class MqMockHelper {
         }
 
         List<ExpectedMqRequest> expectedMqRequestList = step.getExpectedMqRequestList();
-        if (expectedMqRequestList.isEmpty()) {
+        if (expectedMqRequestList == null || expectedMqRequestList.isEmpty()) {
             return;
         }
 
         List<MockedRequest> actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
+
+        // TODO Это УДАЛИТЬ. Только для дебага
+        // actualMqRequestList.add(mqMockerAdmin.getRequestListByTestId(null).get(mqMockerAdmin.getRequestListByTestId(null).size() - 1));
 
         if (expectedMqRequestList.size() != actualMqRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
