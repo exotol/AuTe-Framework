@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.repository;
 import ru.bsc.test.at.executor.model.Scenario;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,6 +11,8 @@ import java.util.Set;
  *
  */
 public interface ScenarioRepository {
+    List<Scenario> findScenarios(String projectCode);
+
     Scenario findScenario(String projectCode, String scenarioPath) throws IOException;
 
     Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException;
