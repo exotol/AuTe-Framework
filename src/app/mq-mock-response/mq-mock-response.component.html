@@ -1,0 +1,20 @@
+<div>
+  <div class="row">
+    <div class="col-sm-6">
+      <input class="form-control" placeholder="{{'Source queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.sourceQueueName"/>
+    </div>
+    <div class="col-sm-6">
+      <input class="form-control" placeholder="{{'Destination queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.destinationQueueName"/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <label>{{'Response body' | translate}}</label>
+      <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="mqMockResponse.responseBody"></textarea>
+    </div>
+    <div class="col-sm-12">
+      <label>{{'Http URL' | translate}}</label>
+      <input class="form-control" placeholder="{{'Http url' | translate}}" title="" [(ngModel)]="mqMockResponse.httpUrl"/>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,4 @@
 export class StepParameter {
-  id: number;
   name: string;
   value: string;
 

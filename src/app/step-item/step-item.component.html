@@ -57,6 +57,12 @@
         <li [class.active]="tab == 'mq'">
           <a href="#" (click)="selectTab('mq')">{{'Message Queue' | translate}} <span *ngIf="step.mqName || step.mqMessage" class="glyphicon glyphicon-tag"></span></a>
         </li>
+        <li [class.active]="tab == 'mqMockResponseList'">
+          <a href="#" (click)="selectTab('mqMockResponseList')">{{'MQ mock responses' | translate}} <span *ngIf="step.mqMockResponseList && step.mqMockResponseList.length > 0" class="glyphicon glyphicon-tag"></span></a>
+        </li>
+        <li [class.active]="tab == 'expectedMqRequests'">
+          <a href="#" (click)="selectTab('expectedMqRequests')">{{'Expected MQ requests' | translate}} <span *ngIf="step.expectedMqRequestList && step.expectedMqRequestList.length > 0" class="glyphicon glyphicon-tag"></span></a>
+        </li>
         <li [class.active]="tab == 'polling'">
           <a href="#" (click)="selectTab('polling')">{{'Polling' | translate}} <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
         </li>
@@ -225,6 +231,36 @@
               <textarea class="form-control" placeholder="{{'Queue message' | translate}}" title="" rows="7" [(ngModel)]="step.mqMessage"></textarea>
             </div>
           </div>
+        </div>
+        <div *ngIf="tab == 'mqMockResponseList'">
+          <div class="row" *ngFor="let mqMockResponse of step.mqMockResponseList">
+            <div class="col-sm-1">
+              <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMqMockResponse(mqMockResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+            </div>
+            <div class="col-sm-11">
+              <app-mq-mock-response [mqMockResponse]="mqMockResponse"></app-mq-mock-response>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-default" (click)="addMqMockResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add MQ mock' | translate}}</button>
+        </div>
+        <div *ngIf="tab == 'expectedMqRequests'">
+          <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedMqRequest of step.expectedMqRequestList">
+            <div class="col-sm-12">
+              <div class="input-group" style="margin-bottom: 5px;">
+                <input placeholder="{{'Source queue name' | translate}} *" class="form-control" title="" [style.border-color]="expectedMqRequest.sourceQueue ? '' : 'red'" [(ngModel)]="expectedMqRequest.sourceQueue"/>
+                <span class="input-group-btn">
+                  <button class="btn" (click)="removeExpectedMqRequest(expectedMqRequest)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+                </span>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <input class="form-control" placeholder="{{'Ignored tags' | translate}}" style="margin-bottom: 5px;" title="" [(ngModel)]="expectedMqRequest.ignoredTags"/>
+                </div>
+              </div>
+              <textarea class="form-control" placeholder="{{'Expected MQ request' | translate}}" title="" rows="7" [(ngModel)]="expectedMqRequest.requestBody"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-default" (click)="addExpectedMqRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock MQ request' | translate}}</button>
         </div>
         <div *ngIf="tab == 'polling' || tab == 'all'">
           <div class="row">
