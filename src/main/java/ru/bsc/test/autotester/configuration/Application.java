@@ -33,12 +33,11 @@ public class Application {
 
             Set<String> loggers = new HashSet<>(Arrays.asList(
                     "org.apache.http",
-                    "ru.bsc.test.autotester.component.ProjectsSource",
                     "org.apache.commons.beanutils.converters"
             ));
 
             for (String log : loggers) {
-                Logger logger = (Logger)LoggerFactory.getLogger(log);
+                Logger logger = (Logger) LoggerFactory.getLogger(log);
                 logger.setLevel(Level.WARN);
                 logger.setAdditive(false);
             }

@@ -283,7 +283,7 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                     try {
                         project.getScenarioList().add(loadScenarioFromFiles(directory, null));
                     } catch (IOException e) {
-                        log.error("Read file " + scenarioYml.getAbsolutePath(), e);
+                        log.error("Read file {}", scenarioYml.getAbsolutePath(), e);
                     }
                 } else {
                     File[] innerFileList = directory.listFiles(File::isDirectory);
