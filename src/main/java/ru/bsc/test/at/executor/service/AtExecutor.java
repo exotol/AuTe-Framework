@@ -59,6 +59,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class AtExecutor {
     private static final int POLLING_RETRY_COUNT = 50;
     private static final int POLLING_RETRY_TIMEOUT_MS = 1000;
+    private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
     @Getter
@@ -490,7 +491,10 @@ public class AtExecutor {
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
                 mockDefinition.getResponse().setHeaders(new HashMap<>());
-                mockDefinition.getResponse().getHeaders().put("Content-Type", "text/xml");
+                String contentType = StringUtils.isNoneBlank(mockServiceResponse.getContentType()) ?
+                                     mockServiceResponse.getContentType() :
+                                     DEFAULT_CONTENT_TYPE;
+                mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
                 wireMockAdmin.addMapping(mockDefinition);
             }
