@@ -14,7 +14,7 @@ public class MqMockResponse implements AbstractModel {
     private String sourceQueueName;
     private String httpUrl;
     private String destinationQueueName;
-    private String XPath;
+    private String xPath;
 
     protected MqMockResponse copy() {
         MqMockResponse response = new MqMockResponse();
