@@ -28,7 +28,7 @@
         <td>{{request.request.method}}</td>
         <td>{{request.request.absoluteUrl}}</td>
         <td>{{request.response.status}}</td>
-        <td>{{request.request.headers.hasOwnProperty('testidheader') ? 'AT' : ''}}</td>
+        <td>{{request.request.headers.hasOwnProperty('testidheader') ? 'AT' : ''}}{{request.request.url.indexOf('/mq_') >= 0 ? ' MQ' : ''}}</td>
       </tr>
     </tbody>
   </table>
@@ -55,7 +55,7 @@
 
           <div [style.display]="tab == 'summary' || tab == 'all' ? '' : 'none'">
             <h3>Request body</h3>
-            <div style="overflow: scroll; height: auto; background-color: #eee;" class="form-control">{{selectedRequest.request.body}}</div>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.request.body}}</div>
             <h3>Response body</h3>
             <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.response.body}}</div>
           </div>

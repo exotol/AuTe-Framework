@@ -12,9 +12,12 @@ import {ToastyModule} from 'ng2-toasty';
 import { RequestListComponent } from './requests/request-list.component';
 import { MappingListComponent } from './mapping-list/mapping-list.component';
 import ObjNgFor from './pipe/obj-ng-for-pipe';
+import { MqLogComponent } from './mq-log/mq-log.component';
+import {MqMockerService} from '../service/mq-mocker-service';
 
 const routes: Routes = [
   { path: 'requests', component: RequestListComponent },
+  { path: 'mq-log', component: MqLogComponent },
   { path: 'mapping', component: MappingListComponent },
   { path: 'mapping/:uuid', component: MappingDetailComponent }
 ];
@@ -26,7 +29,8 @@ const routes: Routes = [
     InputNullComponent,
     RequestListComponent,
     MappingListComponent,
-    ObjNgFor
+    ObjNgFor,
+    MqLogComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +39,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { useHash: true }),
     ToastyModule.forRoot()
   ],
-  providers: [WireMockService],
+  providers: [WireMockService, MqMockerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

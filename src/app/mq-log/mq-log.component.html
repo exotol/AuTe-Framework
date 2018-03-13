@@ -1,0 +1,62 @@
+<button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="updateList()"><span class="glyphicon glyphicon-refresh"></span> Update request list</button>
+
+<div class="help-block" *ngIf="!selectedRequest && !mqLog">
+  Loading...
+</div>
+<div *ngIf="!selectedRequest && mqLog">
+  <table style="margin-top: 10px;" class="table table-hover">
+    <thead>
+    <tr>
+      <th>Time</th>
+      <th>Source queue</th>
+      <th>Destination queue</th>
+      <th>Http request url</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody style="cursor: pointer;">
+    <tr *ngFor="let request of mqLog" (click)="select(request)">
+      <td>{{request.date | date:'d MMM, y, HH:mm:ss'}}</td>
+      <td>{{request.sourceQueue}}</td>
+      <td>{{request.destinationQueue}}</td>
+      <td>{{request.httpRequestUrl}}</td>
+      <td>{{request.testId ? 'AT' : ''}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="margin: 10px;" *ngIf="selectedRequest">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="list-group">
+          <a style="overflow: hidden;" class="list-group-item" href="#" [class.active]="request === selectedRequest" *ngFor="let request of mqLog" (click)="select(request); false">{{request.sourceQueue}} > {{request.destinationQueue}}</a>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <button style="margin: 10px 0;" class="btn btn-default" (click)="select(null)"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
+        <h4>{{selectedRequest.sourceQueue}} > {{selectedRequest.destinationQueue}}</h4>
+        <small class="help-block">{{selectedRequest.date | date:'d MMM, y, HH:mm:ss'}}</small>
+
+        <div class="tab-content" style="padding: 10px;">
+
+          <div [style.display]="tab == 'summary' || tab == 'all' ? '' : 'none'">
+            <h3>{{selectedRequest.sourceQueue}} ></h3>
+            <small>Source queue body</small>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee; min-height: 80px;" class="form-control">{{selectedRequest.requestBody.substr(0, sourceTextLimit)}}</div>
+            <button *ngIf="selectedRequest.requestBody.length > sourceTextLimit" (click)="sourceTextLimit = 10000000">Показать все ({{(selectedRequest.requestBody.length / 1024).toFixed(0)}}kb)</button>
+            <h3>{{selectedRequest.destinationQueue}} <</h3>
+            <small>Destination queue body</small>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest.responseBody}}</div>
+          </div>
+
+          <div [style.display]="tab == 'json' || tab == 'all' ? '' : 'none'">
+            <h3>WireMock request details</h3>
+            <div style="overflow: scroll; height: auto; white-space: pre; background-color: #eee;" class="form-control">{{selectedRequest | json}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
