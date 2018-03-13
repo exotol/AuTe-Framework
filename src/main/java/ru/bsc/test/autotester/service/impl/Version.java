@@ -2,11 +2,13 @@ package ru.bsc.test.autotester.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author Pavel Golovkin
  */
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter

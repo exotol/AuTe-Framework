@@ -2,12 +2,15 @@ package ru.bsc.test.autotester.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.service.VersionService;
 
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Pavel Golovkin
@@ -19,9 +22,17 @@ public class VersionServiceImpl implements VersionService {
     private static final String BUILD_DATE = "builddate";
     private static final String MANAGER_VERSION_PROPERTIES = "version.properties";
     private static final String EXECUTOR_VERSION_PROPERTIES = "at-executor.version.properties";
+    private static final String WIREMOCK_VERSION_PATH = "__version";
+
+    private final List<WiremockVersion> wiremockVersions = new ArrayList<>();
 
     private Version managerVersion;
     private Version executorVersion;
+
+    @Autowired
+    public VersionServiceImpl(EnvironmentProperties env, RestTemplateBuilder builder) {
+        loadProjectsWiremockVersion(env, builder);
+    }
 
     @Override
     public Version getManagerVersion() {
@@ -31,11 +42,33 @@ public class VersionServiceImpl implements VersionService {
         return managerVersion;
     }
 
+    @Override
     public Version getExecutorVersion() {
         if (executorVersion == null) {
             executorVersion = findVersion(EXECUTOR_VERSION_PROPERTIES);
         }
         return executorVersion;
+    }
+
+    @Override
+    public List<WiremockVersion> getWiremockVersions() {
+        return wiremockVersions;
+    }
+
+    private void loadProjectsWiremockVersion(EnvironmentProperties env, RestTemplateBuilder builder) {
+        RestTemplate template = builder.build();
+        env.getProjectStandMap().forEach((projectName, properties) -> {
+            try {
+                if (StringUtils.isNotEmpty(properties.getWireMockUrl())) {
+                    String url = properties.getWireMockUrl() + WIREMOCK_VERSION_PATH;
+                    Version version = template.getForObject(url, Version.class);
+                    wiremockVersions.add(new WiremockVersion(projectName, version));
+                }
+            } catch (RestClientException e) {
+                wiremockVersions.add(new WiremockVersion(projectName, Version.unknown()));
+                log.error("Error while fetching project wiremock version", e);
+            }
+        });
     }
 
     private Version findVersion(String propertyFile) {
