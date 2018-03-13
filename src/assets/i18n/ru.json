@@ -124,5 +124,6 @@
   "Results": "Результаты",
   "Starting": "Запуск",
   "Stop": "Стоп",
-  "Get report on selected scenarios": "Скачать отчет по выбранным сценариям"
+  "Get report on selected scenarios": "Скачать отчет по выбранным сценариям",
+  "XPath message filter": "XPath фильтр сообщений"
 }

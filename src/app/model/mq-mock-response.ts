@@ -3,4 +3,5 @@ export class MqMockResponse {
   sourceQueueName: String;
   httpUrl: String;
   destinationQueueName: String;
+  xpath: String;
 }
