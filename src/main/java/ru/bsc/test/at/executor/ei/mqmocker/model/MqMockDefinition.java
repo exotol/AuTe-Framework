@@ -14,4 +14,5 @@ public class MqMockDefinition {
     private String responseBody;
     private String httpUrl;
     private String destinationQueueName;
+    private String XPath;
 }
