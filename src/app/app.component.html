@@ -24,6 +24,21 @@
 </nav>
 
 <router-outlet></router-outlet>
-
-<div class="help-block" *ngIf="version">{{version.implementationVersion}} {{version.implementationDate}}</div>
+<a data-toggle="collapse" href="#versions" aria-expanded="false" aria-controls="collapseExample">
+  {{'Versions' | translate}}
+</a>
+<div class="collapse " id="versions">
+  <div class="help-block" *ngIf="managerVersion">
+    <b>manager: </b>
+    {{managerVersion.implementationVersion}} {{managerVersion.implementationDate}}
+  </div>
+  <div class="help-block" *ngIf="executorVersion">
+    <b>executor: </b>
+    {{executorVersion.implementationVersion}} {{executorVersion.implementationDate}}
+  </div>
+  <div class="help-block" *ngFor="let version of projectsWiremockVersions">
+    <b>{{version.projectCode}} wiremock: </b>
+    {{version.version.implementationVersion}} {{version.version.implementationDate}}
+  </div>
+</div>
 <ng2-toasty [position]="'top-right'"></ng2-toasty>
