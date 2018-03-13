@@ -10,4 +10,5 @@ public class MqMockResponseRo {
     private String sourceQueueName;
     private String httpUrl;
     private String destinationQueueName;
+    private String xpath;
 }
