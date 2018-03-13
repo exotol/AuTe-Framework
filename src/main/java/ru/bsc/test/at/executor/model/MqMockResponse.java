@@ -14,7 +14,7 @@ public class MqMockResponse implements AbstractModel {
     private String sourceQueueName;
     private String httpUrl;
     private String destinationQueueName;
-    private String xPath;
+    private String xpath;
 
     protected MqMockResponse copy() {
         MqMockResponse response = new MqMockResponse();
@@ -22,7 +22,7 @@ public class MqMockResponse implements AbstractModel {
         response.setSourceQueueName(getSourceQueueName());
         response.setHttpUrl(getHttpUrl());
         response.setDestinationQueueName(getDestinationQueueName());
-        response.setXPath(getXPath());
+        response.setXpath(getXpath());
         return response;
     }
 }
