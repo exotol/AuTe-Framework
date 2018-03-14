@@ -16,4 +16,5 @@ public class MockServiceResponseRo implements AbstractRo {
     private String responseBody;
     private String responseBodyFile;
     private Integer httpStatus;
+    private String contentType;
 }

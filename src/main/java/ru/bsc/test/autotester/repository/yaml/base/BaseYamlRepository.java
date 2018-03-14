@@ -1,0 +1,243 @@
+package ru.bsc.test.autotester.repository.yaml.base;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
+import ru.bsc.test.at.executor.model.MockServiceResponse;
+import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.component.Translator;
+import ru.bsc.test.autotester.yaml.YamlUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+/**
+ * Created by smakarov
+ * 05.03.2018 13:56
+ */
+@Slf4j
+public abstract class BaseYamlRepository {
+    protected static final String MAIN_YML_FILENAME = "main.yml";
+    protected static final String SCENARIO_YML_FILENAME = "scenario.yml";
+    private static final String FILE_ENCODING = "UTF-8";
+    private static final String REQUEST_JSON = "request.json";
+
+    protected final Translator translator;
+
+    public BaseYamlRepository(Translator translator) {
+        this.translator = translator;
+    }
+
+    protected void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
+        File scenarioRootDirectory = scenarioFile.getParentFile();
+        int i = 1;
+        Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
+        for (Step step : scenario.getStepList()) {
+            if (step.getCode() == null) {
+                String newCode = null;
+                if (step.getStepComment() != null) {
+                    String transliterated = translator.translate(step.getStepComment());
+                    if (StringUtils.isNotEmpty(transliterated)) {
+                        newCode = String.valueOf(i) + "-" + transliterated;
+                    }
+                }
+                if (StringUtils.isEmpty(newCode)) {
+                    newCode = String.valueOf(i);
+                }
+                int j = 2;
+                while (codeSet.contains(newCode)) {
+                    newCode = String.valueOf(i) + "-" + String.valueOf(j);
+                    j++;
+                }
+                step.setCode(newCode);
+                codeSet.add(newCode);
+            }
+            i++;
+        }
+
+        for (Step step : scenario.getStepList()) {
+            saveStepToFiles(step.getCode(), step, scenarioRootDirectory);
+        }
+        String scenarioGroupSaved = scenario.getScenarioGroup();
+        scenario.setScenarioGroup(null);
+        YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
+        scenario.setScenarioGroup(scenarioGroupSaved);
+    }
+
+    protected void loadStepFromFiles(Step step, File scenarioRootDirectory) {
+        if (step.getRequestFile() != null && step.getRequest() == null) {
+            step.setRequest(readFile(scenarioRootDirectory + "/" + step.getRequestFile()));
+        }
+        if (step.getExpectedResponseFile() != null && step.getExpectedResponse() == null) {
+            step.setExpectedResponse(readFile(scenarioRootDirectory + "/" + step.getExpectedResponseFile()));
+        }
+        if (step.getMqMessageFile() != null && step.getMqMessage() == null) {
+            step.setMqMessage(readFile(scenarioRootDirectory + "/" + step.getMqMessageFile()));
+        }
+
+        step.getMockServiceResponseList().forEach(mockServiceResponse -> {
+            if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
+                mockServiceResponse.setResponseBody(readFile(scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile()));
+            }
+        });
+
+        step.getExpectedServiceRequests().forEach(expectedServiceRequest -> {
+            if (expectedServiceRequest.getExpectedServiceRequestFile() != null && expectedServiceRequest.getExpectedServiceRequest() == null) {
+                expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile()));
+            }
+        });
+    }
+
+    protected String scenarioPath(Scenario scenario) {
+        String result = "";
+        if (scenario != null) {
+            if (scenario.getScenarioGroup() != null) {
+                result += scenario.getScenarioGroup() + "/";
+            }
+            if (scenario.getCode() == null) {
+                // TODO Проверять, существует ли такая директория
+                scenario.setCode(translator.translate(scenario.getName()));
+            }
+            result += scenario.getCode() + "/";
+        } else {
+            result = "0/";
+        }
+        return result;
+    }
+
+    private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
+        if (step.getCode() != null) {
+            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
+        }
+        step.setCode(StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode);
+
+        if (step.getRequest() != null) {
+            try {
+                if (step.getRequestFile() == null) {
+                    step.setRequestFile(stepPath(step) + REQUEST_JSON);
+                }
+                File file = new File(scenarioRootDirectory + "/" + step.getRequestFile());
+                FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
+                step.setRequest(null);
+            } catch (IOException e) {
+                log.error("Save file " + scenarioRootDirectory + "/" + step.getRequestFile(), e);
+            }
+        } else {
+            step.setRequestFile(null);
+        }
+
+        if (step.getExpectedResponse() != null) {
+            try {
+                if (step.getExpectedResponseFile() == null) {
+                    step.setExpectedResponseFile(stepPath(step) + stepExpectedResponseFile(step));
+                }
+                File file = new File(scenarioRootDirectory + "/" + step.getExpectedResponseFile());
+                FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
+                step.setExpectedResponse(null);
+            } catch (IOException e) {
+                log.error("Save file " + scenarioRootDirectory + "/" + step.getExpectedResponseFile(), e);
+            }
+        } else {
+            step.setExpectedResponseFile(null);
+        }
+
+        if (step.getMqMessage() != null) {
+            try {
+                if (step.getMqMessageFile() == null) {
+                    step.setMqMessageFile(stepPath(step) + stepMqMessageFile(step));
+                }
+                File file = new File(scenarioRootDirectory + "/" + step.getMqMessageFile());
+                FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
+                step.setMqMessage(null);
+            } catch (IOException e) {
+                log.error("Save file " + scenarioRootDirectory + "/" + step.getMqMessageFile(), e);
+            }
+        } else {
+            step.setMqMessageFile(null);
+        }
+
+        step.getMockServiceResponseList().forEach(mockServiceResponse -> {
+            if (mockServiceResponse.getResponseBody() != null) {
+                try {
+                    if (mockServiceResponse.getResponseBodyFile() == null) {
+                        mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse));
+                    }
+                    File file = new File(scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile());
+                    FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
+                    mockServiceResponse.setResponseBody(null);
+                } catch (IOException e) {
+                    log.error("Save file " + scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile(), e);
+                }
+            } else {
+                mockServiceResponse.setResponseBodyFile(null);
+            }
+        });
+
+        step.getExpectedServiceRequests().forEach(expectedServiceRequest -> {
+            if (expectedServiceRequest.getExpectedServiceRequest() != null) {
+                try {
+                    if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
+                        expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest));
+                    }
+                    File file = new File(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
+                    FileUtils.writeStringToFile(
+                            file,
+                            expectedServiceRequest.getExpectedServiceRequest(),
+                            FILE_ENCODING
+                    );
+                    expectedServiceRequest.setExpectedServiceRequest(null);
+                } catch (IOException e) {
+                    log.error("Save file " + scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile(), e);
+                }
+            } else {
+                expectedServiceRequest.setExpectedServiceRequest(null);
+            }
+        });
+    }
+
+    private String readFile(String path) {
+        try {
+            File file = new File(path);
+            return FileUtils.readFileToString(file, FILE_ENCODING);
+        } catch (IOException e) {
+            log.error("Reading file {}", path, e);
+        }
+        return null;
+    }
+
+    private String stepPath(Step step) {
+        return "steps/" + step.getCode() + "/";
+    }
+
+    private String stepExpectedResponseFile(Step step) {
+        return "expected-response." + extByContent(step.getExpectedResponse());
+    }
+
+    private String stepMqMessageFile(Step step) {
+        return "mq-message." + extByContent(step.getMqMessage());
+    }
+
+    private String mockResponseBodyFile(MockServiceResponse mockServiceResponse) {
+        if (mockServiceResponse.getCode() == null) {
+            mockServiceResponse.setCode(UUID.randomUUID().toString());
+        }
+        return "mock-response-" + mockServiceResponse.getCode() + "." + extByContent(mockServiceResponse.getResponseBody());
+    }
+
+    private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest) {
+        if (expectedServiceRequest.getCode() == null) {
+            expectedServiceRequest.setCode(UUID.randomUUID().toString());
+        }
+        return "expected-service-request-" + expectedServiceRequest.getCode() + "." + extByContent(
+                expectedServiceRequest.getExpectedServiceRequest());
+    }
+
+    private String extByContent(String content) {
+        return content != null && content.indexOf('<') == 0 ? "xml" : "json";
+    }
+}

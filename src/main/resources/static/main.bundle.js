@@ -16,7 +16,7 @@ webpackEmptyContext.id = "../../../../../src async recursive";
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">BSC AutoTester</a>\r\n    </div>\r\n    <div class=\"navbar-locale\">\r\n      <select [(ngModel)]=\"locale\" (change)=\"changeLocale()\">\r\n        <option *ngFor=\"let lang of langs\" [value]=\"lang\">{{lang}}</option>\r\n      </select>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/']\">{{'Projects' | translate}}</a></li>\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/help']\">{{'Help' | translate}}</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<router-outlet></router-outlet>\r\n\r\n<div class=\"help-block\" *ngIf=\"version\">{{version.implementationVersion}} {{version.implementationDate}}</div>\r\n<ng2-toasty [position]=\"'top-right'\"></ng2-toasty>\r\n"
+module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\" href=\"#\">BSC AutoTester</a>\r\n    </div>\r\n    <div class=\"navbar-locale\">\r\n      <select [(ngModel)]=\"locale\" (change)=\"changeLocale()\">\r\n        <option *ngFor=\"let lang of langs\" [value]=\"lang\">{{lang}}</option>\r\n      </select>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/']\">{{'Projects' | translate}}</a></li>\r\n        <li [routerLinkActive]=\"'active'\"><a [routerLink]=\"['/help']\">{{'Help' | translate}}</a></li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<router-outlet></router-outlet>\r\n<a data-toggle=\"collapse\" href=\"#versions\" aria-expanded=\"false\" aria-controls=\"collapseExample\">\r\n  {{'Versions' | translate}}\r\n</a>\r\n<div class=\"collapse \" id=\"versions\">\r\n  <div class=\"help-block\" *ngIf=\"managerVersion\">\r\n    <b>manager: </b>\r\n    {{managerVersion.implementationVersion}} {{managerVersion.implementationDate}}\r\n  </div>\r\n  <div class=\"help-block\" *ngIf=\"executorVersion\">\r\n    <b>executor: </b>\r\n    {{executorVersion.implementationVersion}} {{executorVersion.implementationDate}}\r\n  </div>\r\n  <div class=\"help-block\" *ngFor=\"let version of projectsWiremockVersions\">\r\n    <b>{{version.projectCode}} wiremock: </b>\r\n    {{version.version.implementationVersion}} {{version.version.implementationDate}}\r\n  </div>\r\n</div>\r\n<ng2-toasty [position]=\"'top-right'\"></ng2-toasty>\r\n"
 
 /***/ }),
 
@@ -70,7 +70,9 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.versionService.getVersion().subscribe(function (version) { return _this.version = version; });
+        this.versionService.getManagerVersion().subscribe(function (version) { return _this.managerVersion = version; });
+        this.versionService.getExecutorVersion().subscribe(function (version) { return _this.executorVersion = version; });
+        this.versionService.getProjectsWiremockVersions().subscribe(function (version) { return _this.projectsWiremockVersions = version; });
     };
     AppComponent.prototype.changeLocale = function () {
         this.translate.use(this.locale);
@@ -303,7 +305,7 @@ HelpComponent = __decorate([
 /***/ "../../../../../src/app/mock-service-response/mock-service-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-8\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"Content-Type: application/json, text/xml\" title=\"\" [(ngModel)]=\"mockServiceResponse.contentType\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1790,11 +1792,22 @@ var VersionService = (function () {
     function VersionService(globals, http) {
         this.globals = globals;
         this.http = http;
-        this.serviceUrl = '/rest/version';
+        this.managerServiceUrl = '/rest/version/manager';
+        this.executorServiceUrl = '/rest/version/executor';
+        this.wiremockServiceUrl = '/rest/version/wiremock';
     }
-    VersionService.prototype.getVersion = function () {
-        return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl)
+    VersionService.prototype.getManagerVersion = function () {
+        return this.getVersion(this.managerServiceUrl);
+    };
+    VersionService.prototype.getExecutorVersion = function () {
+        return this.getVersion(this.executorServiceUrl);
+    };
+    VersionService.prototype.getProjectsWiremockVersions = function () {
+        return this.http.get(this.globals.serviceBaseUrl + this.wiremockServiceUrl)
             .map(function (value) { return value.json(); });
+    };
+    VersionService.prototype.getVersion = function (url) {
+        return this.http.get(this.globals.serviceBaseUrl + url).map(function (value) { return value.json(); });
     };
     return VersionService;
 }());
