@@ -4,6 +4,8 @@ import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {ExpectedServiceRequest} from '../model/expected-service-request';
 import {FormData} from '../model/form-data';
+import {MqMockResponse} from "../model/mq-mock-response";
+import {ExpectedMqRequest} from "../model/expected-mq-request";
 
 @Component({
   selector: 'app-step-item',
@@ -62,6 +64,13 @@ export class StepItemComponent implements OnInit {
     this.step.mockServiceResponseList.push(new MockServiceResponse());
   }
 
+  addMqMockResponse() {
+    if (!this.step.mqMockResponseList) {
+      this.step.mqMockResponseList = [];
+    }
+    this.step.mqMockResponseList.push(new MqMockResponse());
+  }
+
   removeMockServiceResponse(mockServiceResponse: MockServiceResponse) {
     if (confirm('Confirm: remove mock response')) {
       const indexToRemove = this.step.mockServiceResponseList.indexOf(mockServiceResponse);
@@ -112,11 +121,27 @@ export class StepItemComponent implements OnInit {
     this.step.expectedServiceRequestList.push(new ExpectedServiceRequest());
   }
 
+  addExpectedMqRequest() {
+    if (!this.step.expectedMqRequestList) {
+      this.step.expectedMqRequestList = [];
+    }
+    this.step.expectedMqRequestList.push(new ExpectedMqRequest());
+  }
+
   removeExpectedServiceRequest(expectedServiceRequest: ExpectedServiceRequest) {
     if (confirm('Confirm: remove expected service request')) {
       const indexToRemove = this.step.expectedServiceRequestList.indexOf(expectedServiceRequest);
       if (indexToRemove > -1) {
         this.step.expectedServiceRequestList.splice(indexToRemove, 1);
+      }
+    }
+  }
+
+  removeExpectedMqRequest(expectedMqRequest: ExpectedMqRequest) {
+    if (confirm('Confirm: remove expected MQ request')) {
+      const indexToRemove = this.step.expectedMqRequestList.indexOf(expectedMqRequest);
+      if (indexToRemove > -1) {
+        this.step.expectedMqRequestList.splice(indexToRemove, 1);
       }
     }
   }
@@ -153,5 +178,12 @@ export class StepItemComponent implements OnInit {
       this.step.formDataList = [];
     }
     this.step.formDataList.push(new FormData());
+  }
+
+  removeMqMockResponse(mqMockResponse: MqMockResponse) {
+    const indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
+    if (indexToRemove > -1) {
+      this.step.mqMockResponseList.splice(indexToRemove, 1);
+    }
   }
 }

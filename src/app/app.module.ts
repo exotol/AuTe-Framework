@@ -30,6 +30,7 @@ import {SearchScenarioService} from './service/search-scenario.service';
 import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
 import {TextSelectDirective} from './shared/directives/text-select.directive';
 import { HelpComponent } from './help/help.component';
+import { MqMockResponseComponent } from './mq-mock-response/mq-mock-response.component';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http);
@@ -64,7 +65,8 @@ const routes: Routes = [
     SyncScrollDirective,
     SearchComponent,
     TextSelectDirective,
-    HelpComponent
+    HelpComponent,
+    MqMockResponseComponent
   ],
   imports: [
     BrowserModule,

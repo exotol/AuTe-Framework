@@ -57,7 +57,7 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   addGroup(): void {
-    let newGroupName: String;
+    let newGroupName: string;
     if ((newGroupName = prompt('New group name')) && newGroupName && newGroupName.length > 0) {
       const toasty = this.customToastyService.saving('Сохранение группы...', 'Сохранение может занять некоторое время...');
       this.projectService.addNewGroup(this.project.code, newGroupName)
@@ -71,8 +71,8 @@ export class ProjectSettingsComponent implements OnInit {
     }
   }
 
-  renameGroup(oldGroupName: String) {
-    let newGroupName: String;
+  renameGroup(oldGroupName: string) {
+    let newGroupName: string;
     if ((newGroupName = prompt('Rename group', oldGroupName.toString())) && newGroupName && newGroupName.length > 0) {
       const toasty = this.customToastyService.saving('Сохранение группы...', 'Сохранение может занять некоторое время...');
       this.projectService.renameGroup(this.project.code, oldGroupName, newGroupName)

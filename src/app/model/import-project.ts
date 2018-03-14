@@ -1,4 +1,4 @@
 export class ImportProject {
-  projectCode: String;
-  yamlContent: String;
+  projectCode: string;
+  yamlContent: string;
 }

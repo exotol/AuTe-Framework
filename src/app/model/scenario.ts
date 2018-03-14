@@ -3,7 +3,7 @@ export class Scenario {
   projectCode: string;
   projectName: string;
   name: string;
-  scenarioGroup: String;
+  scenarioGroup: string;
 
   beforeScenarioIgnore: boolean;
   afterScenarioIgnore: boolean;

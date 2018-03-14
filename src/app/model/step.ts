@@ -2,9 +2,11 @@ import {ExpectedServiceRequest} from './expected-service-request';
 import {MockServiceResponse} from './mock-service-response';
 import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
+import {MqMockResponse} from './mq-mock-response';
+import {ExpectedMqRequest} from './expected-mq-request';
 
 export class Step {
-  code: String;
+  code: string;
   expectedServiceRequestList: ExpectedServiceRequest[];
   relativeUrl: string;
   requestMethod: string;
@@ -29,11 +31,13 @@ export class Step {
   multipartFormData: boolean;
   mqName: string;
   mqMessage: string;
-  jsonCompareMode: String;
-  script: String;
-  numberRepetitions: String;
-  parseMockRequestUrl: String;
-  parseMockRequestXPath: String;
-  parseMockRequestScenarioVariable: String;
-  timeoutMs: String;
+  jsonCompareMode: string;
+  script: string;
+  numberRepetitions: string;
+  parseMockRequestUrl: string;
+  parseMockRequestXPath: string;
+  parseMockRequestScenarioVariable: string;
+  timeoutMs: string;
+  mqMockResponseList: MqMockResponse[];
+  expectedMqRequestList: ExpectedMqRequest[];
 }

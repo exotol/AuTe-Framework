@@ -3,12 +3,12 @@ import {AmqpBroker} from './amqp-broker';
 
 export class Project {
   name: string;
-  beforeScenarioPath: String;
-  afterScenarioPath: String;
+  beforeScenarioPath: string;
+  afterScenarioPath: string;
   code: string;
   stand: Stand;
   useRandomTestId: boolean;
   testIdHeaderName: string;
   amqpBroker: AmqpBroker;
-  groupList: String[];
+  groupList: string[];
 }

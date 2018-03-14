@@ -1,7 +1,7 @@
 import {Step} from './step';
 
 export class StepResult {
-  testId: String;
+  testId: string;
   step: Step;
   result: string;
 
@@ -14,5 +14,5 @@ export class StepResult {
   savedParameters: string;
   description: string;
   editable: boolean;
-  cookies: String;
+  cookies: string;
 }
