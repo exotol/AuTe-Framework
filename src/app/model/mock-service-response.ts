@@ -3,4 +3,5 @@ export class MockServiceResponse {
   serviceUrl: string;
   responseBody: string;
   httpStatus: number;
+  contentType: number;
 }
