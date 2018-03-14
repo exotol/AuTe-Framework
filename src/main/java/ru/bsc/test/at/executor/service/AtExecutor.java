@@ -62,6 +62,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class AtExecutor {
     private static final int POLLING_RETRY_COUNT = 50;
     private static final int POLLING_RETRY_TIMEOUT_MS = 1000;
+    private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
     private final MqMockHelper mqMockHelper = new MqMockHelper();
@@ -164,6 +165,20 @@ public class AtExecutor {
                 .orElse(null);
     }
 
+    private long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+        long result;
+        try {
+            result = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            try {
+                result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
+            } catch (NumberFormatException ex) {
+                result = defaultValue;
+            }
+        }
+        return result;
+    }
+
     private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
         if (stepList == null) {
             return;
@@ -184,8 +199,11 @@ public class AtExecutor {
                     stepResultList.add(stepResult);
 
                     // COM-123 Timeout
-                    if (step.getTimeoutMs() != null && step.getTimeoutMs() > 0) {
-                        Thread.sleep(Math.min(step.getTimeoutMs(), 60000L));
+                    if (step.getTimeoutMs() != null) {
+                        long timeout = parseLongOrVariable(scenarioVariables, step.getTimeoutMs(), 0);
+                        if (timeout > 0) {
+                            Thread.sleep(Math.min(timeout, 60000L));
+                        }
                     }
 
                     if (stepParameterSet.getStepParameterList() != null) {
@@ -260,16 +278,7 @@ public class AtExecutor {
         String requestHeaders = insertSavedValues(step.getRequestHeaders(), scenarioVariables);
 
         // 2.4 Cyclic sending request, COM-84
-        int numberRepetitions;
-        try {
-            numberRepetitions = Integer.parseInt(step.getNumberRepetitions());
-        } catch (NumberFormatException e) {
-            try {
-                numberRepetitions = Integer.parseInt(String.valueOf(scenarioVariables.get(step.getNumberRepetitions())));
-            } catch (NumberFormatException ex) {
-                numberRepetitions = 1;
-            }
-        }
+        long numberRepetitions = parseLongOrVariable(scenarioVariables, step.getNumberRepetitions(), 1);
         numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
 
         for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
@@ -326,9 +335,6 @@ public class AtExecutor {
                     scriptEngine.put("response", responseData);
 
                     scriptEngine.eval(step.getScript());
-
-                    // Привести все переменные сценария к строковому типу
-                    scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
 
                     StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
                     if (isNotEmpty(stepStatus.getException())) {
@@ -498,7 +504,10 @@ public class AtExecutor {
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
                 mockDefinition.getResponse().setHeaders(new HashMap<>());
-                mockDefinition.getResponse().getHeaders().put("Content-Type", "text/xml");
+                String contentType = StringUtils.isNoneBlank(mockServiceResponse.getContentType()) ?
+                                     mockServiceResponse.getContentType() :
+                                     DEFAULT_CONTENT_TYPE;
+                mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
                 wireMockAdmin.addMapping(mockDefinition);
             }

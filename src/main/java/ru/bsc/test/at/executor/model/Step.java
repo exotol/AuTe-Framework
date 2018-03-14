@@ -46,7 +46,7 @@ public class Step implements Serializable, AbstractModel {
     private String parseMockRequestUrl;
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
-    private Long timeoutMs;
+    private String timeoutMs;
     private List<MqMockResponse> mqMockResponseList;
     private List<ExpectedMqRequest> expectedMqRequestList;
 
@@ -109,5 +109,26 @@ public class Step implements Serializable, AbstractModel {
 
     public Boolean getMultipartFormData() {
         return multipartFormData != null && multipartFormData;
+    }
+
+    public List<MockServiceResponse> getMockServiceResponseList() {
+        if (mockServiceResponseList == null) {
+            mockServiceResponseList = new LinkedList<>();
+        }
+        return mockServiceResponseList;
+    }
+
+    public List<ExpectedServiceRequest> getExpectedServiceRequests() {
+        if (expectedServiceRequests == null) {
+            expectedServiceRequests = new LinkedList<>();
+        }
+        return expectedServiceRequests;
+    }
+
+    public List<StepParameterSet> getStepParameterSetList() {
+        if (stepParameterSetList == null) {
+            stepParameterSetList = new LinkedList<>();
+        }
+        return stepParameterSetList;
     }
 }
