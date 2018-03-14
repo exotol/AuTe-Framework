@@ -1,7 +1,7 @@
 export class MqMockResponse {
-  responseBody: String;
-  sourceQueueName: String;
-  httpUrl: String;
-  destinationQueueName: String;
-  xpath: String;
+  responseBody: string;
+  sourceQueueName: string;
+  httpUrl: string;
+  destinationQueueName: string;
+  xpath: string;
 }

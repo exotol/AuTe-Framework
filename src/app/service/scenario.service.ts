@@ -20,7 +20,7 @@ export class ScenarioService {
     private http: Http
   ) { }
 
-  run(projectCode: String, scenario: Scenario): Observable<StartScenarioInfo> {
+  run(projectCode: string, scenario: Scenario): Observable<StartScenarioInfo> {
     const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.post(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/start',
@@ -43,21 +43,21 @@ export class ScenarioService {
     );
   }
 
-  findOne(projectCode: String, scenarioGroup: String, scenarioCode: String): Observable<Scenario> {
+  findOne(projectCode: string, scenarioGroup: string, scenarioCode: string): Observable<Scenario> {
     const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http
       .get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath)
       .map(value => value.json() as Scenario);
   }
 
-  findScenarioSteps(projectCode: String, scenarioGroup: String, scenarioCode: String): Observable<Step[]> {
+  findScenarioSteps(projectCode: string, scenarioGroup: string, scenarioCode: string): Observable<Step[]> {
     const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http
       .get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps')
       .map(value => value.json() as Step[]);
   }
 
-  saveStepList(projectCode: String, scenario: Scenario, stepList: Step[]): Observable<Step[]> {
+  saveStepList(projectCode: string, scenario: Scenario, stepList: Step[]): Observable<Step[]> {
     const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps',
@@ -66,7 +66,7 @@ export class ScenarioService {
     ).map(value => value.json() as Step[]);
   }
 
-  saveOne(projectCode: String, scenario: Scenario): Observable<Scenario> {
+  saveOne(projectCode: string, scenario: Scenario): Observable<Scenario> {
     const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath,
@@ -75,7 +75,7 @@ export class ScenarioService {
     ).map(value => value.json() as Scenario);
   }
 
-  deleteOne(projectCode: String, scenario: Scenario): Observable<any> {
+  deleteOne(projectCode: string, scenario: Scenario): Observable<any> {
     const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
     return this.http.delete(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath

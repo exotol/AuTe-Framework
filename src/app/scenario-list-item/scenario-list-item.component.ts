@@ -14,7 +14,7 @@ export class ScenarioListItemComponent implements OnInit {
   @Input()
   scenario: Scenario;
   @Input()
-  projectCode: String;
+  projectCode: string;
   @Input()
   isLinkTitleScenario = true;
   @Output() onStateChange = new EventEmitter<any>();

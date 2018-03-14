@@ -15,7 +15,7 @@ export class ScenarioSettingsComponent implements OnInit {
 
   scenario: Scenario;
   project: Project;
-  projectCode: String;
+  projectCode: string;
 
   constructor(
     private router: Router,

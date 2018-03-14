@@ -16,7 +16,7 @@ export class StepService {
     private http: Http
   ) { }
 
-  saveStep(projectCode: String, scenarioGroup: String, scenarioCode: String, step: Step): Observable<Step> {
+  saveStep(projectCode: string, scenarioGroup: string, scenarioCode: string, step: Step): Observable<Step> {
     const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code,
@@ -25,7 +25,7 @@ export class StepService {
     ).map(value => value.json() as Step);
   }
 
-  cloneStep(projectCode: String, scenarioGroup: String, scenarioCode: String, step: Step): Observable<Step> {
+  cloneStep(projectCode: string, scenarioGroup: string, scenarioCode: string, step: Step): Observable<Step> {
     const scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
     return this.http.post(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code + '/clone',

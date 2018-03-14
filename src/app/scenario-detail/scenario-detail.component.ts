@@ -16,7 +16,7 @@ export class ScenarioDetailComponent implements OnInit {
 
   scenario: Scenario;
   stepList: Step[];
-  projectCode: String;
+  projectCode: string;
 
   constructor(
     private router: Router,

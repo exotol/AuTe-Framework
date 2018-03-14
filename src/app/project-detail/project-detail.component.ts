@@ -24,7 +24,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   failCount = 0;
   Math: any;
   newScenarioName = '';
-  scenarioGroupList: String[] = [];
+  scenarioGroupList: string[] = [];
 
   @ViewChildren(ScenarioListItemComponent) scenarioComponentList: QueryList<ScenarioListItemComponent>;
   executingStateExecuted = 0;
@@ -75,7 +75,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.updateFailCountSum();
   }
 
-  selectGroup(group?: String): boolean {
+  selectGroup(group?: string): boolean {
     this.filter = new Scenario();
     this.filter.scenarioGroup = group;
 

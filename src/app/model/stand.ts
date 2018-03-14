@@ -4,5 +4,5 @@ export class Stand {
   dbUser: string;
   dbPassword: string;
   wireMockUrl: string;
-  mqMockUrl: String;
+  mqMockUrl: string;
 }

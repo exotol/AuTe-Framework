@@ -23,7 +23,7 @@ export class StepResultItemComponent implements OnInit {
   scenario: Scenario;
 
   tab = 'details';
-  projectCode: String;
+  projectCode: string;
   displayDetails = false;
 
   constructor(

@@ -1,5 +1,5 @@
 export class ExpectedMqRequest {
-  sourceQueue: String;
-  requestBody: String;
-  ignoredTags: String;
+  sourceQueue: string;
+  requestBody: string;
+  ignoredTags: string;
 }
