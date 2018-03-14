@@ -72,17 +72,19 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList) {
+        loadBeforeAndAfterScenarios(project, scenarioList);
         StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
-        ExecutionResult executionResult = new ExecutionResult();Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
+        ExecutionResult executionResult = new ExecutionResult();
+        Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
         executionResult.setScenarioStepResultListMap(resultMap);
         final String runningUuid = UUID.randomUUID().toString();
         startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, executionResult);
 
         new Thread(() -> atExecutor.executeScenarioList(project, scenarioList,
-        resultMap,
+                resultMap,
                 () -> {
                     boolean stop = stopExecutingSet.contains(runningUuid);
                     if (stop) {
@@ -91,23 +93,37 @@ public class ScenarioServiceImpl implements ScenarioService {
                     return stop;
                 },
                 scenarioResultListMap -> {
-                    executionResult.setFinished(true);synchronized (projectService) {
-            scenarioResultListMap.forEach((scenario, stepResults) -> {
-                String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ? "" : scenario.getScenarioGroup() + "/") + scenario.getCode();
-                try {
-                    Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                    scenarioToUpdate.setFailed(
-                            stepResults
-                                    .stream()
-                                    .anyMatch(stepResult -> StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+                    executionResult.setFinished(true);
+                    synchronized (projectService) {
+                        scenarioResultListMap.forEach((scenario, stepResults) -> {
+                            String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ?
+                                                   "" :
+                                                   scenario.getScenarioGroup() + "/") + scenario.getCode();
+                            try {
+                                Scenario scenarioToUpdate = scenarioRepository.findScenario(
+                                        project.getCode(),
+                                        scenarioPath
+                                );
+                                scenarioToUpdate.setFailed(
+                                        stepResults
+                                                .stream()
+                                                .anyMatch(stepResult ->
+                                                        StepResult.RESULT_FAIL.equals(stepResult.getResult()))
 
-                    );
-                    scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
-                } catch (IOException e) {
-                    log.error("", e);
+                                );
+                                scenarioRepository.saveScenario(
+                                        project.getCode(),
+                                        scenarioPath,
+                                        scenarioToUpdate,
+                                        false
+                                );
+                            } catch (IOException e) {
+                                log.error("", e);
+                            }
+                        });
+                    }
                 }
-            });}
-                })).start();
+        )).start();
         return startScenarioInfoRo;
     }
 
@@ -262,6 +278,31 @@ public class ScenarioServiceImpl implements ScenarioService {
             Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
             newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario, false);
             return projectRoMapper.scenarioToScenarioRo(projectCode, newScenario);
+        }
+    }
+
+    private void loadBeforeAndAfterScenarios(Project project, List<Scenario> scenarioList) {
+        for (Scenario scenario : scenarioList) {
+            try {
+                if (!scenario.getBeforeScenarioIgnore()) {
+                    project.getScenarioList().add(scenarioRepository.findScenario(
+                            project.getCode(),
+                            project.getBeforeScenarioPath()
+                    ));
+                }
+            } catch (IOException e) {
+                log.error("Error while loading before scenario", e);
+            }
+            try {
+                if (!scenario.getAfterScenarioIgnore()) {
+                    project.getScenarioList().add(scenarioRepository.findScenario(
+                            project.getCode(),
+                            project.getAfterScenarioPath()
+                    ));
+                }
+            } catch (IOException e) {
+                log.error("Error while loading after scenario", e);
+            }
         }
     }
 }
