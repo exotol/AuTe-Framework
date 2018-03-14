@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.autotester.service.VersionService;
 import ru.bsc.test.autotester.service.impl.Version;
+import ru.bsc.test.autotester.service.impl.WiremockVersion;
+
+import java.util.List;
 
 /**
  * Created by sdoroshin on 23.10.2017.
@@ -31,5 +34,10 @@ public class RestVersionController {
     @RequestMapping(value = "/executor", method = RequestMethod.GET)
     public Version executorVersion() {
         return versionService.getExecutorVersion();
+    }
+
+    @RequestMapping(value = "/wiremock", method = RequestMethod.GET)
+    public List<WiremockVersion> getWiremockVersions() {
+        return versionService.getWiremockVersions();
     }
 }

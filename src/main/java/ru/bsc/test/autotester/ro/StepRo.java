@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.ro;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,17 +31,17 @@ public class StepRo implements AbstractRo {
     private String requestBodyType;
     private Boolean usePolling;
     private String pollingJsonXPath;
-    private List<MockServiceResponseRo> mockServiceResponseList;
+    private List<MockServiceResponseRo> mockServiceResponseList = new ArrayList<>();
     private Boolean disabled;
     private String stepComment;
     private Map<String, String> savedValuesCheck;
-    private List<StepParameterSetRo> stepParameterSetList;
-    private List<ExpectedServiceRequestRo> expectedServiceRequestList;
+    private List<StepParameterSetRo> stepParameterSetList = new ArrayList<>();
+    private List<ExpectedServiceRequestRo> expectedServiceRequestList = new ArrayList<>();
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
     private String responseCompareMode;
-    private List<FormDataRo> formDataList;
+    private List<FormDataRo> formDataList= new ArrayList<>();
     private Boolean multipartFormData;
     private String jsonCompareMode;
     private String script;

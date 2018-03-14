@@ -253,8 +253,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public List<Scenario> findAllByProject(String projectCode) {
-        Project project = projectService.findOne(projectCode);
-        return project.getScenarioList();
+        return scenarioRepository.findScenarios(projectCode);
     }
 
     @Override

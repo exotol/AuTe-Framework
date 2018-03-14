@@ -4,13 +4,16 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
-import ru.bsc.test.autotester.component.ProjectsSource;
+import ru.bsc.test.autotester.component.impl.LimitTransliterationTranslator;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.report.AllureReportGenerator;
+import ru.bsc.test.autotester.repository.ProjectRepository;
+import ru.bsc.test.autotester.repository.yaml.YamlProjectRepositoryImpl;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,20 +22,19 @@ import java.util.Map;
 public class TestLauncher {
 
     public void launch() throws Exception {
-
-        EnvironmentProperties environmentProperties = YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
-
-        ProjectsSource projectsSource = new ProjectsSource();
-        projectsSource.setEnvironmentProperties(environmentProperties);
-        List<Project> projectList = projectsSource.getProjectList();
+        EnvironmentProperties properties = YamlUtils.loadAs(new File("env.yml"), EnvironmentProperties.class);
+        ProjectRepository projectRepository = new YamlProjectRepositoryImpl(
+                properties,
+                new LimitTransliterationTranslator()
+        );
+        List<Project> projectList = projectRepository.findAllProjectsWithScenarios();
         AbstractReportGenerator reportGenerator = new AllureReportGenerator();
-
         int testFailedCount = projectList.stream().mapToInt(project -> {
-            if (environmentProperties.getProjectStandMap() == null || !environmentProperties.getProjectStandMap().containsKey(project.getCode())) {
+            if (properties.getProjectStandMap() == null || !properties.getProjectStandMap().containsKey(project.getCode())) {
                 return 0;
             }
             AtExecutor atExecutor = new AtExecutor();
-            atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + File.separator + project.getCode() + File.separator);
+            atExecutor.setProjectPath(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
 
             int scenarioFailedCount = 0;
             for (Scenario scenario: project.getScenarioList()) {

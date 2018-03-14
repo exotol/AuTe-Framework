@@ -12,6 +12,9 @@ import java.util.List;
 public interface ProjectRepository {
 
     List<Project> findAllProjects();
+
+    List<Project> findAllProjectsWithScenarios();
+
     Project findProject(String projectCode);
 
     void saveProject(Project project);

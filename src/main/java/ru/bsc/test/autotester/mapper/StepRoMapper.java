@@ -153,7 +153,8 @@ public abstract class StepRoMapper {
     @Mappings({
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
-            @Mapping(target = "httpStatus", source = "httpStatus")
+            @Mapping(target = "httpStatus", source = "httpStatus"),
+            @Mapping(target = "contentType", source = "contentType")
     })
     abstract MockServiceResponseRo mockServiceResponseToMockServiceResponseRo(MockServiceResponse mockServiceResponse);
 
@@ -162,7 +163,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "responseBodyFile", ignore = true),
-            @Mapping(target = "httpStatus", source = "httpStatus")
+            @Mapping(target = "httpStatus", source = "httpStatus"),
+            @Mapping(target = "contentType", source = "contentType")
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo);
 
