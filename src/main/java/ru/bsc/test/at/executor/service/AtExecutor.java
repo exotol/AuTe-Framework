@@ -12,8 +12,11 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
+import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.HttpHelper;
+import ru.bsc.test.at.executor.helper.MqMockHelper;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
@@ -22,11 +25,11 @@ import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -62,6 +65,8 @@ public class AtExecutor {
     private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
     private final ServiceRequestsComparatorHelper serviceRequestsComparatorHelper = new ServiceRequestsComparatorHelper();
+    private final MqMockHelper mqMockHelper = new MqMockHelper();
+
     @Getter
     @Setter
     private String projectPath;
@@ -206,16 +211,21 @@ public class AtExecutor {
                                 .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    try (WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                    try (
+                            WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null;
+                            MqMockerAdmin mqMockerAdmin = stand != null && isNotEmpty(stand.getMqMockUrl()) ? new MqMockerAdmin(stand.getMqMockUrl() + "/__admin") : null
+                    ) {
                         if (stand == null) {
                             throw new Exception("Stand is not configured.");
                         }
                         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
                         stepResult.setTestId(testId);
-                        executeTestStep(wireMockAdmin, connection, stand, httpHelper, scenarioVariables, testId, project, step, stepResult);
+                        executeTestStep(wireMockAdmin, mqMockerAdmin, connection, stand, httpHelper, scenarioVariables, testId, project, step, stepResult);
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
+
+                        mqMockHelper.assertMqRequests(mqMockerAdmin, testId, step);
 
                         stepResult.setResult(StepResult.RESULT_OK);
                     } catch (Exception e) {
@@ -236,12 +246,15 @@ public class AtExecutor {
         }
     }
 
-    private void executeTestStep(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult) throws Exception {
+    private void executeTestStep(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult) throws Exception {
 
         stepResult.setSavedParameters(scenarioVariables.toString());
 
-        // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
+        // 0. Установить ответы сервисов, которые будут использоваться в WireMock для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
+
+        // 0.1 Установить ответы для имитации внешних сервисов, работающих через очереди сообщений
+        setMqMockResponses(mqMockerAdmin, project, testId, step.getMqMockResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, scenarioVariables);
@@ -497,6 +510,20 @@ public class AtExecutor {
                 mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
                 wireMockAdmin.addMapping(mockDefinition);
+            }
+        }
+    }
+
+    private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList) throws IOException {
+        if (mqMockResponseList != null) {
+            for (MqMockResponse mqMockResponse : mqMockResponseList) {
+                MqMockDefinition mockMessage = new MqMockDefinition();
+                mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
+                mockMessage.setResponseBody(mqMockResponse.getResponseBody());
+                mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
+                mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
+                mockMessage.setTestId(testId);
+                mqMockerAdmin.addMock(mockMessage);
             }
         }
     }

@@ -16,6 +16,7 @@ public class Stand implements AbstractModel, Serializable {
     private String dbUser;
     private String dbPassword;
     private String wireMockUrl;
+    private String mqMockUrl;
 
     public Stand copy() {
         Stand stand = new Stand();
@@ -24,6 +25,7 @@ public class Stand implements AbstractModel, Serializable {
         stand.setDbUser(getDbUser());
         stand.setDbPassword(getDbPassword());
         stand.setWireMockUrl(getWireMockUrl());
+        stand.setMqMockUrl(getMqMockUrl());
         return stand;
     }
 }
