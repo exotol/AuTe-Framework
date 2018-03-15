@@ -545,28 +545,32 @@ public class AtExecutor {
     }
 
     private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
-        if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
-            try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(step.getSql(), scenarioVariables, null)) ) {
-                // Вставить в запрос параметры из scenarioVariables, если они есть.
-                for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
-                    statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
-                }
-                try (ResultSet rs = statement.executeQuery()) {
-                    List<String> columnNameList = new LinkedList<>();
-                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                        columnNameList.add(rs.getMetaData().getColumnName(i));
-                    }
-
-                    List<Map<String, Object>> resultData = new LinkedList<>();
-                    while (rs.next()) {
-                        Map<String, Object> resultColumnData = new HashMap<>();
-
-                        for (String columnName: columnNameList) {
-                            resultColumnData.put(columnName, rs.getObject(columnName));
+        if (!step.getSqlDataList().isEmpty() && connection != null) {
+            for (SqlData sqlData : step.getSqlDataList()) {
+                if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
+                    try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(sqlData.getSql(), scenarioVariables, null))) {
+                        // Вставить в запрос параметры из scenarioVariables, если они есть.
+                        for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
+                            statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                         }
-                        resultData.add(resultColumnData);
+                        try (ResultSet rs = statement.executeQuery()) {
+                            List<String> columnNameList = new LinkedList<>();
+                            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                                columnNameList.add(rs.getMetaData().getColumnName(i));
+                            }
+
+                            List<Map<String, Object>> resultData = new LinkedList<>();
+                            while (rs.next()) {
+                                Map<String, Object> resultColumnData = new HashMap<>();
+
+                                for (String columnName : columnNameList) {
+                                    resultColumnData.put(columnName, rs.getObject(columnName));
+                                }
+                                resultData.add(resultColumnData);
+                            }
+                            scenarioVariables.put(sqlData.getSqlSavedParameter(), resultData);
+                        }
                     }
-                    scenarioVariables.put(step.getSqlSavedParameter(), resultData);
                 }
             }
         }

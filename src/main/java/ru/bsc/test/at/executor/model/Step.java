@@ -13,7 +13,7 @@ public class Step implements Serializable, AbstractModel {
     private static final long serialVersionUID = 1670286319126044952L;
 
     private String code;
-    private List<ExpectedServiceRequest> expectedServiceRequests = new ArrayList<>();
+    private List<ExpectedServiceRequest> expectedServiceRequests = new LinkedList<>();
     private String relativeUrl;
     private String requestMethod;
     private String request;
@@ -23,23 +23,21 @@ public class Step implements Serializable, AbstractModel {
     private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
     private Integer expectedStatusCode;
-    private String sql;
-    private String sqlSavedParameter;
     private String jsonXPath;
     private RequestBodyType requestBodyType;
     private Boolean usePolling;
     private String pollingJsonXPath;
-    private List<MockServiceResponse> mockServiceResponseList = new ArrayList<>();
+    private List<MockServiceResponse> mockServiceResponseList = new LinkedList<>();
     private Boolean disabled;
     private String stepComment;
-    private Map<String, String> savedValuesCheck;
+    private Map<String, String> savedValuesCheck = new HashMap<>();
     private ResponseCompareMode responseCompareMode;
-    private List<StepParameterSet> stepParameterSetList = new ArrayList<>();
+    private List<StepParameterSet> stepParameterSetList = new LinkedList<>();
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
     private Boolean multipartFormData;
-    private List<FormData> formDataList = new ArrayList<>();
+    private List<FormData> formDataList = new LinkedList<>();
     private String jsonCompareMode;
     private String script;
     private String numberRepetitions;
@@ -49,6 +47,11 @@ public class Step implements Serializable, AbstractModel {
     private String timeoutMs;
     private List<MqMockResponse> mqMockResponseList;
     private List<ExpectedMqRequest> expectedMqRequestList;
+    private List<SqlData> sqlDataList = new LinkedList<>();
+    @Deprecated
+    private String sql;
+    @Deprecated
+    private String sqlSavedParameter;
 
     public Step copy() {
         Step step = new Step();
@@ -58,8 +61,6 @@ public class Step implements Serializable, AbstractModel {
         step.setRequest(getRequest());
         step.setExpectedResponse(getExpectedResponse());
         step.setExpectedStatusCode(getExpectedStatusCode());
-        step.setSql(getSql());
-        step.setSqlSavedParameter(getSqlSavedParameter());
         step.setJsonXPath(getJsonXPath());
         step.setRequestBodyType(getRequestBodyType());
         step.setExpectedResponseIgnore(getExpectedResponseIgnore());
@@ -68,29 +69,22 @@ public class Step implements Serializable, AbstractModel {
         step.setDisabled(getDisabled());
         step.setStepComment(getStepComment());
         step.setScript(getScript());
-        if (getSavedValuesCheck() != null) {
-            step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
-        }
+        step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
         step.setResponseCompareMode(getResponseCompareMode());
-        step.setExpectedServiceRequests(new LinkedList<>());
         for (ExpectedServiceRequest expectedServiceRequest : getExpectedServiceRequests()) {
             step.getExpectedServiceRequests().add(expectedServiceRequest.copy());
         }
-        step.setMockServiceResponseList(new LinkedList<>());
         for (MockServiceResponse mockServiceResponse : getMockServiceResponseList()) {
             step.getMockServiceResponseList().add(mockServiceResponse.copy());
         }
-        step.setStepParameterSetList(new LinkedList<>());
-        if (getStepParameterSetList() != null) {
-            for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
-                step.getStepParameterSetList().add(stepParameterSet.copy());
-            }
+        for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
+            step.getStepParameterSetList().add(stepParameterSet.copy());
         }
-        step.setFormDataList(new LinkedList<>());
-        if (getFormDataList() != null) {
-            for (FormData formData : getFormDataList()) {
-                step.getFormDataList().add(formData.copy());
-            }
+        for (FormData formData : getFormDataList()) {
+            step.getFormDataList().add(formData.copy());
+        }
+        for (SqlData sqlData : getSqlDataList()) {
+            step.getSqlDataList().add(sqlData.copy());
         }
         return step;
     }
@@ -109,26 +103,5 @@ public class Step implements Serializable, AbstractModel {
 
     public Boolean getMultipartFormData() {
         return multipartFormData != null && multipartFormData;
-    }
-
-    public List<MockServiceResponse> getMockServiceResponseList() {
-        if (mockServiceResponseList == null) {
-            mockServiceResponseList = new LinkedList<>();
-        }
-        return mockServiceResponseList;
-    }
-
-    public List<ExpectedServiceRequest> getExpectedServiceRequests() {
-        if (expectedServiceRequests == null) {
-            expectedServiceRequests = new LinkedList<>();
-        }
-        return expectedServiceRequests;
-    }
-
-    public List<StepParameterSet> getStepParameterSetList() {
-        if (stepParameterSetList == null) {
-            stepParameterSetList = new LinkedList<>();
-        }
-        return stepParameterSetList;
     }
 }
