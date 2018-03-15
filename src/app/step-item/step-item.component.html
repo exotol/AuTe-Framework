@@ -46,7 +46,7 @@
           <a href="#" (click)="selectTab('headers')">{{'Headers' | translate}} <span *ngIf="step.requestHeaders" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'sql'">
-          <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sql || step.sqlSavedParameter" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sqlDataList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'mockServiceResponse'">
           <a href="#" (click)="selectTab('mockServiceResponse')">{{'Mock responses' | translate}} <span *ngIf="step.mockServiceResponseList && step.mockServiceResponseList.length != 0" class="glyphicon glyphicon-tag"></span></a>
@@ -185,10 +185,27 @@
           <textarea placeholder="HeaderName: headerValue" rows="5" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
         </div>
         <div *ngIf="tab == 'sql' || tab == 'all'">
-          <label>{{'Sql parameters' | translate}}</label>
-          <input placeholder="paramNameFirst, paramNameSecond" class="form-control" title="" [(ngModel)]="step.sqlSavedParameter"/>
-          <label>{{'Sql query' | translate}}</label>
-          <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="step.sql"/>
+          <div *ngFor="let sqlData of step.sqlDataList">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>{{'Sql parameters' | translate}}</label>
+                <input placeholder="paramNameFirst, paramNameSecond" class="form-control" title="" [(ngModel)]="sqlData.sqlSavedParameter"/>
+                <label>{{'Sql query' | translate}}</label>
+                <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="sqlData.sql"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <button class="btn btn-default" (click)="removeSqlData(sqlData)">
+                  <span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}
+                </button>
+              </div>
+            </div>
+            <hr/>
+          </div>
+          <button class="btn btn-default" (click)="addSqlData()">
+            <span class="glyphicon glyphicon-plus"></span> {{'Add' | translate}}
+          </button>
         </div>
         <div *ngIf="tab == 'mockServiceResponse' || tab == 'all'">
           <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">

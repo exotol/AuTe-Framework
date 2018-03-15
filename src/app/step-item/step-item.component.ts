@@ -6,6 +6,7 @@ import {ExpectedServiceRequest} from '../model/expected-service-request';
 import {FormData} from '../model/form-data';
 import {MqMockResponse} from "../model/mq-mock-response";
 import {ExpectedMqRequest} from "../model/expected-mq-request";
+import {SqlData} from "../model/sql-data";
 
 @Component({
   selector: 'app-step-item',
@@ -76,6 +77,22 @@ export class StepItemComponent implements OnInit {
       const indexToRemove = this.step.mockServiceResponseList.indexOf(mockServiceResponse);
       if (indexToRemove > -1) {
         this.step.mockServiceResponseList.splice(indexToRemove, 1);
+      }
+    }
+  }
+
+  addSqlData() {
+    if (!this.step.sqlDataList) {
+      this.step.sqlDataList = [];
+    }
+    this.step.sqlDataList.push(new SqlData());
+  }
+
+  removeSqlData(data: SqlData) {
+    if (confirm('Confirm: remove sql data')) {
+      const indexToRemove = this.step.sqlDataList.indexOf(data);
+      if (indexToRemove > -1) {
+        this.step.sqlDataList.splice(indexToRemove, 1);
       }
     }
   }

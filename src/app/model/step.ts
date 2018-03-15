@@ -4,6 +4,7 @@ import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
 import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
+import {SqlData} from "./sql-data";
 
 export class Step {
   code: string;
@@ -15,8 +16,6 @@ export class Step {
   expectedResponse: string;
   expectedResponseIgnore: boolean;
   expectedStatusCode: number;
-  sql: string;
-  sqlSavedParameter: string;
   jsonXPath: string;
   requestBodyType: string;
   usePolling: boolean;
@@ -40,4 +39,5 @@ export class Step {
   timeoutMs: string;
   mqMockResponseList: MqMockResponse[];
   expectedMqRequestList: ExpectedMqRequest[];
+  sqlDataList: SqlData[];
 }
