@@ -3,10 +3,7 @@ package ru.bsc.test.autotester.repository.yaml.base;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
-import ru.bsc.test.at.executor.model.MockServiceResponse;
-import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.autotester.component.Translator;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
@@ -91,6 +88,21 @@ public abstract class BaseYamlRepository {
                 expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile()));
             }
         });
+
+        /*
+            Данный блок необходим для сохранения информации о sql из старой версии модели
+            TODO: удалить этот блок после окончательного прекращения поддержки старого формата
+         */
+        if (StringUtils.isNotEmpty(step.getSql())) {
+            SqlData sqlData = new SqlData();
+            sqlData.setSql(step.getSql());
+            step.setSql(null);
+            if (StringUtils.isNotEmpty(step.getSqlSavedParameter())) {
+                sqlData.setSqlSavedParameter(step.getSqlSavedParameter());
+                step.setSqlSavedParameter(null);
+            }
+            step.getSqlDataList().add(sqlData);
+        }
     }
 
     protected String scenarioPath(Scenario scenario) {

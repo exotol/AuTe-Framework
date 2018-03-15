@@ -25,8 +25,6 @@ public class StepRo implements AbstractRo {
     private String expectedResponseFile;
     private Boolean expectedResponseIgnore;
     private Integer expectedStatusCode;
-    private String sql;
-    private String sqlSavedParameter;
     private String jsonXPath;
     private String requestBodyType;
     private Boolean usePolling;
@@ -41,7 +39,8 @@ public class StepRo implements AbstractRo {
     private String mqMessage;
     private String mqMessageFile;
     private String responseCompareMode;
-    private List<FormDataRo> formDataList= new ArrayList<>();
+    private List<FormDataRo> formDataList;
+    private List<SQLDataRo> sqlDataList;
     private Boolean multipartFormData;
     private String jsonCompareMode;
     private String script;
@@ -52,4 +51,8 @@ public class StepRo implements AbstractRo {
     private String timeoutMs;
     private List<MqMockResponseRo> mqMockResponseList;
     private List<ExpectedMqRequestRo> expectedMqRequestList;
+    @Deprecated
+    private String sql;
+    @Deprecated
+    private String sqlSavedParameter;
 }

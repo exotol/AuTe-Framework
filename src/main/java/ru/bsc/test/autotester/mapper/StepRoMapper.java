@@ -30,8 +30,6 @@ public abstract class StepRoMapper {
             @Mapping(target = "expectedResponseFile", ignore = true),
             @Mapping(target = "expectedResponseIgnore", source = "expectedResponseIgnore"),
             @Mapping(target = "expectedStatusCode", source = "expectedStatusCode"),
-            @Mapping(target = "sql", source = "sql"),
-            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
             @Mapping(target = "jsonXPath", source = "jsonXPath"),
             @Mapping(target = "requestBodyType", source = "requestBodyType"),
             @Mapping(target = "usePolling", source = "usePolling"),
@@ -55,6 +53,9 @@ public abstract class StepRoMapper {
             @Mapping(target = "timeoutMs", source = "timeoutMs"),
             @Mapping(target = "mqMockResponseList", source = "mqMockResponseList"),
             @Mapping(target = "expectedMqRequestList", source = "expectedMqRequestList"),
+            @Mapping(target = "sqlDataList", source = "sqlDataList"),
+            @Mapping(target = "sql", source = "sql"),
+            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter")
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
@@ -76,8 +77,6 @@ public abstract class StepRoMapper {
             @Mapping(target = "expectedResponse", source = "expectedResponse"),
             @Mapping(target = "expectedResponseIgnore", source = "expectedResponseIgnore"),
             @Mapping(target = "expectedStatusCode", source = "expectedStatusCode"),
-            @Mapping(target = "sql", source = "sql"),
-            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
             @Mapping(target = "jsonXPath", source = "jsonXPath"),
             @Mapping(target = "requestBodyType", source = "requestBodyType"),
             @Mapping(target = "usePolling", source = "usePolling"),
@@ -90,7 +89,10 @@ public abstract class StepRoMapper {
             @Mapping(target = "expectedServiceRequestList", source = "expectedServiceRequests"),
             @Mapping(target = "responseCompareMode", source = "responseCompareMode"),
             @Mapping(target = "formDataList", source = "formDataList"),
+            @Mapping(target = "sqlDataList", source = "sqlDataList"),
             @Mapping(target = "jsonCompareMode", source = "jsonCompareMode"),
+            @Mapping(target = "sql", source = "sql"),
+            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter")
     })
     public abstract StepRo stepToStepRo(Step step);
 
