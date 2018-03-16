@@ -55,8 +55,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "expectedMqRequestList", source = "expectedMqRequestList"),
             @Mapping(target = "sqlDataList", source = "sqlDataList"),
             @Mapping(target = "sql", source = "sql"),
-            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
-            @Mapping(target = "sqlReturnType", source = "sqlReturnType")
+            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter")
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
