@@ -284,7 +284,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private void loadBeforeAndAfterScenarios(Project project, List<Scenario> scenarioList) {
         for (Scenario scenario : scenarioList) {
             try {
-                if (!scenario.getBeforeScenarioIgnore()) {
+                if (!scenario.getBeforeScenarioIgnore() && project.getBeforeScenarioPath() != null) {
                     project.getScenarioList().add(scenarioRepository.findScenario(
                             project.getCode(),
                             project.getBeforeScenarioPath()
@@ -294,7 +294,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 log.error("Error while loading before scenario", e);
             }
             try {
-                if (!scenario.getAfterScenarioIgnore()) {
+                if (!scenario.getAfterScenarioIgnore() && project.getAfterScenarioPath() != null) {
                     project.getScenarioList().add(scenarioRepository.findScenario(
                             project.getCode(),
                             project.getAfterScenarioPath()
