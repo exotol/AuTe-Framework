@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.ro;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.bsc.test.at.executor.model.SqlResultType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,4 +56,6 @@ public class StepRo implements AbstractRo {
     private String sql;
     @Deprecated
     private String sqlSavedParameter;
+    @Deprecated
+    private SqlResultType sqlReturnType;
 }
