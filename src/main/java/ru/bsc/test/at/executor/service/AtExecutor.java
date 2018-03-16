@@ -367,7 +367,7 @@ public class AtExecutor {
                         sb.append("\n").append("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
                     }
                 }
-                if(sb.length() > 0){
+                if (sb.length() > 0) {
                     throw new RuntimeException(sb.toString());
                 }
             }
@@ -555,38 +555,30 @@ public class AtExecutor {
                         }
                         try (ResultSet rs = statement.executeQuery()) {
                             Object result;
-                            switch (sqlResultType) {
-                                case OBJECT: {
-                                    result = rs.next() ? rs.getObject(1) : null;
-                                    break;
-                                }
-                                case LIST: {
-                                    List columnData = new ArrayList<>();
-                                    while (rs.next()) {
-                                        columnData.add(rs.getObject(1));
-                                    }
-                                    result = columnData;
-                                    break;
-                                }
-                                case MAP:
-                                default: {
-                                    List<String> columnNameList = new LinkedList<>();
-                                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                                        columnNameList.add(rs.getMetaData().getColumnName(i));
-                                    }
-                                    List<Map<String, Object>> resultData = new ArrayList<>();
-                                    while (rs.next()) {
-                                        Map<String, Object> values = new HashMap<>();
-                                        for (String columnName : columnNameList) {
-                                            values.put(columnName, rs.getObject(columnName));
-                                        }
-                                        resultData.add(values);
-                                    }
-                                    result = resultData;
+                            if (sqlResultType == SqlResultType.OBJECT) {
+                                result = rs.next() ? rs.getObject(1) : null;
+                            } else if (sqlResultType == SqlResultType.LIST) {
 
+                                List columnData = new ArrayList<>();
+                                while (rs.next()) {
+                                    columnData.add(rs.getObject(1));
                                 }
+                                result = columnData;
+                            } else {
+                                List<String> columnNameList = new LinkedList<>();
+                                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                                    columnNameList.add(rs.getMetaData().getColumnName(i));
+                                }
+                                List<Map<String, Object>> resultData = new ArrayList<>();
+                                while (rs.next()) {
+                                    Map<String, Object> values = new HashMap<>();
+                                    for (String columnName : columnNameList) {
+                                        values.put(columnName, rs.getObject(columnName));
+                                    }
+                                    resultData.add(values);
+                                }
+                                result = resultData;
                             }
-
                             scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                         }
                     }
