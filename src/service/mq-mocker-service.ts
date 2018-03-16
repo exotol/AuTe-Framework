@@ -11,8 +11,10 @@ export class MqMockerService {
   constructor(private http: Http) { }
 
   getRequestList(): Observable<MqLogItem[]> {
-    return this.http
-      .get(this.mqMockerAdminUrl + '/request-list')
-      .map(value => value.json() as MqLogItem[]);
+    if (window['mqMockerUrl']) {
+      return this.http
+        .get(this.mqMockerAdminUrl + '/request-list')
+        .map(value => value.json() as MqLogItem[]);
+    }
   }
 }

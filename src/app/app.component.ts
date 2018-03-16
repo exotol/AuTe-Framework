@@ -8,6 +8,9 @@ import {ToastOptions, ToastyService} from 'ng2-toasty';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
+  window = window;
+
   constructor(
     public wireMockService: WireMockService,
     private toastyService: ToastyService
