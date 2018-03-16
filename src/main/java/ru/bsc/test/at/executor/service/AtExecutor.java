@@ -574,7 +574,7 @@ public class AtExecutor {
                                     for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                                         columnNameList.add(rs.getMetaData().getColumnName(i));
                                     }
-                                    List<Map> resultData = new ArrayList<>();
+                                    List<Map<String, Object>> resultData = new ArrayList<>();
                                     while (rs.next()) {
                                         Map<String, Object> values = new HashMap<>();
                                         for (String columnName : columnNameList) {
