@@ -13,6 +13,8 @@ import java.util.Set;
 public interface ScenarioRepository {
     List<Scenario> findScenarios(String projectCode);
 
+    List<Scenario> findScenariosWithSteps(String projectCode);
+
     Scenario findScenario(String projectCode, String scenarioPath) throws IOException;
 
     Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException;
