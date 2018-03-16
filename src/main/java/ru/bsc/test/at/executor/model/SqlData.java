@@ -10,11 +10,13 @@ public class SqlData implements Serializable, AbstractModel {
 
     private String sql;
     private String sqlSavedParameter;
+    private SqlResultType sqlReturnType;
 
     public SqlData copy() {
         SqlData sqlData = new SqlData();
         sqlData.setSql(getSql());
         sqlData.setSqlSavedParameter(getSqlSavedParameter());
+        sqlData.setSqlReturnType(getSqlReturnType());
         return sqlData;
     }
 }

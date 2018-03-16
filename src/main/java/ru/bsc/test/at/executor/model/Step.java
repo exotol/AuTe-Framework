@@ -52,6 +52,8 @@ public class Step implements Serializable, AbstractModel {
     private String sql;
     @Deprecated
     private String sqlSavedParameter;
+    @Deprecated
+    private SqlResultType sqlReturnType;
 
     public Step copy() {
         Step step = new Step();
