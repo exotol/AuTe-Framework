@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
+import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.service.VersionService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Pavel Golovkin
@@ -60,7 +63,7 @@ public class VersionServiceImpl implements VersionService {
         env.getProjectStandMap().forEach((projectName, properties) -> {
             try {
                 if (StringUtils.isNotEmpty(properties.getWireMockUrl())) {
-                    String url = properties.getWireMockUrl() + WIREMOCK_VERSION_PATH;
+                    String url = getVersionUrl(properties);
                     Version version = template.getForObject(url, Version.class);
                     wiremockVersions.add(new WiremockVersion(projectName, version));
                 }
@@ -69,6 +72,12 @@ public class VersionServiceImpl implements VersionService {
                 log.error("Error while fetching project wiremock version", e);
             }
         });
+    }
+
+    private String getVersionUrl(StandProperties properties) {
+        return properties.getWireMockUrl() +
+               (properties.getWireMockUrl().endsWith("/") ? "" : "/") +
+               WIREMOCK_VERSION_PATH;
     }
 
     private Version findVersion(String propertyFile) {
