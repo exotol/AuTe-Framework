@@ -368,7 +368,7 @@ public class AtExecutor {
                     }
                 }
                 if (sb.length() > 0) {
-                    throw new RuntimeException(sb.toString());
+                    throw new Exception(sb.toString());
                 }
             }
 
