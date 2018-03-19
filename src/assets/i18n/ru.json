@@ -101,7 +101,7 @@
   "Sql return type": "Тип возвращаемого значения",
   "Sql return type object": "объект",
   "Sql return type list": "список",
-  "Sql return type map": "мап",
+  "Sql return type map (default)": "мап (по умолчанию)",
   "Expected status": "Ожидаемый статус",
   "Add mock": "Добавить мок",
   "Service name": "Название сервиса",
