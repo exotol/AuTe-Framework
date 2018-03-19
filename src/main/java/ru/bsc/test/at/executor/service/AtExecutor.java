@@ -14,22 +14,18 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
-import ru.bsc.test.at.executor.exception.ScenarioStopException;
-import ru.bsc.test.at.executor.helper.HttpHelper;
-import ru.bsc.test.at.executor.helper.MqMockHelper;
-import ru.bsc.test.at.executor.helper.NamedParameterStatement;
-import ru.bsc.test.at.executor.helper.ResponseHelper;
-import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
-import ru.bsc.test.at.executor.model.*;
-import ru.bsc.test.at.executor.mq.IMqManager;
-import ru.bsc.test.at.executor.mq.MqManagerFactory;
-import ru.bsc.test.at.executor.validation.IgnoringComparator;
-import ru.bsc.test.at.executor.validation.MaskComparator;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
 import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
 import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
+import ru.bsc.test.at.executor.exception.ScenarioStopException;
+import ru.bsc.test.at.executor.helper.*;
+import ru.bsc.test.at.executor.model.*;
+import ru.bsc.test.at.executor.mq.IMqManager;
+import ru.bsc.test.at.executor.mq.MqManagerFactory;
+import ru.bsc.test.at.executor.validation.IgnoringComparator;
+import ru.bsc.test.at.executor.validation.MaskComparator;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -55,7 +51,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Created by sdoroshin on 21.03.2017.
- *
  */
 @Slf4j
 @SuppressWarnings("unused")
@@ -80,7 +75,7 @@ public class AtExecutor {
         }
         Map<Stand, Connection> standConnectionMap = new HashMap<>();
         // Создать подключение для каждого используемого стенда
-        for (Stand stand: standSet) {
+        for (Stand stand : standSet) {
             if (isNotEmpty(stand.getDbUrl())) {
                 try {
                     Connection connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
@@ -183,7 +178,7 @@ public class AtExecutor {
         if (stepList == null) {
             return;
         }
-        for (Step step: stepList) {
+        for (Step step : stepList) {
             if (!step.getDisabled()) {
                 List<StepParameterSet> parametersEnvironment;
                 if (step.getStepParameterSetList() != null && !step.getStepParameterSetList().isEmpty()) {
@@ -192,7 +187,7 @@ public class AtExecutor {
                     parametersEnvironment = new LinkedList<>();
                     parametersEnvironment.add(new StepParameterSet());
                 }
-                for (StepParameterSet stepParameterSet: parametersEnvironment) {
+                for (StepParameterSet stepParameterSet : parametersEnvironment) {
                     StepResult stepResult = new StepResult(step);
                     stepResult.setStart(new Date().getTime());
                     stepResult.setEditable(stepEditable);
@@ -360,6 +355,7 @@ public class AtExecutor {
 
             // 4.1 Проверить сохраненные значения
             if (step.getSavedValuesCheck() != null) {
+                StringBuilder sb = new StringBuilder();
                 for (Map.Entry<String, String> entry : step.getSavedValuesCheck().entrySet()) {
                     String valueExpected = entry.getValue() == null ? "" : entry.getValue();
                     for (Map.Entry<String, Object> savedVal : scenarioVariables.entrySet()) {
@@ -368,8 +364,11 @@ public class AtExecutor {
                     }
                     String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
                     if (!valueExpected.equals(valueActual)) {
-                        throw new Exception("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+                        sb.append("\n").append("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
                     }
+                }
+                if (sb.length() > 0) {
+                    throw new Exception(sb.toString());
                 }
             }
 
@@ -455,8 +454,8 @@ public class AtExecutor {
                         // Fix broken space in response
                         responseData.getContent().replaceAll(" ", " "),
                         new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ?
-                                               JSONCompareMode.NON_EXTENSIBLE :
-                                               JSONCompareMode.valueOf(jsonCompareMode))
+                                JSONCompareMode.NON_EXTENSIBLE :
+                                JSONCompareMode.valueOf(jsonCompareMode))
                 );
             } catch (Error assertionError) {
                 throw new Exception(assertionError);
@@ -505,8 +504,8 @@ public class AtExecutor {
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
                 mockDefinition.getResponse().setHeaders(new HashMap<>());
                 String contentType = StringUtils.isNoneBlank(mockServiceResponse.getContentType()) ?
-                                     mockServiceResponse.getContentType() :
-                                     DEFAULT_CONTENT_TYPE;
+                        mockServiceResponse.getContentType() :
+                        DEFAULT_CONTENT_TYPE;
                 mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
                 wireMockAdmin.addMapping(mockDefinition);
@@ -549,26 +548,38 @@ public class AtExecutor {
             for (SqlData sqlData : step.getSqlDataList()) {
                 if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
                     try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(sqlData.getSql(), scenarioVariables, null))) {
+                        SqlResultType sqlResultType = sqlData.getSqlReturnType();
                         // Вставить в запрос параметры из scenarioVariables, если они есть.
                         for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
                             statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                         }
                         try (ResultSet rs = statement.executeQuery()) {
-                            List<String> columnNameList = new LinkedList<>();
-                            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                                columnNameList.add(rs.getMetaData().getColumnName(i));
-                            }
+                            Object result;
+                            if (sqlResultType == SqlResultType.OBJECT) {
+                                result = rs.next() ? rs.getObject(1) : null;
+                            } else if (sqlResultType == SqlResultType.LIST) {
 
-                            List<Map<String, Object>> resultData = new LinkedList<>();
-                            while (rs.next()) {
-                                Map<String, Object> resultColumnData = new HashMap<>();
-
-                                for (String columnName : columnNameList) {
-                                    resultColumnData.put(columnName, rs.getObject(columnName));
+                                List columnData = new ArrayList<>();
+                                while (rs.next()) {
+                                    columnData.add(rs.getObject(1));
                                 }
-                                resultData.add(resultColumnData);
+                                result = columnData;
+                            } else {
+                                List<String> columnNameList = new LinkedList<>();
+                                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                                    columnNameList.add(rs.getMetaData().getColumnName(i));
+                                }
+                                List<Map<String, Object>> resultData = new ArrayList<>();
+                                while (rs.next()) {
+                                    Map<String, Object> values = new HashMap<>();
+                                    for (String columnName : columnNameList) {
+                                        values.put(columnName, rs.getObject(columnName));
+                                    }
+                                    resultData.add(values);
+                                }
+                                result = resultData;
                             }
-                            scenarioVariables.put(sqlData.getSqlSavedParameter(), resultData);
+                            scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                         }
                     }
                 }
