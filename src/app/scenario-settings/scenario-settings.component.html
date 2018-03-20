@@ -24,17 +24,17 @@
       </div>
     </div>
 
-    <!--div class="row">
+    <div class="row">
       <div class="col-sm-3">
         <label>{{'Scenario group' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [(ngModel)]="scenario.scenarioGroup">
+        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [(ngModel)]="scenario.scenarioNewGroup">
           <option [ngValue]="null">{{'[no group]' | translate}}</option>
-          <option *ngFor="let scenarioGroup of scenarioGroupList" [ngValue]="scenarioGroup">{{scenarioGroup}}</option>
+          <option  *ngFor="let scenarioGroup of project.groupList" [ngValue]="scenarioGroup">{{scenarioGroup | translate}}</option>
         </select>
       </div>
-    </div-->
+    </div>
 
     <div class="row">
       <div class="col-sm-3">
