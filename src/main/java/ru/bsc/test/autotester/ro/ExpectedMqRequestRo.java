@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExpectedMqRequestRo {
+    private String code;
     private String sourceQueue;
     private String requestBody;
     private String ignoredTags;

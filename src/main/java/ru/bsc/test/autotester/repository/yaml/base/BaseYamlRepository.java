@@ -9,8 +9,14 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +94,34 @@ public abstract class BaseYamlRepository {
                 expectedServiceRequest.setExpectedServiceRequest(readFile(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile()));
             }
         });
+
+        Path mqResponsesPath = getMqResponsesPath(scenarioRootDirectory, step);
+        if (Files.exists(mqResponsesPath) && step.getMqMockResponseList() != null) {
+            File[] files = mqResponsesPath.toFile().listFiles(File::isFile);
+            if (files != null) {
+                for (File file : files) {
+                    String code = file.getName().split("\\.")[0];
+                    step.getMqMockResponseList().stream()
+                            .filter(item -> code.equals(item.getCode()))
+                            .findAny()
+                            .ifPresent(item -> item.setResponseBody(readFile(file.toString())));
+                }
+            }
+        }
+
+        Path mqRequestsPath = getMqRequestsPath(scenarioRootDirectory, step);
+        if (Files.exists(mqRequestsPath) && step.getExpectedMqRequestList() != null) {
+            File[] files = mqRequestsPath.toFile().listFiles(File::isFile);
+            if (files != null) {
+                for (File file : files) {
+                    String code = file.getName().split("\\.")[0];
+                    step.getExpectedMqRequestList().stream()
+                            .filter(item -> code.equals(item.getCode()))
+                            .findAny()
+                            .ifPresent(item -> item.setRequestBody(readFile(file.toString())));
+                }
+            }
+        }
 
         /*
             Данный блок необходим для сохранения информации о sql из старой версии модели
@@ -210,6 +244,54 @@ public abstract class BaseYamlRepository {
                 expectedServiceRequest.setExpectedServiceRequest(null);
             }
         });
+
+        saveItemsToFiles(
+                getMqResponsesPath(scenarioRootDirectory, step),
+                step.getMqMockResponseList(),
+                MqMockResponse::getResponseBody,
+                MqMockResponse::setResponseBody
+        );
+
+        saveItemsToFiles(
+                getMqRequestsPath(scenarioRootDirectory, step),
+                step.getExpectedMqRequestList(),
+                ExpectedMqRequest::getRequestBody,
+                ExpectedMqRequest::setRequestBody
+        );
+    }
+
+    private <T extends CodeAccessible> void saveItemsToFiles(
+            Path dataPath,
+            List<T> items,
+            Function<T, String> getter,
+            BiConsumer<T, String> setter
+    ) throws IOException {
+        if (items == null) {
+            return;
+        }
+        for (T item : items) {
+            String data = getter.apply(item);
+            if (StringUtils.isEmpty(data)) {
+                continue;
+            }
+            if (StringUtils.isEmpty(item.getCode())) {
+                item.generateCode();
+            }
+            setter.accept(item, null);
+            if (!Files.exists(dataPath)) {
+                Files.createDirectories(dataPath);
+            }
+            File file = Paths.get(dataPath.toString(), item.getCode() + "." + extByContent(data)).toFile();
+            FileUtils.writeStringToFile(file, data, FILE_ENCODING);
+        }
+    }
+
+    private Path getMqRequestsPath(File scenarioRootDirectory, Step step) {
+        return Paths.get(scenarioRootDirectory.toString(), stepPath(step), "mq-requests");
+    }
+
+    private Path getMqResponsesPath(File scenarioRootDirectory, Step step) {
+        return Paths.get(scenarioRootDirectory.toString(), stepPath(step), "mq-responses");
     }
 
     private String readFile(String path) {
@@ -250,6 +332,15 @@ public abstract class BaseYamlRepository {
     }
 
     private String extByContent(String content) {
-        return content != null && content.indexOf('<') == 0 ? "xml" : "json";
+        if (content != null) {
+            String trimmedContent = content.trim();
+            if (trimmedContent.startsWith("<")) {
+                return "xml";
+            }
+            if (trimmedContent.startsWith("{") || trimmedContent.startsWith("[")) {
+                return "json";
+            }
+        }
+        return "txt";
     }
 }

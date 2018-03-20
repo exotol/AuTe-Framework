@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MqMockResponseRo {
+    private String code;
     private String responseBody;
     private String sourceQueueName;
     private String httpUrl;
