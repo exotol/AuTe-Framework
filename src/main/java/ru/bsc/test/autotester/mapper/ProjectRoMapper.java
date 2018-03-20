@@ -73,6 +73,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "projectCode", ignore = true),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
+            @Mapping(target = "scenarioNewGroup", source = "scenarioGroup"),
             @Mapping(target = "stepList", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore")

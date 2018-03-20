@@ -1,7 +1,6 @@
 package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -99,13 +98,25 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
         } else {
-            if (updateDirectoryName && !scenario.getCode().equals(translator.translate(scenario.getName()))) {
-                scenario.setCode(null);
-                Files.move(
-                        Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                        Paths.get(projectsPath, projectCode, "scenarios", scenarioPath(scenario))
-                );
-                scenarioPath = scenarioPath(scenario);
+            if(updateDirectoryName) { // code changed
+                if (!scenario.getCode().equals(translator.translate(scenario.getName()))) {
+                    scenario.setCode(null);
+                    Files.move(
+                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath(scenario))
+                    );
+                    scenarioPath = scenarioPath(scenario);
+                } else {  // path changed
+                    String newPath = scenarioPath(scenario);
+                    boolean pathChanged = !scenarioPath.equals(newPath);
+                    if (pathChanged) {
+                        Files.move(
+                                Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                                Paths.get(projectsPath, projectCode, "scenarios", newPath)
+                        );
+                    }
+                    scenarioPath = scenarioPath(scenario);
+                }
             }
         }
         File scenarioFile = Paths.get(
