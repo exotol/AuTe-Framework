@@ -3,13 +3,16 @@ package ru.bsc.test.at.executor.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Created by sdoroshin on 27.07.2017.
  */
 @Getter
 @Setter
-public class MqMockResponse implements AbstractModel {
+public class MqMockResponse implements AbstractModel, CodeAccessible {
 
+    private String code;
     private String responseBody;
     private String sourceQueueName;
     private String httpUrl;
