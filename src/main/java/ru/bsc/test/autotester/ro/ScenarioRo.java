@@ -18,7 +18,6 @@ public class ScenarioRo implements AbstractRo {
     private String name;
 
     private String scenarioGroup;
-    private String scenarioNewGroup;
     private List<StepRo> stepList;
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
