@@ -66,8 +66,8 @@ export class ScenarioService {
     ).map(value => value.json() as Step[]);
   }
 
-  saveOne(projectCode: string, scenario: Scenario): Observable<Scenario> {
-    const scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
+  saveOne(projectCode: string, scenario: Scenario, scenarioGroup: string): Observable<Scenario> {
+    const scenarioPath = (scenarioGroup ? scenarioGroup+ '/' : '') + scenario.code;
     return this.http.put(
       this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath,
       scenario,

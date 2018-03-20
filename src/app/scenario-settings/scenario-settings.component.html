@@ -29,9 +29,9 @@
         <label>{{'Scenario group' | translate}}</label>
       </div>
       <div class="col-sm-9">
-        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [(ngModel)]="scenario.scenarioNewGroup">
+        <select class="form-control" title="{{'Scenario group' | translate}}" *ngIf="project" [(ngModel)]="scenario.scenarioGroup">
           <option [ngValue]="null">{{'[no group]' | translate}}</option>
-          <option  *ngFor="let scenarioGroup of project.groupList" [ngValue]="scenarioGroup">{{scenarioGroup | translate}}</option>
+          <option  *ngFor="let scenarioGroup of project.groupList" [ngValue]="scenarioGroup">{{scenarioGroup}}</option>
         </select>
       </div>
     </div>

@@ -16,6 +16,7 @@ export class ScenarioSettingsComponent implements OnInit {
   scenario: Scenario;
   project: Project;
   projectCode: string;
+  sGroup: string;
 
   constructor(
     private router: Router,
@@ -31,17 +32,21 @@ export class ScenarioSettingsComponent implements OnInit {
 
       this.scenarioService
         .findOne(this.projectCode, params['scenarioGroup'], params['scenarioCode'])
-        .subscribe(value => this.scenario = value);
+        .subscribe(value => {
+          this.scenario = value;
+          this.sGroup = this.scenario.scenarioGroup;
+        });
 
       this.projectService
         .findOne(this.projectCode)
         .subscribe(project => this.project = project);
     });
+
   }
 
   save(): void {
     const toasty = this.customToastyService.saving();
-    this.scenarioService.saveOne(this.project.code, this.scenario)
+    this.scenarioService.saveOne(this.project.code, this.scenario, this.sGroup)
       .subscribe(value => {
         this.scenario = value;
         const scenarioPath = this.scenario.scenarioGroup ? this.scenario.scenarioGroup : '';
@@ -49,6 +54,7 @@ export class ScenarioSettingsComponent implements OnInit {
           '/project', this.scenario.projectCode,
           'scenario', scenarioPath, this.scenario.code,
           'settings'], {replaceUrl: false});
+        this.sGroup = this.scenario.scenarioGroup;
         this.customToastyService.success('Сохранено', 'Сценарий сохранен');
       },
         error => this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error),
