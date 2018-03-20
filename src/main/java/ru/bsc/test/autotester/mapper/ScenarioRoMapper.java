@@ -10,6 +10,7 @@ public abstract class ScenarioRoMapper {
     @Mappings({
             @Mapping(target = "code", source = "code"),
             @Mapping(target = "name", source = "name"),
+            @Mapping(target = "scenarioGroup", source = "scenarioGroup"),
             @Mapping(target = "stepList", ignore = true),
             @Mapping(target = "beforeScenarioIgnore", source = "beforeScenarioIgnore"),
             @Mapping(target = "afterScenarioIgnore", source = "afterScenarioIgnore"),
