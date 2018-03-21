@@ -85,7 +85,9 @@ export class StepItemComponent implements OnInit {
     if (!this.step.sqlDataList) {
       this.step.sqlDataList = [];
     }
-    this.step.sqlDataList.push(new SqlData());
+    var sd = new SqlData();
+    sd.sqlReturnType = 'MAP';
+    this.step.sqlDataList.push(sd);
   }
 
   removeSqlData(data: SqlData) {
