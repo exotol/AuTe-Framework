@@ -28,6 +28,6 @@ public class LimitTransliterationTranslator implements Translator {
             translated.append(charIndex != -1 ? LATIN_ALPHABET_CHARS[charIndex] : ch);
         }
         String result = translated.toString().replaceAll("[^a-zA-Z0-9.-]", "-");
-        return result.length() > RESULT_MAX_LENGTH ? result.substring(RESULT_MAX_LENGTH) : result;
+        return result.length() > RESULT_MAX_LENGTH ? result.substring(0, RESULT_MAX_LENGTH) : result;
     }
 }
