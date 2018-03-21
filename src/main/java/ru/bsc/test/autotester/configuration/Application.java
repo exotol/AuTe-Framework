@@ -30,20 +30,6 @@ public class Application {
 
     public static void main(String args[]) throws Exception {
         if (Arrays.asList(args).contains("execute")) {
-
-            Set<String> loggers = new HashSet<>(Arrays.asList(
-                    "org.apache.http",
-                    "org.apache.commons.beanutils.converters"
-            ));
-
-            for (String log : loggers) {
-                Logger logger = (Logger) LoggerFactory.getLogger(log);
-                logger.setLevel(Level.WARN);
-                logger.setAdditive(false);
-            }
-
-            TestLauncher testLauncher = new TestLauncher();
-            testLauncher.launch();
             return;
         }
         SpringApplication.run(Application.class, args);
