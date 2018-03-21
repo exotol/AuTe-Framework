@@ -1331,7 +1331,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-settings/scenario-settings.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"breadcrumb-search\">\r\n  <ol class=\"breadcrumb\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n    <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.code]\">{{project.code}}. {{project.name}}</a></li>\r\n    <li class=\"breadcrumb-item\" *ngIf=\"scenario && scenario.scenarioGroup && project\">\r\n      <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n    </li>\r\n    <li *ngIf=\"scenario\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.code}}. {{scenario.name}}</a></li>\r\n    <li class=\"breadcrumb-item active\">{{'Settings' | translate}}</li>\r\n  </ol>\r\n  <app-search [projectCode]=\"projectCode\"></app-search>\r\n</div>\r\n\r\n<div *ngIf=\"scenario\">\r\n  <button style=\"margin: 15px;\" class=\"btn btn-success\" (click)=\"save()\">{{'Save scenario settings' | translate}}</button>\r\n\r\n  <div class=\"container-fluid\">\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Name' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"scenario.name\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <!--div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Scenario group' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <select class=\"form-control\" title=\"{{'Scenario group' | translate}}\" *ngIf=\"project\" [(ngModel)]=\"scenario.scenarioGroup\">\r\n          <option [ngValue]=\"null\">{{'[no group]' | translate}}</option>\r\n          <option *ngFor=\"let scenarioGroup of scenarioGroupList\" [ngValue]=\"scenarioGroup\">{{scenarioGroup}}</option>\r\n        </select>\r\n      </div>\r\n    </div-->\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Before scenario ignore' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.beforeScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'After scenario ignore' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n          <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.afterScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"breadcrumb-search\">\r\n  <ol class=\"breadcrumb\">\r\n    <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n    <li *ngIf=\"project\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project', project.code]\">{{project.code}}. {{project.name}}</a></li>\r\n    <li class=\"breadcrumb-item\" *ngIf=\"scenario && scenario.scenarioGroup && project\">\r\n      <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n    </li>\r\n    <li *ngIf=\"scenario\" class=\"breadcrumb-item\"><a [routerLink]=\"['/project/' + projectCode + '/scenario', (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.code}}. {{scenario.name}}</a></li>\r\n    <li class=\"breadcrumb-item active\">{{'Settings' | translate}}</li>\r\n  </ol>\r\n  <app-search [projectCode]=\"projectCode\"></app-search>\r\n</div>\r\n\r\n<div *ngIf=\"scenario\">\r\n  <button style=\"margin: 15px;\" class=\"btn btn-success\" (click)=\"save()\">{{'Save scenario settings' | translate}}</button>\r\n\r\n  <div class=\"container-fluid\">\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Name' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"scenario.name\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Scenario group' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <select class=\"form-control\" title=\"{{'Scenario group' | translate}}\" *ngIf=\"project\" [(ngModel)]=\"scenario.scenarioGroup\">\r\n          <option [ngValue]=\"null\">{{'[no group]' | translate}}</option>\r\n          <option  *ngFor=\"let scenarioGroup of project.groupList\" [ngValue]=\"scenarioGroup\">{{scenarioGroup}}</option>\r\n        </select>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'Before scenario ignore' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n        <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.beforeScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n\r\n    <div class=\"row\">\r\n      <div class=\"col-sm-3\">\r\n        <label>{{'After scenario ignore' | translate}}</label>\r\n      </div>\r\n      <div class=\"col-sm-9\">\r\n          <input type=\"checkbox\" title=\"\" [(ngModel)]=\"scenario.afterScenarioIgnore\"/>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1373,7 +1373,10 @@ var ScenarioSettingsComponent = (function () {
             _this.projectCode = params['projectCode'];
             _this.scenarioService
                 .findOne(_this.projectCode, params['scenarioGroup'], params['scenarioCode'])
-                .subscribe(function (value) { return _this.scenario = value; });
+                .subscribe(function (value) {
+                _this.scenario = value;
+                _this.sGroup = _this.scenario.scenarioGroup;
+            });
             _this.projectService
                 .findOne(_this.projectCode)
                 .subscribe(function (project) { return _this.project = project; });
@@ -1382,7 +1385,7 @@ var ScenarioSettingsComponent = (function () {
     ScenarioSettingsComponent.prototype.save = function () {
         var _this = this;
         var toasty = this.customToastyService.saving();
-        this.scenarioService.saveOne(this.project.code, this.scenario)
+        this.scenarioService.saveOne(this.project.code, this.scenario, this.sGroup)
             .subscribe(function (value) {
             _this.scenario = value;
             var scenarioPath = _this.scenario.scenarioGroup ? _this.scenario.scenarioGroup : '';
@@ -1391,6 +1394,7 @@ var ScenarioSettingsComponent = (function () {
                 'scenario', scenarioPath, _this.scenario.code,
                 'settings'
             ], { replaceUrl: false });
+            _this.sGroup = _this.scenario.scenarioGroup;
             _this.customToastyService.success('Сохранено', 'Сценарий сохранен');
         }, function (error) { return _this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error); }, function () { return _this.customToastyService.clear(toasty); });
     };
@@ -1413,12 +1417,13 @@ var _a, _b, _c, _d, _e;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
+var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1746,8 +1751,8 @@ var ScenarioService = (function () {
         var scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
         return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps', stepList, { headers: this.headers }).map(function (value) { return value.json(); });
     };
-    ScenarioService.prototype.saveOne = function (projectCode, scenario) {
-        var scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
+    ScenarioService.prototype.saveOne = function (projectCode, scenario, scenarioGroup) {
+        var scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenario.code;
         return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath, scenario, { headers: this.headers }).map(function (value) { return value.json(); });
     };
     ScenarioService.prototype.deleteOne = function (projectCode, scenario) {
