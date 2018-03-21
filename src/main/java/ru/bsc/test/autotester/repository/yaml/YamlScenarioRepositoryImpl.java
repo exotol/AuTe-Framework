@@ -1,7 +1,6 @@
 package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -65,18 +64,34 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     @Override
     public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException {
         String projectsPath = environmentProperties.getProjectsDirectoryPath();
+
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
         } else {
-            if (updateDirectoryName && !scenario.getCode().equals(translator.translate(scenario.getName()))) {
-                scenario.setCode(null);
-                Files.move(
-                        Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                        Paths.get(projectsPath, projectCode, "scenarios", scenarioPath(scenario))
-                );
-                scenarioPath = scenarioPath(scenario);
+            if (updateDirectoryName) {
+
+                String newScenarioPath = scenarioPath(scenario);
+                if (!scenarioPath.equals(newScenarioPath)) {  // path changed
+                    Files.move(
+                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                            Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
+                    );
+                    scenarioPath = newScenarioPath;
+                }
+
+                if (!scenario.getCode().equals(translator.translate(scenario.getName()))) { // code changed
+                    scenario.setCode(null);
+                    newScenarioPath =  scenarioPath(scenario);
+                    Files.move(
+                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                            Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
+                    );
+                    scenarioPath = newScenarioPath;
+                }
+
             }
         }
+
         File scenarioFile = Paths.get(
                 projectsPath,
                 projectCode,

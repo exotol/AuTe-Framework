@@ -82,7 +82,7 @@ public class RestScenarioController {
             @PathVariable(required = false) String scenarioGroup,
             @PathVariable String scenarioCode,
             @RequestBody ScenarioRo scenarioRo) throws IOException {
-        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
+        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode + "/";
         ScenarioRo savedScenario = scenarioService.updateScenarioFormRo(projectCode, scenarioPath, scenarioRo);
         if (savedScenario == null) {
             throw new ResourceNotFoundException();
