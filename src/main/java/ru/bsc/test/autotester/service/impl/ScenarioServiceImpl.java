@@ -85,13 +85,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 
         new Thread(() -> atExecutor.executeScenarioList(project, scenarioList,
                 resultMap,
-                () -> {
-                    boolean stop = stopExecutingSet.contains(runningUuid);
-                    if (stop) {
-                        stopExecutingSet.remove(runningUuid);
-                    }
-                    return stop;
-                },
+                () ->  stopExecutingSet.remove(runningUuid),
                 scenarioResultListMap -> {
                     executionResult.setFinished(true);
                     synchronized (projectService) {
