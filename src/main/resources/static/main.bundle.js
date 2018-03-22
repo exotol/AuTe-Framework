@@ -1198,7 +1198,7 @@ var ScenarioListItemComponent = (function () {
         this.onStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.state = 'none';
         this.showResultDetails = false;
-        this.resultCheckTimeout = 5000;
+        this.resultCheckTimeout = 500;
     }
     ScenarioListItemComponent.prototype.ngOnInit = function () {
         this.scenario._selected = false;
