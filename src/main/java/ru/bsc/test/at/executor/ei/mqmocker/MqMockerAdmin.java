@@ -58,7 +58,8 @@ public class MqMockerAdmin implements Closeable {
     }
 
     private void clearMockList() {
-        mockGuidList.forEach(guid -> sendDelete("/mappings/" + guid));
+        // TODO нельзя удалять заглушки очередей сразу после завершения шага, так как MQ-Mocker может не успеть получить нужное сообщение и обработать его
+        // mockGuidList.forEach(guid -> sendDelete("/mappings/" + guid));
     }
 
     private String sendDelete(String url) {

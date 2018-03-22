@@ -513,8 +513,11 @@ public class AtExecutor {
         }
     }
 
-    private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList) throws IOException {
+    private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList) throws Exception {
         if (mqMockResponseList != null) {
+            if (mqMockerAdmin == null) {
+                throw new Exception("MqMockerAdmin is not configured in env.yml");
+            }
             for (MqMockResponse mqMockResponse : mqMockResponseList) {
                 MqMockDefinition mockMessage = new MqMockDefinition();
                 mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
