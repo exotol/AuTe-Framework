@@ -24,7 +24,7 @@ export class ScenarioListItemComponent implements OnInit {
   state = 'none';
   showResultDetails = false;
   startScenarioInfo: StartScenarioInfo;
-  resultCheckTimeout = 5000;
+  resultCheckTimeout = 500;
   executedSteps: number;
   totalSteps: number;
 
