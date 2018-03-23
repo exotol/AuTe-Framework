@@ -31,6 +31,7 @@ import {SyncScrollDirective} from './shared/directives/sync-scroll.directive';
 import {TextSelectDirective} from './shared/directives/text-select.directive';
 import { HelpComponent } from './help/help.component';
 import { MqMockResponseComponent } from './mq-mock-response/mq-mock-response.component';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http);
@@ -81,7 +82,8 @@ const routes: Routes = [
       }
     }),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TextareaAutosizeModule
   ],
   providers: [ProjectService, ScenarioService, StepService, CustomToastyService, VersionService, Globals, SearchScenarioService],
   bootstrap: [AppComponent]
