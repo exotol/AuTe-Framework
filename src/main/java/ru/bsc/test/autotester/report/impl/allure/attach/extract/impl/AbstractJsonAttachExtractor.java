@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import ru.bsc.test.autotester.utils.MimeTypeUtils;
 
@@ -9,9 +10,13 @@ import ru.bsc.test.autotester.utils.MimeTypeUtils;
  */
 public abstract class AbstractJsonAttachExtractor extends AbstractAttachExtractor {
 
-    protected String formatJsonValue(String value) {
+    String formatJsonValue(String value) {
         if (MimeTypeUtils.extensionByContent(value).equals(MimeTypeUtils.EXTENSION_JSON)) {
-            return new JSONObject(value).toString(2);
+            if (value.startsWith("{")) {
+                return new JSONObject(value).toString(2);
+            } else {
+                return new JSONArray(value).toString(2);
+            }
         }
         return value;
     }

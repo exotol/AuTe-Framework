@@ -70,8 +70,8 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     public void generate(File directory) throws Exception {
         File resultDirectory = new File(directory + File.separator + "results-directory");
 
-        if (!resultDirectory.exists() && !resultDirectory.mkdir()) {
-            throw new Exception("mkdir failed: " + resultDirectory.getAbsolutePath());
+        if (!resultDirectory.exists() && !resultDirectory.mkdirs()) {
+            throw new Exception("mkdirs failed: " + resultDirectory.getAbsolutePath());
         }
 
         for (AllurePreparedData data : buildReportData(resultDirectory, getScenarioStepResultMap())) {

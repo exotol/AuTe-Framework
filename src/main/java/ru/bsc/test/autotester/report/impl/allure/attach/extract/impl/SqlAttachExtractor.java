@@ -1,7 +1,6 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.SqlData;
 import ru.bsc.test.at.executor.model.SqlResultType;

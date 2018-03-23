@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.launcher;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.Set;
  * 23.03.2018 10:24
  */
 @Component
+@Slf4j
 public class TestRunner implements CommandLineRunner {
 
     private final TestLauncher launcher;
@@ -24,7 +26,7 @@ public class TestRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (Arrays.asList(args).contains("execute")) {
             Set<String> loggers = new HashSet<>(Arrays.asList(
                     "org.apache.http",
@@ -37,7 +39,12 @@ public class TestRunner implements CommandLineRunner {
                 logger.setAdditive(false);
             }
 
-            launcher.launch();
+            log.info("Running tests");
+            try {
+                launcher.launch();
+            } catch (Exception e) {
+                log.error("Error while running tests", e);
+            }
         }
     }
 }

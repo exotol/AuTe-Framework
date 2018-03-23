@@ -6,7 +6,6 @@ import ru.bsc.test.at.executor.model.StepResult;
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * Created by smakarov

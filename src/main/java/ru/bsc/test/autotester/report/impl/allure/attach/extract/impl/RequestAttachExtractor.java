@@ -1,7 +1,6 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
