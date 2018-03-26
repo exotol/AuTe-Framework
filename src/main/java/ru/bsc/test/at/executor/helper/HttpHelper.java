@@ -25,6 +25,7 @@ import org.apache.tika.Tika;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.AtExecutor;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -98,7 +99,7 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String projectPath, Step step, String url, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
+    public ResponseHelper request(String projectPath, Step step, String url, String headers, String testIdHeaderName, String testId, Map<String, Object> scenarioVariables) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(step.getRequestMethod(), uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
@@ -111,11 +112,11 @@ public class HttpHelper {
             }
             HttpEntity httpEntity;
             if (useMultipartFormData) {
-                httpEntity = setEntity(step.getFormDataList(), projectPath).build();
+                httpEntity = setEntity(step.getFormDataList(), projectPath, scenarioVariables).build();
             } else {
                 List<NameValuePair> params = step.getFormDataList()
                         .stream()
-                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), formData1.getValue()))
+                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), AtExecutor.insertSavedValues(formData1.getValue(), scenarioVariables)))
                         .collect(Collectors.toList());
                 httpEntity = new UrlEncodedFormEntity(params);
             }
@@ -150,11 +151,11 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws IOException {
+    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath, Map<String, Object> scenarioVariables) throws IOException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData formData : formDataList) {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
-                entity.addTextBody(formData.getFieldName(), formData.getValue(), ContentType.TEXT_PLAIN);
+                entity.addTextBody(formData.getFieldName(), AtExecutor.insertSavedValues(formData.getValue(), scenarioVariables), ContentType.TEXT_PLAIN);
             } else {
                 File file = new File((projectPath == null ? "" : projectPath) + formData.getFilePath());
                 entity.addBinaryBody(
