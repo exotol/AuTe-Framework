@@ -61,7 +61,7 @@
           <a href="#" (click)="selectTab('mqMockResponseList')">{{'MQ mock responses' | translate}} <span *ngIf="step.mqMockResponseList && step.mqMockResponseList.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'expectedMqRequests'">
-          <a href="#" (click)="selectTab('expectedMqRequests')">{{'Expected MQ requests' | translate}} <span *ngIf="step.expectedMqRequestList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('expectedMqRequests')">{{'Expected MQ requests' | translate}} <span *ngIf="step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'polling'">
           <a href="#" (click)="selectTab('polling')">{{'Polling' | translate}} <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
@@ -267,6 +267,35 @@
           <button class="btn btn-sm btn-default" (click)="addMqMockResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add MQ mock' | translate}}</button>
         </div>
         <div *ngIf="tab == 'expectedMqRequests'">
+          <h4>{{'Save to variables' | translate}}</h4>
+          <div class="row" *ngIf="step.scenarioVariableFromMqRequestList?.length > 0">
+            <div class="col-sm-3">
+              <label>{{'Source queue name' | translate}}</label>
+            </div>
+            <div class="col-sm-4">
+              <label>{{'XPath' | translate}}</label>
+            </div>
+            <div class="col-sm-3">
+              <label>{{'Variable name' | translate}}</label>
+            </div>
+          </div>
+          <div class="row" *ngFor="let variableFromMq of step.scenarioVariableFromMqRequestList">
+            <div class="col-sm-3">
+              <input placeholder="{{'Source queue name' | translate}} *" class="form-control" title="" [(ngModel)]="variableFromMq.sourceQueue"/>
+            </div>
+            <div class="col-sm-4">
+              <input class="form-control"  placeholder="{{'XPath' | translate}}" style="margin-bottom: 5px;" title="" [(ngModel)]="variableFromMq.xpath"/>
+            </div>
+            <div class="col-sm-3">
+              <input class="form-control" placeholder="{{'Variable name' | translate}}" style="margin-bottom: 5px;" title="" [(ngModel)]="variableFromMq.variableName"/>
+            </div>
+            <div class="col-sm-2">
+              <button class="btn" (click)="removeVariableFromMq(variableFromMq)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+            </div>
+          </div>
+          <button class="btn btn-default" (click)="addVariableFromMq()"><span class="glyphicon glyphicon-plus"></span> {{'Add variable from MQ request' | translate}}</button>
+          <hr/>
+          <h4>{{'Expected MQ requests' | translate}}</h4>
           <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedMqRequest of step.expectedMqRequestList">
             <div class="col-sm-12">
               <div class="input-group" style="margin-bottom: 5px;">
