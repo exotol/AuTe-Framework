@@ -32,18 +32,14 @@ import io.qameta.allure.summary.SummaryPlugin;
 import io.qameta.allure.tags.TagsPlugin;
 import io.qameta.allure.timeline.TimelinePlugin;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.SqlData;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.report.impl.allure.attach.AttachResultBuilder;
-import ru.bsc.test.autotester.utils.MimeTypeUtils;
+import ru.bsc.test.autotester.report.impl.allure.plugin.DefaultCategoriesPlugin;
 import ru.yandex.qatools.allure.model.*;
 
 import java.io.File;
@@ -52,6 +48,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static ru.yandex.qatools.allure.model.Status.FAILED;
+import static ru.yandex.qatools.allure.model.Status.PASSED;
 
 @Slf4j
 @Component
@@ -68,7 +67,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
 
     @Override
     public void generate(File directory) throws Exception {
-        File resultDirectory = new File(directory + File.separator + "results-directory");
+        File resultDirectory = new File(directory, "results-directory");
 
         if (!resultDirectory.exists() && !resultDirectory.mkdirs()) {
             throw new Exception("mkdirs failed: " + resultDirectory.getAbsolutePath());
@@ -83,7 +82,6 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         }
 
         Configuration configuration = createConfiguration();
-
         final ReportGenerator generator = new ReportGenerator(configuration);
         Path output = new File(directory + File.separator + "output").toPath();
         final Path resultsDirectory = resultDirectory.toPath();
@@ -103,6 +101,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                         new TagsPlugin(),
                         new SeverityPlugin(),
                         new OwnerPlugin(),
+                        new DefaultCategoriesPlugin(),
                         new CategoriesPlugin(),
                         new CategoriesTrendPlugin(),
                         new HistoryPlugin(),
@@ -159,9 +158,10 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             Map<Scenario, List<StepResult>> scenarioStepResultMap
     ) {
         return scenarioStepResultMap.entrySet().stream()
-                .filter(entry -> group.equals(entry.getKey().getScenarioGroup() == null ?
-                                              WITHOUT_GROUP :
-                                              entry.getKey().getScenarioGroup()))
+                .filter(entry ->
+                        group.equals(entry.getKey().getScenarioGroup() == null ?
+                                     WITHOUT_GROUP :
+                                     entry.getKey().getScenarioGroup()))
                 .map(entry -> buildTestCaseData(resultDirectory, entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
@@ -172,21 +172,24 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 .withName(scenario.getName())
                 .withStart(steps.stream().mapToLong(Step::getStart).min().orElse(0))
                 .withStop(steps.stream().mapToLong(Step::getStop).max().orElse(0))
-                .withStatus(steps.stream().anyMatch(step -> Status.FAILED.equals(step.getStatus())) ?
-                            Status.FAILED :
-                            Status.PASSED)
+                .withStatus(steps.stream().anyMatch(step -> FAILED.equals(step.getStatus())) ? FAILED : PASSED)
                 .withSteps(steps);
     }
 
     private List<Step> buildStepsData(File resultDirectory, List<StepResult> stepResults) {
-        return stepResults.stream().map(result -> new Step()
-                .withName(StringUtils.isNotEmpty(result.getStep().getStepComment()) ?
-                          result.getStep().getStepComment() :
-                          result.getStep().getCode())
-                .withStart(result.getStart())
-                .withStop(result.getStop())
-                .withAttachments(attachBuilder.build(resultDirectory, result))
-                .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? Status.PASSED : Status.FAILED))
+        return stepResults.stream()
+                .map(result -> new Step()
+                        .withName(stepName(result))
+                        .withStart(result.getStart())
+                        .withStop(result.getStop())
+                        .withAttachments(attachBuilder.build(resultDirectory, result))
+                        .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? PASSED : FAILED))
                 .collect(Collectors.toList());
+    }
+
+    private String stepName(StepResult result) {
+        return StringUtils.isNotEmpty(result.getStep().getStepComment()) ?
+               result.getStep().getStepComment() :
+               result.getStep().getCode();
     }
 }
