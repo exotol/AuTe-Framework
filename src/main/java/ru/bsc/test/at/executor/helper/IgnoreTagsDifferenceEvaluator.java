@@ -8,6 +8,7 @@ import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DifferenceEvaluator;
+import ru.bsc.test.at.executor.validation.MaskComparator;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -90,6 +91,12 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
         if (checkControlNode(controlNode)) {
             return ComparisonResult.EQUAL;
         }
+
+        // *ignore* check
+        if (MaskComparator.compare(controlNode.getTextContent(), testNode.getTextContent())) {
+            return ComparisonResult.EQUAL;
+        }
+
         return outcome;
     }
 

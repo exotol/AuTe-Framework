@@ -220,8 +220,9 @@ public class AtExecutor {
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                        mqMockHelper.assertMqRequests(mqMockerAdmin, testId, step);
+                        mqMockHelper.assertMqRequests(mqMockerAdmin, testId, step, scenarioVariables);
 
+                        stepResult.setSavedParameters(scenarioVariables.toString());
                         stepResult.setResult(StepResult.RESULT_OK);
                     } catch (Exception e) {
                         StringWriter sw = new StringWriter();
@@ -392,7 +393,7 @@ public class AtExecutor {
             compareResponse(step, expectedResponse, responseData);
         }
 
-        // 7. Прочитать, что тестируемый сервис отправлял в заглушку.
+        // 7. Прочитать, что тестируемый сервис отправлял в REST-заглушку.
         parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
     }
 
