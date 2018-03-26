@@ -305,7 +305,7 @@ public class AtExecutor {
                                     .map(formData -> {
                                         String result = formData.getFieldName() + " = ";
                                         if (FieldType.TEXT.equals(formData.getFieldType()) || formData.getFieldType() == null) {
-                                            result += formData.getValue();
+                                            result += insertSavedValues(formData.getValue(), scenarioVariables);
                                         } else {
                                             result += (projectPath == null ? "" : projectPath) + formData.getFilePath();
                                         }
@@ -318,7 +318,8 @@ public class AtExecutor {
                             requestUrl,
                             requestHeaders,
                             project.getTestIdHeaderName(),
-                            testId
+                            testId,
+                            scenarioVariables
                     );
                 }
 
@@ -364,7 +365,7 @@ public class AtExecutor {
                     }
                     String valueActual = String.valueOf(scenarioVariables.get(entry.getKey()));
                     if (!valueExpected.equals(valueActual)) {
-                        sb.append("\n").append("Saved value " + entry.getKey() + " = " + valueActual + ". Expected: " + valueExpected);
+                        sb.append("\nSaved value ").append(entry.getKey()).append(" = ").append(valueActual).append(". Expected: ").append(valueExpected);
                     }
                 }
                 if (sb.length() > 0) {
@@ -562,7 +563,7 @@ public class AtExecutor {
                                 result = rs.next() ? rs.getObject(1) : null;
                             } else if (sqlResultType == SqlResultType.LIST) {
 
-                                List columnData = new ArrayList<>();
+                                List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
@@ -590,7 +591,7 @@ public class AtExecutor {
         }
     }
 
-    private String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
+    public static String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
         String result = template;
         if (result != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
