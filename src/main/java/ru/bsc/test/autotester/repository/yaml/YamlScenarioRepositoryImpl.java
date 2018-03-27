@@ -12,6 +12,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -138,12 +139,16 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
-        Files.deleteIfExists(Paths.get(
+        Path scenarioDirectory = Paths.get(
                 environmentProperties.getProjectsDirectoryPath(),
                 projectCode,
                 "scenarios",
                 scenarioPath
-        ));
+        );
+        Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 
     private List<Scenario> findScenarios(String projectCode, boolean fetchSteps) {
