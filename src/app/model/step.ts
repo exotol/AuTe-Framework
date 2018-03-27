@@ -5,6 +5,7 @@ import {FormData} from './form-data';
 import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
 import {SqlData} from "./sql-data";
+import {ScenarioVariableFromMqRequest} from "./scenario-variable-from-mq-request";
 
 export class Step {
   code: string;
@@ -40,4 +41,5 @@ export class Step {
   mqMockResponseList: MqMockResponse[];
   expectedMqRequestList: ExpectedMqRequest[];
   sqlDataList: SqlData[];
+  scenarioVariableFromMqRequestList: ScenarioVariableFromMqRequest[];
 }

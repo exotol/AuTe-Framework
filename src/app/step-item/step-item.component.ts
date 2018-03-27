@@ -4,9 +4,10 @@ import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {ExpectedServiceRequest} from '../model/expected-service-request';
 import {FormData} from '../model/form-data';
-import {MqMockResponse} from "../model/mq-mock-response";
-import {ExpectedMqRequest} from "../model/expected-mq-request";
-import {SqlData} from "../model/sql-data";
+import {MqMockResponse} from '../model/mq-mock-response';
+import {ExpectedMqRequest} from '../model/expected-mq-request';
+import {SqlData} from '../model/sql-data';
+import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
 
 @Component({
   selector: 'app-step-item',
@@ -85,9 +86,9 @@ export class StepItemComponent implements OnInit {
     if (!this.step.sqlDataList) {
       this.step.sqlDataList = [];
     }
-    var sd = new SqlData();
-    sd.sqlReturnType = 'MAP';
-    this.step.sqlDataList.push(sd);
+    const sqlData = new SqlData();
+    sqlData.sqlReturnType = 'MAP';
+    this.step.sqlDataList.push(sqlData);
   }
 
   removeSqlData(data: SqlData) {
@@ -204,5 +205,19 @@ export class StepItemComponent implements OnInit {
     if (indexToRemove > -1) {
       this.step.mqMockResponseList.splice(indexToRemove, 1);
     }
+  }
+
+  removeVariableFromMq(variableFromMq: ScenarioVariableFromMqRequest) {
+    const indexToRemove = this.step.scenarioVariableFromMqRequestList.indexOf(variableFromMq);
+    if (indexToRemove > -1) {
+      this.step.scenarioVariableFromMqRequestList.splice(indexToRemove, 1);
+    }
+  }
+
+  addVariableFromMq() {
+    if (!this.step.scenarioVariableFromMqRequestList) {
+      this.step.scenarioVariableFromMqRequestList = [];
+    }
+    this.step.scenarioVariableFromMqRequestList.push(new ScenarioVariableFromMqRequest());
   }
 }
