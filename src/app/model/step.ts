@@ -4,8 +4,8 @@ import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
 import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
-import {SqlData} from "./sql-data";
-import {ScenarioVariableFromMqRequest} from "./scenario-variable-from-mq-request";
+import {SqlData} from './sql-data';
+import {ScenarioVariableFromMqRequest} from './scenario-variable-from-mq-request';
 
 export class Step {
   code: string;
