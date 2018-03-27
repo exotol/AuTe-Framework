@@ -24,7 +24,7 @@ public class ExpectedResultAttachExtractor extends AbstractJsonAttachExtractor {
         String formattedValue = formatJsonValue(result.getExpected());
         String relativePath = writeDataToFile(resultDirectory, formattedValue, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("application/json");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(APPLICATION_JSON);
         }
         return null;
     }

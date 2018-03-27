@@ -4,14 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static ru.bsc.test.autotester.utils.MimeTypeUtils.EXTENSION_JSON;
-import static ru.bsc.test.autotester.utils.MimeTypeUtils.extensionByContent;
+import static ru.bsc.test.autotester.utils.FileExtensionsUtils.EXTENSION_JSON;
+import static ru.bsc.test.autotester.utils.FileExtensionsUtils.extensionByContent;
 
 /**
  * Created by smakarov
  * 23.03.2018 10:57
  */
 public abstract class AbstractJsonAttachExtractor extends AbstractAttachExtractor {
+
+    static final String APPLICATION_JSON = "application/json";
 
     String formatJsonValue(String value) {
         try {

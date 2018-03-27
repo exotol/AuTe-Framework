@@ -28,7 +28,7 @@ public class MockRequestsAttachExtractor extends AbstractAttachExtractor {
         String requestsData = getRequestsData(requests);
         String relativePath = writeDataToFile(resultDirectory, requestsData, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
         }
         return null;
     }

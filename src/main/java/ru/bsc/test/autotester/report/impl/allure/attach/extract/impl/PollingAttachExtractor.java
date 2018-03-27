@@ -23,7 +23,7 @@ public class PollingAttachExtractor extends AbstractAttachExtractor {
         String data = "Polling JSON XPath: " + result.getStep().getPollingJsonXPath();
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
         }
         return null;
     }

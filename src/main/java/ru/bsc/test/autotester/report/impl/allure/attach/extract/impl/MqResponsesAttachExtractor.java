@@ -29,7 +29,7 @@ public class MqResponsesAttachExtractor extends AbstractAttachExtractor {
         String responsesData = getMqResponsesData(responses);
         String relativePath = writeDataToFile(resultDirectory, responsesData, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
         }
         return null;
     }

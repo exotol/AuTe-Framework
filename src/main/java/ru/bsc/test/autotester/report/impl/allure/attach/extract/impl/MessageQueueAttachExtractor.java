@@ -26,7 +26,7 @@ public class MessageQueueAttachExtractor extends AbstractAttachExtractor {
         String data = "Message queue name: " + name + "\nMessage:" + message;
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
         }
         return null;
     }
