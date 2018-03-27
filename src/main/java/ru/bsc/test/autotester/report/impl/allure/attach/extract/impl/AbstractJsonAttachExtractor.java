@@ -3,7 +3,9 @@ package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import ru.bsc.test.autotester.utils.MimeTypeUtils;
+
+import static ru.bsc.test.autotester.utils.MimeTypeUtils.EXTENSION_JSON;
+import static ru.bsc.test.autotester.utils.MimeTypeUtils.extensionByContent;
 
 /**
  * Created by smakarov
@@ -13,7 +15,7 @@ public abstract class AbstractJsonAttachExtractor extends AbstractAttachExtracto
 
     String formatJsonValue(String value) {
         try {
-            if (!MimeTypeUtils.extensionByContent(value).equals(MimeTypeUtils.EXTENSION_JSON)) {
+            if (!EXTENSION_JSON.equals(extensionByContent(value))) {
                 return value;
             }
             if (value.trim().startsWith("{")) {

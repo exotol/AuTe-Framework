@@ -12,14 +12,17 @@ import java.io.File;
  */
 @Component
 public class StacktraceAttachExtractor extends AbstractAttachExtractor {
+
+    private static final String FILE_NAME = "Stacktrace";
+
     @Override
     public Attachment extract(File resultDirectory, StepResult result) {
         if (StepResult.RESULT_OK.equals(result.getResult())) {
             return null;
         }
-        String relativePath = writeDataToFile(resultDirectory, result.getDetails(), "Stacktrace");
+        String relativePath = writeDataToFile(resultDirectory, result.getDetails(), FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle("Stacktrace").withSource(relativePath).withType("text/plain");
+            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
         }
         return null;
     }
