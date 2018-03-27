@@ -52,6 +52,7 @@ public class Step implements Serializable, AbstractModel {
     private String sql;
     @Deprecated
     private String sqlSavedParameter;
+    private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
 
     public Step copy() {
         Step step = new Step();
