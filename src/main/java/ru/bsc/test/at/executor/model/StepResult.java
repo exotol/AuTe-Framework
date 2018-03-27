@@ -3,6 +3,8 @@ package ru.bsc.test.at.executor.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by sdoroshin on 12.05.2017.
  */
@@ -28,6 +30,7 @@ public class StepResult {
     private long start;
     private long stop;
     private String cookies;
+    private List<RequestData> requestDataList;
 
     public StepResult(Step step) {
         this.step = step;
