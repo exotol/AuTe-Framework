@@ -3,6 +3,8 @@ package ru.bsc.test.autotester.ro;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by sdoroshin on 14.09.2017.
  */
@@ -22,4 +24,6 @@ public class StepResultRo {
     private String description;
     private boolean editable;
     private String cookies;
+
+    private List<RequestDataRo> requestDataList;
 }
