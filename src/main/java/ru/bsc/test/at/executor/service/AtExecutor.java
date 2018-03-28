@@ -277,6 +277,7 @@ public class AtExecutor {
         long numberRepetitions = parseLongOrVariable(scenarioVariables, step.getNumberRepetitions(), 1);
         numberRepetitions = numberRepetitions > 300 ? 300 : numberRepetitions;
 
+        stepResult.setRequestDataList(new LinkedList<>());
         for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
 
             // Polling
@@ -285,6 +286,9 @@ public class AtExecutor {
 
             ResponseHelper responseData;
             do {
+                RequestData requestData = new RequestData();
+                stepResult.getRequestDataList().add(requestData);
+
                 retryCounter++;
                 // 3. Выполнить запрос
                 if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
@@ -323,6 +327,8 @@ public class AtExecutor {
                             scenarioVariables
                     );
                 }
+                requestData.setRequestBody(stepResult.getRequestBody());
+                requestData.setResponseBody(responseData.getContent());
 
                 // Выполнить скрипт
                 if (isNotEmpty(step.getScript())) {
