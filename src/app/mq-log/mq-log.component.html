@@ -44,6 +44,8 @@
         <button style="margin: 10px 0;" class="btn btn-default" (click)="select(null)"><span class="glyphicon glyphicon-backward"></span> Return to list</button>
         <h4>{{selectedRequest.sourceQueue}} > {{selectedRequest.destinationQueue}}</h4>
         <small class="help-block">{{selectedRequest.date | date:'d MMM, y, HH:mm:ss'}}</small>
+        <small class="help-block">Mapping GUID: {{selectedRequest.mappingGuid}}</small>
+        <small class="help-block">Test id: {{selectedRequest.testId}}</small>
 
         <div class="tab-content" style="padding: 10px;">
           <h3>{{selectedRequest.sourceQueue}} ></h3>
