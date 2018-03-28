@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 12.05.2017.
@@ -31,6 +32,7 @@ public class StepResult {
     private long stop;
     private String cookies;
     private List<RequestData> requestDataList;
+    private Map<String, Object> variables;
 
     public StepResult(Step step) {
         this.step = step;
