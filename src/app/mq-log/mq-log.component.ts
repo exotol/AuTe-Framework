@@ -4,7 +4,10 @@ import {MqMockerService} from '../../service/mq-mocker-service';
 
 @Component({
   selector: 'app-mq-log',
-  templateUrl: './mq-log.component.html'
+  templateUrl: './mq-log.component.html',
+  styles: [
+    '.clear-line { height: 30px; border-top-color: white; cursor: default; }'
+  ]
 })
 export class MqLogComponent implements OnInit {
 
@@ -27,6 +30,14 @@ export class MqLogComponent implements OnInit {
     this.mqMockerService.getRequestList()
       .subscribe(value => {
         this.mqLog = value;
+      });
+  }
+
+  clear() {
+    this.mqMockerService
+      .clear()
+      .subscribe(() => {
+        this.updateList();
       });
   }
 

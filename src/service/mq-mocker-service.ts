@@ -14,7 +14,15 @@ export class MqMockerService {
     if (window['mqMockerUrl']) {
       return this.http
         .get(this.mqMockerAdminUrl + '/request-list')
-        .map(value => value.json() as MqLogItem[]);
+        .map(value => value.json() as MqLogItem[])
+        .map(value => value.reverse());
+    }
+  }
+
+  clear(): Observable<any> {
+    if (window['mqMockerUrl']) {
+      return this.http
+        .post(this.mqMockerAdminUrl + '/request-list/clear', {});
     }
   }
 }
