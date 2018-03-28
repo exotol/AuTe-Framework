@@ -38,7 +38,7 @@ export class StepItemComponent implements OnInit {
 
   Object = Object;
 
-  tab = 'summary';
+  tab = 'details';
   toastOptions: ToastOptions = {
     title: 'Warning',
     msg: 'Checked variable already exists',
@@ -55,7 +55,11 @@ export class StepItemComponent implements OnInit {
   }
 
   selectTab(tabName: string) {
-    this.tab = tabName;
+    if (this.tab === tabName) {
+      this.tab = 'none';
+    } else {
+      this.tab = tabName;
+    }
     return false;
   }
 
