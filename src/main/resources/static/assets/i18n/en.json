@@ -136,5 +136,6 @@
   "Request": "Request",
   "Requests": "Requests",
   "Response": "Response",
-  "Total": "Total"
+  "Total": "Total",
+  "Number of repetitions": "Number of repetitions"
 }
