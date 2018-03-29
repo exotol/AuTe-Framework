@@ -26,7 +26,7 @@
 
 Пример автотеста есть в проекте "bcs-rest-at" в ветке "new_at_executor": https://bitbucket.org/bscideas/bcs-rest-at/branch/new_at_executor
 
-### Версия 3.0.0-SNAPSHOT ###
+### Версия 3.0.0 ###
 
 Id из всех моделей перенесены в AbstractModel
 
