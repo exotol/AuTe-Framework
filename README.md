@@ -5,7 +5,7 @@
 ### 1. Хранение данных и настройка ###
 
 Проекты и сценарии хранятся в формате YAML.
-Путь к проектам настраивается в файле `environment.properties`, который расположен в одной директории с `autotester-3.0.0-SNAPSHOT.jar`.
+Путь к проектам настраивается в файле `environment.properties`, который расположен в одной директории с `autotester-3.0.0.jar`.
 Параметр `projects.directory.path` указывает на путь к рабочей директории, в которой находятся проекты.
 
 Структура рабочей директории:
@@ -26,12 +26,12 @@ projects.directory.path=c:\\projects\\bcs-test\\
 
 ### 2. Запуск ###
 
-Для работы необходимо запустить `autotester-4.0.0-SNAPSHOT.jar`.
+Для работы необходимо запустить `autotester-3.0.0.jar`.
 
 Запускать в Windows удобней с помощью файла bat. Пример `run.bat`:
 
 ```
-java -Dloader.path=lib/ -Dfile.encoding=UTF-8 -jar autotester-4.0.0-SNAPSHOT.jar --server.port=8080
+java -Dloader.path=lib/ -Dfile.encoding=UTF-8 -jar autotester-3.0.0.jar --server.port=8080
 ```
 
 Параметр `--server.port` указывает, какой порт используется для работы.
