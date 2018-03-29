@@ -211,6 +211,8 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                 project.setAmqpBroker(amqpBroker);
             }
         }
+        project.setMqCheckCount(environmentProperties.getMqCheckCount());
+        project.setMqCheckInterval(environmentProperties.getMqCheckInterval());
     }
 
     private void loadGroups(Project project, File projectDirectory) {
