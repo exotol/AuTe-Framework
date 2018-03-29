@@ -13,4 +13,12 @@ public class ScenarioVariableFromMqRequest implements Serializable, AbstractMode
     private String sourceQueue;
     private String xpath;
     private String variableName;
+
+    public ScenarioVariableFromMqRequest copy() {
+        ScenarioVariableFromMqRequest variable = new ScenarioVariableFromMqRequest();
+        variable.setSourceQueue(getSourceQueue());
+        variable.setXpath(getXpath());
+        variable.setVariableName(getVariableName());
+        return variable;
+    }
 }

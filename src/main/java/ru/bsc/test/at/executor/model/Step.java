@@ -87,6 +87,52 @@ public class Step implements Serializable, AbstractModel {
         for (SqlData sqlData : getSqlDataList()) {
             step.getSqlDataList().add(sqlData.copy());
         }
+
+        step.setMqName(getMqName());
+        step.setMqMessage(getMqMessage());
+        step.setMqMessageFile(getMqMessageFile());
+        step.setMultipartFormData(getMultipartFormData());
+        step.setJsonCompareMode(getJsonCompareMode());
+        step.setNumberRepetitions(getNumberRepetitions());
+        step.setParseMockRequestUrl(getParseMockRequestUrl());
+        step.setParseMockRequestXPath(getParseMockRequestXPath());
+        step.setParseMockRequestScenarioVariable(getParseMockRequestScenarioVariable());
+        step.setTimeoutMs(getTimeoutMs());
+
+        if (step.getMqMockResponseList() == null) {
+            step.setMqMockResponseList(new LinkedList<>());
+        }
+        step.getMqMockResponseList().clear();
+        if (getMqMockResponseList() != null) {
+            for (MqMockResponse mqMockResponse : getMqMockResponseList()) {
+                step.getMqMockResponseList().add(mqMockResponse.copy());
+            }
+        }
+
+        if (getExpectedMqRequestList() != null) {
+            step.setExpectedMqRequestList(new LinkedList<>());
+            for (ExpectedMqRequest expectedMqRequest : getExpectedMqRequestList()) {
+                step.getExpectedMqRequestList().add(expectedMqRequest.copy());
+            }
+        }
+
+        if (getSqlDataList() != null) {
+            step.setSqlDataList(new LinkedList<>());
+            for (SqlData sqlData : getSqlDataList()) {
+                step.getSqlDataList().add(sqlData.copy());
+            }
+        }
+
+        step.setSql(getSql());
+        step.setSqlSavedParameter(getSqlSavedParameter());
+
+        if (getScenarioVariableFromMqRequestList() != null) {
+            step.setScenarioVariableFromMqRequestList(new LinkedList<>());
+            for (ScenarioVariableFromMqRequest variable : getScenarioVariableFromMqRequestList()) {
+                step.getScenarioVariableFromMqRequestList().add(variable.copy());
+            }
+        }
+
         return step;
     }
 
