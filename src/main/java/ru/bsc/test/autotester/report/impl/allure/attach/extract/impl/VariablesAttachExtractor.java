@@ -34,7 +34,8 @@ public class VariablesAttachExtractor extends AbstractAttachExtractor {
 
     private String getVariablesData(Map<String, Object> variables) {
         return variables.entrySet().stream()
-                .map(variable -> variable.getKey() + " = " + variable.getValue().toString())
+                .filter(stringObjectEntry -> stringObjectEntry.getValue() != null)
+                .map(variable -> variable.getKey() + " = " + variable.getValue())
                 .collect(Collectors.joining("\n"));
     }
 }

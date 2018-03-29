@@ -33,7 +33,6 @@ import io.qameta.allure.tags.TagsPlugin;
 import io.qameta.allure.timeline.TimelinePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -49,7 +48,6 @@ import ru.yandex.qatools.allure.model.TestSuiteResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
@@ -166,10 +164,9 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             Map<Scenario, List<StepResult>> scenarioStepResultMap
     ) {
         return scenarioStepResultMap.entrySet().stream()
-                .filter(entry ->
-                        group.equals(entry.getKey().getScenarioGroup() == null ?
-                                     WITHOUT_GROUP :
-                                     entry.getKey().getScenarioGroup()))
+                .filter(entry -> group.equals(entry.getKey().getScenarioGroup() == null ?
+                                              WITHOUT_GROUP :
+                                              entry.getKey().getScenarioGroup()))
                 .map(entry -> buildTestCaseData(resultDirectory, entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
@@ -190,63 +187,48 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 .entrySet()
                 .stream()
                 .map(buildSteps(resultDirectory))
+                .flatMap(List::stream)
                 .sorted(Comparator.comparingLong(Step::getStart))
                 .collect(Collectors.toList());
     }
 
-    private Function<Map.Entry<ru.bsc.test.at.executor.model.Step, List<StepResult>>, Step> buildSteps(File resultDirectory) {
+    private Function<Map.Entry<ru.bsc.test.at.executor.model.Step, List<StepResult>>, List<Step>> buildSteps(File resultDirectory) {
         return resultGroup -> {
             ru.bsc.test.at.executor.model.Step step = resultGroup.getKey();
             if (CollectionUtils.isEmpty(step.getStepParameterSetList())) {
                 StepResult result = resultGroup.getValue().get(0);
-                return new Step()
-                        .withName(resultName(result))
-                        .withStart(result.getStart())
-                        .withStop(result.getStop())
-                        .withAttachments(attachBuilder.build(resultDirectory, result))
-                        .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? PASSED : FAILED);
+                return Collections.singletonList(buildStep(resultDirectory, stepName(step), result));
             } else {
-                List<Step> testCaseSteps = testCaseSteps(
-                        resultDirectory,
-                        step.getStepParameterSetList(),
-                        resultGroup.getValue()
-                );
-                return new Step()
-                        .withName(testCaseName(step))
-                        .withSteps(testCaseSteps)
-                        .withStart(testCaseSteps.stream().mapToLong(Step::getStart).min().orElse(0))
-                        .withStop(testCaseSteps.stream().mapToLong(Step::getStop).max().orElse(0))
-                        .withStatus(testCaseSteps.stream().anyMatch(testCaseStep -> FAILED.equals(testCaseStep.getStatus())) ?
-                                    FAILED :
-                                    PASSED);
+                return testCaseSteps(resultDirectory, step, resultGroup.getValue());
             }
         };
     }
 
-    private List<Step> testCaseSteps(File resultDirectory, List<StepParameterSet> testCases, List<StepResult> results) {
+    private List<Step> testCaseSteps(
+            File resultDirectory,
+            ru.bsc.test.at.executor.model.Step step,
+            List<StepResult> results
+    ) {
+        List<StepParameterSet> testCases = step.getStepParameterSetList();
         List<Step> steps = new ArrayList<>();
         for (int i = 0; i < testCases.size(); i++) {
             StepParameterSet testCase = testCases.get(i);
-            String name = isNotEmpty(testCase.getDescription()) ? testCase.getDescription() : valueOf(i + 1);
+            String stepName = stepName(step);
+            String testCaseName = isNotEmpty(testCase.getDescription()) ? testCase.getDescription() : valueOf(i + 1);
+            String name = stepName + " - " + testCaseName;
             StepResult stepResult = results.get(i);
-            steps.add(
-                    new Step()
-                            .withName(name)
-                            .withStart(stepResult.getStart())
-                            .withStop(stepResult.getStop())
-                            .withStatus(StepResult.RESULT_OK.equals(stepResult.getResult()) ? PASSED : FAILED)
-                            .withAttachments(attachBuilder.build(resultDirectory, stepResult))
-            );
+            steps.add(buildStep(resultDirectory, name, stepResult));
         }
         return steps;
     }
 
-    private String resultName(StepResult result) {
-        return stepName(result.getStep());
-    }
-
-    private String testCaseName(ru.bsc.test.at.executor.model.Step step) {
-        return "[TEST CASES] " + stepName(step) + ": ";
+    private Step buildStep(File resultDirectory, String name, StepResult result) {
+        return new Step()
+                .withName(name)
+                .withStart(result.getStart())
+                .withStop(result.getStop())
+                .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? PASSED : FAILED)
+                .withAttachments(attachBuilder.build(resultDirectory, result));
     }
 
     private String stepName(ru.bsc.test.at.executor.model.Step step) {
