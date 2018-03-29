@@ -8,6 +8,7 @@ export class StepResult {
   details: string;
   expected: string;
   actual: string;
+  diff: string;
   requestUrl: string;
   requestBody: string;
   pollingRetryCount: number;
