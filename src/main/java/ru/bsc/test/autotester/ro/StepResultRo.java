@@ -2,6 +2,9 @@ package ru.bsc.test.autotester.ro;
 
 import lombok.Getter;
 import lombok.Setter;
+import name.fraser.neil.plaintext.Diff;
+
+import java.util.List;
 
 /**
  * Created by sdoroshin on 14.09.2017.
@@ -14,6 +17,8 @@ public class StepResultRo {
     private String result;
     private String details;
     private String expected;
+    private List<Diff> diff;
+    private List<Diff> diffReversive;
     private String actual;
     private String requestUrl;
     private String requestBody;
