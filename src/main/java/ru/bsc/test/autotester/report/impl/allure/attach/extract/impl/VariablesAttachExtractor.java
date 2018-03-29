@@ -20,11 +20,11 @@ public class VariablesAttachExtractor extends AbstractAttachExtractor {
 
     @Override
     public Attachment extract(File resultDirectory, StepResult result) {
-        if (MapUtils.isEmpty(result.getVariables())) {
+        if (MapUtils.isEmpty(result.getScenarioVariables())) {
             return null;
         }
 
-        String data = getVariablesData(result.getVariables());
+        String data = getVariablesData(result.getScenarioVariables());
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
             return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");

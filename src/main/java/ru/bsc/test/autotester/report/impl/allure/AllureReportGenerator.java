@@ -190,6 +190,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 .entrySet()
                 .stream()
                 .map(buildSteps(resultDirectory))
+                .sorted(Comparator.comparingLong(Step::getStart))
                 .collect(Collectors.toList());
     }
 
