@@ -18,7 +18,7 @@ export class Step {
   expectedResponseIgnore: boolean;
   expectedStatusCode: number;
   jsonXPath: string;
-  requestBodyType: string;
+  requestBodyType = 'JSON';
   usePolling: boolean;
   pollingJsonXPath: string;
   mockServiceResponseList: MockServiceResponse[];
@@ -26,12 +26,12 @@ export class Step {
   stepComment: string;
   savedValuesCheck: any = {};
   stepParameterSetList: StepParameterSet[] = [];
-  responseCompareMode: string;
+  responseCompareMode = 'JSON';
   formDataList: FormData[] = [];
   multipartFormData: boolean;
   mqName: string;
   mqMessage: string;
-  jsonCompareMode: string;
+  jsonCompareMode = 'NON_EXTENSIBLE';
   script: string;
   numberRepetitions: string;
   parseMockRequestUrl: string;

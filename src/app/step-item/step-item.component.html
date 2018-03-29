@@ -137,7 +137,7 @@
                 <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
               </div>
               <div class="col-sm-4">
-                <select class="form-control" title="{{'Request body type' | translate}}" [(ngModel)]="step.responseCompareMode">
+                <select class="form-control" title="{{'Compare mode' | translate}}" [(ngModel)]="step.responseCompareMode">
                   <option [ngValue]="'JSON'">JSON (default)</option>
                   <option [ngValue]="'FULL_MATCH'">Full match</option>
                   <option [ngValue]="'IGNORE_MASK'">Mask *ignore*</option>
