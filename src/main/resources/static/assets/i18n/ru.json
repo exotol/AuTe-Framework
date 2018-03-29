@@ -137,5 +137,6 @@
   "Requests": "Запросы",
   "Response": "Ответ",
   "Total": "Всего",
-  "Number of repetitions": "Количество повторений"
+  "Number of repetitions": "Количество повторений",
+  "JSON compare mode": "Режим сравнения JSON"
 }
