@@ -25,6 +25,8 @@ public class Project implements Serializable, AbstractModel {
     private String testIdHeaderName;
     private AmqpBroker amqpBroker;
     private List<String> groupList;
+    private Long mqCheckInterval;
+    private Integer mqCheckCount;
 
     public Project copy() {
         Project project = new Project();

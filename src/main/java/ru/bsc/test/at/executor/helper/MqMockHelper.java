@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class MqMockHelper {
 
 
-    public void assertMqRequests(MqMockerAdmin mqMockerAdmin, String testId, Step step, Map<String, Object> scenarioVariables) throws Exception {
+    public void assertMqRequests(MqMockerAdmin mqMockerAdmin, String testId, Step step, Map<String, Object> scenarioVariables, Integer mqCheckCount, Long mqCheckInterval) throws Exception {
         if (mqMockerAdmin == null) {
             return;
         }
@@ -39,8 +39,10 @@ public class MqMockHelper {
 
         List<MockedRequest> actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
 
-        // TODO Это УДАЛИТЬ. Только для дебага
-        // actualMqRequestList.add(mqMockerAdmin.getRequestListByTestId(null).get(mqMockerAdmin.getRequestListByTestId(null).size() - 1));
+        for (int counter = 0; counter < Math.min(mqCheckCount != null ? mqCheckCount : 10, 30) && expectedMqRequestList.size() != actualMqRequestList.size(); counter++) {
+            Thread.sleep(Math.min(mqCheckInterval != null ? mqCheckInterval : 500L, 5000L));
+            actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
+        }
 
         if (expectedMqRequestList.size() != actualMqRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
