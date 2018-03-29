@@ -32,7 +32,7 @@ public class StepResult {
     private long stop;
     private String cookies;
     private List<RequestData> requestDataList;
-    private Map<String, Object> variables;
+    private Map<String, Object> scenarioVariables;
 
     public StepResult(Step step) {
         this.step = step;

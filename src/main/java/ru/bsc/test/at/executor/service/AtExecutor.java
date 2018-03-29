@@ -234,7 +234,7 @@ public class AtExecutor {
                         stepResult.setStop(new Date().getTime());
                     }
 
-                    stepResult.setVariables(new HashMap<>(scenarioVariables));
+                    stepResult.setScenarioVariables(new HashMap<>(scenarioVariables));
 
                     if (stopObserver != null && stopObserver.stop()) {
                         throw new ScenarioStopException();
