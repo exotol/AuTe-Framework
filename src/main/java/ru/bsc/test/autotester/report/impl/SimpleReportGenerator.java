@@ -1,8 +1,9 @@
-package ru.bsc.test.autotester.report;
+package ru.bsc.test.autotester.report.impl;
 
 import org.apache.commons.io.FileUtils;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.report.AbstractReportGenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
