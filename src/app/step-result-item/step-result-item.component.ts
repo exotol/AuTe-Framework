@@ -18,24 +18,23 @@ import {Scenario} from '../model/scenario';
 export class StepResultItemComponent implements OnInit {
 
   @Input()
-  stepResult: StepResult;
+  stepResult:StepResult;
   @Input()
-  scenario: Scenario;
-  expectedDiff: string;
-  actualDiff: string;
+  scenario:Scenario;
+  expectedDiff:string;
+  actualDiff:string;
 
   tab = 'details';
-  projectCode: string;
+  projectCode:string;
   displayDetails = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private stepService: StepService,
-    private customToastyService: CustomToastyService
-  ) {}
+  constructor(private route:ActivatedRoute,
+              private stepService:StepService,
+              private customToastyService:CustomToastyService) {
+  }
 
   ngOnInit() {
-    this.route.params.subscribe((params: ParamMap) => {
+    this.route.params.subscribe((params:ParamMap) => {
       this.projectCode = params['projectCode'];
       this.formatText();
     });
@@ -43,7 +42,7 @@ export class StepResultItemComponent implements OnInit {
 
   formatText() {
 
-    var diffs:any = this.stepResult.diff;
+    let diffs:any = this.stepResult.diff;
     if (!diffs) {
       return;
     }
@@ -51,32 +50,39 @@ export class StepResultItemComponent implements OnInit {
     this.expectedDiff = '';
     this.actualDiff = '';
 
-    for (var x = 0; x < diffs.length; x++) {
-      var op = diffs[x].operation;    // Operation (insert, delete, equal)
-      var text = diffs[x].text;
+    let rowNum = 0;
+    let expectedChanges:number[] = [];
+    for (let x = 0; x < diffs.length; x++) {
+      let op = diffs[x].operation;    // Operation (insert, delete, equal)
+      let text = diffs[x].text;
       switch (op) {
         case 'INSERT':
-          // this.actualDiff = this.actualDiff.concat('<span class="added">' + text + '</span>');
+          // нам надо выделить строку
+          if (text.split('\n').length - 1 > 1) {
+            expectedChanges.push(rowNum - 1);
+          }
           this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
           break;
         case 'DELETE':
-           // this.expectedDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
+          rowNum = rowNum + text.split('\n').length - 1;
           this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
           break;
         case 'EQUAL':
+          rowNum = rowNum + text.split('\n').length - 1;
           this.actualDiff = this.actualDiff.concat(text);
           this.expectedDiff = this.expectedDiff.concat(text);
           break;
       }
     }
 
-    this.expectedDiff = this.wrapChangedLines(this.expectedDiff, "removed", "removed-row");
-    this.actualDiff = this.wrapChangedLines(this.actualDiff, "added", "added-row");
+    this.actualDiff = this.wrapChangedLines(this.actualDiff, "added", "added-row", []);
+    this.expectedDiff = this.wrapChangedLines(this.expectedDiff, "removed", "removed-row", expectedChanges);
+
   }
 
   /** оборачиваем строку */
   wrapChanged(text:string, classToWrap:string) {
-    var wrapped:string;
+    let wrapped:string;
     if (text.endsWith('\n')) {
       wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
     } else {
@@ -90,25 +96,25 @@ export class StepResultItemComponent implements OnInit {
     return '<div class="unchanged-row">' + span + '</div>';
   }
 
+
   /** оборачиваем строку, если в ней есть изменения */
-  wrapChangedLines(text:string, classToWrap:string, classWrap:string) {
+  wrapChangedLines(text:string, classToWrap:string, classWrap:string, expectedChanges:number[]) {
     const beginPattern = '<span class="' + classToWrap + '">';
     const endPattern = '</span>';
 
-    var lines = text.split("\n");
-    var results = [];
-    var wrapLine = false;
-    var resultsToDiv = [];
+    let lines = text.split("\n");
+    let results = [];
+    let resultsToDiv = [];
 
-    var hasChanges = function (line:string):boolean {
+    let hasChanges = function (line:string):boolean {
       return line.indexOf(beginPattern) != -1 && line.indexOf(beginPattern) != -1;
     };
 
-    var hasUnclosedStart = function (line:string):boolean {
-      var index = 0;
-      var closed = false;
-      var beginPatternIndex = line.indexOf(beginPattern, index);
-      var endPatternIndex = line.indexOf(endPattern, index);
+    let hasUnclosedStart = function (line:string):boolean {
+      let index = 0;
+      let closed = false;
+      let beginPatternIndex = line.indexOf(beginPattern, index);
+      let endPatternIndex = line.indexOf(endPattern, index);
       while (beginPatternIndex != -1 || endPatternIndex != -1) {
         if (beginPatternIndex != -1) {
           closed = false;
@@ -117,53 +123,51 @@ export class StepResultItemComponent implements OnInit {
 
         if (endPatternIndex == -1 && !closed) {
           closed = true;
-        } else if(endPatternIndex != -1){
+        } else if (endPatternIndex != -1) {
           index = endPatternIndex + endPattern.length;
         }
         beginPatternIndex = line.indexOf(beginPattern, index);
         endPatternIndex = line.indexOf(endPattern, index);
-      };
+      }
+      ;
       return closed;
     };
 
 
-    var hasClosedEnd = function (line:string):boolean {
-      var index = 0;
-      var closed = false;
-      var beginPatternIndex = line.indexOf(beginPattern, index);
-      var endPatternIndex = line.indexOf(endPattern, index);
-      while (beginPatternIndex != -1 ||endPatternIndex != -1) {
+    let hasClosedEnd = function (line:string):boolean {
+      let index = 0;
+      let closed = false;
+      let beginPatternIndex = line.indexOf(beginPattern, index);
+      let endPatternIndex = line.indexOf(endPattern, index);
+      while (beginPatternIndex != -1 || endPatternIndex != -1) {
 
-        if(beginPatternIndex != -1){
+        if (beginPatternIndex != -1) {
           closed = false;
           index = beginPatternIndex + beginPattern.length;
         }
-
         endPatternIndex = line.indexOf(endPattern, index);
-
         if (endPatternIndex != -1) {
           closed = true;
           index = endPatternIndex + endPattern.length;
         }
-
         beginPatternIndex = line.indexOf(beginPattern, index);
       };
       return closed;
     };
 
 
-    var wasChanges = false;
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
+    let wasChanges = false;
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
 
       // появилась строка с изменениями, но до этого были строки без изменений
-      var changed = hasChanges(line);
-      var unclosedStart = hasUnclosedStart(line);
-      var closedEnd = hasClosedEnd(line);
-      var oneStringDiff = changed && !unclosedStart && !closedEnd;
+      let changed = hasChanges(line);
+      let unclosedStart = hasUnclosedStart(line);
+      let closedEnd = hasClosedEnd(line);
+      let oneStringDiff = changed && !unclosedStart && !closedEnd;
 
       if (changed && !wasChanges) {
-        if(resultsToDiv.length > 0) {
+        if (resultsToDiv.length > 0) {
           results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), "diff-content")));
           resultsToDiv = [];
         }
@@ -173,17 +177,24 @@ export class StepResultItemComponent implements OnInit {
         wasChanges = true;
       }
 
-      if(oneStringDiff){
-        if(resultsToDiv.length > 0) {
+      if (oneStringDiff) {
+        if (resultsToDiv.length > 0) {
           results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
           resultsToDiv = [];
         }
         wasChanges = true;
       }
-      resultsToDiv.push(line);
 
-      if(oneStringDiff || closedEnd){
-        if(resultsToDiv.length > 0) {
+      //noinspection TypeScriptValidateTypes
+      if (!changed && expectedChanges.find(x => x == i)) {
+        resultsToDiv.push(this.wrapChanged(line, "removed-row"));
+      } else {
+        resultsToDiv.push(line);
+      }
+
+
+      if (oneStringDiff || closedEnd) {
+        if (resultsToDiv.length > 0) {
           results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), classWrap)));
           resultsToDiv = [];
         }
@@ -198,7 +209,7 @@ export class StepResultItemComponent implements OnInit {
     return results.join('\n');
   }
 
-  selectTab(tabName: string) {
+  selectTab(tabName:string) {
     this.tab = tabName;
     return false;
   }
