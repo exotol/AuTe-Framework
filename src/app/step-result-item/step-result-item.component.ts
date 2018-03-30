@@ -57,11 +57,11 @@ export class StepResultItemComponent implements OnInit {
       switch (op) {
         case 'INSERT':
           // this.actualDiff = this.actualDiff.concat('<span class="added">' + text + '</span>');
-          this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
+          this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
           break;
         case 'DELETE':
            // this.expectedDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
-          this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
+          this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
           break;
         case 'EQUAL':
           this.actualDiff = this.actualDiff.concat(text);
