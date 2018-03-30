@@ -55,15 +55,7 @@ public class RestExecutionController {
             if(stepResultRo.getActual() == null || stepResultRo.getExpected() == null){
                 return;
             }
-//            try {
-//                ObjectMapper mapper = new ObjectMapper();
-//                JsonNode source = mapper.readTree(stepResultRo.getActual());
-//                JsonNode target = mapper.readTree(stepResultRo.getExpected());
-//                JsonNode patch = JsonDiff.asJson(source, target);
-//                stepResultRo.setDiff(patch.toString());
-//            } catch (Exception e) {
-//                log.error(e.getMessage(), e);
-//            }
+
              DiffMatchPatch dmp = new DiffMatchPatch();
              Gson gson = new GsonBuilder().setPrettyPrinting().create();
              JsonParser parser = new JsonParser();
@@ -72,9 +64,7 @@ public class RestExecutionController {
                  elA = parser.parse(stepResultRo.getActual());
                  String actualJson = gson.toJson(elA);
                  stepResultRo.setActual(actualJson);
-             }catch (Exception e){
-                 e.printStackTrace();
-             }
+             }catch (Exception e){}
 
              JsonElement elE;
 
@@ -82,12 +72,9 @@ public class RestExecutionController {
                  elE = parser.parse(stepResultRo.getExpected());
                  String expectedJson = gson.toJson(elE);
                  stepResultRo.setExpected(expectedJson);
-             }catch (Exception e){
-                 e.printStackTrace();
-             }
+             }catch (Exception e){}
 
              LinkedList<Diff> diff = dmp.diff_main(stepResultRo.getExpected(), stepResultRo.getActual());
-//             dmp.diff_cleanupSemantic(diff);
              stepResultRo.setDiff(diff);
 
         }));
