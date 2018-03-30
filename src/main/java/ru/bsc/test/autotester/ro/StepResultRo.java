@@ -2,9 +2,10 @@ package ru.bsc.test.autotester.ro;
 
 import lombok.Getter;
 import lombok.Setter;
-import name.fraser.neil.plaintext.Diff;
+import ru.bsc.test.autotester.diff.Diff;
 
 import java.util.List;
+
 
 /**
  * Created by sdoroshin on 14.09.2017.
