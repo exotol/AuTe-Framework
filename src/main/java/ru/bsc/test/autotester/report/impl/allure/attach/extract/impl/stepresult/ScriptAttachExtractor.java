@@ -1,9 +1,10 @@
-package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
+package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * 23.03.2018 11:58
  */
 @Component
-public class ScriptAttachExtractor extends AbstractAttachExtractor {
+public class ScriptAttachExtractor extends AbstractAttachExtractor<StepResult> {
 
     private static final String FILE_NAME = "Script";
 

@@ -1,8 +1,9 @@
-package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
+package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.io.File;
  * 23.03.2018 13:29
  */
 @Component
-public class MessageQueueAttachExtractor extends AbstractAttachExtractor {
+public class MessageQueueAttachExtractor extends AbstractAttachExtractor<StepResult> {
 
     private static final String FILE_NAME = "Message queue";
 

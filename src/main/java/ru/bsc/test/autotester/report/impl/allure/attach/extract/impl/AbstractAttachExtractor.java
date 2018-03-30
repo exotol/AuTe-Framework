@@ -1,7 +1,7 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
 
 import org.apache.commons.io.FileUtils;
-import ru.bsc.test.autotester.report.impl.allure.attach.extract.StepResultAttachExtractor;
+import ru.bsc.test.autotester.report.impl.allure.attach.extract.AttachExtractor;
 import ru.bsc.test.autotester.utils.FileExtensionsUtils;
 
 import java.io.File;
@@ -14,9 +14,9 @@ import static java.util.UUID.randomUUID;
  * Created by smakarov
  * 23.03.2018 10:40
  */
-public abstract class AbstractAttachExtractor implements StepResultAttachExtractor {
+public abstract class AbstractAttachExtractor<T> implements AttachExtractor<T> {
 
-    static final String TEXT_PLAIN = "text/plain";
+    protected static final String TEXT_PLAIN = "text/plain";
 
     protected String writeDataToFile(File resultDirectory, String data, String name) {
         String extension = FileExtensionsUtils.extensionByContent(data);

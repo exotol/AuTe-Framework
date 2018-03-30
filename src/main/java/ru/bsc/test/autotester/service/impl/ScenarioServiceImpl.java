@@ -160,8 +160,6 @@ public class ScenarioServiceImpl implements ScenarioService {
         File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
         if (tmpDirectory.mkdirs()) {
             reportGenerator.generate(tmpDirectory);
-
-            FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
             ZipUtils.pack(tmpDirectory, zipOutputStream);
         } else {
             throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());

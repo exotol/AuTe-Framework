@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 import static ru.bsc.test.autotester.utils.FileExtensionsUtils.EXTENSION_JSON;
 import static ru.bsc.test.autotester.utils.FileExtensionsUtils.extensionByContent;
 
@@ -11,11 +13,11 @@ import static ru.bsc.test.autotester.utils.FileExtensionsUtils.extensionByConten
  * Created by smakarov
  * 23.03.2018 10:57
  */
-public abstract class AbstractJsonAttachExtractor extends AbstractAttachExtractor {
+public abstract class AbstractJsonAttachExtractor<T> extends AbstractAttachExtractor<T> {
 
-    static final String APPLICATION_JSON = "application/json";
+    protected static final String APPLICATION_JSON = "application/json";
 
-    String formatJsonValue(String value) {
+    private String formatJsonValue(String value) {
         try {
             if (!EXTENSION_JSON.equals(extensionByContent(value))) {
                 return value;
@@ -28,5 +30,10 @@ public abstract class AbstractJsonAttachExtractor extends AbstractAttachExtracto
         } catch (JSONException e) {
             return value;
         }
+    }
+
+    @Override
+    protected String writeDataToFile(File resultDirectory, String data, String name) {
+        return super.writeDataToFile(resultDirectory, formatJsonValue(data), name);
     }
 }

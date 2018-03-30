@@ -53,7 +53,7 @@ public class TestLauncher {
         }).sum();
 
         reportGenerator.generate(new File("." + File.separator + "report"));
-        System.exit(testFailedCount > 0 ? 1 : 0);
+        TestRunnerExitCodeContext.getInstance().setExitCode(testFailedCount > 0 ? 1 : 0);
     }
 
     private int test(Scenario scenarioToExecute, Project project, AtExecutor atExecutor, AbstractReportGenerator reportGenerator) {

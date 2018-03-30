@@ -33,14 +33,17 @@ import io.qameta.allure.tags.TagsPlugin;
 import io.qameta.allure.timeline.TimelinePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.bsc.test.at.executor.model.RequestData;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
-import ru.bsc.test.autotester.report.impl.allure.attach.AttachResultBuilder;
+import ru.bsc.test.autotester.report.impl.allure.attach.builder.AttachBuilder;
 import ru.bsc.test.autotester.report.impl.allure.plugin.DefaultCategoriesPlugin;
+import ru.yandex.qatools.allure.model.Status;
 import ru.yandex.qatools.allure.model.Step;
 import ru.yandex.qatools.allure.model.TestCaseResult;
 import ru.yandex.qatools.allure.model.TestSuiteResult;
@@ -54,6 +57,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.String.valueOf;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.yandex.qatools.allure.model.Status.FAILED;
 import static ru.yandex.qatools.allure.model.Status.PASSED;
@@ -64,11 +68,16 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     private static final String WITHOUT_GROUP = "Без группы";
 
     private final Gson gson = new Gson();
-    private final AttachResultBuilder attachBuilder;
+    private final AttachBuilder<StepResult> stepResultAttachBuilder;
+    private final AttachBuilder<RequestData> requestDataAttachBuilder;
 
     @Autowired
-    public AllureReportGenerator(AttachResultBuilder attachBuilder) {
-        this.attachBuilder = attachBuilder;
+    public AllureReportGenerator(
+            AttachBuilder<StepResult> stepResultAttachBuilder,
+            AttachBuilder<RequestData> requestDataAttachBuilder
+    ) {
+        this.stepResultAttachBuilder = stepResultAttachBuilder;
+        this.requestDataAttachBuilder = requestDataAttachBuilder;
     }
 
     @Override
@@ -92,6 +101,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         Path output = new File(directory + File.separator + "output").toPath();
         final Path resultsDirectory = resultDirectory.toPath();
         generator.generate(output, resultsDirectory);
+        FileUtils.deleteDirectory(resultDirectory);
     }
 
     private Configuration createConfiguration() {
@@ -223,12 +233,33 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     }
 
     private Step buildStep(File resultDirectory, String name, StepResult result) {
-        return new Step()
+        Step step = new Step()
                 .withName(name)
                 .withStart(result.getStart())
                 .withStop(result.getStop())
                 .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? PASSED : FAILED)
-                .withAttachments(attachBuilder.build(resultDirectory, result));
+                .withAttachments(stepResultAttachBuilder.build(resultDirectory, result));
+        List<RequestData> requestDataList = result.getRequestDataList();
+        if (isNotEmpty(requestDataList) && requestDataList.size() > 1) {
+            step = step.withSteps(buildStepsForCyclicRequest(resultDirectory, step.getStatus(), requestDataList));
+        }
+        return step;
+    }
+
+    private List<Step> buildStepsForCyclicRequest(
+            File resultDirectory,
+            Status status,
+            List<RequestData> requestDataList
+    ) {
+        List<Step> steps = new ArrayList<>();
+        for (int i = 0; i < requestDataList.size(); i++) {
+            RequestData requestData = requestDataList.get(i);
+            steps.add(new Step()
+                    .withName("Request " + Integer.toString(i + 1))
+                    .withStatus(status)
+                    .withAttachments(requestDataAttachBuilder.build(resultDirectory, requestData)));
+        }
+        return steps;
     }
 
     private String stepName(ru.bsc.test.at.executor.model.Step step) {

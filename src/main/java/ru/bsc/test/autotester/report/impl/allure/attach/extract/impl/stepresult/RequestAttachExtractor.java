@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl;
+package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -6,6 +6,7 @@ import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.RequestBodyType;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  * 23.03.2018 10:10
  */
 @Component
-public class RequestAttachExtractor extends AbstractAttachExtractor {
+public class RequestAttachExtractor extends AbstractAttachExtractor<StepResult> {
 
     private static final String FILE_NAME = "Request data";
 
