@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -117,7 +118,7 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                             existsStep.getCode()
                     );
                     try {
-                        Files.deleteIfExists(stepsDirectory);
+                        FileUtils.deleteDirectory(stepsDirectory.toFile());
                     } catch (IOException e) {
                         log.error("Delete step directory {}", stepsDirectory, e);
                     }
