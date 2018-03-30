@@ -143,7 +143,6 @@ public abstract class StepRoMapper {
             @Mapping(target = "expected", source = "expected"),
             @Mapping(target = "actual", source = "actual"),
             @Mapping(target = "diff", ignore = true),
-            @Mapping(target = "diffReversive", ignore = true),
             @Mapping(target = "requestUrl", source = "requestUrl"),
             @Mapping(target = "requestBody", source = "requestBody"),
             @Mapping(target = "pollingRetryCount", source = "pollingRetryCount"),

@@ -18,7 +18,6 @@ public class StepResultRo {
     private String details;
     private String expected;
     private List<Diff> diff;
-    private List<Diff> diffReversive;
     private String actual;
     private String requestUrl;
     private String requestBody;
