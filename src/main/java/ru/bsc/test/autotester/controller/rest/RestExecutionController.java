@@ -86,7 +86,7 @@ public class RestExecutionController {
                  e.printStackTrace();
              }
 
-             LinkedList<Diff> diff = dmp.diff_main(stepResultRo.getActual(), stepResultRo.getExpected());
+             LinkedList<Diff> diff = dmp.diff_main(stepResultRo.getExpected(), stepResultRo.getActual());
 //             dmp.diff_cleanupSemantic(diff);
              stepResultRo.setDiff(diff);
 
