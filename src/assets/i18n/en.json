@@ -138,5 +138,7 @@
   "Response": "Response",
   "Total": "Total",
   "Number of repetitions": "Number of repetitions",
-  "JSON compare mode": "JSON compare mode"
+  "JSON compare mode": "JSON compare mode",
+  "Empty scenario name": "Empty scenario name",
+  "Directory already exists": "Directory already exists"
 }

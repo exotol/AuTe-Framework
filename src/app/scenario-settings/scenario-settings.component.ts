@@ -5,6 +5,7 @@ import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-scenario-settings',
@@ -23,7 +24,8 @@ export class ScenarioSettingsComponent implements OnInit {
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private projectService: ProjectService,
-    private customToastyService: CustomToastyService
+    private customToastyService: CustomToastyService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -57,7 +59,15 @@ export class ScenarioSettingsComponent implements OnInit {
         this.sGroup = this.scenario.scenarioGroup;
         this.customToastyService.success('Сохранено', 'Сценарий сохранен');
       },
-        error => this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error),
+        error => this.handleError(error),
         () => this.customToastyService.clear(toasty));
+  }
+
+  private handleError(error: any) {
+    const message = JSON.parse(error._body).message;
+    console.log(message);
+    this.translate.get(message).subscribe(value => {
+      this.customToastyService.error('Ошибка', value);
+    });
   }
 }
