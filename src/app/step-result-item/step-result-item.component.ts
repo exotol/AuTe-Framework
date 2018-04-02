@@ -50,28 +50,55 @@ export class StepResultItemComponent implements OnInit {
     this.expectedDiff = '';
     this.actualDiff = '';
 
-    let rowNum = 0;
+    // выделяем запись в ожидаемых, в случае если прерации EQUAL-INSERT-EQUAL и rownum записей не отличаются
     let expectedChanges:number[] = [];
+    let prevOps:string = '';
+    let prevText:string = '';
+    let rowNum = 0;
+    let prevRowNum = 0;
+    let insertText = '';
+
+
     for (let x = 0; x < diffs.length; x++) {
       let op = diffs[x].operation;    // Operation (insert, delete, equal)
       let text = diffs[x].text;
       switch (op) {
         case 'INSERT':
-          // нам надо выделить строку
-          if (text.split('\n').length - 1 > 1) {
-            expectedChanges.push(rowNum - 1);
-          }
+        {
           this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
+          prevOps = prevOps + 'I';
+          insertText = text;
           break;
+        }
         case 'DELETE':
+        {
           rowNum = rowNum + text.split('\n').length - 1;
           this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
+          prevOps = '';
           break;
+        }
         case 'EQUAL':
-          rowNum = rowNum + text.split('\n').length - 1;
+        {
+          let splitted = text.split('\n');
+          rowNum = rowNum + splitted.length - 1;
           this.actualDiff = this.actualDiff.concat(text);
           this.expectedDiff = this.expectedDiff.concat(text);
+          let iLength = insertText.split('\n').filter(v => v.trim() != '').length;
+
+          // последняя строка предпоследнего изменения
+          var lastPrev = prevText.split("\n").pop().trim();
+          var firstCurrent = text.split("\n")[0];
+
+          // нам надо выделить строку
+          if (prevOps == 'EI' && iLength > 1 && !this.actualDiff.includes(lastPrev + firstCurrent)) {
+            expectedChanges.push(prevRowNum);
+          }
+          insertText = '';
+          prevOps = 'E';
+          prevText = text;
+          prevRowNum = rowNum;
           break;
+        }
       }
     }
 
