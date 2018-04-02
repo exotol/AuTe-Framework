@@ -10,4 +10,6 @@ import java.util.Map;
 public class EnvironmentProperties {
     private String projectsDirectoryPath;
     private Map<String, StandProperties> projectStandMap;
+    private Integer mqCheckCount;
+    private Long mqCheckInterval;
 }

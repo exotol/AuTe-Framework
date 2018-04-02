@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.autotester.component.Translator;
+import ru.bsc.test.autotester.utils.FileExtensionsUtils;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
@@ -281,7 +282,7 @@ public abstract class BaseYamlRepository {
             if (!Files.exists(dataPath)) {
                 Files.createDirectories(dataPath);
             }
-            File file = Paths.get(dataPath.toString(), item.getCode() + "." + extByContent(data)).toFile();
+            File file = Paths.get(dataPath.toString(), item.getCode() + "." + FileExtensionsUtils.extensionByContent(data)).toFile();
             FileUtils.writeStringToFile(file, data, FILE_ENCODING);
         }
     }
@@ -309,38 +310,25 @@ public abstract class BaseYamlRepository {
     }
 
     private String stepExpectedResponseFile(Step step) {
-        return "expected-response." + extByContent(step.getExpectedResponse());
+        return "expected-response." + FileExtensionsUtils.extensionByContent(step.getExpectedResponse());
     }
 
     private String stepMqMessageFile(Step step) {
-        return "mq-message." + extByContent(step.getMqMessage());
+        return "mq-message." + FileExtensionsUtils.extensionByContent(step.getMqMessage());
     }
 
     private String mockResponseBodyFile(MockServiceResponse mockServiceResponse) {
         if (mockServiceResponse.getCode() == null) {
             mockServiceResponse.setCode(UUID.randomUUID().toString());
         }
-        return "mock-response-" + mockServiceResponse.getCode() + "." + extByContent(mockServiceResponse.getResponseBody());
+        return "mock-response-" + mockServiceResponse.getCode() + "." + FileExtensionsUtils.extensionByContent(mockServiceResponse.getResponseBody());
     }
 
     private String expectedServiceRequestFile(ExpectedServiceRequest expectedServiceRequest) {
         if (expectedServiceRequest.getCode() == null) {
             expectedServiceRequest.setCode(UUID.randomUUID().toString());
         }
-        return "expected-service-request-" + expectedServiceRequest.getCode() + "." + extByContent(
+        return "expected-service-request-" + expectedServiceRequest.getCode() + "." + FileExtensionsUtils.extensionByContent(
                 expectedServiceRequest.getExpectedServiceRequest());
-    }
-
-    private String extByContent(String content) {
-        if (content != null) {
-            String trimmedContent = content.trim();
-            if (trimmedContent.startsWith("<")) {
-                return "xml";
-            }
-            if (trimmedContent.startsWith("{") || trimmedContent.startsWith("[")) {
-                return "json";
-            }
-        }
-        return "txt";
     }
 }

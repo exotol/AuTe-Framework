@@ -132,5 +132,11 @@
   "Get report on selected scenarios": "Get report on selected scenarios",
   "XPath message filter": "XPath message filter",
   "Expected MQ requests": "Expected MQ requests",
-  "MQ mock responses": "MQ mock responses"
+  "MQ mock responses": "MQ mock responses",
+  "Request": "Request",
+  "Requests": "Requests",
+  "Response": "Response",
+  "Total": "Total",
+  "Number of repetitions": "Number of repetitions",
+  "JSON compare mode": "JSON compare mode"
 }

@@ -17,7 +17,6 @@ import ru.bsc.test.autotester.mapper.StepRoMapper;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
-import ru.bsc.test.autotester.report.AllureReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
@@ -49,6 +48,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ScenarioRepository scenarioRepository;
     private final ProjectService projectService;
     private final EnvironmentProperties environmentProperties;
+    private final AbstractReportGenerator reportGenerator;
 
     @Autowired
     public ScenarioServiceImpl(
@@ -57,7 +57,8 @@ public class ScenarioServiceImpl implements ScenarioService {
             EnvironmentProperties environmentProperties,
             StepRoMapper stepRoMapper,
             ScenarioRoMapper scenarioRoMapper,
-            ProjectRoMapper projectRoMapper
+            ProjectRoMapper projectRoMapper,
+            AbstractReportGenerator reportGenerator
     ) {
         this.scenarioRepository = scenarioRepository;
         this.projectService = projectService;
@@ -65,6 +66,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.stepRoMapper = stepRoMapper;
         this.scenarioRoMapper = scenarioRoMapper;
         this.projectRoMapper = projectRoMapper;
+        this.reportGenerator = reportGenerator;
     }
 
     private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
@@ -143,7 +145,6 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Override
     public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
-        AbstractReportGenerator reportGenerator = new AllureReportGenerator();
         int[] reportCounter = { 0 };
         runningScriptsMap.forEach((s, executionResult) -> {
             if (executionUuidList.contains(s)) {
@@ -159,8 +160,6 @@ public class ScenarioServiceImpl implements ScenarioService {
         File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
         if (tmpDirectory.mkdirs()) {
             reportGenerator.generate(tmpDirectory);
-
-            FileUtils.deleteDirectory(new File(tmpDirectory, "results-directory"));
             ZipUtils.pack(tmpDirectory, zipOutputStream);
         } else {
             throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());

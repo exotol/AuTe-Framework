@@ -132,5 +132,11 @@
   "Get report on selected scenarios": "Скачать отчет по выбранным сценариям",
   "XPath message filter": "XPath фильтр сообщений",
   "Expected MQ requests": "Ожидаемые запросы MQ",
-  "MQ mock responses": "Ответы MQ"
+  "MQ mock responses": "Ответы MQ",
+  "Request": "Запрос",
+  "Requests": "Запросы",
+  "Response": "Ответ",
+  "Total": "Всего",
+  "Number of repetitions": "Количество повторений",
+  "JSON compare mode": "Режим сравнения JSON"
 }

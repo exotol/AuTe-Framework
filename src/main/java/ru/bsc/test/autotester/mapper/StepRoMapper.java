@@ -55,7 +55,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "expectedMqRequestList", source = "expectedMqRequestList"),
             @Mapping(target = "sqlDataList", source = "sqlDataList"),
             @Mapping(target = "sql", source = "sql"),
-            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter")
+            @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
+            @Mapping(target = "scenarioVariableFromMqRequestList", source = "scenarioVariableFromMqRequestList"),
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
@@ -208,4 +209,16 @@ public abstract class StepRoMapper {
     public void updateScenarioStepList(List<StepRo> stepRoList, Scenario scenario) {
         scenario.setStepList(stepRoList.stream().map(this::convertStepRoToStep).collect(Collectors.toList()));
     }
+
+    @Mappings({
+    })
+    abstract ScenarioVariableFromMqRequestRo scenarioVariableFromMqRequestToRo(ScenarioVariableFromMqRequest variable);
+
+    abstract List<ScenarioVariableFromMqRequestRo> convertMqVar(List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList);
+
+    @Mappings({
+    })
+    abstract ScenarioVariableFromMqRequest updateVariableFromMqRequestFromRo(ScenarioVariableFromMqRequestRo variableRo);
+
+    abstract List<ScenarioVariableFromMqRequest> convertMqVarListToRo(List<ScenarioVariableFromMqRequestRo> scenarioVariableFromMqRequestRoList);
 }

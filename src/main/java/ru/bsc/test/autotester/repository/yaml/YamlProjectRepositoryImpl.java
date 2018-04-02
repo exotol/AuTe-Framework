@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,6 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -211,6 +211,8 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                 project.setAmqpBroker(amqpBroker);
             }
         }
+        project.setMqCheckCount(environmentProperties.getMqCheckCount());
+        project.setMqCheckInterval(environmentProperties.getMqCheckInterval());
     }
 
     private void loadGroups(Project project, File projectDirectory) {
@@ -244,7 +246,7 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                 project.getCode(),
                 "scenarios"
         );
-        Files.deleteIfExists(scenariosDirectory);
+        FileUtils.deleteDirectory(scenariosDirectory.toFile());
         project.getScenarioList().forEach(scenario -> {
             try {
                 File scenarioFile = Paths.get(

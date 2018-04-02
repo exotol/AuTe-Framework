@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -12,6 +13,7 @@ import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -116,7 +118,7 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                             existsStep.getCode()
                     );
                     try {
-                        Files.deleteIfExists(stepsDirectory);
+                        FileUtils.deleteDirectory(stepsDirectory.toFile());
                     } catch (IOException e) {
                         log.error("Delete step directory {}", stepsDirectory, e);
                     }
@@ -138,12 +140,16 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
-        Files.deleteIfExists(Paths.get(
+        Path scenarioDirectory = Paths.get(
                 environmentProperties.getProjectsDirectoryPath(),
                 projectCode,
                 "scenarios",
                 scenarioPath
-        ));
+        );
+        Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 
     private List<Scenario> findScenarios(String projectCode, boolean fetchSteps) {
