@@ -1,4 +1,5 @@
 import {Step} from './step';
+import {RequestData} from '../request-data';
 
 export class StepResult {
   testId: string;
@@ -16,4 +17,5 @@ export class StepResult {
   description: string;
   editable: boolean;
   cookies: string;
+  requestDataList: RequestData[];
 }

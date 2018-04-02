@@ -1,6 +1,6 @@
 {
   "name": "autotester-ui",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -30,6 +30,7 @@
     "jquery": "^3.2.1",
     "ng2-toasty": "^4.0.3",
     "ngx-bootstrap": "^1.9.3",
+    "ngx-textarea-autosize": "^1.1.1",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"
   },

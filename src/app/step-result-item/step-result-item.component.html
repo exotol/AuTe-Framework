@@ -19,9 +19,32 @@
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
       <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Edit step' | translate}}</a></li>
-      <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
+      <li [class.active]="tab == 'requests'"><a href="#" (click)="selectTab('requests')">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>
+      <!--li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li-->
     </ul>
     <div class="tab-content" style="padding: 10px;">
+      <div *ngIf="tab == 'requests' || tab == 'all'">
+        <div class="col-sm-12" style="color: gray;">
+          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}
+        </div>
+        <div class="row" *ngFor="let requestData of stepResult.requestDataList; let i = index;">
+          <div class="clearfix"></div>
+          <div class="col-sm-6">
+            <label>{{i + 1}}. {{'Request' | translate}}</label>
+            <div class="form-control"
+                 style="overflow: scroll; height: 180px; background-color: #eee;">
+              {{requestData.requestBody}}
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label>{{'Response' | translate}}</label>
+            <div class="form-control"
+                 style="overflow: scroll; height: 180px; background-color: #eee;">
+              {{requestData.responseBody}}
+            </div>
+          </div>
+        </div>
+      </div>
       <div *ngIf="tab == 'details' || tab == 'all'">
         <div class="row">
           <div class="col-sm-12" style="color: gray;">

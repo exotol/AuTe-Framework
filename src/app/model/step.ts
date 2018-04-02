@@ -4,7 +4,8 @@ import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
 import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
-import {SqlData} from "./sql-data";
+import {SqlData} from './sql-data';
+import {ScenarioVariableFromMqRequest} from './scenario-variable-from-mq-request';
 
 export class Step {
   code: string;
@@ -17,7 +18,7 @@ export class Step {
   expectedResponseIgnore: boolean;
   expectedStatusCode: number;
   jsonXPath: string;
-  requestBodyType: string;
+  requestBodyType = 'JSON';
   usePolling: boolean;
   pollingJsonXPath: string;
   mockServiceResponseList: MockServiceResponse[];
@@ -25,12 +26,12 @@ export class Step {
   stepComment: string;
   savedValuesCheck: any = {};
   stepParameterSetList: StepParameterSet[] = [];
-  responseCompareMode: string;
+  responseCompareMode = 'JSON';
   formDataList: FormData[] = [];
   multipartFormData: boolean;
   mqName: string;
   mqMessage: string;
-  jsonCompareMode: string;
+  jsonCompareMode = 'NON_EXTENSIBLE';
   script: string;
   numberRepetitions: string;
   parseMockRequestUrl: string;
@@ -40,4 +41,5 @@ export class Step {
   mqMockResponseList: MqMockResponse[];
   expectedMqRequestList: ExpectedMqRequest[];
   sqlDataList: SqlData[];
+  scenarioVariableFromMqRequestList: ScenarioVariableFromMqRequest[];
 }

@@ -2,9 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {VersionService} from './service/version.service';
 import {Version} from './model/version';
-import {WiremockVersion} from "./model/wiremock-version";
+import {WiremockVersion} from './model/wiremock-version';
 
 const LANG_TOKEN = 'bsc_autotester_language';
+
+declare let require: any;
 
 @Component({
   selector: 'app-root',
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
   public projectsWiremockVersions: Array<WiremockVersion>;
   langs: string[] = ['en', 'ru'];
   locale: string;
+  uiVersion = require('../../package.json').version;
 
   constructor(private versionService: VersionService, private translate: TranslateService) {
     translate.addLangs(this.langs);

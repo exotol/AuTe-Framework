@@ -29,6 +29,10 @@
 </a>
 <div class="collapse " id="versions">
   <div class="help-block" *ngIf="managerVersion">
+    <b>ui: </b>
+    {{uiVersion}}
+  </div>
+  <div class="help-block" *ngIf="managerVersion">
     <b>manager: </b>
     {{managerVersion.implementationVersion}} {{managerVersion.implementationDate}}
   </div>
