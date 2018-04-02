@@ -138,5 +138,7 @@
   "Response": "Ответ",
   "Total": "Всего",
   "Number of repetitions": "Количество повторений",
-  "JSON compare mode": "Режим сравнения JSON"
+  "JSON compare mode": "Режим сравнения JSON",
+  "Empty scenario name": "Пустое имя сценария",
+  "Directory already exists": "Директория с таким именем уже существует"
 }

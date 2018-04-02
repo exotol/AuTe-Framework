@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.repository.yaml;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bsc.test.at.executor.model.Scenario;
@@ -67,8 +68,20 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException {
         String projectsPath = environmentProperties.getProjectsDirectoryPath();
 
+        if (StringUtils.isBlank(scenario.getName())) {
+            throw new IOException("Empty scenario name");
+        }
+
         if (scenarioPath == null) {
             scenarioPath = scenarioPath(scenario);
+            if (Paths.get(
+                    projectsPath,
+                    projectCode,
+                    "scenarios",
+                    scenarioPath
+            ).toFile().exists()) {
+                throw new IOException("Directory already exists");
+            }
         } else {
             if (updateDirectoryName) {
 
@@ -84,10 +97,14 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                 if (!scenario.getCode().equals(translator.translate(scenario.getName()))) { // code changed
                     scenario.setCode(null);
                     newScenarioPath =  scenarioPath(scenario);
-                    Files.move(
-                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                            Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
-                    );
+                    try {
+                        Files.move(
+                                Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                                Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
+                        );
+                    } catch (IOException ioException) {
+                        throw new IOException("Directory already exists");
+                    }
                     scenarioPath = newScenarioPath;
                 }
 

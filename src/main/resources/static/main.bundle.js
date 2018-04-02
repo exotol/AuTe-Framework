@@ -675,6 +675,7 @@ module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_file_saver_FileSaver__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -695,14 +696,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ProjectDetailComponent = (function () {
-    function ProjectDetailComponent(globals, route, router, projectService, customToastyService, scenarioService) {
+    function ProjectDetailComponent(globals, route, router, projectService, customToastyService, scenarioService, translate) {
         this.globals = globals;
         this.route = route;
         this.router = router;
         this.projectService = projectService;
         this.customToastyService = customToastyService;
         this.scenarioService = scenarioService;
+        this.translate = translate;
         this.selectAllFlag = false;
         this.failCount = 0;
         this.newScenarioName = '';
@@ -814,7 +817,15 @@ var ProjectDetailComponent = (function () {
             _this.scenarioList.push(savedScenario);
             _this.newScenarioName = '';
             _this.customToastyService.success('Сохранено', 'Сценарий создан');
-        }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
+        }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty); });
+    };
+    ProjectDetailComponent.prototype.handleError = function (error) {
+        var _this = this;
+        var message = JSON.parse(error._body).message;
+        console.log(message);
+        this.translate.get(message).subscribe(function (value) {
+            _this.customToastyService.error('Ошибка', value);
+        });
     };
     ProjectDetailComponent.prototype.getReportsBySelectedScenarios = function () {
         var _this = this;
@@ -843,10 +854,10 @@ ProjectDetailComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/project-detail/project-detail.component.html"),
         styles: [__webpack_require__("../../../../../src/app/project-detail/project-detail.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */]) === "function" && _g || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__globals__["a" /* Globals */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_9__service_scenario_service__["a" /* ScenarioService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */]) === "function" && _h || Object])
 ], ProjectDetailComponent);
 
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=project-detail.component.js.map
 
 /***/ }),
@@ -1373,6 +1384,7 @@ module.exports = "<div class=\"breadcrumb-search\">\r\n  <ol class=\"breadcrumb\
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1388,13 +1400,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ScenarioSettingsComponent = (function () {
-    function ScenarioSettingsComponent(router, route, scenarioService, projectService, customToastyService) {
+    function ScenarioSettingsComponent(router, route, scenarioService, projectService, customToastyService, translate) {
         this.router = router;
         this.route = route;
         this.scenarioService = scenarioService;
         this.projectService = projectService;
         this.customToastyService = customToastyService;
+        this.translate = translate;
     }
     ScenarioSettingsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -1425,7 +1439,15 @@ var ScenarioSettingsComponent = (function () {
             ], { replaceUrl: false });
             _this.sGroup = _this.scenario.scenarioGroup;
             _this.customToastyService.success('Сохранено', 'Сценарий сохранен');
-        }, function (error) { return _this.customToastyService.error('Ошибка', 'Возможно, директорая с таким названием уже существует <hr/>' + error); }, function () { return _this.customToastyService.clear(toasty); });
+        }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty); });
+    };
+    ScenarioSettingsComponent.prototype.handleError = function (error) {
+        var _this = this;
+        var message = JSON.parse(error._body).message;
+        console.log(message);
+        this.translate.get(message).subscribe(function (value) {
+            _this.customToastyService.error('Ошибка', value);
+        });
     };
     return ScenarioSettingsComponent;
 }());
@@ -1435,10 +1457,10 @@ ScenarioSettingsComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.html"),
         styles: [__webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_project_service__["a" /* ProjectService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */]) === "function" && _f || Object])
 ], ScenarioSettingsComponent);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=scenario-settings.component.js.map
 
 /***/ }),
