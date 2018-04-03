@@ -668,10 +668,10 @@ public class DiffMatchPatch {
         }
 
         // First check if the second quarter is the seed for a half-match.
-        String[] hm1 = diff_halfMatchI(longtext, shorttext,
+        String[] hm1 = diffHalfMatchI(longtext, shorttext,
                 (longtext.length() + 3) / 4);
         // Check again based on the third quarter.
-        String[] hm2 = diff_halfMatchI(longtext, shorttext,
+        String[] hm2 = diffHalfMatchI(longtext, shorttext,
                 (longtext.length() + 1) / 2);
         String[] hm;
         if (hm1 == null && hm2 == null) {
@@ -705,7 +705,7 @@ public class DiffMatchPatch {
      * suffix of longtext, the prefix of shorttext, the suffix of shorttext
      * and the common middle.  Or null if there was no match.
      */
-    private String[] diff_halfMatchI(String longtext, String shorttext, int i) {
+    private String[] diffHalfMatchI(String longtext, String shorttext, int i) {
         // Start with a 1/4 length substring at position i as a seed.
         String seed = longtext.substring(i, i + longtext.length() / 4);
         int j = -1;
