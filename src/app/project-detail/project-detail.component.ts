@@ -9,6 +9,7 @@ import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-ite
 import { saveAs } from 'file-saver/FileSaver';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ScenarioService} from '../service/scenario.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-detail',
@@ -36,7 +37,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     private router: Router,
     private projectService: ProjectService,
     private customToastyService: CustomToastyService,
-    private scenarioService: ScenarioService
+    private scenarioService: ScenarioService,
+    private translate: TranslateService
   ) {
     this.Math = Math;
   }
@@ -156,7 +158,15 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
         this.scenarioList.push(savedScenario);
         this.newScenarioName = '';
         this.customToastyService.success('Сохранено', 'Сценарий создан');
-      }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+      }, error => this.handleError(error), () => this.customToastyService.clear(toasty));
+  }
+
+  private handleError(error: any) {
+    const message = JSON.parse(error._body).message;
+    console.log(message);
+    this.translate.get(message).subscribe(value => {
+      this.customToastyService.error('Ошибка', value);
+    });
   }
 
   getReportsBySelectedScenarios() {
