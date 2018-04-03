@@ -1,8 +1,6 @@
 package ru.bsc.test.autotester.controller.rest;
 
 import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.bsc.test.autotester.mapper.ExecutionResultRoMapper;
@@ -21,8 +19,6 @@ import java.util.zip.ZipOutputStream;
 @RestController
 @RequestMapping("/rest/execution/")
 public class RestExecutionController {
-
-    private static Logger log = LoggerFactory.getLogger(RestExecutionController.class);
 
     private final ScenarioService scenarioService;
     private final ExecutionResultRoMapper executionResultRoMapper;

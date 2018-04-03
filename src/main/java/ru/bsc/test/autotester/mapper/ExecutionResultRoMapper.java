@@ -89,7 +89,7 @@ public abstract class ExecutionResultRoMapper {
             } catch (Exception e) {
             }
 
-            LinkedList<Diff> diff = dmp.diff_main(stepResultRo.getExpected(), stepResultRo.getActual());
+            LinkedList<Diff> diff = dmp.diffMain(stepResultRo.getExpected(), stepResultRo.getActual());
             stepResultRo.setDiff(diff);
 
         }));

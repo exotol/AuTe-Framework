@@ -3,7 +3,7 @@ package ru.bsc.test.autotester.diff;
 import java.util.List;
 
 /**
- * Internal class for returning results from diff_linesToChars().
+ * Internal class for returning results from diffLinesToChars().
  * Other less paranoid languages just use a three-element array.
  */
 public class LinesToCharsResult {
