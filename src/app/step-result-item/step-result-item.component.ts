@@ -18,15 +18,14 @@ import {Scenario} from '../model/scenario';
 export class StepResultItemComponent implements OnInit {
 
   @Input()
-  stepResult:StepResult;
+  stepResult: StepResult;
   @Input()
-  scenario:Scenario;
-  expectedDiff:string;
-  actualDiff:string;
+  scenario: Scenario;
+  expectedDiff: string;
+  actualDiff: string;
 
   tab = 'details';
-  projectCode:string;
-  displayDetails = false;
+  projectCode: string;
 
   constructor(private route:ActivatedRoute,
               private stepService:StepService,
@@ -42,7 +41,7 @@ export class StepResultItemComponent implements OnInit {
 
   formatText() {
 
-    let diffs:any = this.stepResult.diff;
+    let diffs: any = this.stepResult.diff;
     if (!diffs) {
       return;
     }
@@ -52,8 +51,8 @@ export class StepResultItemComponent implements OnInit {
 
     // выделяем запись в ожидаемых, в случае если прерации EQUAL-INSERT-EQUAL и rownum записей не отличаются
     let expectedChanges:number[] = [];
-    let prevOps:string = '';
-    let prevText:string = '';
+    let prevOps: string = '';
+    let prevText: string = '';
     let rowNum = 0;
     let prevRowNum = 0;
     let insertText = '';
@@ -108,8 +107,8 @@ export class StepResultItemComponent implements OnInit {
   }
 
   /** оборачиваем строку */
-  wrapChanged(text:string, classToWrap:string) {
-    let wrapped:string;
+  wrapChanged(text: string, classToWrap: string) {
+    let wrapped: string;
     if (text.endsWith('\n')) {
       wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
     } else {
@@ -125,7 +124,7 @@ export class StepResultItemComponent implements OnInit {
 
 
   /** оборачиваем строку, если в ней есть изменения */
-  wrapChangedLines(text:string, classToWrap:string, classWrap:string, expectedChanges:number[]) {
+  wrapChangedLines(text: string, classToWrap: string, classWrap: string, expectedChanges: number[]) {
     const beginPattern = '<span class="' + classToWrap + '">';
     const endPattern = '</span>';
 
@@ -236,7 +235,7 @@ export class StepResultItemComponent implements OnInit {
     return results.join('\n');
   }
 
-  selectTab(tabName:string) {
+  selectTab(tabName: string) {
     this.tab = tabName;
     return false;
   }
