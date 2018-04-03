@@ -143,8 +143,9 @@ public abstract class BaseYamlRepository {
     protected String scenarioPath(Scenario scenario) {
         String result = "";
         if (scenario != null) {
-            if (scenario.getScenarioGroup() != null) {
-                result += scenario.getScenarioGroup() + "/";
+            if (scenario.getScenarioGroup() != null && !scenario.getName().startsWith(scenario.getScenarioGroup() + "/")) {
+
+                result +=  scenario.getScenarioGroup() + "/";
             }
             if (scenario.getCode() == null) {
                 // TODO Проверять, существует ли такая директория
