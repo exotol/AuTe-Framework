@@ -2,6 +2,7 @@ package ru.bsc.test.autotester.ro;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.bsc.test.autotester.diff.Diff;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class StepResultRo {
     private String result;
     private String details;
     private String expected;
+    private List<Diff> diff;
     private String actual;
     private String requestUrl;
     private String requestBody;
