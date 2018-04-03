@@ -1468,12 +1468,13 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
+var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -2612,7 +2613,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div *ngIf=\"!isShowDiffComponent()\">\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 180px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\">\r\n                {{stepResult.actual}}\r\n              </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 180px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\">\r\n                {{stepResult.expected}}\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <app-diff\r\n            *ngIf=\"isShowDiffComponent()\"\r\n            [expected]=\"stepResult.expected\"\r\n            [actual]=\"stepResult.actual\">\r\n          </app-diff>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\" innerHTML=\"<pre class='pretransparent'>{{actualDiff}}</pre>\">\r\n            </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\" innerHTML=\"<pre class='pretransparent'>{{expectedDiff}}</pre>\">\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2648,13 +2649,186 @@ var StepResultItemComponent = (function () {
         this.stepService = stepService;
         this.customToastyService = customToastyService;
         this.tab = 'details';
-        this.displayDetails = false;
     }
     StepResultItemComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.subscribe(function (params) {
             _this.projectCode = params['projectCode'];
+            _this.formatText();
         });
+    };
+    StepResultItemComponent.prototype.formatText = function () {
+        var diffs = this.stepResult.diff;
+        if (!diffs) {
+            return;
+        }
+        this.expectedDiff = '';
+        this.actualDiff = '';
+        // выделяем запись в ожидаемых, в случае если прерации EQUAL-INSERT-EQUAL и rownum записей не отличаются
+        var expectedChanges = [];
+        var prevOps = '';
+        var prevText = '';
+        var rowNum = 0;
+        var prevRowNum = 0;
+        var insertText = '';
+        for (var x = 0; x < diffs.length; x++) {
+            var op = diffs[x].operation; // Operation (insert, delete, equal)
+            var text = diffs[x].text;
+            switch (op) {
+                case 'INSERT':
+                    {
+                        this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
+                        prevOps = prevOps + 'I';
+                        insertText = text;
+                        break;
+                    }
+                case 'DELETE':
+                    {
+                        rowNum = rowNum + text.split('\n').length - 1;
+                        this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
+                        prevOps = '';
+                        break;
+                    }
+                case 'EQUAL':
+                    {
+                        var splitted = text.split('\n');
+                        rowNum = rowNum + splitted.length - 1;
+                        this.actualDiff = this.actualDiff.concat(text);
+                        this.expectedDiff = this.expectedDiff.concat(text);
+                        var iLength = insertText.split('\n').filter(function (v) { return v.trim() != ''; }).length;
+                        // последняя строка предпоследнего изменения
+                        var lastPrev = prevText.split("\n").pop().trim();
+                        var firstCurrent = text.split("\n")[0];
+                        // нам надо выделить строку
+                        if (prevOps == 'EI' && iLength > 1 && !this.actualDiff.includes(lastPrev + firstCurrent)) {
+                            expectedChanges.push(prevRowNum);
+                        }
+                        insertText = '';
+                        prevOps = 'E';
+                        prevText = text;
+                        prevRowNum = rowNum;
+                        break;
+                    }
+            }
+        }
+        this.actualDiff = this.wrapChangedLines(this.actualDiff, "added", "added-row", []);
+        this.expectedDiff = this.wrapChangedLines(this.expectedDiff, "removed", "removed-row", expectedChanges);
+    };
+    /** оборачиваем строку */
+    StepResultItemComponent.prototype.wrapChanged = function (text, classToWrap) {
+        var wrapped;
+        if (text.endsWith('\n')) {
+            wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
+        }
+        else {
+            wrapped = '<span class="' + classToWrap + '">' + text + '</span>';
+        }
+        return wrapped;
+    };
+    /** оборачиваем строку */
+    StepResultItemComponent.prototype.wrapToDiv = function (span) {
+        return '<div class="unchanged-row">' + span + '</div>';
+    };
+    /** оборачиваем строку, если в ней есть изменения */
+    StepResultItemComponent.prototype.wrapChangedLines = function (text, classToWrap, classWrap, expectedChanges) {
+        var beginPattern = '<span class="' + classToWrap + '">';
+        var endPattern = '</span>';
+        var lines = text.split("\n");
+        var results = [];
+        var resultsToDiv = [];
+        var hasChanges = function (line) {
+            return line.indexOf(beginPattern) != -1 && line.indexOf(beginPattern) != -1;
+        };
+        var hasUnclosedStart = function (line) {
+            var index = 0;
+            var closed = false;
+            var beginPatternIndex = line.indexOf(beginPattern, index);
+            var endPatternIndex = line.indexOf(endPattern, index);
+            while (beginPatternIndex != -1 || endPatternIndex != -1) {
+                if (beginPatternIndex != -1) {
+                    closed = false;
+                    index = beginPatternIndex + beginPattern.length;
+                }
+                if (endPatternIndex == -1 && !closed) {
+                    closed = true;
+                }
+                else if (endPatternIndex != -1) {
+                    index = endPatternIndex + endPattern.length;
+                }
+                beginPatternIndex = line.indexOf(beginPattern, index);
+                endPatternIndex = line.indexOf(endPattern, index);
+            }
+            ;
+            return closed;
+        };
+        var hasClosedEnd = function (line) {
+            var index = 0;
+            var closed = false;
+            var beginPatternIndex = line.indexOf(beginPattern, index);
+            var endPatternIndex = line.indexOf(endPattern, index);
+            while (beginPatternIndex != -1 || endPatternIndex != -1) {
+                if (beginPatternIndex != -1) {
+                    closed = false;
+                    index = beginPatternIndex + beginPattern.length;
+                }
+                endPatternIndex = line.indexOf(endPattern, index);
+                if (endPatternIndex != -1) {
+                    closed = true;
+                    index = endPatternIndex + endPattern.length;
+                }
+                beginPatternIndex = line.indexOf(beginPattern, index);
+            }
+            ;
+            return closed;
+        };
+        var wasChanges = false;
+        var _loop_1 = function (i) {
+            var line = lines[i];
+            // появилась строка с изменениями, но до этого были строки без изменений
+            var changed = hasChanges(line);
+            var unclosedStart = hasUnclosedStart(line);
+            var closedEnd = hasClosedEnd(line);
+            var oneStringDiff = changed && !unclosedStart && !closedEnd;
+            if (changed && !wasChanges) {
+                if (resultsToDiv.length > 0) {
+                    results.push(this_1.wrapToDiv(this_1.wrapChanged(resultsToDiv.join('\n'), "diff-content")));
+                    resultsToDiv = [];
+                }
+                wasChanges = false;
+            }
+            if (unclosedStart) {
+                wasChanges = true;
+            }
+            if (oneStringDiff) {
+                if (resultsToDiv.length > 0) {
+                    results.push(this_1.wrapToDiv(this_1.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
+                    resultsToDiv = [];
+                }
+                wasChanges = true;
+            }
+            //noinspection TypeScriptValidateTypes
+            if (!changed && expectedChanges.find(function (x) { return x == i; })) {
+                resultsToDiv.push(this_1.wrapChanged(line, "removed-row"));
+            }
+            else {
+                resultsToDiv.push(line);
+            }
+            if (oneStringDiff || closedEnd) {
+                if (resultsToDiv.length > 0) {
+                    results.push(this_1.wrapToDiv(this_1.wrapChanged(resultsToDiv.join('\n'), classWrap)));
+                    resultsToDiv = [];
+                }
+                wasChanges = false;
+            }
+        };
+        var this_1 = this;
+        for (var i = 0; i < lines.length; i++) {
+            _loop_1(i);
+        }
+        if (resultsToDiv.length > 0) {
+            results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
+        }
+        return results.join('\n');
     };
     StepResultItemComponent.prototype.selectTab = function (tabName) {
         this.tab = tabName;
