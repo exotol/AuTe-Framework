@@ -27,13 +27,13 @@ export class StepResultItemComponent implements OnInit {
   tab = 'details';
   projectCode: string;
 
-  constructor(private route:ActivatedRoute,
-              private stepService:StepService,
-              private customToastyService:CustomToastyService) {
+  constructor(private route: ActivatedRoute,
+              private stepService: StepService,
+              private customToastyService: CustomToastyService) {
   }
 
   ngOnInit() {
-    this.route.params.subscribe((params:ParamMap) => {
+    this.route.params.subscribe((params: ParamMap) => {
       this.projectCode = params['projectCode'];
       this.formatText();
     });
