@@ -59,31 +59,22 @@
             <div class="form-control" style="overflow: scroll; height: 180px; white-space: pre; background-color: #eee;">{{stepResult.requestBody}}</div>
           </div>
           <div class="clearfix"></div>
-          <div *ngIf="!isShowDiffComponent()">
             <div class="col-sm-6">
               <label>Actual</label>
               <div class="form-control"
                    #actualResult
-                   style="overflow: scroll; height: 180px; background-color: #eee;"
-                   [appSyncScroll]="expectedResult">
-                {{stepResult.actual}}
-              </div>
+                   style="overflow: scroll; height: 600px; background-color: #eee;"
+                   [appSyncScroll]="expectedResult" innerHTML="<pre class='pretransparent'>{{actualDiff}}</pre>">
+            </div>
             </div>
             <div class="col-sm-6">
               <label>Expected</label>
               <div class="form-control"
                    #expectedResult
-                   style="overflow: scroll; height: 180px; background-color: #eee;"
-                   [appSyncScroll]="actualResult">
-                {{stepResult.expected}}
-              </div>
+                   style="overflow: scroll; height: 600px; background-color: #eee;"
+                   [appSyncScroll]="actualResult" innerHTML="<pre class='pretransparent'>{{expectedDiff}}</pre>">
             </div>
           </div>
-          <app-diff
-            *ngIf="isShowDiffComponent()"
-            [expected]="stepResult.expected"
-            [actual]="stepResult.actual">
-          </app-diff>
           <div class="col-sm-12" style="color: gray;">
             <label>{{'Details' | translate}}</label>
             <pre>{{stepResult.details}}</pre>
