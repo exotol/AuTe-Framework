@@ -1,14 +1,21 @@
 package ru.bsc.test.autotester.mapper;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.autotester.diff.Diff;
+import ru.bsc.test.autotester.diff.DiffMatchPatch;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.ro.ExecutionResultRo;
 import ru.bsc.test.autotester.ro.ScenarioResultRo;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +62,38 @@ public abstract class ExecutionResultRoMapper {
             executionResultRo.setScenarioResultList(scenarioResultList);
         }
 
+        addDiffToResult(executionResultRo);
         return executionResultRo;
     }
+
+    private void addDiffToResult(ExecutionResultRo executionResultRo) {
+        executionResultRo.getScenarioResultList().forEach(rl -> rl.getStepResultList().forEach(stepResultRo -> {
+            if (stepResultRo.getActual() == null || stepResultRo.getExpected() == null) {
+                return;
+            }
+
+            DiffMatchPatch dmp = new DiffMatchPatch();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser parser = new JsonParser();
+            try {
+                JsonElement elA = parser.parse(stepResultRo.getActual());
+                String actualJson = gson.toJson(elA);
+                stepResultRo.setActual(actualJson);
+            } catch (Exception e) {
+            }
+
+            try {
+                JsonElement elE = parser.parse(stepResultRo.getExpected());
+                String expectedJson = gson.toJson(elE);
+                stepResultRo.setExpected(expectedJson);
+            } catch (Exception e) {
+            }
+
+            LinkedList<Diff> diff = dmp.diff_main(stepResultRo.getExpected(), stepResultRo.getActual());
+            stepResultRo.setDiff(diff);
+
+        }));
+    }
+
 
 }
