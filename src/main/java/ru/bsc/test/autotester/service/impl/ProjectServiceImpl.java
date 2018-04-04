@@ -6,10 +6,8 @@ import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.repository.ProjectRepository;
-import ru.bsc.test.autotester.ro.ImportProjectRo;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.service.ProjectService;
-import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.util.List;
 
@@ -44,13 +42,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public String findOneAsYaml(String projectCode) {
-        synchronized (this) {
-            return new Yaml().dump(projectRepository.findProject(projectCode));
-        }
-    }
-
-    @Override
     public ProjectRo updateFromRo(String projectCode, ProjectRo projectRo) {
         synchronized (this) {
             Project project = findOne(projectCode);
@@ -62,14 +53,6 @@ public class ProjectServiceImpl implements ProjectService {
             }
             return null;
         }
-    }
-
-    @Override
-    public void importProjectFormYaml(ImportProjectRo importProjectRo) throws Exception {
-        Project project = YamlUtils.loadAsFromString(importProjectRo.getYamlContent(), Project.class);
-        project.setCode(importProjectRo.getProjectCode());
-
-        projectRepository.saveFullProject(project);
     }
 
     @Override

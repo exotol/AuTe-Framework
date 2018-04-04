@@ -19,8 +19,6 @@ public interface ProjectRepository {
 
     void saveProject(Project project);
 
-    void saveFullProject(Project project) throws Exception;
-
     void addNewGroup(String projectCode, String groupName) throws Exception;
 
     void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception;
