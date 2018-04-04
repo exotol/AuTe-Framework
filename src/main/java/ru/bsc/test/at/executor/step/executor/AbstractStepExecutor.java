@@ -2,25 +2,32 @@ package ru.bsc.test.at.executor.step.executor;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
+import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
+import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
+import ru.bsc.test.at.executor.model.MqMockResponse;
 import ru.bsc.test.at.executor.model.Project;
+import ru.bsc.test.at.executor.model.SqlData;
+import ru.bsc.test.at.executor.model.SqlResultType;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.mq.IMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -38,13 +45,18 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-abstract class AbstractStepExecutor implements IStepExecutor {
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+@Slf4j
+public abstract class AbstractStepExecutor implements IStepExecutor {
 
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
 
@@ -53,15 +65,18 @@ abstract class AbstractStepExecutor implements IStepExecutor {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
             }
-            IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService());
+            try(IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService())) {
 
-            mqManager.setHost(project.getAmqpBroker().getHost());
-            mqManager.setPort(project.getAmqpBroker().getPort());
-            mqManager.setUsername(project.getAmqpBroker().getUsername());
-            mqManager.setPassword(project.getAmqpBroker().getPassword());
+                mqManager.setHost(project.getAmqpBroker().getHost());
+                mqManager.setPort(project.getAmqpBroker().getPort());
+                mqManager.setUsername(project.getAmqpBroker().getUsername());
+                mqManager.setPassword(project.getAmqpBroker().getPassword());
 
-            String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-            mqManager.sendTextMessage(step.getMqName(), message);
+                mqManager.connect();
+
+                String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
+                mqManager.sendTextMessage(step.getMqName(), message);
+            }
         }
     }
 
@@ -105,18 +120,13 @@ abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     void saveValuesByJsonXPath(Step step, String responseContent, Map<String, Object> scenarioVariables) {
-        if (StringUtils.isNotEmpty(responseContent)) {
-            if (StringUtils.isNotEmpty(step.getJsonXPath())) {
-
-                String lines[] = step.getJsonXPath().split("\\r?\\n");
-                for (String line: lines) {
-                    String[] lineParts = line.split("=", 2);
-                    String parameterName = lineParts[0].trim();
-                    String jsonXPath = lineParts[1];
-
-                    // JsonPath.read(responseData.getContent(), "$.accountPortfolio[0].accountInfo.accountNumber");
-                    scenarioVariables.put(parameterName, JsonPath.read(responseContent, jsonXPath).toString());
-                }
+        if (isNotEmpty(responseContent) && isNotEmpty(step.getJsonXPath())) {
+            String[] lines = step.getJsonXPath().split("\\r?\\n");
+            for (String line : lines) {
+                String[] lineParts = line.split("=", 2);
+                String parameterName = lineParts[0].trim();
+                String jsonXPath = lineParts[1];
+                scenarioVariables.put(parameterName, JsonPath.read(responseContent, jsonXPath).toString());
             }
         }
     }
@@ -140,15 +150,13 @@ abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     boolean tryUsePolling(Step step, String responseContent) throws InterruptedException {
-        if (!step.getUsePolling()) {
-            return false;
-        }
         boolean retry = true;
         try {
             if (JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
+            log.error("", e);
             retry = true;
         }
         if (retry) {
@@ -157,27 +165,43 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         return retry;
     }
 
-    void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException {
-        if (StringUtils.isNotEmpty(step.getSql()) && StringUtils.isNotEmpty(step.getSqlSavedParameter()) && connection != null) {
-            try (NamedParameterStatement statement = new NamedParameterStatement(connection, step.getSql()) ) {
-                // Вставить в запрос параметры из scenarioVariables, если они есть.
-                for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
-                    statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
-                }
-                try (ResultSet rs = statement.executeQuery()) {
-                    int columnCount = rs.getMetaData().getColumnCount();
-                    if (rs.next()) {
-                        String[] sqlSavedParameterList = step.getSqlSavedParameter().split(",");
-                        int i = 1;
-                        for (String parameterName: sqlSavedParameterList) {
-                            if (parameterName.trim().isEmpty()) {
-                                continue;
+    void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
+        if (!step.getSqlDataList().isEmpty() && connection != null) {
+            for (SqlData sqlData : step.getSqlDataList()) {
+                if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
+                    try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(sqlData.getSql(), scenarioVariables, null))) {
+                        SqlResultType sqlResultType = sqlData.getSqlReturnType();
+                        // Вставить в запрос параметры из scenarioVariables, если они есть.
+                        for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {
+                            statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
+                        }
+                        try (ResultSet rs = statement.executeQuery()) {
+                            Object result;
+                            if (sqlResultType == SqlResultType.OBJECT) {
+                                result = rs.next() ? rs.getObject(1) : null;
+                            } else if (sqlResultType == SqlResultType.LIST) {
+
+                                List<Object> columnData = new ArrayList<>();
+                                while (rs.next()) {
+                                    columnData.add(rs.getObject(1));
+                                }
+                                result = columnData;
+                            } else {
+                                List<String> columnNameList = new LinkedList<>();
+                                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                                    columnNameList.add(rs.getMetaData().getColumnName(i));
+                                }
+                                List<Map<String, Object>> resultData = new ArrayList<>();
+                                while (rs.next()) {
+                                    Map<String, Object> values = new HashMap<>();
+                                    for (String columnName : columnNameList) {
+                                        values.put(columnName, rs.getObject(columnName));
+                                    }
+                                    resultData.add(values);
+                                }
+                                result = resultData;
                             }
-                            if (i > columnCount) {
-                                break;
-                            }
-                            scenarioVariables.put(parameterName.trim(), rs.getString(i));
-                            i++;
+                            scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                         }
                     }
                 }
@@ -185,7 +209,7 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
+    public static String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
         if (template != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
@@ -205,18 +229,24 @@ abstract class AbstractStepExecutor implements IStepExecutor {
         return template;
     }
 
-    String evaluateExpressions(String template) throws ScriptException {
-        if (template != null) {
+    String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+        String result = template;
+        if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
-            Matcher m = p.matcher(template);
+            Matcher m = p.matcher(result);
             while (m.find()) {
                 ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName("js");
-                Object result = engine.eval(m.group(1));
-                template = template.replace("<f>" + m.group(1) + "</f>", Matcher.quoteReplacement(String.valueOf(result)));
+                ScriptEngine scriptEngine = manager.getEngineByName("js");
+                scriptEngine.put("scenarioVariables", scenarioVariables);
+                scriptEngine.put("response", responseData);
+                Object evalResult = scriptEngine.eval(m.group(1));
+                result = result.replace(
+                        "<f>" + m.group(1) + "</f>",
+                        Matcher.quoteReplacement(String.valueOf(evalResult))
+                );
             }
         }
-        return template;
+        return result;
     }
 
     int calculateNumberRepetitions(Step step, Map<String, Object> scenarioVariables) {
@@ -272,5 +302,80 @@ abstract class AbstractStepExecutor implements IStepExecutor {
                 }
             }
         }
+    }
+
+    void compareResponse(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+        if (step.getExpectedResponseIgnore()) {
+            return;
+        }
+
+        if (step.getResponseCompareMode() == null) {
+            jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
+        } else {
+            switch (step.getResponseCompareMode()) {
+                case FULL_MATCH:
+                    if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
+                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                    }
+                    break;
+                case IGNORE_MASK:
+                    if (!MaskComparator.compare(expectedResponse, responseData.getContent())) {
+                        throw new Exception("\nExpected value: " + expectedResponse + ".\nActual value: " + responseData.getContent());
+                    }
+                    break;
+                default:
+                    jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
+                    break;
+            }
+        }
+    }
+
+    private void jsonComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
+        if ((isNotEmpty(expectedResponse) || isNotEmpty(responseData.getContent())) &&
+                (!responseData.getContent().equals(expectedResponse))) {
+            try {
+                JSONAssert.assertEquals(
+                        expectedResponse == null ? "" : expectedResponse.replaceAll(" ", " "),
+                        // Fix broken space in response
+                        responseData.getContent().replaceAll(" ", " "),
+                        new IgnoringComparator(StringUtils.isEmpty(jsonCompareMode) ?
+                                JSONCompareMode.NON_EXTENSIBLE :
+                                JSONCompareMode.valueOf(jsonCompareMode))
+                );
+            } catch (Error assertionError) {
+                throw new Exception(assertionError);
+            }
+        }
+    }
+
+    void setMqMockResponses(MqMockerAdmin mqMockerAdmin, String testId, List<MqMockResponse> mqMockResponseList) throws Exception {
+        if (mqMockResponseList != null) {
+            if (mqMockerAdmin == null) {
+                throw new Exception("MqMockerAdmin is not configured in env.yml");
+            }
+            for (MqMockResponse mqMockResponse : mqMockResponseList) {
+                MqMockDefinition mockMessage = new MqMockDefinition();
+                mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
+                mockMessage.setResponseBody(mqMockResponse.getResponseBody());
+                mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
+                mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
+                mockMessage.setTestId(testId);
+                mqMockerAdmin.addMock(mockMessage);
+            }
+        }
+    }
+
+    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+        long result;
+        try {
+            result = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            try {
+                result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
+            } catch (NumberFormatException ex) {
+                result = defaultValue;
+            }
+        }
+        return result;
     }
 }

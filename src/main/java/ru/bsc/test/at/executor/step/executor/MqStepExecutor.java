@@ -1,14 +1,15 @@
 package ru.bsc.test.at.executor.step.executor;
 
 import org.apache.commons.lang3.StringUtils;
-import ru.bsc.test.at.executor.helper.HttpHelper;
+import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.helper.HttpClient;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.model.StepStatus;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -20,7 +21,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
 
     @Override
-    public void execute(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpHelper httpHelper, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
+    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
@@ -40,7 +41,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
         String requestBody = insertSavedValues(step.getRequest(), scenarioVariables);
 
         // 2.2 Вычислить функции в теле запроса
-        requestBody = evaluateExpressions(requestBody);
+        requestBody = evaluateExpressions(requestBody, scenarioVariables, null);
         stepResult.setRequestBody(requestBody);
 
         // 2.4 Cyclic sending request, COM-84
@@ -96,7 +97,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
             // 5. Подставить сохраненые значения в ожидаемый результат
             String expectedResponse = insertSavedValues(step.getExpectedResponse(), scenarioVariables);
             // 5.1. Расчитать выражения <f></f>
-            expectedResponse = evaluateExpressions(expectedResponse);
+            expectedResponse = evaluateExpressions(expectedResponse, scenarioVariables, null);
             stepResult.setExpected(expectedResponse);
 
             checkResponseBody(step, expectedResponse, responseContent);

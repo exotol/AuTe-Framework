@@ -53,6 +53,7 @@ public class Step implements Serializable, AbstractModel {
     @Deprecated
     private String sqlSavedParameter;
     private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
+    private StepMode stepMode;
 
     public Step copy() {
         Step step = new Step();
@@ -150,13 +151,5 @@ public class Step implements Serializable, AbstractModel {
 
     public Boolean getMultipartFormData() {
         return multipartFormData != null && multipartFormData;
-    }
-
-    public StepMode getStepMode() {
-        return stepMode;
-    }
-
-    public void setStepMode(StepMode stepMode) {
-        this.stepMode = stepMode;
     }
 }

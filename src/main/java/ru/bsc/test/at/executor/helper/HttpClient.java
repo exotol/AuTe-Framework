@@ -25,7 +25,7 @@ import org.apache.tika.Tika;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.service.AtExecutor;
+import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -46,11 +46,11 @@ import java.util.stream.Collectors;
  *
  */
 @Slf4j
-public class HttpHelper {
+public class HttpClient {
     private final CloseableHttpClient httpClient;
     private final HttpClientContext context;
 
-    public HttpHelper() {
+    public HttpClient() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
         CookieStore cookieStore = new BasicCookieStore();
         context = HttpClientContext.create();
@@ -116,7 +116,7 @@ public class HttpHelper {
             } else {
                 List<NameValuePair> params = step.getFormDataList()
                         .stream()
-                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), AtExecutor.insertSavedValues(formData1.getValue(), scenarioVariables)))
+                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), AbstractStepExecutor.insertSavedValues(formData1.getValue(), scenarioVariables)))
                         .collect(Collectors.toList());
                 httpEntity = new UrlEncodedFormEntity(params);
             }
@@ -155,7 +155,7 @@ public class HttpHelper {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData formData : formDataList) {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
-                entity.addTextBody(formData.getFieldName(), AtExecutor.insertSavedValues(formData.getValue(), scenarioVariables), ContentType.TEXT_PLAIN);
+                entity.addTextBody(formData.getFieldName(), AbstractStepExecutor.insertSavedValues(formData.getValue(), scenarioVariables), ContentType.TEXT_PLAIN);
             } else {
                 File file = new File((projectPath == null ? "" : projectPath) + formData.getFilePath());
                 entity.addBinaryBody(
