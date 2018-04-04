@@ -567,16 +567,32 @@ public class AtExecutor {
                             statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                         }
                         try (ResultSet rs = statement.executeQuery()) {
-                            Object result;
-                            if (sqlResultType == SqlResultType.OBJECT) {
-                                result = rs.next() ? rs.getObject(1) : null;
+                            if (sqlResultType == SqlResultType.ROW) {
+                                int columnCount = rs.getMetaData().getColumnCount();
+                                if (rs.next()) {
+                                    String[] sqlSavedParameterList = sqlData.getSqlSavedParameter().split(",");
+                                    int i = 1;
+                                    for (String parameterName: sqlSavedParameterList) {
+                                        if (parameterName.trim().isEmpty()) {
+                                            continue;
+                                        }
+                                        if (i > columnCount) {
+                                            break;
+                                        }
+                                        scenarioVariables.put(parameterName.trim(), rs.getString(i));
+                                        i++;
+                                    }
+                                }
+                            } else if (sqlResultType == SqlResultType.OBJECT) {
+                                Object result = rs.next() ? rs.getObject(1) : null;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                             } else if (sqlResultType == SqlResultType.LIST) {
 
                                 List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
-                                result = columnData;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), columnData);
                             } else {
                                 List<String> columnNameList = new LinkedList<>();
                                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
@@ -590,9 +606,8 @@ public class AtExecutor {
                                     }
                                     resultData.add(values);
                                 }
-                                result = resultData;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), resultData);
                             }
-                            scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                         }
                     }
                 }
