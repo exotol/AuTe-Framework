@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.helper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -8,16 +9,10 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -27,11 +22,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.tika.Tika;
-import org.apache.tika.exception.TikaException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
+import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.AtExecutor;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -43,25 +37,18 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 22/05/17.
  *
  */
+@Slf4j
 public class HttpHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
     private final CloseableHttpClient httpClient;
-    private HttpClientContext context;
+    private final HttpClientContext context;
 
     public HttpHelper() {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
@@ -75,13 +62,13 @@ public class HttpHelper {
             // set up a TrustManager that trusts everything
             sslContext.init(null, new TrustManager[]{new X509TrustManager() {
                 @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    System.out.println("checkClientTrusted =============");
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+                    log.info("checkClientTrusted =============");
                 }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    System.out.println("checkServerTrusted =============");
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+                    log.info("checkServerTrusted =============");
                 }
 
                 @Override
@@ -91,14 +78,18 @@ public class HttpHelper {
 
             }}, new SecureRandom());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            e.printStackTrace();
+            log.error("Error while init SSL context", e);
             sslContext = null;
         }
 
         httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setDefaultCookieStore(cookieStore).setSSLContext(sslContext).build();
     }
 
-    public ResponseHelper request(String method, String url, String jsonRequestBody, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException {
+    public List<Cookie> getCookies() {
+        return context.getCookieStore().getCookies();
+    }
+
+    public ResponseHelper request(String method, String url, String jsonRequestBody, String headers, String testIdHeaderName, String testId) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
         HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase && jsonRequestBody != null) {
@@ -108,24 +99,24 @@ public class HttpHelper {
         return execute(httpRequest, headers);
     }
 
-    public ResponseHelper request(String method, String projectPath, String url, Boolean multipartFormData, List<FormData> formData, String headers, String testIdHeaderName, String testId) throws IOException, URISyntaxException, IllegalArgumentException, TikaException {
+    public ResponseHelper request(String projectPath, Step step, String url, String headers, String testIdHeaderName, String testId, Map<String, Object> scenarioVariables) throws URISyntaxException, IOException {
         URI uri = new URIBuilder(url).build();
-        HttpRequestBase httpRequest = createRequest(method, uri, testIdHeaderName, testId);
+        HttpRequestBase httpRequest = createRequest(step.getRequestMethod(), uri, testIdHeaderName, testId);
         if (httpRequest instanceof HttpEntityEnclosingRequestBase) {
             boolean useMultipartFormData;
-            if (multipartFormData == null) {
-                long count = formData.stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
+            if (step.getMultipartFormData() == null) {
+                long count = step.getFormDataList().stream().filter(formData1 -> FieldType.FILE.equals(formData1.getFieldType())).count();
                 useMultipartFormData = count > 0;
             } else {
-                useMultipartFormData = multipartFormData;
+                useMultipartFormData = step.getMultipartFormData();
             }
             HttpEntity httpEntity;
             if (useMultipartFormData) {
-                httpEntity = setEntity(formData, projectPath).build();
+                httpEntity = setEntity(step.getFormDataList(), projectPath, scenarioVariables).build();
             } else {
-                List<NameValuePair> params = formData
+                List<NameValuePair> params = step.getFormDataList()
                         .stream()
-                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), formData1.getValue()))
+                        .map(formData1 -> new BasicNameValuePair(formData1.getFieldName(), AtExecutor.insertSavedValues(formData1.getValue(), scenarioVariables)))
                         .collect(Collectors.toList());
                 httpEntity = new UrlEncodedFormEntity(params);
             }
@@ -160,11 +151,11 @@ public class HttpHelper {
         return httpRequest;
     }
 
-    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath) throws URISyntaxException, IOException, TikaException {
+    private MultipartEntityBuilder setEntity(List<FormData> formDataList, String projectPath, Map<String, Object> scenarioVariables) throws IOException {
         MultipartEntityBuilder entity = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         for (FormData formData : formDataList) {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
-                entity.addTextBody(formData.getFieldName(), formData.getValue(), ContentType.TEXT_PLAIN);
+                entity.addTextBody(formData.getFieldName(), AtExecutor.insertSavedValues(formData.getValue(), scenarioVariables), ContentType.TEXT_PLAIN);
             } else {
                 File file = new File((projectPath == null ? "" : projectPath) + formData.getFilePath());
                 entity.addBinaryBody(
@@ -198,8 +189,11 @@ public class HttpHelper {
     }
 
     private void setHeaders(HttpRequestBase request, String headers) {
-        if (headers != null && !headers.isEmpty()) {
-            Scanner scanner = new Scanner(headers);
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
+
+        try (Scanner scanner = new Scanner(headers)) {
             while (scanner.hasNextLine()) {
                 String header = scanner.nextLine();
                 String[] headerDetail = header.split(":");
@@ -214,8 +208,7 @@ public class HttpHelper {
         try {
             httpClient.close();
         } catch (IOException e) {
-            LOGGER.error(e.getLocalizedMessage());
-            e.printStackTrace();
+            log.error("Error while closing http connection", e);
         }
     }
 }

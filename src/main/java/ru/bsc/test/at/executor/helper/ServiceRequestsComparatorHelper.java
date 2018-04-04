@@ -2,17 +2,19 @@ package ru.bsc.test.at.executor.helper;
 
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.WireMockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class ServiceRequestsComparatorHelper {
 
-    private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws Exception {
+    private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
         Diff diff = DiffBuilder.compare(expectedRequest)
                 .withTest(actualRequest)
                 .checkForIdentical()
@@ -32,7 +34,7 @@ public class ServiceRequestsComparatorHelper {
                 .build();
 
         if (diff.hasDifferences()) {
-            throw new Exception("Service request error (request differences):\n" + diff.toString() + "\n ====== Expected ===== \n" + expectedRequest + "\n ====== Actual ===== \n" + actualRequest);
+            throw new ComparisonException(diff, expectedRequest, actualRequest);
         }
     }
 
@@ -48,13 +50,17 @@ public class ServiceRequestsComparatorHelper {
 
         // Список актуальных запросов к сервисам
         MockRequest mockRequest = new MockRequest();
-        mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{ put("equalTo", testId); }});
+        mockRequest.getHeaders().put(project.getTestIdHeaderName(), createEqualToHeader(testId));
         List<WireMockRequest> actualRequestList = wireMockAdmin.findRequests(mockRequest).getRequests();
 
         // compare request size
         if (expectedRequestList.size() != actualRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
-            throw new Exception("Invalid number of service requests: expected: " + expectedRequestList.size() + ", actual: " + actualRequestList.size());
+            throw new Exception(String.format(
+                    "Invalid number of service requests: expected: %d, actual: %d",
+                    expectedRequestList.size(),
+                    actualRequestList.size()
+            ));
         }
 
         for (ExpectedServiceRequest expectedRequest: expectedRequestList) {
@@ -74,8 +80,14 @@ public class ServiceRequestsComparatorHelper {
                                         .collect(Collectors.toList())) : null
                 );
             } else {
-                throw new Exception("Service " + expectedRequest.getServiceName() + " is not called");
+                throw new Exception(String.format("Service %s is not called", expectedRequest.getServiceName()));
             }
         }
+    }
+
+    private Map<String, String> createEqualToHeader(String testId) {
+        Map<String, String> header = new HashMap<>();
+        header.put("equalTo", testId);
+        return header;
     }
 }

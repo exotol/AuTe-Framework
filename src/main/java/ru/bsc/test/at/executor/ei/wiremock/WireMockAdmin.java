@@ -1,4 +1,4 @@
-package ru.bsc.test.at.executor.wiremock;
+package ru.bsc.test.at.executor.ei.wiremock;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,9 +9,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockDefinition;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.MockRequest;
-import ru.bsc.test.at.executor.wiremock.mockdefinition.RequestList;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -25,13 +25,14 @@ import java.util.List;
  */
 public class WireMockAdmin implements Closeable {
 
-    private String wireMockAdminUrl;
-    private List<String> mockIdList = new LinkedList<>();
+    private final String wireMockAdminUrl;
+    private final List<String> mockIdList = new LinkedList<>();
+
     public WireMockAdmin(String wireMockAdminUrl) {
         this.wireMockAdminUrl = wireMockAdminUrl;
     }
 
-    private void clearSavedMappings() throws IOException {
+    private void clearSavedMappings() {
         mockIdList.forEach(s -> sendDelete("/mappings/" + s));
     }
 
@@ -66,7 +67,7 @@ public class WireMockAdmin implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         clearSavedMappings();
     }
 }

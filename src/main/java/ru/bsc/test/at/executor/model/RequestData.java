@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StepStatus {
-    private String exception;
+public class RequestData {
+    private String requestBody;
+    private String responseBody;
 }
