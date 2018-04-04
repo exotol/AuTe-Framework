@@ -65,7 +65,7 @@ export class StepResultItemComponent implements OnInit {
       switch (op) {
         case 'INSERT':
         {
-          this.actualDiff = this.actualDiff.concat(this.wrapChanged(text, "added"));
+          this.actualDiff = this.actualDiff.concat(StepResultItemComponent.wrapChanged(text, "added"));
           prevOps = prevOps + 'I';
           insertText = text;
           break;
@@ -73,7 +73,7 @@ export class StepResultItemComponent implements OnInit {
         case 'DELETE':
         {
           rowNum = rowNum + text.split('\n').length - 1;
-          this.expectedDiff = this.expectedDiff.concat(this.wrapChanged(text, "removed"));
+          this.expectedDiff = this.expectedDiff.concat(StepResultItemComponent.wrapChanged(text, "removed"));
           prevOps = '';
           break;
         }
@@ -86,8 +86,8 @@ export class StepResultItemComponent implements OnInit {
           let iLength = insertText.split('\n').filter(v => v.trim() != '').length;
 
           // последняя строка предпоследнего изменения
-          var lastPrev = prevText.split("\n").pop().trim();
-          var firstCurrent = text.split("\n")[0];
+          let lastPrev = prevText.split("\n").pop().trim();
+          let firstCurrent = text.split("\n")[0];
 
           // нам надо выделить строку
           if (prevOps == 'EI' && iLength > 1 && !this.actualDiff.includes(lastPrev + firstCurrent)) {
@@ -108,7 +108,7 @@ export class StepResultItemComponent implements OnInit {
   }
 
   /** оборачиваем строку */
-  wrapChanged(text: string, classToWrap: string) {
+  static wrapChanged(text: string, classToWrap: string) {
     let wrapped: string;
     if (text.endsWith('\n')) {
       wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
@@ -119,7 +119,7 @@ export class StepResultItemComponent implements OnInit {
   }
 
   /** оборачиваем строку */
-  wrapToDiv(span:String) {
+  static wrapToDiv(span:String) {
     return '<div class="unchanged-row">' + span + '</div>';
   }
 
@@ -156,7 +156,6 @@ export class StepResultItemComponent implements OnInit {
         beginPatternIndex = line.indexOf(beginPattern, index);
         endPatternIndex = line.indexOf(endPattern, index);
       }
-      ;
       return closed;
     };
 
@@ -178,7 +177,7 @@ export class StepResultItemComponent implements OnInit {
           index = endPatternIndex + endPattern.length;
         }
         beginPatternIndex = line.indexOf(beginPattern, index);
-      };
+      }
       return closed;
     };
 
@@ -195,7 +194,7 @@ export class StepResultItemComponent implements OnInit {
 
       if (changed && !wasChanges) {
         if (resultsToDiv.length > 0) {
-          results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), "diff-content")));
+          results.push(StepResultItemComponent.wrapToDiv(StepResultItemComponent.wrapChanged(resultsToDiv.join('\n'), "diff-content")));
           resultsToDiv = [];
         }
         wasChanges = false;
@@ -206,7 +205,7 @@ export class StepResultItemComponent implements OnInit {
 
       if (oneStringDiff) {
         if (resultsToDiv.length > 0) {
-          results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
+          results.push(StepResultItemComponent.wrapToDiv(StepResultItemComponent.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
           resultsToDiv = [];
         }
         wasChanges = true;
@@ -214,7 +213,7 @@ export class StepResultItemComponent implements OnInit {
 
       //noinspection TypeScriptValidateTypes
       if (!changed && expectedChanges.find(x => x == i)) {
-        resultsToDiv.push(this.wrapChanged(line, "removed-row"));
+        resultsToDiv.push(StepResultItemComponent.wrapChanged(line, "removed-row"));
       } else {
         resultsToDiv.push(line);
       }
@@ -222,7 +221,7 @@ export class StepResultItemComponent implements OnInit {
 
       if (oneStringDiff || closedEnd) {
         if (resultsToDiv.length > 0) {
-          results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), classWrap)));
+          results.push(StepResultItemComponent.wrapToDiv(StepResultItemComponent.wrapChanged(resultsToDiv.join('\n'), classWrap)));
           resultsToDiv = [];
         }
         wasChanges = false;
@@ -230,7 +229,7 @@ export class StepResultItemComponent implements OnInit {
     }
 
     if (resultsToDiv.length > 0) {
-      results.push(this.wrapToDiv(this.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
+      results.push(StepResultItemComponent.wrapToDiv(StepResultItemComponent.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
     }
 
     return results.join('\n');
@@ -249,8 +248,4 @@ export class StepResultItemComponent implements OnInit {
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
-  public isShowDiffComponent() {
-    return this.stepResult && this.stepResult.expected && this.stepResult.expected.length <= 100000
-      && this.stepResult.actual && this.stepResult.actual.length <= 100000
-  }
 }
