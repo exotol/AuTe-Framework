@@ -5,7 +5,6 @@ import {Headers, Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Scenario} from '../model/scenario';
 import {Globals} from '../globals';
-import {ImportProject} from '../model/import-project';
 
 @Injectable()
 export class ProjectService {
@@ -47,14 +46,6 @@ export class ProjectService {
       scenario,
       {headers: this.headers}
     ).map(value => value.json() as Scenario);
-  }
-
-  saveFullProject(importProject: ImportProject): Observable<Response> {
-    return this.http.post(
-      this.globals.serviceBaseUrl + this.serviceUrl + '/import-project-from-yaml',
-      importProject,
-      {headers: this.headers}
-    );
   }
 
   addNewGroup(projectCode: string, groupName: string): Observable<string[]> {

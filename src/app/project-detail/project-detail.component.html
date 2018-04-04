@@ -57,15 +57,6 @@
   <div class="container">
     <div class="panel panel-default">
       <div class="panel-body">
-        <a class="btn btn-default" target="_blank" [attr.href]="globals.serviceBaseUrl + '/rest/projects/' + project.code + '/get-yaml'">{{'Download project as YAML' | translate}}</a>
-        <!--button class="btn btn-default" (click)="downloadSelectedAsYaml()">{{ 'Download selected scenarios as YAML' | translate}}</button-->
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="panel panel-default">
-      <div class="panel-body">
         <label>{{'Create new scenario' | translate}}</label>
         <div class="input-group">
           <input placeholder="{{'Scenario name' | translate}}" class="form-control" title="{{'Scenario name' | translate}}" [(ngModel)]="newScenarioName" />

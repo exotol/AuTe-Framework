@@ -97,7 +97,8 @@ export class ScenarioDetailComponent implements OnInit {
       const toasty = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
       this.stepService.cloneStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, step)
         .subscribe(clonedStep => {
-          this.stepList.push(clonedStep);
+          let ind = this.stepList.indexOf(step)
+          this.stepList.splice(ind + 1, 0, clonedStep);
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }

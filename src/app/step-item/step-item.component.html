@@ -212,9 +212,10 @@
                 <input placeholder="select fieldFirst, fieldSecond from myTable" class="form-control" title="" [(ngModel)]="sqlData.sql"/>
                 <label>{{'Sql return type' | translate}}</label>
                 <select class="form-control" title="{{'Sql return type' | translate}}" [(ngModel)]="sqlData.sqlReturnType" style="width: auto">
-                  <option [ngValue]="'OBJECT'">{{'Sql return type object' | translate}}</option>
-                  <option [ngValue]="'LIST'">{{'Sql return type list' | translate}}</option>
-                  <option [ngValue]="'MAP'">{{'Sql return type map (default)' | translate}}</option>
+                  <option [ngValue]="'MAP'">{{'Map (default)' | translate}}</option>
+                  <option [ngValue]="'OBJECT'">{{'Object' | translate}}</option>
+                  <option [ngValue]="'LIST'">{{'List' | translate}}</option>
+                  <option [ngValue]="'ROW'">{{'Row' | translate}}</option>
                 </select>
               </div>
             </div>
