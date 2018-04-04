@@ -27,7 +27,7 @@ public class LimitTransliterationTranslator implements Translator {
             int charIndex = CYRILLIC_ALPHABET.indexOf(ch);
             translated.append(charIndex != -1 ? LATIN_ALPHABET_CHARS[charIndex] : ch);
         }
-        String result = translated.toString().replaceAll("[^a-zA-Z0-9.-_]", "-");
+        String result = translated.toString().replaceAll("[^a-zA-Z0-9_.-]", "-");
         return result.length() > RESULT_MAX_LENGTH ? result.substring(0, RESULT_MAX_LENGTH) : result;
     }
 }
