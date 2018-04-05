@@ -1,4 +1,3 @@
-
 export class MockServiceResponse {
   code: string;
   serviceUrl: string;
