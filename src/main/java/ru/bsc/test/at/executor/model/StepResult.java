@@ -17,6 +17,7 @@ public class StepResult {
     public static final String RESULT_FAIL = "Fail";
 
     private String testId;
+    private String projectCode;
     private Step step;
     private String result;
     private String details;
@@ -34,7 +35,8 @@ public class StepResult {
     private List<RequestData> requestDataList;
     private Map<String, Object> scenarioVariables;
 
-    public StepResult(Step step) {
+    public StepResult(String projectCode, Step step) {
+        this.projectCode = projectCode;
         this.step = step;
     }
 }

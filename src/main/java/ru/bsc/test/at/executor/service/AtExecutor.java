@@ -185,7 +185,7 @@ public class AtExecutor {
                     parametersEnvironment.add(new StepParameterSet());
                 }
                 for (StepParameterSet stepParameterSet : parametersEnvironment) {
-                    StepResult stepResult = new StepResult(step);
+                    StepResult stepResult = new StepResult(project.getCode(), step);
                     stepResult.setStart(new Date().getTime());
                     stepResult.setEditable(stepEditable);
                     stepResultList.add(stepResult);
