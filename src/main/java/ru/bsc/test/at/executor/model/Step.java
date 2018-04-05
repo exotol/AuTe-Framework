@@ -36,6 +36,7 @@ public class Step implements Serializable, AbstractModel {
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
+    private List<NameValueProperty> mqPropertyList;
     private Boolean multipartFormData;
     private List<FormData> formDataList = new LinkedList<>();
     private String jsonCompareMode = "NON_EXTENSIBLE";

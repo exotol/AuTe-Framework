@@ -1,11 +1,17 @@
 package ru.bsc.test.at.executor.mq;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
+import ru.bsc.test.at.executor.model.NameValueProperty;
 
 import javax.jms.*;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
-
+@Slf4j
 public class IbmMqManager implements IMqManager {
 
     private QueueConnectionFactory connectionFactory;
@@ -36,7 +42,7 @@ public class IbmMqManager implements IMqManager {
     }
 
     @Override
-    public void sendTextMessage(String queueName, String message) throws Exception {
+    public void sendTextMessage(String queueName, String message, List<NameValueProperty> mqPropertyList) throws Exception {
         fillConnectionFactory();
 
         QueueConnection connection = (QueueConnection) connectionFactory.createConnection(username, password);
@@ -44,6 +50,34 @@ public class IbmMqManager implements IMqManager {
         Queue queue = session.createQueue(queueName);
         QueueSender sender = session.createSender(queue);
         Message msg = session.createTextMessage(message);
+
+        // TODO Вынести назначение свойств сообщений в отдельный метод
+        //noinspection Duplicates
+        if (mqPropertyList != null) {
+            mqPropertyList.forEach(pair -> {
+                try {
+                    if ("messageId".equals(pair.getName())) {
+                        msg.setJMSMessageID(pair.getValue());
+                    } else if ("correlationId".equals(pair.getName())) {
+                        msg.setJMSCorrelationID(pair.getValue());
+                    } else if ("replyTo".equals(pair.getName())) {
+                        msg.setJMSReplyTo(session.createQueue(pair.getValue()));
+                    } else if ("timestamp".equals(pair.getName())) {
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy,HH:mm:ss aaa");
+                            msg.setJMSTimestamp(formatter.parse(pair.getValue()).getTime());
+                        } catch (ParseException e) {
+                            log.error("{}", e);
+                        }
+                    } else {
+                        msg.setStringProperty(pair.getName(), pair.getValue());
+                    }
+                } catch (JMSException e) {
+                    log.error("Set text message property error: {}", e);
+                }
+            });
+        }
+
         connection.start();
 
         sender.send(msg);

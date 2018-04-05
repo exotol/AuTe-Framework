@@ -486,7 +486,7 @@ public class AtExecutor {
             mqManager.setPassword(project.getAmqpBroker().getPassword());
 
             String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-            mqManager.sendTextMessage(step.getMqName(), message);
+            mqManager.sendTextMessage(step.getMqName(), message, step.getMqPropertyList());
         }
     }
 
