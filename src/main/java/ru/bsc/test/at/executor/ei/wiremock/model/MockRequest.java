@@ -15,5 +15,7 @@ import java.util.Map;
 public class MockRequest {
     private String method;
     private String url;
+    private BasicAuthCredentials basicAuthCredentials;
     private Map<String, Map<String, String>> headers = new HashMap<>();
+    private MatchesXPath  bodyPatterns[];
 }
