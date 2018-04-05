@@ -87,10 +87,14 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
                 String newScenarioPath = scenarioPath(scenario);
                 if (!scenarioPath.equals(newScenarioPath)) {  // path changed
-                    Files.move(
-                            Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                            Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
-                    );
+                    try {
+                        Files.move(
+                                Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
+                                Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
+                        );
+                    } catch (IOException ioException) {
+                        throw new IOException("Directory already exists");
+                    }
                     scenarioPath = newScenarioPath;
                 }
 
