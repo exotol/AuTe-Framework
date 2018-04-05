@@ -21,8 +21,12 @@ public class MqClient implements Closeable {
         mqManager.connect();
     }
 
-    void sendMessage(String mqName, String message) throws Exception {
-        mqManager.sendTextMessage(mqName, message);
+    public void sendMessage(String queueName, String messageBody) throws Exception {
+        mqManager.sendTextMessage(queueName, messageBody);
+    }
+
+    public void waitMessage(String queueName, Long timeout) throws Exception {
+        mqManager.;
     }
 
     @Override

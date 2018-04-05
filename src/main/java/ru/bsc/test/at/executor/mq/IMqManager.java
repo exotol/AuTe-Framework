@@ -12,4 +12,5 @@ public interface IMqManager extends Closeable {
     void connect() throws Exception;
 
     void sendTextMessage(String queueName, String message) throws Exception;
+    void waitMessage(String queueName, Long timeoutMs);
 }

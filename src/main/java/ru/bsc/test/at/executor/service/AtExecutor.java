@@ -199,7 +199,7 @@ public class AtExecutor {
                         for (IStepExecutor stepExecutor : stepExecutorList) {
                             if (stepExecutor.support(step)) {
                                 stepResult.setSavedParameters(scenarioVariables.toString());
-                                stepExecutor.execute(wireMockAdmin, mqMockerAdmin, connection, stand, httpClient, scenarioVariables, testId, project, step, stepResult, projectPath);
+                                stepExecutor.execute(wireMockAdmin, mqMockerAdmin, connection, stand, httpClient, mqClient, scenarioVariables, testId, project, step, stepResult, projectPath);
                                 break;
                             }
                         }

@@ -55,6 +55,13 @@ public class Step implements Serializable, AbstractModel {
     private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
     private StepMode stepMode;
 
+    // MQ step mode
+    private String mqOutputQueueName;
+    private String mqOutputQueueBody;
+    private String mqInputQueueName;
+    private String mqInputQueueExpectedBody;
+    private String mqTimeoutMs;
+
     public Step copy() {
         Step step = new Step();
         step.setRelativeUrl(getRelativeUrl());

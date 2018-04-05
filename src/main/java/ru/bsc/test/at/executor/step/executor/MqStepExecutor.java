@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
+import ru.bsc.test.at.executor.helper.MqClient;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
@@ -21,7 +22,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
 
     @Override
-    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
+    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
@@ -58,6 +59,8 @@ public class MqStepExecutor extends AbstractStepExecutor {
 
                 // 3. Выполнить запрос
                 // TODO
+                mqClient.sendMessage(step.getMqOutputQueueName(), step.getMqOutputQueueBody());
+                Thread.sleep(Math.min(step.getMqTimeoutMs(), 60000L));
                 responseContent = "response TODO";
                 sendMessageToQuery(project, step, scenarioVariables);
 

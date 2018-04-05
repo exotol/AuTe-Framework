@@ -3,6 +3,7 @@ package ru.bsc.test.at.executor.step.executor;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
+import ru.bsc.test.at.executor.helper.MqClient;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.Project;
@@ -29,7 +30,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
 
     @Override
-    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
+    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
         stepResult.setSavedParameters(scenarioVariables.toString());
 

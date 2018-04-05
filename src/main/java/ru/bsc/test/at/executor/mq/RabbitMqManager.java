@@ -9,6 +9,7 @@ import java.io.IOException;
 class RabbitMqManager implements IMqManager {
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
+    // TODO: Сделать final
     private Connection connection;
 
     public void setHost(String host) {
@@ -37,6 +38,16 @@ class RabbitMqManager implements IMqManager {
         channel.basicPublish("", queueName, null, message.getBytes());
 
         channel.close();
+    }
+
+
+
+    @Override
+    public void waitMessage(String queueName, Long timeoutMs) {
+
+        Channel channelFrom = connection.createChannel();
+
+        String consumerTag = channelFrom.basicConsume();
     }
 
     @Override
