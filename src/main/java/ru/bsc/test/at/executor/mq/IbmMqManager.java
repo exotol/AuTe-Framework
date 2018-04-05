@@ -1,14 +1,18 @@
 package ru.bsc.test.at.executor.mq;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 
 import javax.jms.*;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
-
+@Slf4j
 public class IbmMqManager implements IMqManager {
 
     private QueueConnectionFactory connectionFactory;
+
+    private QueueConnection connection;
 
     private String username;
     private String password;
@@ -36,21 +40,26 @@ public class IbmMqManager implements IMqManager {
     }
 
     @Override
-    public void sendTextMessage(String queueName, String message) throws Exception {
-        fillConnectionFactory();
+    public void connect() throws Exception {
+        connection = (QueueConnection) connectionFactory.createConnection(username, password);
 
-        QueueConnection connection = (QueueConnection) connectionFactory.createConnection(username, password);
+
+        connection.start();
+    }
+
+    @Override
+    public void sendTextMessage(String queueName, String message) throws Exception {
         QueueSession session = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Queue queue = session.createQueue(queueName);
         QueueSender sender = session.createSender(queue);
         Message msg = session.createTextMessage(message);
-        connection.start();
+
+        fillConnectionFactory();
 
         sender.send(msg);
 
         sender.close();
         session.close();
-        connection.close();
     }
 
     private void fillConnectionFactory() throws ReflectiveOperationException {
@@ -74,5 +83,14 @@ public class IbmMqManager implements IMqManager {
         }
 
         method.invoke(obj, val);
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            connection.close();
+        } catch (JMSException e) {
+            log.error("{}", e);
+        }
     }
 }

@@ -4,9 +4,12 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import java.io.IOException;
+
 class RabbitMqManager implements IMqManager {
 
     private final ConnectionFactory connectionFactory = new ConnectionFactory();
+    private Connection connection;
 
     public void setHost(String host) {
         connectionFactory.setHost(host);
@@ -24,12 +27,20 @@ class RabbitMqManager implements IMqManager {
         connectionFactory.setPassword(password);
     }
 
+    @Override
+    public void connect() throws Exception {
+        connection = connectionFactory.newConnection();
+    }
+
     public void sendTextMessage(String queueName, String message) throws Exception {
-        Connection connection = connectionFactory.newConnection();
         Channel channel = connection.createChannel();
         channel.basicPublish("", queueName, null, message.getBytes());
 
         channel.close();
+    }
+
+    @Override
+    public void close() throws IOException {
         connection.close();
     }
 }
