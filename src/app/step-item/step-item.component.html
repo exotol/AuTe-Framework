@@ -272,6 +272,31 @@
               <label>{{'Queue message' | translate}}</label>
               <textarea class="form-control" placeholder="{{'Queue message' | translate}}" title="" rows="7" [(ngModel)]="step.mqMessage"></textarea>
             </div>
+            <ng-container *ngIf="step.mqPropertyList?.length > 0">
+              <div class="col-sm-12">
+                <label>{{'Mq properties' | translate}}</label>
+              </div>
+              <div class="col-sm-5">
+                <label>{{'Name' | translate}}</label>
+              </div>
+              <div class="col-sm-5">
+                <label>{{'Value' | translate}}</label>
+              </div>
+            </ng-container>
+            <ng-container *ngFor="let property of step.mqPropertyList">
+              <div class="col-sm-5" >
+                <input title="{{'Name' | translate}}" placeholder="messageId, correlationId, replyTo, timestamp, contentType, contentEncoding, ..." class="form-control" [(ngModel)]="property.name"/>
+              </div>
+              <div class="col-sm-6">
+                <input title="{{'Value' | translate}}" [placeholder]="property.name == 'timestamp' ? 'dd-MM-yyyy,HH:mm:ss aaa' : ''" class="form-control" [(ngModel)]="property.value"/>
+              </div>
+              <div class="col-sm-1">
+                <button class="btn btn-sm btn-default" (click)="removeMqProperty(property)"><span class="glyphicon glyphicon-minus"></span></button>
+              </div>
+            </ng-container>
+            <div class="col-sm-12">
+              <button class="btn btn-sm btn-default" (click)="addMqProperty()"><span class="glyphicon glyphicon-plus"></span> {{'Add property' | translate}}</button>
+            </div>
           </div>
         </div>
         <div *ngIf="tab == 'mqMockResponseList'">

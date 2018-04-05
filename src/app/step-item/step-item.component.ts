@@ -8,6 +8,7 @@ import {MqMockResponse} from '../model/mq-mock-response';
 import {ExpectedMqRequest} from '../model/expected-mq-request';
 import {SqlData} from '../model/sql-data';
 import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
+import {NameValueProperty} from '../model/name-value-property';
 
 @Component({
   selector: 'app-step-item',
@@ -223,5 +224,19 @@ export class StepItemComponent implements OnInit {
       this.step.scenarioVariableFromMqRequestList = [];
     }
     this.step.scenarioVariableFromMqRequestList.push(new ScenarioVariableFromMqRequest());
+  }
+
+  addMqProperty() {
+    if (!this.step.mqPropertyList) {
+      this.step.mqPropertyList = [];
+    }
+    this.step.mqPropertyList.push(new NameValueProperty());
+  }
+
+  removeMqProperty(property: NameValueProperty) {
+    const indexToRemove = this.step.mqPropertyList.indexOf(property);
+    if (indexToRemove > -1) {
+      this.step.mqPropertyList.splice(indexToRemove, 1);
+    }
   }
 }

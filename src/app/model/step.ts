@@ -6,6 +6,7 @@ import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
 import {SqlData} from './sql-data';
 import {ScenarioVariableFromMqRequest} from './scenario-variable-from-mq-request';
+import {NameValueProperty} from './name-value-property';
 
 export class Step {
   code: string;
@@ -31,6 +32,7 @@ export class Step {
   multipartFormData: boolean;
   mqName: string;
   mqMessage: string;
+  mqPropertyList: NameValueProperty[];
   jsonCompareMode = 'NON_EXTENSIBLE';
   script: string;
   numberRepetitions: string;
@@ -42,4 +44,5 @@ export class Step {
   expectedMqRequestList: ExpectedMqRequest[];
   sqlDataList: SqlData[];
   scenarioVariableFromMqRequestList: ScenarioVariableFromMqRequest[];
+  stepMode: string;
 }
