@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,36 +39,45 @@ public abstract class BaseYamlRepository {
         File scenarioRootDirectory = scenarioFile.getParentFile();
         int i = 1;
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
+        Map<Step, String> codeCorrections = new HashMap<>();
         for (Step step : scenario.getStepList()) {
-            if (step.getCode() == null) {
-                String newCode = null;
-                if (step.getStepComment() != null) {
-                    String transliterated = translator.translate(step.getStepComment());
-                    if (StringUtils.isNotEmpty(transliterated)) {
-                        newCode = String.valueOf(i) + "-" + transliterated;
-                    }
-                }
-                if (StringUtils.isEmpty(newCode)) {
-                    newCode = String.valueOf(i);
-                }
-                int j = 2;
-                while (codeSet.contains(newCode)) {
-                    newCode = String.valueOf(i) + "-" + String.valueOf(j);
-                    j++;
-                }
-                step.setCode(newCode);
-                codeSet.add(newCode);
+            if (step.getCode() != null) {
+                 codeSet.remove(step.getCode());
             }
+            String newCode = generateStepCode(step, i, codeSet);
+            codeSet.add(newCode);
+            String oldCode = step.getCode();
+            step.setCode(newCode);
+            codeCorrections.put(step, oldCode);
             i++;
         }
 
         for (Step step : scenario.getStepList()) {
-            saveStepToFiles(step.getCode(), step, scenarioRootDirectory);
+            saveStepToFiles(codeCorrections.get(step), step, scenarioRootDirectory);
         }
         String scenarioGroupSaved = scenario.getScenarioGroup();
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
         scenario.setScenarioGroup(scenarioGroupSaved);
+    }
+
+    protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
+        String newCode = null;
+        if (step.getStepComment() != null) {
+            String transliterated = translator.translate(step.getStepComment());
+            if (StringUtils.isNotEmpty(transliterated)) {
+                newCode = String.valueOf(stepNumber) + "-" + transliterated;
+            }
+        }
+        if (StringUtils.isEmpty(newCode)) {
+            newCode = String.valueOf(stepNumber);
+        }
+        int j = 2;
+        while (existingCodes.contains(newCode)) {
+            newCode = String.valueOf(stepNumber) + "-" + String.valueOf(j);
+            j++;
+        }
+        return newCode;
     }
 
     protected void loadStepFromFiles(Step step, File scenarioRootDirectory) {
@@ -158,10 +165,11 @@ public abstract class BaseYamlRepository {
     }
 
     private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
-        if (step.getCode() != null) {
-            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
+        if (stepCode != null) {
+            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(stepCode)));
         }
-        step.setCode(StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode);
+
+        step.setCode(getStepCode(step.getCode()));
 
         if (step.getRequest() != null) {
             try {
@@ -261,6 +269,10 @@ public abstract class BaseYamlRepository {
         );
     }
 
+    protected String getStepCode(String stepCode){
+        return StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode;
+    }
+
     private <T extends CodeAccessible> void saveItemsToFiles(
             Path dataPath,
             List<T> items,
@@ -305,8 +317,12 @@ public abstract class BaseYamlRepository {
         return null;
     }
 
+    private String stepPath(String code) {
+        return "steps/" + code + "/";
+    }
+
     private String stepPath(Step step) {
-        return "steps/" + step.getCode() + "/";
+        return stepPath(step.getCode());
     }
 
     private String stepExpectedResponseFile(Step step) {
