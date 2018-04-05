@@ -11,6 +11,17 @@
     </div>
   </div>
   <div class="row">
+      <div class="col-sm-3" style="margin-top: 10px">
+        <input class="form-control" placeholder='Basic Authentication(username), [empty]' title="" [(ngModel)]="mockServiceResponse.userName"/>
+      </div>
+      <div class="col-sm-3" style="margin-top: 10px">
+        <input class="form-control" placeholder='Basic Authentication(password), [empty]' title="" [(ngModel)]="mockServiceResponse.password"/>
+      </div>
+      <div class="col-sm-3" style="margin-top: 10px">
+        <input class="form-control" placeholder="{{'XPath filter' | translate}}" title="" [(ngModel)]="mockServiceResponse.pathFilter"/>
+      </div>
+  </div>
+  <div class="row">
     <div class="col-sm-12">
       <label>{{'Response body' | translate}}</label>
       <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
