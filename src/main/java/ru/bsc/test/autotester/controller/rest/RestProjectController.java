@@ -6,14 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
-import ru.bsc.test.autotester.ro.ImportProjectRo;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.ro.ProjectSearchRo;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -111,19 +109,4 @@ public class RestProjectController {
         return scenarioService.findScenarioByStepRelativeUrl(projectCode, projectSearchRo);
     }
 
-    @RequestMapping(value = "/import-project-from-yaml", method = RequestMethod.POST)
-    public void importProjectFromYaml(@RequestBody ImportProjectRo importProjectRo) throws Exception {
-        projectService.importProjectFormYaml(importProjectRo);
-    }
-
-    @RequestMapping(value = "{projectCode}/get-yaml", method = RequestMethod.GET, produces = "application/x-yaml; charset=utf-8")
-    @ResponseBody
-    public String getYaml(@PathVariable String projectCode, HttpServletResponse response) {
-        Project project = projectService.findOne(projectCode);
-        if (project != null) {
-            response.setHeader("Content-Disposition", "inline; filename=\"project-" + project.getCode() + ".yml\"");
-            return projectService.findOneAsYaml(projectCode);
-        }
-        throw new ResourceNotFoundException();
-    }
 }

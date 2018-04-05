@@ -114,23 +114,6 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
     }
 
     @Override
-    public synchronized void saveFullProject(Project project) throws ProjectSavingException {
-        File root = Paths.get(environmentProperties.getProjectsDirectoryPath(), project.getCode()).toFile();
-        if (root.exists()) {
-            throw new ProjectSavingException("Project " + project.getCode() + " already exists.");
-        }
-        if (!root.mkdirs()) {
-            throw new ProjectSavingException("Directory " + root + " not created.");
-        }
-        try {
-            saveAllScenariosToExternalFiles(project);
-            saveProjectToFiles(project);
-        } catch (IOException e) {
-            throw new ProjectSavingException("Error while saving scenarios", e);
-        }
-    }
-
-    @Override
     public void addNewGroup(String projectCode, String groupName) throws Exception {
         File file = Paths.get(
                 environmentProperties.getProjectsDirectoryPath(),
@@ -238,37 +221,6 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         project.setScenarioList(null);
         project.setStand(null);
         project.setAmqpBroker(null);
-    }
-
-    private void saveAllScenariosToExternalFiles(Project project) throws IOException {
-        Path scenariosDirectory = Paths.get(
-                environmentProperties.getProjectsDirectoryPath(),
-                project.getCode(),
-                "scenarios"
-        );
-        FileUtils.deleteDirectory(scenariosDirectory.toFile());
-        project.getScenarioList().forEach(scenario -> {
-            try {
-                File scenarioFile = Paths.get(
-                        scenariosDirectory.toString(),
-                        scenarioPath(scenario),
-                        SCENARIO_YML_FILENAME
-                ).toFile();
-                saveScenarioToFiles(scenario, scenarioFile);
-            } catch (IOException e) {
-                log.error("Save project external files", e);
-            }
-        });
-    }
-
-    private void saveProjectToFiles(Project project) {
-        Path path = Paths.get(environmentProperties.getProjectsDirectoryPath(), project.getCode(), MAIN_YML_FILENAME);
-        try {
-            clearProjectBeforeSave(project);
-            YamlUtils.dumpToFile(project, path.toString());
-        } catch (IOException e) {
-            log.error("Save file {}", path, e);
-        }
     }
 
     private void readExternalFiles(Project project) {
