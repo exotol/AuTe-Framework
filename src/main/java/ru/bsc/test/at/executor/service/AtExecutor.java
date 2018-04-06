@@ -252,7 +252,7 @@ public class AtExecutor {
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 0.1 Установить ответы для имитации внешних сервисов, работающих через очереди сообщений
-        setMqMockResponses(mqMockerAdmin, project, testId, step.getMqMockResponseList());
+        setMqMockResponses(mqMockerAdmin, project, testId, step.getMqMockResponseList(), scenarioVariables);
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, scenarioVariables);
@@ -486,7 +486,19 @@ public class AtExecutor {
             mqManager.setPassword(project.getAmqpBroker().getPassword());
 
             String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-            mqManager.sendTextMessage(step.getMqName(), message, step.getMqPropertyList());
+
+            List<NameValueProperty> generatedProperties = new LinkedList<>();
+            step.getMqPropertyList().forEach(nameValueProperty -> {
+                NameValueProperty pair = new NameValueProperty();
+                pair.setName(nameValueProperty.getName());
+                try {
+                    pair.setValue(evaluateExpressions(insertSavedValues(nameValueProperty.getValue(), scenarioVariables), scenarioVariables, null));
+                } catch (ScriptException e) {
+                    log.error("{}", e);
+                }
+                generatedProperties.add(pair);
+            });
+            mqManager.sendTextMessage(step.getMqName(), message, generatedProperties);
         }
     }
 
@@ -523,7 +535,7 @@ public class AtExecutor {
         }
     }
 
-    private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList) throws Exception {
+    private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
         if (mqMockResponseList != null) {
             if (mqMockerAdmin == null) {
                 throw new Exception("MqMockerAdmin is not configured in env.yml");
@@ -531,7 +543,7 @@ public class AtExecutor {
             for (MqMockResponse mqMockResponse : mqMockResponseList) {
                 MqMockDefinition mockMessage = new MqMockDefinition();
                 mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
-                mockMessage.setResponseBody(mqMockResponse.getResponseBody());
+                mockMessage.setResponseBody(evaluateExpressions(mqMockResponse.getResponseBody(), scenarioVariables, null));
                 mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
                 mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
                 mockMessage.setTestId(testId);
@@ -645,7 +657,7 @@ public class AtExecutor {
         return result;
     }
 
-    private String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+    public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
         String result = template;
         if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
