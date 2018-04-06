@@ -31,6 +31,7 @@ public class MockServiceResponse implements AbstractModel {
         response.setContentType(getContentType());
         response.setUserName(getUserName());
         response.setPassword(getPassword());
+        response.setPathFilter(getPathFilter());
         return response;
     }
 }
