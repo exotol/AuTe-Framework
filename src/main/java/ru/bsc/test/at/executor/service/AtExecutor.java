@@ -516,7 +516,7 @@ public class AtExecutor {
                 if(isNotEmpty(mockServiceResponse.getPathFilter())) {
                     MatchesXPath matchesXPath = new MatchesXPath();
                     matchesXPath.setMatchesXPath(mockServiceResponse.getPathFilter());
-                    mockDefinition.getRequest().setBodyPatterns(new MatchesXPath[] {matchesXPath});
+                    mockDefinition.getRequest().setBodyPatterns(Collections.singletonList(matchesXPath));
                 }
 
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
