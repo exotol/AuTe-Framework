@@ -10,6 +10,7 @@ import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedMqRequest;
 import ru.bsc.test.at.executor.model.ScenarioVariableFromMqRequest;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.AtExecutor;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -81,7 +82,7 @@ public class MqMockHelper {
                 actualMqRequestList.remove(actualRequest);
 
                 compareRequest(
-                        expectedMqRequest.getRequestBody(),
+                        AtExecutor.evaluateExpressions(AtExecutor.insertSavedValues(expectedMqRequest.getRequestBody(), scenarioVariables), scenarioVariables, null),
                         actualRequest.getRequestBody(),
                         expectedMqRequest.getIgnoredTags() != null ?
                                 new HashSet<>(Arrays.stream(expectedMqRequest.getIgnoredTags()
@@ -90,7 +91,7 @@ public class MqMockHelper {
                                         .collect(Collectors.toList())) : null
                 );
             } else {
-                throw new Exception(String.format("Service %s is not called", expectedMqRequest.getSourceQueue()));
+                throw new Exception(String.format("Queue %s is not called", expectedMqRequest.getSourceQueue()));
             }
         }
     }
