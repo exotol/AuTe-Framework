@@ -4,4 +4,7 @@ export class MockServiceResponse {
   responseBody: string;
   httpStatus: number;
   contentType: number;
+  userName: string;
+  password: string;
+  pathFilter: string;
 }
