@@ -15,10 +15,7 @@ import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
-import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
-import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.*;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.*;
 import ru.bsc.test.at.executor.model.*;
@@ -522,6 +519,18 @@ public class AtExecutor {
                 mockDefinition.getRequest().setUrl(mockServiceResponse.getServiceUrl());
                 // SOAP always POST
                 mockDefinition.getRequest().setMethod("POST");
+                if(isNotEmpty(mockServiceResponse.getPassword()) || isNotEmpty(mockServiceResponse.getUserName())){
+                    BasicAuthCredentials credentials = new BasicAuthCredentials();
+                    credentials.setPassword(mockServiceResponse.getPassword());
+                    credentials.setUsername(mockServiceResponse.getUserName());
+                    mockDefinition.getRequest().setBasicAuthCredentials(credentials);
+                }
+                if(isNotEmpty(mockServiceResponse.getPathFilter())) {
+                    MatchesXPath matchesXPath = new MatchesXPath();
+                    matchesXPath.setMatchesXPath(mockServiceResponse.getPathFilter());
+                    mockDefinition.getRequest().setBodyPatterns(Collections.singletonList(matchesXPath));
+                }
+
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
                 mockDefinition.getResponse().setHeaders(new HashMap<>());

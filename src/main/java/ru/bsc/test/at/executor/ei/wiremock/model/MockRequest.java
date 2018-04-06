@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,5 +16,7 @@ import java.util.Map;
 public class MockRequest {
     private String method;
     private String url;
+    private BasicAuthCredentials basicAuthCredentials;
     private Map<String, Map<String, String>> headers = new HashMap<>();
+    private List<MatchesXPath> bodyPatterns;
 }
