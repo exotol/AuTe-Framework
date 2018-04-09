@@ -12,6 +12,8 @@ import org.xml.sax.SAXException;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.BasicAuthCredentials;
+import ru.bsc.test.at.executor.ei.wiremock.model.MatchesXPath;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
 import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
@@ -46,6 +48,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +62,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public abstract class AbstractStepExecutor implements IStepExecutor {
 
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
+    private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
     void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables) throws Exception {
         if (step.getMqName() != null && step.getMqMessage() != null) {
@@ -129,12 +133,27 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
             for (MockServiceResponse mockServiceResponse : responseList) {
                 MockDefinition mockDefinition = new MockDefinition(priority--, project.getTestIdHeaderName(), testId);
                 mockDefinition.getRequest().setUrl(mockServiceResponse.getServiceUrl());
-                mockDefinition.getRequest().setMethod("POST"); // SOAP always POST
+                // SOAP always POST
+                mockDefinition.getRequest().setMethod("POST");
+                if(isNotEmpty(mockServiceResponse.getPassword()) || isNotEmpty(mockServiceResponse.getUserName())){
+                    BasicAuthCredentials credentials = new BasicAuthCredentials();
+                    credentials.setPassword(mockServiceResponse.getPassword());
+                    credentials.setUsername(mockServiceResponse.getUserName());
+                    mockDefinition.getRequest().setBasicAuthCredentials(credentials);
+                }
+                if(isNotEmpty(mockServiceResponse.getPathFilter())) {
+                    MatchesXPath matchesXPath = new MatchesXPath();
+                    matchesXPath.setMatchesXPath(mockServiceResponse.getPathFilter());
+                    mockDefinition.getRequest().setBodyPatterns(Collections.singletonList(matchesXPath));
+                }
+
                 mockDefinition.getResponse().setBody(mockServiceResponse.getResponseBody());
                 mockDefinition.getResponse().setStatus(mockServiceResponse.getHttpStatus());
-                mockDefinition.getResponse().setHeaders(new HashMap<String, String>() {{
-                    put("Content-Type", "text/xml");
-                }});
+                mockDefinition.getResponse().setHeaders(new HashMap<>());
+                String contentType = StringUtils.isNoneBlank(mockServiceResponse.getContentType()) ?
+                        mockServiceResponse.getContentType() :
+                        DEFAULT_CONTENT_TYPE;
+                mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
                 wireMockAdmin.addMapping(mockDefinition);
             }
@@ -221,7 +240,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         return template;
     }
 
-    String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+    public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
         String result = template;
         if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
@@ -340,7 +359,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void setMqMockResponses(MqMockerAdmin mqMockerAdmin, String testId, List<MqMockResponse> mqMockResponseList) throws Exception {
+    void setMqMockResponses(MqMockerAdmin mqMockerAdmin, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
         if (mqMockResponseList != null) {
             if (mqMockerAdmin == null) {
                 throw new Exception("MqMockerAdmin is not configured in env.yml");
@@ -348,7 +367,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
             for (MqMockResponse mqMockResponse : mqMockResponseList) {
                 MqMockDefinition mockMessage = new MqMockDefinition();
                 mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
-                mockMessage.setResponseBody(mqMockResponse.getResponseBody());
+                mockMessage.setResponseBody(evaluateExpressions(mqMockResponse.getResponseBody(), scenarioVariables, null));
                 mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
                 mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
                 mockMessage.setTestId(testId);

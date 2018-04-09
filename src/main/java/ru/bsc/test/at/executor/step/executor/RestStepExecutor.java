@@ -38,7 +38,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 0.1 Установить ответы для имитации внешних сервисов, работающих через очереди сообщений
-        setMqMockResponses(mqMockerAdmin, testId, step.getMqMockResponseList());
+        setMqMockResponses(mqMockerAdmin, testId, step.getMqMockResponseList(), scenarioVariables);
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, scenarioVariables);
