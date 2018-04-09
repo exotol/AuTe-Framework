@@ -2676,9 +2676,13 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
         var rowNum = 0;
         var prevRowNum = 0;
         var insertText = '';
+        var pattern_amp = /&/g;
+        var pattern_lt = /</g;
+        var pattern_gt = />/g;
         for (var x = 0; x < diffs.length; x++) {
             var op = diffs[x].operation; // Operation (insert, delete, equal)
             var text = diffs[x].text;
+            text = text.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;').replace(pattern_gt, '&gt;');
             switch (op) {
                 case 'INSERT':
                     {
