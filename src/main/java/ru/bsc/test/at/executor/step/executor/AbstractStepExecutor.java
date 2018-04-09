@@ -24,7 +24,7 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.SqlData;
 import ru.bsc.test.at.executor.model.SqlResultType;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.mq.IMqManager;
+import ru.bsc.test.at.executor.mq.AbstractMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
@@ -65,15 +65,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
             }
-            try(IMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService())) {
-
-                mqManager.setHost(project.getAmqpBroker().getHost());
-                mqManager.setPort(project.getAmqpBroker().getPort());
-                mqManager.setUsername(project.getAmqpBroker().getUsername());
-                mqManager.setPassword(project.getAmqpBroker().getPassword());
-
-                mqManager.connect();
-
+            try(AbstractMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService(), project.getAmqpBroker().getHost(), project.getAmqpBroker().getPort(), project.getAmqpBroker().getUsername(), project.getAmqpBroker().getPassword())) {
                 String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
                 mqManager.sendTextMessage(step.getMqName(), message);
             }

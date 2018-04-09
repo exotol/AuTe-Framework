@@ -12,6 +12,8 @@ import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.model.StepStatus;
 
+import javax.jms.Message;
+import javax.jms.TextMessage;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.sql.Connection;
@@ -58,11 +60,16 @@ public class MqStepExecutor extends AbstractStepExecutor {
                 retryCounter++;
 
                 // 3. Выполнить запрос
-                // TODO
                 mqClient.sendMessage(step.getMqOutputQueueName(), step.getMqOutputQueueBody());
-                Thread.sleep(Math.min(step.getMqTimeoutMs(), 60000L));
-                responseContent = "response TODO";
-                sendMessageToQuery(project, step, scenarioVariables);
+
+                long calculatedSleep = Long.parseLong(evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
+                Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L));
+
+                if (message instanceof TextMessage) {
+                    responseContent = ((TextMessage) message).getText();
+                } else {
+                    throw new Exception("Received message is not TextMessage instance");
+                }
 
 
                 // Выполнить скрипт

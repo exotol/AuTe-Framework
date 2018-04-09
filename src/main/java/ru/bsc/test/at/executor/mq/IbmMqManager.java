@@ -8,61 +8,23 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 @Slf4j
-public class IbmMqManager implements IMqManager {
-
-    private QueueConnectionFactory connectionFactory;
+public class IbmMqManager extends AbstractMqManager {
 
     private QueueConnection connection;
 
-    private String username;
-    private String password;
-    private String host;
-    private int port;
-
-    @Override
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    @Override
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    @Override
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public void connect() throws Exception {
+    IbmMqManager(String host, int port, String username, String password) throws JMSException, ReflectiveOperationException {
+        ConnectionFactory connectionFactory = fillConnectionFactory(host, port);
         connection = (QueueConnection) connectionFactory.createConnection(username, password);
-
-
         connection.start();
     }
 
     @Override
-    public void sendTextMessage(String queueName, String message) throws Exception {
-        QueueSession session = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Queue queue = session.createQueue(queueName);
-        QueueSender sender = session.createSender(queue);
-        Message msg = session.createTextMessage(message);
-
-        fillConnectionFactory();
-
-        sender.send(msg);
-
-        sender.close();
-        session.close();
+    Connection getConnection() {
+        return connection;
     }
 
-    private void fillConnectionFactory() throws ReflectiveOperationException {
+    private ConnectionFactory fillConnectionFactory(String host, int port) throws ReflectiveOperationException {
+        ConnectionFactory connectionFactory;
         try {
             connectionFactory = (QueueConnectionFactory) Class.forName("com.ibm.mq.jms.MQQueueConnectionFactory").newInstance();
         } catch (ClassNotFoundException e) {
@@ -72,6 +34,8 @@ public class IbmMqManager implements IMqManager {
         invoke(connectionFactory, "setHostName", host);
         invoke(connectionFactory, "setPort", port);
         invoke(connectionFactory, "setTransportType", 1);
+
+        return connectionFactory;
     }
 
     private void invoke(Object obj, String methodName, Object val) throws ReflectiveOperationException {

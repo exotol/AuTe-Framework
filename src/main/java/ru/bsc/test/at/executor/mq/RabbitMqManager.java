@@ -1,57 +1,38 @@
 package ru.bsc.test.at.executor.mq;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.jms.admin.RMQConnectionFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
 import java.io.IOException;
 
-class RabbitMqManager implements IMqManager {
+@Slf4j
+class RabbitMqManager extends AbstractMqManager {
 
-    private final ConnectionFactory connectionFactory = new ConnectionFactory();
-    // TODO: Сделать final
-    private Connection connection;
+    private final Connection connection;
 
-    public void setHost(String host) {
-        connectionFactory.setHost(host);
-    }
-
-    public void setPort(int port) {
-        connectionFactory.setPort(port);
-    }
-
-    public void setUsername(String username) {
-        connectionFactory.setUsername(username);
-    }
-
-    public void setPassword(String password) {
-        connectionFactory.setPassword(password);
+    RabbitMqManager(String host, int port, String username, String password) throws JMSException {
+        RMQConnectionFactory cf = new RMQConnectionFactory();
+        cf.setHost(host);
+        cf.setPort(port);
+        cf.setUsername(username);
+        cf.setPassword(password);
+        connection = cf.createConnection();
+        connection.start();
     }
 
     @Override
-    public void connect() throws Exception {
-        connection = connectionFactory.newConnection();
-    }
-
-    public void sendTextMessage(String queueName, String message) throws Exception {
-        Channel channel = connection.createChannel();
-        channel.basicPublish("", queueName, null, message.getBytes());
-
-        channel.close();
-    }
-
-
-
-    @Override
-    public void waitMessage(String queueName, Long timeoutMs) {
-
-        Channel channelFrom = connection.createChannel();
-
-        String consumerTag = channelFrom.basicConsume();
+    Connection getConnection() {
+        return connection;
     }
 
     @Override
     public void close() throws IOException {
-        connection.close();
+        try {
+            connection.close();
+        } catch (JMSException e) {
+            log.error("{}", e);
+        }
     }
 }
