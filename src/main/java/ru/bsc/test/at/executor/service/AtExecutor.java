@@ -485,16 +485,18 @@ public class AtExecutor {
             String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
 
             List<NameValueProperty> generatedProperties = new LinkedList<>();
-            step.getMqPropertyList().forEach(nameValueProperty -> {
-                NameValueProperty pair = new NameValueProperty();
-                pair.setName(nameValueProperty.getName());
-                try {
-                    pair.setValue(evaluateExpressions(insertSavedValues(nameValueProperty.getValue(), scenarioVariables), scenarioVariables, null));
-                } catch (ScriptException e) {
-                    log.error("{}", e);
-                }
-                generatedProperties.add(pair);
-            });
+            if (step.getMqPropertyList() != null) {
+                step.getMqPropertyList().forEach(nameValueProperty -> {
+                    NameValueProperty pair = new NameValueProperty();
+                    pair.setName(nameValueProperty.getName());
+                    try {
+                        pair.setValue(evaluateExpressions(insertSavedValues(nameValueProperty.getValue(), scenarioVariables), scenarioVariables, null));
+                    } catch (ScriptException e) {
+                        log.error("{}", e);
+                    }
+                    generatedProperties.add(pair);
+                });
+            }
             mqManager.sendTextMessage(step.getMqName(), message, generatedProperties);
         }
     }
