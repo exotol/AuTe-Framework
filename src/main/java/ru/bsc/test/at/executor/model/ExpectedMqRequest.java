@@ -10,6 +10,7 @@ public class ExpectedMqRequest implements CodeAccessible{
     private String sourceQueue;
     private String requestBody;
     private String ignoredTags;
+    private String count;
 
     public ExpectedMqRequest copy() {
         ExpectedMqRequest expectedMqRequest = new ExpectedMqRequest();

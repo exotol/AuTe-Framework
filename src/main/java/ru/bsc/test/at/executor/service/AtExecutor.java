@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.*;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.HttpClient;
 import ru.bsc.test.at.executor.helper.MqClient;
@@ -151,6 +152,20 @@ public class AtExecutor {
                 .filter(scenario -> scenarioGroupCode == null || Objects.equals(scenarioGroupCode, scenario.getScenarioGroup()))
                 .findAny()
                 .orElse(null);
+    }
+
+    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+        long result;
+        try {
+            result = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            try {
+                result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
+            } catch (NumberFormatException ex) {
+                result = defaultValue;
+            }
+        }
+        return result;
     }
 
     private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {

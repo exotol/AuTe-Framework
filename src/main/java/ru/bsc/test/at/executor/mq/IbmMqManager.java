@@ -2,10 +2,15 @@ package ru.bsc.test.at.executor.mq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
+import ru.bsc.test.at.executor.model.NameValueProperty;
 
 import javax.jms.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Slf4j
 public class IbmMqManager extends AbstractMqManager {

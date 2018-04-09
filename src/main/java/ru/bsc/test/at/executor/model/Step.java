@@ -36,6 +36,7 @@ public class Step implements Serializable, AbstractModel {
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
+    private List<NameValueProperty> mqPropertyList = new LinkedList<>();
     private Boolean multipartFormData;
     private List<FormData> formDataList = new LinkedList<>();
     private String jsonCompareMode = "NON_EXTENSIBLE";
@@ -91,6 +92,9 @@ public class Step implements Serializable, AbstractModel {
         }
         for (FormData formData : getFormDataList()) {
             step.getFormDataList().add(formData.copy());
+        }
+        for (NameValueProperty property : getMqPropertyList()) {
+            step.getMqPropertyList().add(property.copy());
         }
         for (SqlData sqlData : getSqlDataList()) {
             step.getSqlDataList().add(sqlData.copy());

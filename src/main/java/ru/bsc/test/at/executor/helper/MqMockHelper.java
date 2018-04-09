@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.helper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xmlunit.builder.DiffBuilder;
@@ -10,7 +11,9 @@ import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedMqRequest;
 import ru.bsc.test.at.executor.model.ScenarioVariableFromMqRequest;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.AtExecutor;
 
+import javax.script.ScriptException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -18,24 +21,38 @@ import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MqMockHelper {
-
 
     public void assertMqRequests(MqMockerAdmin mqMockerAdmin, String testId, Step step, Map<String, Object> scenarioVariables, Integer mqCheckCount, Long mqCheckInterval) throws Exception {
         if (mqMockerAdmin == null) {
             return;
         }
 
-        List<ExpectedMqRequest> expectedMqRequestList = step.getExpectedMqRequestList();
-        if (expectedMqRequestList == null || expectedMqRequestList.isEmpty()) {
+        if (step.getExpectedMqRequestList() == null || step.getExpectedMqRequestList().isEmpty()) {
             return;
         }
+
+        List<ExpectedMqRequest> expectedMqRequestList = new LinkedList<>();
+        step.getExpectedMqRequestList().forEach(expectedMqRequest -> {
+
+            long count = 0;
+            try {
+                count = AtExecutor.parseLongOrVariable(scenarioVariables, AtExecutor.evaluateExpressions(expectedMqRequest.getCount(), scenarioVariables, null), 1);
+            } catch (ScriptException e) {
+                log.error("{}", e);
+            }
+            for (int i = 0; i < count; i++) {
+                expectedMqRequestList.add(expectedMqRequest);
+            }
+        });
 
         List<MockedRequest> actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
 
@@ -81,7 +98,7 @@ public class MqMockHelper {
                 actualMqRequestList.remove(actualRequest);
 
                 compareRequest(
-                        expectedMqRequest.getRequestBody(),
+                        AtExecutor.evaluateExpressions(AtExecutor.insertSavedValues(expectedMqRequest.getRequestBody(), scenarioVariables), scenarioVariables, null),
                         actualRequest.getRequestBody(),
                         expectedMqRequest.getIgnoredTags() != null ?
                                 new HashSet<>(Arrays.stream(expectedMqRequest.getIgnoredTags()
@@ -90,7 +107,7 @@ public class MqMockHelper {
                                         .collect(Collectors.toList())) : null
                 );
             } else {
-                throw new Exception(String.format("Service %s is not called", expectedMqRequest.getSourceQueue()));
+                throw new Exception(String.format("Queue %s is not called", expectedMqRequest.getSourceQueue()));
             }
         }
     }
