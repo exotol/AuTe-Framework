@@ -37,18 +37,24 @@ public abstract class BaseYamlRepository {
 
     protected void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
         File scenarioRootDirectory = scenarioFile.getParentFile();
+        Scenario savedScenario = loadScenarioFromFiles(scenarioRootDirectory, scenario.getScenarioGroup(), true);
+
         int i = 1;
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
         Map<Step, String> codeCorrections = new HashMap<>();
+        List<Step> stepsForeNewCodes = findStepsForNewCodes(savedScenario, scenario);
+
         for (Step step : scenario.getStepList()) {
-            if (step.getCode() != null) {
-                 codeSet.remove(step.getCode());
+            if(stepsForeNewCodes.contains(step)) {
+                if (step.getCode() != null) {
+                    codeSet.remove(step.getCode());
+                }
+                String newCode = generateStepCode(step, i, codeSet);
+                codeSet.add(newCode);
+                String oldCode = step.getCode();
+                step.setCode(newCode);
+                codeCorrections.put(step, oldCode);
             }
-            String newCode = generateStepCode(step, i, codeSet);
-            codeSet.add(newCode);
-            String oldCode = step.getCode();
-            step.setCode(newCode);
-            codeCorrections.put(step, oldCode);
             i++;
         }
 
@@ -59,6 +65,30 @@ public abstract class BaseYamlRepository {
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
         scenario.setScenarioGroup(scenarioGroupSaved);
+    }
+
+    private List<Step> findStepsForNewCodes(Scenario savedScenario, Scenario scenario){
+        Map<String, Step> savedScenarioCodeMap = new HashMap<>();
+        for(Step step : savedScenario.getStepList()){
+            savedScenarioCodeMap.put(step.getCode(), step);
+        }
+
+        List<Step> stepsForNewCodes = new ArrayList<>();
+        for(Step step : scenario.getStepList()){
+            if(step.getCode() == null){
+                stepsForNewCodes.add(step);
+            }else {
+                Step savedStep = savedScenarioCodeMap.get(step.getCode());
+                if(savedStep == null){
+                    stepsForNewCodes.add(step);
+                }else{
+                    if(!Objects.equals(step.getStepComment(), savedStep.getStepComment())){
+                        stepsForNewCodes.add(step);
+                    }
+                }
+            }
+        }
+        return stepsForNewCodes;
     }
 
     protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
@@ -346,5 +376,19 @@ public abstract class BaseYamlRepository {
         }
         return "expected-service-request-" + expectedServiceRequest.getCode() + "." + FileExtensionsUtils.extensionByContent(
                 expectedServiceRequest.getExpectedServiceRequest());
+    }
+
+    protected Scenario loadScenarioFromFiles(File scenarioDirectory, String group, boolean fetchSteps) throws IOException {
+        File scenarioFile = new File(scenarioDirectory, SCENARIO_YML_FILENAME);
+        Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
+        scenario.setCode(scenarioFile.getParentFile().getName());
+        scenario.setScenarioGroup(group);
+        File scenarioRootDirectory = scenarioFile.getParentFile();
+        if (fetchSteps) {
+            scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
+        } else {
+            scenario.getStepList().clear();
+        }
+        return scenario;
     }
 }
