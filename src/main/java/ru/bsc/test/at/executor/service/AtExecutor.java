@@ -157,7 +157,7 @@ public class AtExecutor {
                 .orElse(null);
     }
 
-    private long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
         long result;
         try {
             result = Integer.parseInt(value);
