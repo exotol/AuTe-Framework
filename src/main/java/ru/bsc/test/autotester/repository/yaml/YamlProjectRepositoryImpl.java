@@ -10,7 +10,6 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.autotester.component.Translator;
-import ru.bsc.test.autotester.exception.ProjectSavingException;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.repository.ProjectRepository;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 27.10.2017.
@@ -107,9 +107,25 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         Path path = Paths.get(environmentProperties.getProjectsDirectoryPath(), project.getCode(), MAIN_YML_FILENAME);
         try {
             clearProjectBeforeSave(project);
+            removeGroups(project);
             YamlUtils.dumpToFile(project, path.toString());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Save file {}", path, e);
+        }
+    }
+
+    private void removeGroups(Project project) throws Exception{
+        Set<String> readGroups = readGroupsOnly(project);
+        Set<String> groupSet = new HashSet<>(project.getGroupList());
+        List<String> removed = readGroups.stream().filter(group -> !groupSet.contains(group)).collect(Collectors.toList());
+        for(String group : removed){
+            FileUtils.deleteDirectory(Paths.get(
+                    environmentProperties.getProjectsDirectoryPath(),
+                    project.getCode(),
+                    "scenarios",
+                    group).toFile());
+            project.getGroupList().remove(group);
+
         }
     }
 
@@ -263,6 +279,25 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         List<String> groupList = new ArrayList<>(groupSet);
         Collections.sort(groupList);
         project.setGroupList(groupList);
+    }
+
+    private Set<String> readGroupsOnly(Project project) {
+        Set<String> groupSet = new HashSet<>();
+        File file = Paths.get(
+                environmentProperties.getProjectsDirectoryPath(),
+                project.getCode(),
+                "scenarios"
+        ).toFile();
+        File[] fileList = file.listFiles(File::isDirectory);
+        if (fileList != null) {
+            for (File directory : fileList) {
+                File scenarioYml = new File(directory, SCENARIO_YML_FILENAME);
+                if (!scenarioYml.exists()) {
+                    groupSet.add(directory.getName());
+                }
+            }
+        }
+        return groupSet;
     }
 
     private Scenario loadScenarioFromFiles(File scenarioDirectory, String group) throws IOException {
