@@ -45,4 +45,10 @@ export class Step {
   sqlDataList: SqlData[];
   scenarioVariableFromMqRequestList: ScenarioVariableFromMqRequest[];
   stepMode: string;
+
+  mqOutputQueueName: string;
+  mqOutputQueueBody: string;
+  mqInputQueueName: string;
+  mqInputQueueExpectedBody: string;
+  mqTimeoutMs: string;
 }
