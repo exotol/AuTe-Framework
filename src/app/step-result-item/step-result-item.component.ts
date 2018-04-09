@@ -58,10 +58,15 @@ export class StepResultItemComponent implements OnInit {
     let prevRowNum = 0;
     let insertText = '';
 
+    let pattern_amp = /&/g;
+    let pattern_lt = /</g;
+    let pattern_gt = />/g;
+
 
     for (let x = 0; x < diffs.length; x++) {
       let op = diffs[x].operation;    // Operation (insert, delete, equal)
       let text = diffs[x].text;
+      text = text.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;').replace(pattern_gt, '&gt;');
       switch (op) {
         case 'INSERT':
         {
