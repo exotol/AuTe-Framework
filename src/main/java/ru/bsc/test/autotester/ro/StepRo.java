@@ -38,6 +38,7 @@ public class StepRo implements AbstractRo {
     private String mqName;
     private String mqMessage;
     private String mqMessageFile;
+    private List<NameValuePropertyRo> mqPropertyList;
     private String responseCompareMode;
     private List<FormDataRo> formDataList;
     private List<SQLDataRo> sqlDataList;

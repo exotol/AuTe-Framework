@@ -139,5 +139,6 @@
   "Number of repetitions": "Количество повторений",
   "JSON compare mode": "Режим сравнения JSON",
   "Empty scenario name": "Пустое имя сценария",
-  "Directory already exists": "Директория с таким именем уже существует"
+  "Directory already exists": "Директория с таким именем уже существует",
+  "XPath filter": "XPath фильтр"
 }

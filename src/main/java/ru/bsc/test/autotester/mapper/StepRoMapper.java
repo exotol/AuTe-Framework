@@ -57,6 +57,7 @@ public abstract class StepRoMapper {
             @Mapping(target = "sql", source = "sql"),
             @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
             @Mapping(target = "scenarioVariableFromMqRequestList", source = "scenarioVariableFromMqRequestList"),
+            @Mapping(target = "mqPropertyList", source = "mqPropertyList"),
 
             @Mapping(target = "stepMode", source = "stepMode"),
             @Mapping(target = "mqOutputQueueName", source = "mqOutputQueueName"),
@@ -167,7 +168,10 @@ public abstract class StepRoMapper {
             @Mapping(target = "serviceUrl", source = "serviceUrl"),
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "httpStatus", source = "httpStatus"),
-            @Mapping(target = "contentType", source = "contentType")
+            @Mapping(target = "contentType", source = "contentType"),
+            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "userName", source = "userName"),
+            @Mapping(target = "pathFilter", source = "pathFilter")
     })
     abstract MockServiceResponseRo mockServiceResponseToMockServiceResponseRo(MockServiceResponse mockServiceResponse);
 
@@ -177,7 +181,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "responseBody", source = "responseBody"),
             @Mapping(target = "responseBodyFile", ignore = true),
             @Mapping(target = "httpStatus", source = "httpStatus"),
-            @Mapping(target = "contentType", source = "contentType")
+            @Mapping(target = "contentType", source = "contentType"),
+            @Mapping(target = "pathFilter", source = "pathFilter")
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo);
 
