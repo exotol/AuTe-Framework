@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.mq;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.jms.Connection;
@@ -12,12 +13,14 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import java.io.Closeable;
+import java.util.Map;
 
+@Slf4j
 abstract public class AbstractMqManager implements Closeable {
 
     abstract Connection getConnection();
 
-    public void sendTextMessage(String queueName, String message, String testIdHeaderName, String testId) throws Exception {
+    public void sendTextMessage(String queueName, String message, Map<String, Object> properties, String testIdHeaderName, String testId) throws Exception {
         Session session = getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Queue destination = session.createQueue(queueName);
@@ -27,6 +30,18 @@ abstract public class AbstractMqManager implements Closeable {
         TextMessage newMessage = session.createTextMessage(message);
         if (StringUtils.isNotEmpty(testIdHeaderName) && StringUtils.isNotEmpty(testId)) {
             newMessage.setStringProperty(testIdHeaderName, testId);
+        }
+
+        if (properties != null) {
+            properties.forEach((key, value) -> {
+                try {
+                    if (StringUtils.isNotEmpty(key) && value != null) {
+                        newMessage.setObjectProperty(key, value);
+                    }
+                } catch (JMSException e) {
+                    log.error("Set JMS object property error: {}", e);
+                }
+            });
         }
 
         producer.send(newMessage);

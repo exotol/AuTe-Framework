@@ -34,7 +34,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step, scenarioVariables, project.getTestIdHeaderName(), testId);
+        sendMessageToQuery(project, step, scenarioVariables, mqClient, project.getTestIdHeaderName(), testId);
 
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), scenarioVariables);
@@ -60,7 +60,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
                 retryCounter++;
 
                 // 3. Выполнить запрос
-                mqClient.sendMessage(step.getMqOutputQueueName(), requestBody, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
+                mqClient.sendMessage(step.getMqOutputQueueName(), requestBody, null, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
 
                 long calculatedSleep = parseLongOrVariable(scenarioVariables, evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
                 Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);

@@ -7,6 +7,7 @@ import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import javax.jms.Message;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Map;
 
 public class MqClient implements Closeable {
 
@@ -22,8 +23,8 @@ public class MqClient implements Closeable {
         );
     }
 
-    public void sendMessage(String queueName, String messageBody, String testIdHeaderName, String testId) throws Exception {
-        mqManager.sendTextMessage(queueName, messageBody, testIdHeaderName, testId);
+    public void sendMessage(String queueName, String messageBody, Map<String, Object> properties, String testIdHeaderName, String testId) throws Exception {
+        mqManager.sendTextMessage(queueName, messageBody, properties, testIdHeaderName, testId);
     }
 
     public Message waitMessage(String queueName, Long timeout, String testIdHeaderName, String testId) throws Exception {

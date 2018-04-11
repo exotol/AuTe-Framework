@@ -1,25 +1,11 @@
 package ru.bsc.test.at.executor.mq;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-import lombok.extern.slf4j.Slf4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import ru.bsc.test.at.executor.model.NameValueProperty;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Slf4j
 class ActiveMqManager extends AbstractMqManager {

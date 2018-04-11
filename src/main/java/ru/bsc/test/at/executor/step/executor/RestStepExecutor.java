@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.step.executor;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+@Slf4j
 public class RestStepExecutor extends AbstractStepExecutor {
 
     private final static int POLLING_RETRY_COUNT = 50;
@@ -32,6 +34,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
     @Override
     public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
+        log.debug("Executing test step {} {} {} {}", stand, scenarioVariables, testId, project, step);
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 0. Установить ответы сервисов, которые будут использоваться в WireMock для определения ответа
@@ -45,7 +48,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step, scenarioVariables, project.getTestIdHeaderName(), testId);
+        sendMessageToQuery(project, step, scenarioVariables, mqClient, project.getTestIdHeaderName(), testId);
 
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), scenarioVariables);
@@ -67,6 +70,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
         stepResult.setRequestDataList(new LinkedList<>());
         for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
+            log.debug("Polling repetitionCounter={} numberRepetitions={}", repetitionCounter, numberRepetitions);
 
             // Polling
             int retryCounter = 0;
@@ -79,6 +83,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
                 retryCounter++;
                 // 3. Выполнить запрос
+                log.debug("Executing http request");
                 if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
                     responseData = httpClient.request(
                             step.getRequestMethod(),
@@ -119,6 +124,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
                 requestData.setResponseBody(responseData.getContent());
 
                 // Выполнить скрипт
+                log.debug("Executing script {}", step.getScript());
                 if (isNotEmpty(step.getScript())) {
                     ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                     scriptEngine.put("stepStatus", new StepStatus());
@@ -144,6 +150,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
             stepResult.setExpected(step.getExpectedResponse());
 
             // 4. Сохранить полученные значения
+            log.debug("Saving scenario variables by JSON XPath");
             saveValuesByJsonXPath(step, responseData.getContent(), scenarioVariables);
 
             stepResult.setSavedParameters(scenarioVariables.toString());
@@ -163,6 +170,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
                         sb.append("\nSaved value ").append(entry.getKey()).append(" = ").append(valueActual).append(". Expected: ").append(valueExpected);
                     }
                 }
+                log.debug("Test step body {}", sb);
                 if (sb.length() > 0) {
                     throw new Exception(sb.toString());
                 }
@@ -176,6 +184,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
             // 6. Проверить код статуса ответа
             Integer expectedStatusCode = step.getExpectedStatusCode();
+            log.debug("Expected status is {} and actual status is {}", expectedStatusCode, responseData.getStatusCode());
             if ((expectedStatusCode != null) && (expectedStatusCode != responseData.getStatusCode())) {
                 throw new Exception(String.format(
                         "Expected status code: %d. Actual status code: %d",
@@ -188,6 +197,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в REST-заглушку.
+        log.debug("Read REST mock data");
         parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
     }
 

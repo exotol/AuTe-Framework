@@ -1,10 +1,7 @@
 package ru.bsc.test.at.executor.mq;
 
-import com.rabbitmq.client.AMQP;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.Slf4j;
-import ru.bsc.test.at.executor.model.NameValueProperty;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;

@@ -18,16 +18,16 @@ import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
 import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
 import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
+import ru.bsc.test.at.executor.helper.MqClient;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.model.MockServiceResponse;
 import ru.bsc.test.at.executor.model.MqMockResponse;
+import ru.bsc.test.at.executor.model.NameValueProperty;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.SqlData;
 import ru.bsc.test.at.executor.model.SqlResultType;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.mq.AbstractMqManager;
-import ru.bsc.test.at.executor.mq.MqManagerFactory;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 
@@ -64,19 +64,33 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
     private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
-    void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables, String testIdHeaderName, String testId) throws Exception {
+    void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables, MqClient mqClient, String testIdHeaderName, String testId) throws Exception {
+        log.debug("Send message to query {} {} {}", project, step, scenarioVariables);
         if (step.getMqName() != null && step.getMqMessage() != null) {
-            if (project.getAmqpBroker() == null) {
-                throw new Exception("AMQP broker is not configured in Project settings.");
+            String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
+
+            Map<String, Object> generatedProperties = new HashMap<>();
+            if (step.getMqPropertyList() != null) {
+                step.getMqPropertyList().forEach(nameValueProperty -> {
+                    NameValueProperty pair = new NameValueProperty();
+                    pair.setName(nameValueProperty.getName());
+                    try {
+                        generatedProperties.put(
+                                nameValueProperty.getName(),
+                                evaluateExpressions(insertSavedValues(nameValueProperty.getValue(), scenarioVariables), scenarioVariables, null)
+                        );
+                    } catch (ScriptException e) {
+                        log.error("{}", e);
+                    }
+                });
             }
-            try(AbstractMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService(), project.getAmqpBroker().getHost(), project.getAmqpBroker().getPort(), project.getAmqpBroker().getUsername(), project.getAmqpBroker().getPassword())) {
-                String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-                mqManager.sendTextMessage(step.getMqName(), message, testIdHeaderName, testId);
-            }
+
+            mqClient.sendMessage(step.getMqName(), message, generatedProperties, testIdHeaderName, testId);
         }
     }
 
     void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        log.debug("Parse mock requests {} {} {} {}", project, step, scenarioVariables, testId);
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
             mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
@@ -101,6 +115,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     private void JSONComparing(String expectedResponse, String responseContent, String jsonCompareMode) throws Exception {
+        log.debug("Json comparing {} {} {}", expectedResponse, responseContent, jsonCompareMode);
         if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseContent)) &&
                 (!responseContent.equals(expectedResponse))) {
             try {
@@ -116,6 +131,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     void saveValuesByJsonXPath(Step step, String responseContent, Map<String, Object> scenarioVariables) {
+        log.debug("Save values by json xpath {} {} {}", step, responseContent, scenarioVariables);
         if (isNotEmpty(responseContent) && isNotEmpty(step.getJsonXPath())) {
             String[] lines = step.getJsonXPath().split("\\r?\\n");
             for (String line : lines) {
@@ -128,6 +144,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     void setMockResponses(WireMockAdmin wireMockAdmin, Project project, String testId, List<MockServiceResponse> responseList) throws IOException {
+        log.debug("Setting REST-mock responses {} {} {} {}", wireMockAdmin, project, testId, responseList);
         Long priority = 0L;
         if (responseList != null && wireMockAdmin != null) {
             for (MockServiceResponse mockServiceResponse : responseList) {
@@ -161,6 +178,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     boolean tryUsePolling(Step step, String responseContent) throws InterruptedException {
+        log.debug("trying use polling {} {}", step, responseContent);
         if (!step.getUsePolling()) {
             return false;
         }
@@ -176,10 +194,12 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         if (retry) {
             Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
         }
+        log.debug("trying use polling? Is - {}", retry);
         return retry;
     }
 
     void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
+        log.debug("executing sql {}, {}", step, scenarioVariables);
         if (!step.getSqlDataList().isEmpty() && connection != null) {
             for (SqlData sqlData : step.getSqlDataList()) {
                 if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
@@ -190,17 +210,20 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                             statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                         }
                         try (ResultSet rs = statement.executeQuery()) {
+                            log.debug("Executing query {}", sqlData);
                             Object result;
                             if (sqlResultType == SqlResultType.OBJECT) {
+                                log.debug("Reading Object from result set ...");
                                 result = rs.next() ? rs.getObject(1) : null;
                             } else if (sqlResultType == SqlResultType.LIST) {
-
+                                log.debug("Reading List from result set ...");
                                 List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
                                 result = columnData;
                             } else {
+                                log.debug("Reading custom result set ...");
                                 List<String> columnNameList = new LinkedList<>();
                                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                                     columnNameList.add(rs.getMetaData().getColumnName(i));
@@ -224,31 +247,37 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     public static String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
+        log.debug("insert saved values {}, {}", template, scenarioVariables);
         if (template != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
                 template = template.replaceAll(key, Matcher.quoteReplacement(value.getValue() == null ? "" : String.valueOf(value.getValue())));
             }
         }
+        log.debug("insert saved values result {}", template);
         return template;
     }
 
     String insertSavedValuesToURL(String template, Map<String, Object> scenarioVariables) throws UnsupportedEncodingException {
+        log.debug("insert saved values to URL {}, {}", template, scenarioVariables);
         if (template != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
                 String key = String.format("%%%s%%", value.getKey());
                 template = template.replaceAll(key, Matcher.quoteReplacement(URLEncoder.encode(value.getValue() == null ? "" : String.valueOf(value.getValue()), "UTF-8")));
             }
         }
+        log.debug("insert saved values to URL result {}", template);
         return template;
     }
 
     public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+        log.debug("evaluate expressions {}, {} {}", template, scenarioVariables, responseData);
         String result = template;
         if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
             Matcher m = p.matcher(result);
             while (m.find()) {
+                log.debug("regexp matches {}", p.pattern());
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine scriptEngine = manager.getEngineByName("js");
                 scriptEngine.put("scenarioVariables", scenarioVariables);
@@ -258,8 +287,10 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                         "<f>" + m.group(1) + "</f>",
                         Matcher.quoteReplacement(String.valueOf(evalResult))
                 );
+                log.debug("evaluating result {}", result);
             }
         }
+        log.debug("evaluate expressions result {}", responseData);
         return result;
     }
 
@@ -326,6 +357,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         if (step.getResponseCompareMode() == null) {
             jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
         } else {
+            log.debug("Response compare mode {}, ", step.getResponseCompareMode());
             switch (step.getResponseCompareMode()) {
                 case FULL_MATCH:
                     if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
@@ -363,6 +395,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     void setMqMockResponses(MqMockerAdmin mqMockerAdmin, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
+        log.debug("Setting MQ mock responses {} {} {} {}", mqMockerAdmin, testId, mqMockResponseList, scenarioVariables);
         if (mqMockResponseList != null) {
             if (mqMockerAdmin == null) {
                 throw new Exception("MqMockerAdmin is not configured in env.yml");
