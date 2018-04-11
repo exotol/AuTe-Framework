@@ -1313,7 +1313,7 @@ var ScenarioListItemComponent = (function () {
     };
     ScenarioListItemComponent.prototype.getMapStyleForScenario = function () {
         if (this.state !== 'executing' && this.state !== 'starting') {
-            if (this.scenario.failed) {
+            if (this.scenario.failed === true) {
                 return 'failedScenario';
             }
             if (this.scenario.failed === false) {
