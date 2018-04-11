@@ -31,4 +31,7 @@
 .pretransparent {
   background-color: transparent;
   border: none;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: inline-block;
 }
