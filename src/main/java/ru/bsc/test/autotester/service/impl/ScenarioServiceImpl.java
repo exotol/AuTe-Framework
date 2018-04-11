@@ -107,7 +107,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                                 boolean success = stepResults
                                         .stream()
                                         .anyMatch(stepResult ->
-                                                StepResult.RESULT_SUCCESS.equals(stepResult.getResult()));
+                                                StepResult.RESULT_OK.equals(stepResult.getResult()));
 
                                 scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
                                 scenarioRepository.saveScenario(
