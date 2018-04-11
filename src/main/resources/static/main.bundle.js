@@ -1244,6 +1244,7 @@ var ScenarioListItemComponent = (function () {
         var _this = this;
         if (this.state !== 'executing') {
             this.executedSteps = 0;
+            this.stepResultList = [];
             // this.totalSteps = 0;
             this.state = 'starting';
             this.stateChanged();
@@ -1263,9 +1264,18 @@ var ScenarioListItemComponent = (function () {
                 .subscribe(function (executionResult) {
                 if (executionResult.scenarioResultList && executionResult.scenarioResultList[0]) {
                     var scenarioResult = executionResult.scenarioResultList[0];
-                    _this.stepResultList = scenarioResult.stepResultList;
-                    _this.scenario.failed = _this.stepResultList != null && _this.stepResultList.filter(function (result) { return result.result === 'Fail'; }).length > 0;
-                    _this.executedSteps = scenarioResult.stepResultList.filter(function (stepResult) { return stepResult.editable; }).length;
+                    var allSteps = scenarioResult.stepResultList;
+                    if (allSteps.length > 0) {
+                        if (_this.stepResultList.length == 0) {
+                            _this.stepResultList.push(allSteps[0]);
+                        }
+                        _this.stepResultList[_this.stepResultList.length - 1] = allSteps[_this.stepResultList.length - 1];
+                        for (var i = _this.stepResultList.length; i < allSteps.length; i++) {
+                            _this.stepResultList.push(allSteps[i]);
+                        }
+                    }
+                    _this.scenario.failed = allSteps != null && allSteps.filter(function (result) { return result.result === 'Fail'; }).length > 0;
+                    _this.executedSteps = allSteps.filter(function (stepResult) { return stepResult.editable; }).length;
                     _this.totalSteps = scenarioResult.totalSteps;
                     if (executionResult.finished) {
                         _this.state = 'finished';
