@@ -60,8 +60,6 @@ public class StepRo implements AbstractRo {
     private String stepMode;
 
     private String mqOutputQueueName;
-    private String mqOutputQueueBody;
     private String mqInputQueueName;
-    private String mqInputQueueExpectedBody;
     private String mqTimeoutMs;
 }
