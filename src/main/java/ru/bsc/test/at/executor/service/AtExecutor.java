@@ -134,7 +134,9 @@ public class AtExecutor {
     }
 
     private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {
+        log.debug("findScenarioByPath {}", path);
         if (path == null) {
+            log.warn("findScenarioByPath: path is null, return null");
             return null;
         }
         String scenarioCode;
@@ -147,17 +149,21 @@ public class AtExecutor {
             scenarioGroupCode = scenarioPathParts[0];
             scenarioCode = scenarioPathParts[1];
         } else {
+            log.warn("findScenarioByPath: NOT FOUND!");
             return null;
         }
 
-        return scenarioList.stream()
+        Scenario result = scenarioList.stream()
                 .filter(scenario -> Objects.equals(scenario.getCode(), scenarioCode))
                 .filter(scenario -> scenarioGroupCode == null || Objects.equals(scenarioGroupCode, scenario.getScenarioGroup()))
                 .findAny()
                 .orElse(null);
+        log.debug("findScenarioByPath result {}", result);
+        return result;
     }
 
-    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+  public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+        log.debug("parseLongOrVariable {}, {}, {}", scenarioVariables, value, defaultValue);
         long result;
         try {
             result = Integer.parseInt(value);
@@ -165,14 +171,20 @@ public class AtExecutor {
             try {
                 result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
             } catch (NumberFormatException ex) {
+                log.warn("parseLongOrVariable: got error! Take the default value", ex);
                 result = defaultValue;
             }
         }
+        log.debug("parseLongOrVariable result {}", result);
         return result;
     }
 
-    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper, Map<String, Object> scenarioVariables, List<StepResult> stepResultList, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpHelper httpHelper,
+                              Map<String, Object> scenarioVariables, List<StepResult> stepResultList,
+                              boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
+        log.debug("executeSteps {}, {}, {}, {}, {}, {}, {}", stand, stepList, project, httpHelper, scenarioVariables, stepResultList, stepEditable);
         if (stepList == null) {
+            log.warn("executeSteps got empty stepList");
             return;
         }
         for (Step step : stepList) {
@@ -208,6 +220,7 @@ public class AtExecutor {
                             MqMockerAdmin mqMockerAdmin = stand != null && isNotEmpty(stand.getMqMockUrl()) ? new MqMockerAdmin(stand.getMqMockUrl() + "/__admin") : null
                     ) {
                         if (stand == null) {
+                            log.error("Stand is not configured");
                             throw new Exception("Stand is not configured.");
                         }
                         String testId = project.getUseRandomTestId() ? UUID.randomUUID().toString() : "-";
@@ -241,8 +254,10 @@ public class AtExecutor {
         }
     }
 
-    private void executeTestStep(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult) throws Exception {
-
+    private void executeTestStep(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection,
+                                 Stand stand, HttpHelper http, Map<String, Object> scenarioVariables, String testId,
+                                 Project project, Step step, StepResult stepResult) throws Exception {
+        log.debug("Executing test step {} {} {} {}", stand, scenarioVariables, testId, project, step);
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 0. Установить ответы сервисов, которые будут использоваться в WireMock для определения ответа
@@ -278,7 +293,7 @@ public class AtExecutor {
 
         stepResult.setRequestDataList(new LinkedList<>());
         for (int repetitionCounter = 0; repetitionCounter < numberRepetitions; repetitionCounter++) {
-
+            log.debug("Polling repetitionCounter={} numberRepetitions={}", repetitionCounter, numberRepetitions);
             // Polling
             int retryCounter = 0;
             boolean retry = false;
@@ -290,6 +305,7 @@ public class AtExecutor {
 
                 retryCounter++;
                 // 3. Выполнить запрос
+                log.debug("Executing http request");
                 if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
                     responseData = http.request(
                             step.getRequestMethod(),
@@ -330,6 +346,7 @@ public class AtExecutor {
                 requestData.setResponseBody(responseData.getContent());
 
                 // Выполнить скрипт
+                log.debug("Executing script {}", step.getScript());
                 if (isNotEmpty(step.getScript())) {
                     ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
                     scriptEngine.put("stepStatus", new StepStatus());
@@ -355,6 +372,7 @@ public class AtExecutor {
             stepResult.setExpected(step.getExpectedResponse());
 
             // 4. Сохранить полученные значения
+            log.debug("Saving values");
             saveValuesByJsonXPath(step, responseData, scenarioVariables);
 
             stepResult.setSavedParameters(scenarioVariables.toString());
@@ -374,6 +392,7 @@ public class AtExecutor {
                         sb.append("\nSaved value ").append(entry.getKey()).append(" = ").append(valueActual).append(". Expected: ").append(valueExpected);
                     }
                 }
+                log.debug("Test step body {}", sb);
                 if (sb.length() > 0) {
                     throw new Exception(sb.toString());
                 }
@@ -387,6 +406,7 @@ public class AtExecutor {
 
             // 6. Проверить код статуса ответа
             Integer expectedStatusCode = step.getExpectedStatusCode();
+            log.debug("Expected status is {} and actual status is {}", expectedStatusCode, responseData.getStatusCode());
             if ((expectedStatusCode != null) && (expectedStatusCode != responseData.getStatusCode())) {
                 throw new Exception(String.format(
                         "Expected status code: %d. Actual status code: %d",
@@ -399,6 +419,7 @@ public class AtExecutor {
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в REST-заглушку.
+        log.debug("Read mock data");
         parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
     }
 
@@ -410,6 +431,7 @@ public class AtExecutor {
         if (step.getResponseCompareMode() == null) {
             jsonComparing(expectedResponse, responseData, step.getJsonCompareMode());
         } else {
+            log.debug("Response compare mode {}, ", step.getResponseCompareMode());
             switch (step.getResponseCompareMode()) {
                 case FULL_MATCH:
                     if (!StringUtils.equals(expectedResponse, responseData.getContent())) {
@@ -428,7 +450,9 @@ public class AtExecutor {
         }
     }
 
-    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables, String testId) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+    private void parseMockRequests(Project project, Step step, WireMockAdmin wireMockAdmin, Map<String, Object> scenarioVariables,
+                                   String testId) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+        log.debug("Parse mock requests {} {} {} {}", project, step, scenarioVariables, testId);
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
             HashMap<String, String> headerValue = new HashMap<>();
@@ -453,6 +477,7 @@ public class AtExecutor {
     }
 
     private void jsonComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
+        log.debug("Json comparing {} {} {}", expectedResponse, responseData, jsonCompareMode);
         if ((isNotEmpty(expectedResponse) || isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
@@ -471,6 +496,7 @@ public class AtExecutor {
     }
 
     private void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables) throws Exception {
+        log.debug("Send message to query {} {} {}", project, step, scenarioVariables);
         if (step.getMqName() != null && step.getMqMessage() != null) {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
@@ -502,6 +528,7 @@ public class AtExecutor {
     }
 
     private void saveValuesByJsonXPath(Step step, ResponseHelper responseData, Map<String, Object> scenarioVariables) {
+        log.debug("Save values by json xpath {} {} {}", step, responseData, scenarioVariables);
         if (isNotEmpty(responseData.getContent()) && isNotEmpty(step.getJsonXPath())) {
             String[] lines = step.getJsonXPath().split("\\r?\\n");
             for (String line : lines) {
@@ -514,6 +541,7 @@ public class AtExecutor {
     }
 
     private void setMockResponses(WireMockAdmin wireMockAdmin, Project project, String testId, List<MockServiceResponse> responseList) throws IOException {
+        log.debug("Setting mock responses {} {} {} {}", wireMockAdmin, project, testId, responseList);
         Long priority = 0L;
         if (responseList != null && wireMockAdmin != null) {
             for (MockServiceResponse mockServiceResponse : responseList) {
@@ -547,6 +575,7 @@ public class AtExecutor {
     }
 
     private void setMqMockResponses(MqMockerAdmin mqMockerAdmin, Project project, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
+        log.debug("Setting MQ mock responses {} {} {} {} {}", mqMockerAdmin, project, testId, mqMockResponseList, scenarioVariables);
         if (mqMockResponseList != null) {
             if (mqMockerAdmin == null) {
                 throw new Exception("MqMockerAdmin is not configured in env.yml");
@@ -564,6 +593,7 @@ public class AtExecutor {
     }
 
     private boolean tryUsePolling(Step step, ResponseHelper responseData) throws InterruptedException {
+        log.debug("trying use polling {} {}", step, responseData);
         boolean retry = true;
         try {
             if (JsonPath.read(responseData.getContent(), step.getPollingJsonXPath()) != null) {
@@ -576,10 +606,12 @@ public class AtExecutor {
         if (retry) {
             Thread.sleep(POLLING_RETRY_TIMEOUT_MS);
         }
+        log.debug("trying use polling? Is - {}", retry);
         return retry;
     }
 
     private void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
+        log.debug("executing sql {}, {}", step, scenarioVariables);
         if (!step.getSqlDataList().isEmpty() && connection != null) {
             for (SqlData sqlData : step.getSqlDataList()) {
                 if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
@@ -590,6 +622,7 @@ public class AtExecutor {
                             statement.setString(scenarioVariable.getKey(), String.valueOf(scenarioVariable.getValue()));
                         }
                         try (ResultSet rs = statement.executeQuery()) {
+                            log.debug("Executing query {}", sqlData);
                             if (sqlResultType == SqlResultType.ROW) {
                                 int columnCount = rs.getMetaData().getColumnCount();
                                 if (rs.next()) {
@@ -607,16 +640,18 @@ public class AtExecutor {
                                     }
                                 }
                             } else if (sqlResultType == SqlResultType.OBJECT) {
+                                log.debug("Reading Object from result set ...");
                                 Object result = rs.next() ? rs.getObject(1) : null;
                                 scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                             } else if (sqlResultType == SqlResultType.LIST) {
-
+                                log.debug("Reading List from result set ...");
                                 List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
                                 scenarioVariables.put(sqlData.getSqlSavedParameter(), columnData);
                             } else {
+                                log.debug("Reading custom result set ...");
                                 List<String> columnNameList = new LinkedList<>();
                                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                                     columnNameList.add(rs.getMetaData().getColumnName(i));
@@ -639,6 +674,7 @@ public class AtExecutor {
     }
 
     public static String insertSavedValues(String template, Map<String, Object> scenarioVariables) {
+        log.debug("insert saved values {}, {}", template, scenarioVariables);
         String result = template;
         if (result != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
@@ -649,10 +685,12 @@ public class AtExecutor {
                 );
             }
         }
+        log.debug("insert saved values result {}", result);
         return result;
     }
 
     private String insertSavedValuesToURL(String template, Map<String, Object> scenarioVariables) throws UnsupportedEncodingException {
+        log.debug("insert saved values to URL {}, {}", template, scenarioVariables);
         String result = template;
         if (result != null) {
             for (Map.Entry<String, Object> value : scenarioVariables.entrySet()) {
@@ -665,15 +703,18 @@ public class AtExecutor {
                 );
             }
         }
+        log.debug("insert saved values to URL result {}", result);
         return result;
     }
 
     public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+        log.debug("evaluate expressions {}, {} {}", template, scenarioVariables, responseData);
         String result = template;
         if (result != null) {
             Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
             Matcher m = p.matcher(result);
             while (m.find()) {
+                log.debug("regexp matches {}", p.pattern());
                 ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine scriptEngine = manager.getEngineByName("js");
                 scriptEngine.put("scenarioVariables", scenarioVariables);
@@ -683,13 +724,10 @@ public class AtExecutor {
                         "<f>" + m.group(1) + "</f>",
                         Matcher.quoteReplacement(String.valueOf(evalResult))
                 );
+                log.debug("evaluating result {}", result);
             }
         }
+        log.debug("evaluate expressions result {}", responseData);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AtExecutor{}";
     }
 }

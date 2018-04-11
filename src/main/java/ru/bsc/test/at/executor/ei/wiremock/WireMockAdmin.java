@@ -2,6 +2,7 @@ package ru.bsc.test.at.executor.ei.wiremock;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -23,6 +24,7 @@ import java.util.List;
  * Created by sdoroshin on 27.07.2017.
  *
  */
+@Slf4j
 public class WireMockAdmin implements Closeable {
 
     private final String wireMockAdminUrl;
@@ -62,6 +64,7 @@ public class WireMockAdmin implements Closeable {
         try (CloseableHttpResponse response = HttpClientBuilder.create().build().execute(new HttpDelete(wireMockAdminUrl + url))) {
             return response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
         } catch (IOException e) {
+            log.error("Error deleting mock", e);
             throw new UncheckedIOException(e);
         }
     }
