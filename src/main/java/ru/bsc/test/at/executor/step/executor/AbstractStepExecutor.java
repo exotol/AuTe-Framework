@@ -64,14 +64,14 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
     private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
-    void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables) throws Exception {
+    void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables, String testIdHeaderName, String testId) throws Exception {
         if (step.getMqName() != null && step.getMqMessage() != null) {
             if (project.getAmqpBroker() == null) {
                 throw new Exception("AMQP broker is not configured in Project settings.");
             }
             try(AbstractMqManager mqManager = MqManagerFactory.getMqManager(project.getAmqpBroker().getMqService(), project.getAmqpBroker().getHost(), project.getAmqpBroker().getPort(), project.getAmqpBroker().getUsername(), project.getAmqpBroker().getPassword())) {
                 String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-                mqManager.sendTextMessage(step.getMqName(), message);
+                mqManager.sendTextMessage(step.getMqName(), message, testIdHeaderName, testId);
             }
         }
     }
@@ -161,6 +161,9 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     boolean tryUsePolling(Step step, String responseContent) throws InterruptedException {
+        if (!step.getUsePolling()) {
+            return false;
+        }
         boolean retry = true;
         try {
             if (JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {

@@ -22,12 +22,12 @@ public class MqClient implements Closeable {
         );
     }
 
-    public void sendMessage(String queueName, String messageBody) throws Exception {
-        mqManager.sendTextMessage(queueName, messageBody);
+    public void sendMessage(String queueName, String messageBody, String testIdHeaderName, String testId) throws Exception {
+        mqManager.sendTextMessage(queueName, messageBody, testIdHeaderName, testId);
     }
 
-    public Message waitMessage(String queueName, Long timeout) throws Exception {
-        return mqManager.waitMessage(queueName, timeout);
+    public Message waitMessage(String queueName, Long timeout, String testIdHeaderName, String testId) throws Exception {
+        return mqManager.waitMessage(queueName, timeout, testIdHeaderName, testId);
     }
 
     @Override

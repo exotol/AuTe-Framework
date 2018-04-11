@@ -1,5 +1,7 @@
 package ru.bsc.test.at.executor.mq;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
@@ -15,7 +17,7 @@ abstract public class AbstractMqManager implements Closeable {
 
     abstract Connection getConnection();
 
-    public void sendTextMessage(String queueName, String message) throws Exception {
+    public void sendTextMessage(String queueName, String message, String testIdHeaderName, String testId) throws Exception {
         Session session = getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Queue destination = session.createQueue(queueName);
@@ -23,6 +25,9 @@ abstract public class AbstractMqManager implements Closeable {
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
         TextMessage newMessage = session.createTextMessage(message);
+        if (StringUtils.isNotEmpty(testIdHeaderName) && StringUtils.isNotEmpty(testId)) {
+            newMessage.setStringProperty(testIdHeaderName, testId);
+        }
 
         producer.send(newMessage);
 
@@ -31,9 +36,14 @@ abstract public class AbstractMqManager implements Closeable {
         getConnection().start();
     }
 
-    public Message waitMessage(String queueName, Long timeoutMs) throws JMSException {
+    public Message waitMessage(String queueName, Long timeoutMs, String testIdHeaderName, String testId) throws JMSException {
         Session session = getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
-        MessageConsumer consumer = session.createConsumer(session.createQueue(queueName));
+        MessageConsumer consumer;
+        if (StringUtils.isNotEmpty(testIdHeaderName) && StringUtils.isNotEmpty(testId)) {
+            consumer = session.createConsumer(session.createQueue(queueName), testIdHeaderName + "='" + testId + "'");
+        } else {
+            consumer = session.createConsumer(session.createQueue(queueName));
+        }
         return consumer.receive(timeoutMs);
     }
 }

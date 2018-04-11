@@ -65,7 +65,7 @@ public class MqMockHelper {
         if (expectedMqRequestList.size() != actualMqRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
             throw new Exception(String.format(
-                    "Invalid number of MQ requests: expected: %d, actual: %d",
+                    "Invalid number of JMS requests: expected: %d, actual: %d",
                     expectedMqRequestList.size(),
                     actualMqRequestList.size()
             ));

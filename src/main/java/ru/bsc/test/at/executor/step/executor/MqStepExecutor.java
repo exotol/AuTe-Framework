@@ -34,7 +34,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
-        sendMessageToQuery(project, step, scenarioVariables);
+        sendMessageToQuery(project, step, scenarioVariables, project.getTestIdHeaderName(), testId);
 
         // 2. Подстановка сохраненных параметров в строку запроса
         String requestUrl = stand.getServiceUrl() + insertSavedValuesToURL(step.getRelativeUrl(), scenarioVariables);
@@ -60,10 +60,14 @@ public class MqStepExecutor extends AbstractStepExecutor {
                 retryCounter++;
 
                 // 3. Выполнить запрос
-                mqClient.sendMessage(step.getMqOutputQueueName(), step.getMqOutputQueueBody());
+                mqClient.sendMessage(step.getMqOutputQueueName(), requestBody, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
 
-                long calculatedSleep = Long.parseLong(evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
-                Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L));
+                long calculatedSleep = parseLongOrVariable(scenarioVariables, evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
+                Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
+
+                if (message == null) {
+                    throw new Exception("No reply message");
+                }
 
                 if (message instanceof TextMessage) {
                     responseContent = ((TextMessage) message).getText();
@@ -119,6 +123,6 @@ public class MqStepExecutor extends AbstractStepExecutor {
 
     @Override
     public boolean support(Step step) {
-        return StepMode.MQ.equals(step.getStepMode());
+        return StepMode.JMS.equals(step.getStepMode());
     }
 }
