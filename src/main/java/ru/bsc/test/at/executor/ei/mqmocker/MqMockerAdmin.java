@@ -3,6 +3,7 @@ package ru.bsc.test.at.executor.ei.mqmocker;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MqMockerAdmin implements Closeable {
 
     private final String mqMockerAdminUrl;
@@ -66,6 +68,7 @@ public class MqMockerAdmin implements Closeable {
         try (CloseableHttpResponse response = HttpClientBuilder.create().build().execute(new HttpDelete(mqMockerAdminUrl + url))) {
             return response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
         } catch (IOException e) {
+            log.error("Error deleting mock", e);
             throw new UncheckedIOException(e);
         }
     }

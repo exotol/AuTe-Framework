@@ -33,6 +33,7 @@ public class IbmMqManager extends AbstractMqManager {
         try {
             connectionFactory = (QueueConnectionFactory) Class.forName("com.ibm.mq.jms.MQQueueConnectionFactory").newInstance();
         } catch (ClassNotFoundException e) {
+            log.error("Error creating connection factory", e);
             throw new ClassNotFoundException(e.getMessage() + ": set class path for library for Ibm Mq provider", e);
         }
 
