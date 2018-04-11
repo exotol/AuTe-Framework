@@ -15,6 +15,7 @@ public class StepResult {
 
     public static final String RESULT_OK = "OK";
     public static final String RESULT_FAIL = "Fail";
+    public static final String RESULT_SUCCESS = "Success";
 
     private String testId;
     private Step step;

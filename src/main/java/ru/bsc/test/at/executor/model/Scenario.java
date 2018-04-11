@@ -44,6 +44,6 @@ public class Scenario implements Serializable, AbstractModel {
     }
 
     public Boolean getFailed() {
-        return failed != null && failed;
+        return failed;
     }
 }
