@@ -380,15 +380,22 @@ public abstract class BaseYamlRepository {
 
     protected Scenario loadScenarioFromFiles(File scenarioDirectory, String group, boolean fetchSteps) throws IOException {
         File scenarioFile = new File(scenarioDirectory, SCENARIO_YML_FILENAME);
-        Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
-        scenario.setCode(scenarioFile.getParentFile().getName());
-        scenario.setScenarioGroup(group);
-        File scenarioRootDirectory = scenarioFile.getParentFile();
-        if (fetchSteps) {
-            scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
+        if (scenarioFile.exists()) {
+            Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
+            scenario.setCode(scenarioFile.getParentFile().getName());
+            scenario.setScenarioGroup(group);
+            File scenarioRootDirectory = scenarioFile.getParentFile();
+            if (fetchSteps) {
+                scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
+            } else {
+                scenario.getStepList().clear();
+            }
+            return scenario;
         } else {
-            scenario.getStepList().clear();
+            Scenario scenario = new Scenario();
+            scenario.setScenarioGroup(group);
+            return  scenario;
         }
-        return scenario;
+
     }
 }
