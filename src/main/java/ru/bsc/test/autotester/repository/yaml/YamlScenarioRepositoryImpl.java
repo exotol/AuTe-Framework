@@ -219,17 +219,4 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                 .anyMatch(s -> containsIgnoreCase(s.getRelativeUrl(), relativeUrl));
     }
 
-    private Scenario loadScenarioFromFiles(File scenarioDirectory, String group, boolean fetchSteps) throws IOException {
-        File scenarioFile = new File(scenarioDirectory, SCENARIO_YML_FILENAME);
-        Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
-        scenario.setCode(scenarioFile.getParentFile().getName());
-        scenario.setScenarioGroup(group);
-        File scenarioRootDirectory = scenarioFile.getParentFile();
-        if (fetchSteps) {
-            scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
-        } else {
-            scenario.getStepList().clear();
-        }
-        return scenario;
-    }
 }
