@@ -43,6 +43,7 @@ export class ScenarioListItemComponent implements OnInit {
   runScenario() {
     if (this.state !== 'executing') {
       this.executedSteps = 0;
+      this.stepResultList = [];
       // this.totalSteps = 0;
       this.state = 'starting';
       this.stateChanged();
@@ -62,10 +63,20 @@ export class ScenarioListItemComponent implements OnInit {
         .subscribe(executionResult => {
           if (executionResult.scenarioResultList && executionResult.scenarioResultList[0]) {
             const scenarioResult = executionResult.scenarioResultList[0];
-            this.stepResultList = scenarioResult.stepResultList;
-            this.scenario.failed = this.stepResultList != null && this.stepResultList.filter(result => result.result === 'Fail').length > 0;
+            let allSteps:StepResult [] = scenarioResult.stepResultList;
+            if (allSteps.length > 0) {
+              if (this.stepResultList.length == 0) {
+                this.stepResultList.push(allSteps[0]);
+              }
+              this.stepResultList[this.stepResultList.length - 1] = allSteps[this.stepResultList.length - 1];
+              for (let i = this.stepResultList.length; i < allSteps.length; i++) {
+                this.stepResultList.push(allSteps[i]);
+              }
+            }
 
-            this.executedSteps = scenarioResult.stepResultList.filter(stepResult => stepResult.editable).length;
+            this.scenario.failed = allSteps != null && allSteps.filter(result => result.result === 'Fail').length > 0;
+
+            this.executedSteps = allSteps.filter(stepResult => stepResult.editable).length;
             this.totalSteps = scenarioResult.totalSteps;
 
             if (executionResult.finished) {
