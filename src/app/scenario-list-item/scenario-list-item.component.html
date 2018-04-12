@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-7">
       <label>
-        <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" />
+        <input type="checkbox" title="Select" [(ngModel)]="scenario._selected" (click)="onClick()"/>
         <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]" *ngIf="isLinkTitleScenario">{{scenario.name}}</a>
         <span *ngIf="!isLinkTitleScenario">{{scenario.name}}</span>
       </label>

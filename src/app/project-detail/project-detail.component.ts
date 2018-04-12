@@ -1,4 +1,4 @@
-import {AfterContentChecked, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterContentChecked, Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ProjectService} from '../service/project.service';
 import {Project} from '../model/project';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
@@ -143,6 +143,21 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   // noinspection JSUnusedLocalSymbols
   onStateChange(event: any, scenario: Scenario) {
     this.updateExecutionStatus();
+  }
+
+  // noinspection JSUnusedLocalSymbols
+  onCbStateChange(event: any, scenario: Scenario) {
+    let allSelected = true;
+    this.scenarioList.filter(s => s.scenarioGroup == this.filter.scenarioGroup).forEach(s => {
+      if (allSelected) {
+        if (s != scenario && !s._selected) {
+          allSelected = false;
+        } else {
+          allSelected = !scenario._selected;
+        }
+      }
+    });
+    this.selectAllFlag = allSelected;
   }
 
   saveNewScenario() {

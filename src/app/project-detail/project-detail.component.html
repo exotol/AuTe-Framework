@@ -28,7 +28,7 @@
     <div class="row">
       <div style="height: 40px;" class="col-sm-7">
         <label>
-          <input class="select-all" type="checkbox" title="{{'Select' | translate}}" (click)="selectAll()" />
+          <input class="select-all" type="checkbox" title="{{'Select' | translate}}" [checked]="selectAllFlag" (click)="selectAll()" />
         </label>
         <button class="btn btn-sm btn-default" (click)="executeSelectedScenarios()">{{'Execute selected scenarios' | translate}}</button>
         <button class="btn btn-sm btn-default" (click)="getReportsBySelectedScenarios()">{{'Get report on selected scenarios' | translate}}</button>
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div style="min-height: 33px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
-    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)" [isLinkTitleScenario] = "true"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)" (cbStateChange)="onCbStateChange($event, scenario)" [isLinkTitleScenario] = "true"></app-scenario-list-item>
   </div>
 
   <div class="container">
