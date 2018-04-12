@@ -18,13 +18,9 @@ import io.qameta.allure.environment.Allure1EnvironmentPlugin;
 import io.qameta.allure.executor.ExecutorPlugin;
 import io.qameta.allure.history.HistoryPlugin;
 import io.qameta.allure.history.HistoryTrendPlugin;
-import io.qameta.allure.influxdb.InfluxDbExportPlugin;
 import io.qameta.allure.launch.LaunchPlugin;
-import io.qameta.allure.mail.MailPlugin;
 import io.qameta.allure.owner.OwnerPlugin;
-import io.qameta.allure.prometheus.PrometheusExportPlugin;
-import io.qameta.allure.retry.RetryPlugin;
-import io.qameta.allure.retry.RetryTrendPlugin;
+import io.qameta.allure.plugin.DefaultPluginLoader;
 import io.qameta.allure.severity.SeverityPlugin;
 import io.qameta.allure.status.StatusChartPlugin;
 import io.qameta.allure.suites.SuitesPlugin;
@@ -43,6 +39,7 @@ import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.report.impl.allure.attach.builder.AttachBuilder;
 import ru.bsc.test.autotester.report.impl.allure.plugin.DefaultCategoriesPlugin;
+import ru.bsc.test.autotester.report.impl.allure.plugin.HistoryRestorePlugin;
 import ru.yandex.qatools.allure.model.Status;
 import ru.yandex.qatools.allure.model.Step;
 import ru.yandex.qatools.allure.model.TestCaseResult;
@@ -51,7 +48,9 @@ import ru.yandex.qatools.allure.model.TestSuiteResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -66,18 +65,24 @@ import static ru.yandex.qatools.allure.model.Status.PASSED;
 @Component
 public class AllureReportGenerator extends AbstractReportGenerator {
     private static final String WITHOUT_GROUP = "Без группы";
+    private static final String PLUGINS_DIRECTORY = "allure-plugins";
 
     private final Gson gson = new Gson();
     private final AttachBuilder<StepResult> stepResultAttachBuilder;
     private final AttachBuilder<RequestData> requestDataAttachBuilder;
+    private final Configuration configuration;
+    private final HistoryFilesProcessor historyFilesProcessor;
 
     @Autowired
     public AllureReportGenerator(
             AttachBuilder<StepResult> stepResultAttachBuilder,
-            AttachBuilder<RequestData> requestDataAttachBuilder
+            AttachBuilder<RequestData> requestDataAttachBuilder,
+            HistoryFilesProcessor historyFilesProcessor
     ) {
         this.stepResultAttachBuilder = stepResultAttachBuilder;
         this.requestDataAttachBuilder = requestDataAttachBuilder;
+        this.historyFilesProcessor = historyFilesProcessor;
+        configuration = createConfiguration();
     }
 
     @Override
@@ -96,50 +101,69 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             }
         }
 
-        Configuration configuration = createConfiguration();
         final ReportGenerator generator = new ReportGenerator(configuration);
         Path output = new File(directory + File.separator + "output").toPath();
         final Path resultsDirectory = resultDirectory.toPath();
         generator.generate(output, resultsDirectory);
+        historyFilesProcessor.process(output);
         FileUtils.deleteDirectory(resultDirectory);
     }
 
     private Configuration createConfiguration() {
-        return new ConfigurationBuilder()
-                .fromExtensions(Arrays.asList(
-                        new JacksonContext(),
-                        new MarkdownContext(),
-                        new FreemarkerContext(),
-                        new RandomUidContext(),
-                        new MarkdownDescriptionsPlugin(),
-                        new RetryPlugin(),
-                        new RetryTrendPlugin(),
-                        new TagsPlugin(),
-                        new SeverityPlugin(),
-                        new OwnerPlugin(),
-                        new DefaultCategoriesPlugin(),
-                        new CategoriesPlugin(),
-                        new CategoriesTrendPlugin(),
-                        new HistoryPlugin(),
-                        new HistoryTrendPlugin(),
-                        new DurationPlugin(),
-                        new DurationTrendPlugin(),
-                        new StatusChartPlugin(),
-                        new TimelinePlugin(),
-                        new SuitesPlugin(),
-                        new ReportWebPlugin(),
-                        new TestsResultsPlugin(),
-                        new AttachmentsPlugin(),
-                        new MailPlugin(),
-                        new InfluxDbExportPlugin(),
-                        new PrometheusExportPlugin(),
-                        new SummaryPlugin(),
-                        new ExecutorPlugin(),
-                        new LaunchPlugin(),
-                        new Allure1Plugin(),
-                        new Allure1EnvironmentPlugin(),
-                        new Allure2Plugin()
-                )).build();
+        ConfigurationBuilder configurationBuilder = new ConfigurationBuilder().fromExtensions(Arrays.asList(
+                new JacksonContext(),
+                new MarkdownContext(),
+                new FreemarkerContext(),
+                new RandomUidContext(),
+                new MarkdownDescriptionsPlugin(),
+                new TagsPlugin(),
+                new SeverityPlugin(),
+                new OwnerPlugin(),
+                new DefaultCategoriesPlugin(),
+                new CategoriesPlugin(),
+                new CategoriesTrendPlugin(),
+                new HistoryRestorePlugin(),
+                new HistoryPlugin(),
+                new HistoryTrendPlugin(),
+                new DurationPlugin(),
+                new DurationTrendPlugin(),
+                new StatusChartPlugin(),
+                new TimelinePlugin(),
+                new SuitesPlugin(),
+                new ReportWebPlugin(),
+                new TestsResultsPlugin(),
+                new AttachmentsPlugin(),
+                new SummaryPlugin(),
+                new ExecutorPlugin(),
+                new LaunchPlugin(),
+                new Allure1Plugin(),
+                new Allure1EnvironmentPlugin(),
+                new Allure2Plugin()
+        ));
+        List<Plugin> plugins = loadPlugins();
+        if (!plugins.isEmpty()) {
+            configurationBuilder = configurationBuilder.fromPlugins(plugins);
+        }
+        return configurationBuilder.build();
+    }
+
+    private List<Plugin> loadPlugins() {
+        Path pluginsPath = Paths.get(PLUGINS_DIRECTORY);
+        if (Files.exists(pluginsPath) && Files.isDirectory(pluginsPath)) {
+            try {
+                final DefaultPluginLoader pluginLoader = new DefaultPluginLoader();
+                final ClassLoader classLoader = getClass().getClassLoader();
+                return Files.list(pluginsPath)
+                        .filter(Files::isDirectory)
+                        .map(pluginDirectory -> pluginLoader.loadPlugin(classLoader, pluginDirectory))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+            } catch (IOException e) {
+                log.error("Exception while loading plugins", e);
+            }
+        }
+        return Collections.emptyList();
     }
 
     private List<AllurePreparedData> buildReportData(

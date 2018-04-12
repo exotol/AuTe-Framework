@@ -9,6 +9,7 @@ import java.util.Map;
 @Setter
 public class EnvironmentProperties {
     private String projectsDirectoryPath;
+    private Integer historyLimit;
     private Map<String, StandProperties> projectStandMap;
     private Integer mqCheckCount;
     private Long mqCheckInterval;

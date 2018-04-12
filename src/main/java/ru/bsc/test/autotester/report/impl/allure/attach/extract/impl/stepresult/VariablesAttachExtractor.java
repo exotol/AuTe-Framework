@@ -7,6 +7,8 @@ import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAtt
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,7 @@ public class VariablesAttachExtractor extends AbstractAttachExtractor<StepResult
     private static final String FILE_NAME = "Variables";
 
     @Override
-    public Attachment extract(File resultDirectory, StepResult result) {
+    public List<Attachment> extract(File resultDirectory, StepResult result) {
         if (MapUtils.isEmpty(result.getScenarioVariables())) {
             return null;
         }
@@ -28,7 +30,10 @@ public class VariablesAttachExtractor extends AbstractAttachExtractor<StepResult
         String data = getVariablesData(result.getScenarioVariables());
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType("text/plain");
+            return Collections.singletonList(new Attachment()
+                    .withTitle(FILE_NAME)
+                    .withSource(relativePath)
+                    .withType("text/plain"));
         }
         return null;
     }
