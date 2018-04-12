@@ -17,7 +17,8 @@ import {NameValueProperty} from '../model/name-value-property';
     '.nav-tabs > li > a { padding: 3px 7px; }',
     '.tab-content { border: 1px solid #ddd; border-top-width: 0;}',
     '.row { margin-bottom: 5px; }',
-    '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }',
+    '.input-group-btn > select { padding: 0; width: 85px; border-right: 0; }',
+    '.input-group-btn:first-child > select { border-top-left-radius: 5px; border-bottom-left-radius: 5px; }',
     '.request-body-field { display: flex; margin-bottom: 10px; }',
     '.request-body-field > * { margin: 0 5px; min-width: 0; }',
     '.request-body-field > .request-body-field__name { margin-left: 0; min-width: 25%; flex: 0 0; }',
@@ -53,6 +54,9 @@ export class StepItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (this.step && !this.step.stepMode) {
+      this.step.stepMode = 'REST';
+    }
   }
 
   selectTab(tabName: string) {

@@ -140,5 +140,10 @@
   "JSON compare mode": "Режим сравнения JSON",
   "Empty scenario name": "Пустое имя сценария",
   "Directory already exists": "Директория с таким именем уже существует",
-  "XPath filter": "XPath фильтр"
+  "XPath filter": "XPath фильтр",
+  "Wait response timeout": "Время ожидания ответа",
+  "Request JMS body": "Тело запроса JMS",
+  "Expected JMS response": "Ожидаемый ответ JMS",
+  "Output queue name": "Очередь, в которую отправляется сообщение",
+  "Input queue name": "Очередь, из которой ожидается сообщение"
 }
