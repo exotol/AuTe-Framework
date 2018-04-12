@@ -1,4 +1,4 @@
-package ru.bsc.wiremock.transformers;
+package ru.bsc.test.at.mock.wiremock.transformers;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.common.FileSource;

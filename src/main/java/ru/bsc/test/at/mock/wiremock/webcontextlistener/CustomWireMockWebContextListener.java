@@ -1,4 +1,4 @@
-package ru.bsc.wiremock.webcontextlistener;
+package ru.bsc.test.at.mock.wiremock.webcontextlistener;
 
 import com.github.tomakehurst.wiremock.common.Notifier;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
@@ -8,7 +8,7 @@ import com.github.tomakehurst.wiremock.http.StubRequestHandler;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
 import com.github.tomakehurst.wiremock.servlet.WireMockWebContextListener;
 import lombok.extern.slf4j.Slf4j;
-import ru.bsc.wiremock.webcontextlistener.configuration.CustomWarConfiguration;
+import ru.bsc.test.at.mock.wiremock.webcontextlistener.configuration.CustomWarConfiguration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static ru.bsc.wiremock.Constants.VELOCITY_PROPERTIES;
+import static ru.bsc.test.at.mock.wiremock.Constants.VELOCITY_PROPERTIES;
 
 /**
  * Created by sdoroshin on 24.07.2017.
@@ -34,14 +34,7 @@ public class CustomWireMockWebContextListener extends WireMockWebContextListener
         boolean verboseLoggingEnabled = Boolean.parseBoolean(
                 firstNonNull(context.getInitParameter("verboseLoggingEnabled"), "true"));
 
-        Properties properties = new Properties();
-        String wireMockMappingPath = "";
-        try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
-            properties.load(stream);
-            wireMockMappingPath = properties.getProperty("wiremock.mapping.path");
-        } catch (IOException e) {
-            log.error("Error while loading properties", e);
-        }
+        String wireMockMappingPath = "./mapping";
 
         WireMockApp wireMockApp = new WireMockApp(new CustomWarConfiguration(context, wireMockMappingPath), new NotImplementedContainer());
 

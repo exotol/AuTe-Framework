@@ -1,4 +1,4 @@
-package ru.bsc.wiremock.webcontextlistener.configuration;
+package ru.bsc.test.at.mock.wiremock.webcontextlistener.configuration;
 
 import com.github.tomakehurst.wiremock.common.AbstractFileSource;
 import com.github.tomakehurst.wiremock.common.FileSource;

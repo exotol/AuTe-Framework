@@ -1,4 +1,4 @@
-package ru.bsc.wiremock.webcontextlistener.configuration;
+package ru.bsc.test.at.mock.wiremock.webcontextlistener.configuration;
 
 import com.github.tomakehurst.wiremock.common.FileSource;
 import com.github.tomakehurst.wiremock.core.MappingsSaver;
@@ -7,7 +7,7 @@ import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
 import com.github.tomakehurst.wiremock.servlet.WarConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.app.Velocity;
-import ru.bsc.wiremock.transformers.CustomVelocityResponseTransformer;
+import ru.bsc.test.at.mock.wiremock.transformers.CustomVelocityResponseTransformer;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static ru.bsc.wiremock.Constants.VELOCITY_PROPERTIES;
+import static ru.bsc.test.at.mock.wiremock.Constants.VELOCITY_PROPERTIES;
 
 /**
  * Created by sdoroshin on 04.08.2017.
@@ -40,7 +40,7 @@ public class CustomWarConfiguration extends WarConfiguration {
 
             // VelocityResponseTransformer configuration
             Properties properties = new Properties();
-            try (final InputStream stream = this.getClass().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
+            try (final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
                 properties.load(stream);
             } catch (IOException e) {
                 log.error("Error while loading properties", e);

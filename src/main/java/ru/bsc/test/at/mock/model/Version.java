@@ -1,4 +1,4 @@
-package ru.bsc.servlet.data;
+package ru.bsc.test.at.mock.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

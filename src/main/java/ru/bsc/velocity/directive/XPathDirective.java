@@ -1,4 +1,4 @@
-package ru.bsc.wiremock.velocity.directive;
+package ru.bsc.velocity.directive;
 
 import java.io.IOException;
 import java.io.StringReader;
