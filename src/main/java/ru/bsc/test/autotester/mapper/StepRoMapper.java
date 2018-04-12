@@ -58,6 +58,11 @@ public abstract class StepRoMapper {
             @Mapping(target = "sqlSavedParameter", source = "sqlSavedParameter"),
             @Mapping(target = "scenarioVariableFromMqRequestList", source = "scenarioVariableFromMqRequestList"),
             @Mapping(target = "mqPropertyList", source = "mqPropertyList"),
+
+            @Mapping(target = "stepMode", source = "stepMode"),
+            @Mapping(target = "mqOutputQueueName", source = "mqOutputQueueName"),
+            @Mapping(target = "mqInputQueueName", source = "mqInputQueueName"),
+            @Mapping(target = "mqTimeoutMs", source = "mqTimeoutMs"),
     })
     public abstract Step updateStep(StepRo stepRo, @MappingTarget Step step);
 
