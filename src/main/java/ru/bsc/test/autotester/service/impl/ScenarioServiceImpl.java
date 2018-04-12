@@ -149,6 +149,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
         int[] reportCounter = { 0 };
+        reportGenerator.clear();
         runningScriptsMap.forEach((s, executionResult) -> {
             if (executionUuidList.contains(s)) {
                 executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);

@@ -7,6 +7,8 @@ import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractJso
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by smakarov
@@ -18,14 +20,17 @@ public class CyclicStepResponseAttachExtractor extends AbstractJsonAttachExtract
     private static final String FILE_NAME = "Response";
 
     @Override
-    public Attachment extract(File resultDirectory, RequestData result) {
+    public List<Attachment> extract(File resultDirectory, RequestData result) {
         if (StringUtils.isEmpty(result.getResponseBody())) {
             return null;
         }
         String data = result.getResponseBody();
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(APPLICATION_JSON);
+            return Collections.singletonList(new Attachment()
+                    .withTitle(FILE_NAME)
+                    .withSource(relativePath)
+                    .withType(APPLICATION_JSON));
         }
         return null;
     }

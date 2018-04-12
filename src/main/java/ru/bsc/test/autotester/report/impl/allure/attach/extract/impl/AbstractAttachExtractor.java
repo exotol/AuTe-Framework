@@ -19,7 +19,10 @@ public abstract class AbstractAttachExtractor<T> implements AttachExtractor<T> {
     protected static final String TEXT_PLAIN = "text/plain";
 
     protected String writeDataToFile(File resultDirectory, String data, String name) {
-        String extension = FileExtensionsUtils.extensionByContent(data);
+        return writeDataToFile(resultDirectory, data, name, FileExtensionsUtils.extensionByContent(data));
+    }
+
+    protected String writeDataToFile(File resultDirectory, String data, String name, String extension) {
         String relativePath = getAttachRelativePath(name, extension);
         File dataFile = new File(resultDirectory, relativePath);
         try {
@@ -30,7 +33,7 @@ public abstract class AbstractAttachExtractor<T> implements AttachExtractor<T> {
         }
     }
 
-    private String getAttachRelativePath(String name, String extension) {
-        return "attachments" + separator + randomUUID() + "-" + name.toLowerCase() + "." + extension;
+    protected String getAttachRelativePath(String name, String extension) {
+        return "attachments" + separator + randomUUID() + "-" + name + "." + extension;
     }
 }

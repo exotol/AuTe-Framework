@@ -23,6 +23,7 @@ public abstract class AttachBuilder<T> {
         return extractors.stream()
                 .map(extractor -> extractor.extract(resultDirectory, result))
                 .filter(Objects::nonNull)
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 }
