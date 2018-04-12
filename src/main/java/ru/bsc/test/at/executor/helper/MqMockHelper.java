@@ -12,6 +12,7 @@ import ru.bsc.test.at.executor.model.ExpectedMqRequest;
 import ru.bsc.test.at.executor.model.ScenarioVariableFromMqRequest;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.service.AtExecutor;
+import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;
 
 import javax.script.ScriptException;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,7 +46,7 @@ public class MqMockHelper {
 
             long count = 0;
             try {
-                count = AtExecutor.parseLongOrVariable(scenarioVariables, AtExecutor.evaluateExpressions(expectedMqRequest.getCount(), scenarioVariables, null), 1);
+                count = AtExecutor.parseLongOrVariable(scenarioVariables, AbstractStepExecutor.evaluateExpressions(expectedMqRequest.getCount(), scenarioVariables, null), 1);
             } catch (ScriptException e) {
                 log.error("{}", e);
             }
@@ -64,7 +65,7 @@ public class MqMockHelper {
         if (expectedMqRequestList.size() != actualMqRequestList.size()) {
             // Вызвать ошибку: не совпадает количество вызовов сервисов
             throw new Exception(String.format(
-                    "Invalid number of MQ requests: expected: %d, actual: %d",
+                    "Invalid number of JMS requests: expected: %d, actual: %d",
                     expectedMqRequestList.size(),
                     actualMqRequestList.size()
             ));
@@ -98,7 +99,7 @@ public class MqMockHelper {
                 actualMqRequestList.remove(actualRequest);
 
                 compareRequest(
-                        AtExecutor.evaluateExpressions(AtExecutor.insertSavedValues(expectedMqRequest.getRequestBody(), scenarioVariables), scenarioVariables, null),
+                        AbstractStepExecutor.evaluateExpressions(AbstractStepExecutor.insertSavedValues(expectedMqRequest.getRequestBody(), scenarioVariables), scenarioVariables, null),
                         actualRequest.getRequestBody(),
                         expectedMqRequest.getIgnoredTags() != null ?
                                 new HashSet<>(Arrays.stream(expectedMqRequest.getIgnoredTags()
