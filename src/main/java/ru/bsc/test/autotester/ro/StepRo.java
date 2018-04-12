@@ -57,4 +57,9 @@ public class StepRo implements AbstractRo {
     @Deprecated
     private String sqlSavedParameter;
     private List<ScenarioVariableFromMqRequestRo> scenarioVariableFromMqRequestList;
+    private String stepMode;
+
+    private String mqOutputQueueName;
+    private String mqInputQueueName;
+    private String mqTimeoutMs;
 }
