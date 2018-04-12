@@ -20,6 +20,7 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping("/rest/execution/")
 public class RestExecutionController {
 
+    private final Gson gson = new Gson();
     private final ScenarioService scenarioService;
     private final ExecutionResultRoMapper executionResultRoMapper;
 
@@ -61,6 +62,6 @@ public class RestExecutionController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list() {
-        return new Gson().toJson(scenarioService.getExecutingList());
+        return gson.toJson(scenarioService.getExecutingList());
     }
 }
