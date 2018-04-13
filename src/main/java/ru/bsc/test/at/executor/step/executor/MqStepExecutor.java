@@ -55,24 +55,26 @@ public class MqStepExecutor extends AbstractStepExecutor {
             // Polling
             int retryCounter = 0;
 
-            String responseContent;
+            String responseContent = null;
             do {
                 retryCounter++;
 
-                // 3. Выполнить запрос
+                // 3. Выполнить запрос (отправить сообщение в очередь)
                 mqClient.sendMessage(step.getMqOutputQueueName(), requestBody, null, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
 
-                long calculatedSleep = parseLongOrVariable(scenarioVariables, evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
-                Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
+                if (StringUtils.isNotBlank(step.getMqInputQueueName())) {
+                    long calculatedSleep = parseLongOrVariable(scenarioVariables, evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
+                    Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
 
-                if (message == null) {
-                    throw new Exception("No reply message");
-                }
+                    if (message == null) {
+                        throw new Exception("No reply message");
+                    }
 
-                if (message instanceof TextMessage) {
-                    responseContent = ((TextMessage) message).getText();
-                } else {
-                    throw new Exception("Received message is not TextMessage instance");
+                    if (message instanceof TextMessage) {
+                        responseContent = ((TextMessage) message).getText();
+                    } else {
+                        throw new Exception("Received message is not TextMessage instance");
+                    }
                 }
 
 
