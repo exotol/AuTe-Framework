@@ -18,5 +18,9 @@ public abstract class AbstractReportGenerator {
         scenarioStepResultMap.put(scenario, stepResultList);
     }
 
+    public void clear() {
+        scenarioStepResultMap.clear();
+    }
+
     public abstract void generate(File directory) throws Exception;
 }

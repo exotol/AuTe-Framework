@@ -6,6 +6,8 @@ import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAtt
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by smakarov
@@ -17,14 +19,17 @@ public class PollingAttachExtractor extends AbstractAttachExtractor<StepResult> 
     private static final String FILE_NAME = "Polling";
 
     @Override
-    public Attachment extract(File resultDirectory, StepResult result) {
+    public List<Attachment> extract(File resultDirectory, StepResult result) {
         if (!result.getStep().getUsePolling()) {
             return null;
         }
         String data = "Polling JSON XPath: " + result.getStep().getPollingJsonXPath();
         String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
+            return Collections.singletonList(new Attachment()
+                    .withTitle(FILE_NAME)
+                    .withSource(relativePath)
+                    .withType(TEXT_PLAIN));
         }
         return null;
     }

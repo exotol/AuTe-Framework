@@ -1,7 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,13 +99,17 @@ public class ScenarioServiceImpl implements ScenarioService {
                                         project.getCode(),
                                         scenarioPath
                                 );
-                                scenarioToUpdate.setFailed(
-                                        stepResults
-                                                .stream()
-                                                .anyMatch(stepResult ->
-                                                        StepResult.RESULT_FAIL.equals(stepResult.getResult()))
+                                boolean failed = stepResults
+                                        .stream()
+                                        .anyMatch(stepResult ->
+                                                StepResult.RESULT_FAIL.equals(stepResult.getResult()));
 
-                                );
+                                boolean success = stepResults
+                                        .stream()
+                                        .anyMatch(stepResult ->
+                                                StepResult.RESULT_OK.equals(stepResult.getResult()));
+
+                                scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
                                 scenarioRepository.saveScenario(
                                         project.getCode(),
                                         scenarioPath,
@@ -146,6 +149,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     @Override
     public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
         int[] reportCounter = { 0 };
+        reportGenerator.clear();
         runningScriptsMap.forEach((s, executionResult) -> {
             if (executionUuidList.contains(s)) {
                 executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);

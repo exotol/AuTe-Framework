@@ -8,6 +8,7 @@ import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAtt
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ public class MqRequestsAttachExtractor extends AbstractAttachExtractor<StepResul
     private static final String FILE_NAME = "MQ requests";
 
     @Override
-    public Attachment extract(File resultDirectory, StepResult result) {
+    public List<Attachment> extract(File resultDirectory, StepResult result) {
         List<ExpectedMqRequest> requests = result.getStep().getExpectedMqRequestList();
         if (CollectionUtils.isEmpty(requests)) {
             return null;
@@ -30,7 +31,10 @@ public class MqRequestsAttachExtractor extends AbstractAttachExtractor<StepResul
         String requestsData = getMqRequestsData(requests);
         String relativePath = writeDataToFile(resultDirectory, requestsData, FILE_NAME);
         if (relativePath != null) {
-            return new Attachment().withTitle(FILE_NAME).withSource(relativePath).withType(TEXT_PLAIN);
+            return Collections.singletonList(new Attachment()
+                    .withTitle(FILE_NAME)
+                    .withSource(relativePath)
+                    .withType(TEXT_PLAIN));
         }
         return null;
     }

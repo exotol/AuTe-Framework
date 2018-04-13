@@ -26,6 +26,7 @@ public class StepResultRo {
     private String description;
     private boolean editable;
     private String cookies;
+    private List<String> sqlQueryList;
 
     private List<RequestDataRo> requestDataList;
 }

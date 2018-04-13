@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,38 +37,77 @@ public abstract class BaseYamlRepository {
 
     protected void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
         File scenarioRootDirectory = scenarioFile.getParentFile();
+        Scenario savedScenario = loadScenarioFromFiles(scenarioRootDirectory, scenario.getScenarioGroup(), true);
+
         int i = 1;
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
+        Map<Step, String> codeCorrections = new HashMap<>();
+        List<Step> stepsForeNewCodes = findStepsForNewCodes(savedScenario, scenario);
+
         for (Step step : scenario.getStepList()) {
-            if (step.getCode() == null) {
-                String newCode = null;
-                if (step.getStepComment() != null) {
-                    String transliterated = translator.translate(step.getStepComment());
-                    if (StringUtils.isNotEmpty(transliterated)) {
-                        newCode = String.valueOf(i) + "-" + transliterated;
-                    }
+            if(stepsForeNewCodes.contains(step)) {
+                if (step.getCode() != null) {
+                    codeSet.remove(step.getCode());
                 }
-                if (StringUtils.isEmpty(newCode)) {
-                    newCode = String.valueOf(i);
-                }
-                int j = 2;
-                while (codeSet.contains(newCode)) {
-                    newCode = String.valueOf(i) + "-" + String.valueOf(j);
-                    j++;
-                }
-                step.setCode(newCode);
+                String newCode = generateStepCode(step, i, codeSet);
                 codeSet.add(newCode);
+                String oldCode = step.getCode();
+                step.setCode(newCode);
+                codeCorrections.put(step, oldCode);
             }
             i++;
         }
 
         for (Step step : scenario.getStepList()) {
-            saveStepToFiles(step.getCode(), step, scenarioRootDirectory);
+            saveStepToFiles(codeCorrections.get(step), step, scenarioRootDirectory);
         }
         String scenarioGroupSaved = scenario.getScenarioGroup();
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
         scenario.setScenarioGroup(scenarioGroupSaved);
+    }
+
+    private List<Step> findStepsForNewCodes(Scenario savedScenario, Scenario scenario){
+        Map<String, Step> savedScenarioCodeMap = new HashMap<>();
+        for(Step step : savedScenario.getStepList()){
+            savedScenarioCodeMap.put(step.getCode(), step);
+        }
+
+        List<Step> stepsForNewCodes = new ArrayList<>();
+        for(Step step : scenario.getStepList()){
+            if(step.getCode() == null){
+                stepsForNewCodes.add(step);
+            }else {
+                Step savedStep = savedScenarioCodeMap.get(step.getCode());
+                if(savedStep == null){
+                    stepsForNewCodes.add(step);
+                }else{
+                    if(!Objects.equals(step.getStepComment(), savedStep.getStepComment())){
+                        stepsForNewCodes.add(step);
+                    }
+                }
+            }
+        }
+        return stepsForNewCodes;
+    }
+
+    protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
+        String newCode = null;
+        if (step.getStepComment() != null) {
+            String transliterated = translator.translate(step.getStepComment());
+            if (StringUtils.isNotEmpty(transliterated)) {
+                newCode = String.valueOf(stepNumber) + "-" + transliterated;
+            }
+        }
+        if (StringUtils.isEmpty(newCode)) {
+            newCode = String.valueOf(stepNumber);
+        }
+        int j = 2;
+        while (existingCodes.contains(newCode)) {
+            newCode = String.valueOf(stepNumber) + "-" + String.valueOf(j);
+            j++;
+        }
+        return newCode;
     }
 
     protected void loadStepFromFiles(Step step, File scenarioRootDirectory) {
@@ -158,10 +195,11 @@ public abstract class BaseYamlRepository {
     }
 
     private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
-        if (step.getCode() != null) {
-            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(step)));
+        if (stepCode != null) {
+            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(stepCode)));
         }
-        step.setCode(StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode);
+
+        step.setCode(getStepCode(step.getCode()));
 
         if (step.getRequest() != null) {
             try {
@@ -261,6 +299,10 @@ public abstract class BaseYamlRepository {
         );
     }
 
+    protected String getStepCode(String stepCode){
+        return StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode;
+    }
+
     private <T extends CodeAccessible> void saveItemsToFiles(
             Path dataPath,
             List<T> items,
@@ -305,8 +347,12 @@ public abstract class BaseYamlRepository {
         return null;
     }
 
+    private String stepPath(String code) {
+        return "steps/" + code + "/";
+    }
+
     private String stepPath(Step step) {
-        return "steps/" + step.getCode() + "/";
+        return stepPath(step.getCode());
     }
 
     private String stepExpectedResponseFile(Step step) {
@@ -330,5 +376,26 @@ public abstract class BaseYamlRepository {
         }
         return "expected-service-request-" + expectedServiceRequest.getCode() + "." + FileExtensionsUtils.extensionByContent(
                 expectedServiceRequest.getExpectedServiceRequest());
+    }
+
+    protected Scenario loadScenarioFromFiles(File scenarioDirectory, String group, boolean fetchSteps) throws IOException {
+        File scenarioFile = new File(scenarioDirectory, SCENARIO_YML_FILENAME);
+        if (scenarioFile.exists()) {
+            Scenario scenario = YamlUtils.loadAs(scenarioFile, Scenario.class);
+            scenario.setCode(scenarioFile.getParentFile().getName());
+            scenario.setScenarioGroup(group);
+            File scenarioRootDirectory = scenarioFile.getParentFile();
+            if (fetchSteps) {
+                scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
+            } else {
+                scenario.getStepList().clear();
+            }
+            return scenario;
+        } else {
+            Scenario scenario = new Scenario();
+            scenario.setScenarioGroup(group);
+            return  scenario;
+        }
+
     }
 }

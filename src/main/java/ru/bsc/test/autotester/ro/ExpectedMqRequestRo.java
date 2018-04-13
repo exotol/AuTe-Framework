@@ -10,4 +10,5 @@ public class ExpectedMqRequestRo {
     private String sourceQueue;
     private String requestBody;
     private String ignoredTags;
+    private String count;
 }
