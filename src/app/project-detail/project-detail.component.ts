@@ -147,17 +147,8 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   // noinspection JSUnusedLocalSymbols
   onCbStateChange(event: any, scenario: Scenario) {
-    let allSelected = true;
-    this.scenarioList.filter(s => s.scenarioGroup == this.filter.scenarioGroup).forEach(s => {
-      if (allSelected) {
-        if (s != scenario && !s._selected) {
-          allSelected = false;
-        } else {
-          allSelected = !scenario._selected;
-        }
-      }
-    });
-    this.selectAllFlag = allSelected;
+    this.selectAllFlag = !scenario._selected && this.scenarioList.
+    filter(s => s.scenarioGroup == this.filter.scenarioGroup).filter(s => s != scenario && !s._selected).length == 0;
   }
 
   saveNewScenario() {
