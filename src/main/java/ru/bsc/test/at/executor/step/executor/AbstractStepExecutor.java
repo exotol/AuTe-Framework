@@ -294,7 +294,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         log.debug("evaluate expressions {}, {} {}", template, scenarioVariables, responseData);
         String result = template;
         if (result != null) {
-            Pattern p = Pattern.compile("^.*<f>(.+?)</f>.*$", Pattern.MULTILINE);
+            Pattern p = Pattern.compile(".*?<f>(.+?)</f>.*?", Pattern.MULTILINE);
             Matcher m = p.matcher(result);
             while (m.find()) {
                 log.debug("regexp matches {}", p.pattern());
