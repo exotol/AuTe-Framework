@@ -18,6 +18,7 @@ export class ScenarioListItemComponent implements OnInit {
   @Input()
   isLinkTitleScenario = true;
   @Output() onStateChange = new EventEmitter<any>();
+  @Output() cbStateChange = new EventEmitter<any>();
 
   stepResultList: StepResult[];
 
@@ -37,7 +38,7 @@ export class ScenarioListItemComponent implements OnInit {
   }
 
   stateChanged() {
-    this.onStateChange.emit({state: this.state, executedSteps: this.executedSteps, totalSteps: this.totalSteps})
+    this.onStateChange.emit({state: this.state, executedSteps: this.executedSteps, totalSteps: this.totalSteps});
   }
 
   runScenario() {
@@ -120,5 +121,9 @@ export class ScenarioListItemComponent implements OnInit {
       if (this.scenario.failed === false) { return 'passedScenario'; }
     }
     return '';
+  }
+
+  onClick(event : any) {
+    this.cbStateChange.emit(event);
   }
 }
