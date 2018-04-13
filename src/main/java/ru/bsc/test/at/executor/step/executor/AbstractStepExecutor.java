@@ -216,17 +216,33 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                         }
                         try (ResultSet rs = statement.executeQuery()) {
                             log.debug("Executing query {}", sqlData);
-                            Object result;
-                            if (sqlResultType == SqlResultType.OBJECT) {
+                            if (sqlResultType == SqlResultType.ROW) {
+                                int columnCount = rs.getMetaData().getColumnCount();
+                                if (rs.next()) {
+                                    String[] sqlSavedParameterList = sqlData.getSqlSavedParameter().split(",");
+                                    int i = 1;
+                                    for (String parameterName: sqlSavedParameterList) {
+                                        if (parameterName.trim().isEmpty()) {
+                                            continue;
+                                        }
+                                        if (i > columnCount) {
+                                            break;
+                                        }
+                                        scenarioVariables.put(parameterName.trim(), rs.getString(i));
+                                        i++;
+                                    }
+                                }
+                            } else if (sqlResultType == SqlResultType.OBJECT) {
                                 log.debug("Reading Object from result set ...");
-                                result = rs.next() ? rs.getObject(1) : null;
+                                Object result = rs.next() ? rs.getObject(1) : null;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                             } else if (sqlResultType == SqlResultType.LIST) {
                                 log.debug("Reading List from result set ...");
                                 List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
-                                result = columnData;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), columnData);
                             } else {
                                 log.debug("Reading custom result set ...");
                                 List<String> columnNameList = new LinkedList<>();
@@ -241,9 +257,8 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                                     }
                                     resultData.add(values);
                                 }
-                                result = resultData;
+                                scenarioVariables.put(sqlData.getSqlSavedParameter(), resultData);
                             }
-                            scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
                         }
                     }
                 }
