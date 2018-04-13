@@ -16,11 +16,11 @@
       <button style="padding-bottom: 1px; padding-top: 1px;" class="btn btn-warning" *ngIf="state == 'executing'" (click)="stop()">{{'Stop' | translate}}</button>
       <button style="padding-bottom: 1px; padding-top: 1px;" class="btn btn-warning" *ngIf="state == 'starting'" disabled>{{'Starting' | translate}}...</button>
 
-      <span class="help-block small" style="float: right;" *ngIf="startScenarioInfo && startScenarioInfo.runningUuid && state == 'finished'"><a href="/rest/execution/{{startScenarioInfo.runningUuid}}/report" target="_blank">Get report</a></span>
+      <span class="help-block small" style="float: right;" *ngIf="scenario.hasResults"><a href="" target="_blank" (click)="getReport()">{{'Get report' | translate}}</a></span>
       <button style="display: none;" class="btn btn-xs" (click)="checkState()">{{state}}</button>
     </div>
     <div class="col-sm-2">
-      <button style="padding-bottom: 1px; padding-top: 1px;" class="btn" *ngIf="stepResultList" (click)="resultDetailsToggle()">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>
+      <button style="padding-bottom: 1px; padding-top: 1px;" class="btn" *ngIf="scenario.hasResults" (click)="resultDetailsToggle()">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>
     </div>
   </div>
   <div class="row result" *ngIf="showResultDetails && stepResultList">
