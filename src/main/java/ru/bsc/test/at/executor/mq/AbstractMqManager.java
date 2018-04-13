@@ -21,7 +21,7 @@ abstract public class AbstractMqManager implements Closeable {
     abstract Connection getConnection();
 
     public void sendTextMessage(String queueName, String message, Map<String, Object> properties, String testIdHeaderName, String testId) throws Exception {
-        Session session = getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = getConnection().createSession(true, Session.AUTO_ACKNOWLEDGE);
 
         Queue destination = session.createQueue(queueName);
         MessageProducer producer = session.createProducer(destination);
