@@ -57,9 +57,11 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   removeScenarioGroup(group: string): void {
-    const indexToRemove = this.project.groupList.indexOf(group);
-    if (indexToRemove > -1) {
-      this.project.groupList.splice(indexToRemove, 1);
+    if (confirm('All scenarios data will be removed')) {
+      const indexToRemove = this.project.groupList.indexOf(group);
+      if (indexToRemove > -1) {
+        this.project.groupList.splice(indexToRemove, 1);
+      }
     }
   }
 
