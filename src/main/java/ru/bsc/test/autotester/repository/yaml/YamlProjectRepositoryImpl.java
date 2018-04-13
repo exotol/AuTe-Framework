@@ -240,26 +240,6 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         return groups;
     }
 
-
-    private Set<String> readGroupsOnly1(Project project) {
-        Set<String> groupSet = new HashSet<>();
-        File file = Paths.get(
-                environmentProperties.getProjectsDirectoryPath(),
-                project.getCode(),
-                "scenarios"
-        ).toFile();
-        File[] fileList = file.listFiles(File::isDirectory);
-        if (fileList != null) {
-            for (File directory : fileList) {
-                File scenarioYml = new File(directory, SCENARIO_YML_FILENAME);
-                if (!scenarioYml.exists()) {
-                    groupSet.add(directory.getName());
-                }
-            }
-        }
-        return groupSet;
-    }
-
     private void clearProjectBeforeSave(Project project) {
         project.setScenarioList(null);
         project.setStand(null);
