@@ -18,4 +18,5 @@ export class StepResult {
   editable: boolean;
   cookies: string;
   requestDataList: RequestData[];
+  sqlQueryList: string[];
 }

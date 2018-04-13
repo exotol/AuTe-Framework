@@ -51,6 +51,12 @@
             <div *ngIf="stepResult.pollingRetryCount > 1">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>
             {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>
             {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>
+            <div>
+              {{'Sql' | translate}}:<br/>
+              <ng-container *ngFor="let query of stepResult.sqlQueryList">
+                {{query}}<br/>
+              </ng-container>
+            </div>
             Test id: {{stepResult.testId}}
           </div>
           <div class="clearfix"></div>

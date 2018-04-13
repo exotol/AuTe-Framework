@@ -26,6 +26,7 @@ export class StepResultItemComponent implements OnInit {
 
   tab = 'details';
   projectCode: string;
+  displayDetails = false;
 
   constructor(
     private route: ActivatedRoute,
