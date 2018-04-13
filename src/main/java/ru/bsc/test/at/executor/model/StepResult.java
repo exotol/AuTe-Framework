@@ -34,6 +34,7 @@ public class StepResult {
     private String cookies;
     private List<RequestData> requestDataList;
     private Map<String, Object> scenarioVariables;
+    private List<String> sqlQueryList;
 
     public StepResult(String projectCode, Step step) {
         this.projectCode = projectCode;

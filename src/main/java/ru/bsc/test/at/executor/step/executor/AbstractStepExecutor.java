@@ -28,6 +28,7 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.SqlData;
 import ru.bsc.test.at.executor.model.SqlResultType;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 
@@ -198,12 +199,16 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         return retry;
     }
 
-    void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables) throws SQLException, ScriptException {
+    void executeSql(Connection connection, Step step, Map<String, Object> scenarioVariables, StepResult stepResult) throws SQLException, ScriptException {
         log.debug("executing sql {}, {}", step, scenarioVariables);
         if (!step.getSqlDataList().isEmpty() && connection != null) {
+            List<String> queryList = new LinkedList<>();
+            stepResult.setSqlQueryList(queryList);
             for (SqlData sqlData : step.getSqlDataList()) {
                 if (StringUtils.isNotEmpty(sqlData.getSql()) && StringUtils.isNotEmpty(sqlData.getSqlSavedParameter())) {
-                    try (NamedParameterStatement statement = new NamedParameterStatement(connection, evaluateExpressions(sqlData.getSql(), scenarioVariables, null))) {
+                    String query = evaluateExpressions(sqlData.getSql(), scenarioVariables, null);
+                    queryList.add(query);
+                    try (NamedParameterStatement statement = new NamedParameterStatement(connection, query)) {
                         SqlResultType sqlResultType = sqlData.getSqlReturnType();
                         // Вставить в запрос параметры из scenarioVariables, если они есть.
                         for (Map.Entry<String, Object> scenarioVariable : scenarioVariables.entrySet()) {

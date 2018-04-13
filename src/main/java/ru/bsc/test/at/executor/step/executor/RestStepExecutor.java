@@ -44,7 +44,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         setMqMockResponses(mqMockerAdmin, testId, step.getMqMockResponseList(), scenarioVariables);
 
         // 1. Выполнить запрос БД и сохранить полученные значения
-        executeSql(connection, step, scenarioVariables);
+        executeSql(connection, step, scenarioVariables, stepResult);
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь

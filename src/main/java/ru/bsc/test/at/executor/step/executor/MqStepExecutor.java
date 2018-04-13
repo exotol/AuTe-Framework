@@ -30,7 +30,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 1. Выполнить запрос БД и сохранить полученные значения
-        executeSql(connection, step, scenarioVariables);
+        executeSql(connection, step, scenarioVariables, stepResult);
         stepResult.setSavedParameters(scenarioVariables.toString());
 
         // 1.1 Отправить сообщение в очередь
