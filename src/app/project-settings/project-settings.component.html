@@ -48,9 +48,9 @@
         <div *ngFor="let group of project.groupList; let i = index;">
           <div class="col-sm-4" style="margin-bottom: 7px;">
             <a style="cursor: pointer; " (click)="renameGroup(project.groupList[i]); false;"><small><span class="glyphicon glyphicon-edit"></span></small> <b>{{project.groupList[i]}}</b></a>
-            <!--span class="input-group-btn">
-              <button class="btn btn-default" (click)="removeScenarioGroup(scenarioGroup)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
-            </span-->
+            <span class="input-group-btn">
+              <button class="btn btn-sm btn-default" (click)="removeScenarioGroup(group)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
+            </span>
           </div>
         </div>
         <div class="clearfix"></div>

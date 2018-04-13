@@ -56,6 +56,15 @@ export class ProjectSettingsComponent implements OnInit {
     return false;
   }
 
+  removeScenarioGroup(group: string): void {
+    if (confirm('All scenarios data will be removed')) {
+      const indexToRemove = this.project.groupList.indexOf(group);
+      if (indexToRemove > -1) {
+        this.project.groupList.splice(indexToRemove, 1);
+      }
+    }
+  }
+
   addGroup(): void {
     let newGroupName: string;
     if ((newGroupName = prompt('New group name')) && newGroupName && newGroupName.length > 0) {
