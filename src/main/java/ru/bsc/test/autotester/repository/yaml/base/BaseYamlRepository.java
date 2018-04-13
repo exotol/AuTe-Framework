@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by smakarov
@@ -43,9 +44,9 @@ public abstract class BaseYamlRepository {
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
         Map<Step, String> codeCorrections = new HashMap<>();
         List<Step> stepsForeNewCodes = findStepsForNewCodes(savedScenario, scenario);
-
+        Stream<String> streamCodes = stepsForeNewCodes.stream().map(s -> s.getCode());
         for (Step step : scenario.getStepList()) {
-            if(stepsForeNewCodes.contains(step)) {
+            if(streamCodes.anyMatch(s -> Objects.equals(s, step.getCode()))) {
                 if (step.getCode() != null) {
                     codeSet.remove(step.getCode());
                 }
@@ -67,7 +68,14 @@ public abstract class BaseYamlRepository {
         scenario.setScenarioGroup(scenarioGroupSaved);
     }
 
+    /**
+     * Ищем шаги у которых меняем код (поменялся номер шага, поменялось наименование)
+     * @param savedScenario шаги из файловой системы (до изменений)
+     * @param scenario шаги на текущий момент
+     * @return
+     */
     private List<Step> findStepsForNewCodes(Scenario savedScenario, Scenario scenario){
+        // поменялось наименование
         Map<String, Step> savedScenarioCodeMap = new HashMap<>();
         for(Step step : savedScenario.getStepList()){
             savedScenarioCodeMap.put(step.getCode(), step);
@@ -88,7 +96,25 @@ public abstract class BaseYamlRepository {
                 }
             }
         }
+
+        // шаги поменяли местами
+
+        // фильтруем удаленные шаги и те которые меняем при смене наименования
+        List<Step> savedStepList = new ArrayList<>(savedScenario.getStepList()).stream().filter(s -> exists(s, scenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
+        // фильтруем добавленные шаги и те которые меняем при смене наименования
+        List<Step> stepList = new ArrayList<>(scenario.getStepList()).stream().filter(s -> exists(s, savedScenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
+
+        for (int i = 0; i < savedStepList.size(); i++) {
+            if (!Objects.equals(savedStepList.get(i).getCode(), stepList.get(i).getCode())) {
+                stepsForNewCodes.add(savedStepList.get(i));
+            }
+        }
+
         return stepsForNewCodes;
+    }
+
+    private boolean exists(Step step,  Collection<Step> coll){
+        return coll.stream().anyMatch(s -> Objects.equals(step.getCode(), s.getCode()));
     }
 
     protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
