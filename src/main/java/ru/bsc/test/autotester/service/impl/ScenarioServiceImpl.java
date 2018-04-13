@@ -1,5 +1,6 @@
 package ru.bsc.test.autotester.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,10 +21,7 @@ import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.ro.ProjectSearchRo;
-import ru.bsc.test.autotester.ro.ScenarioRo;
-import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
-import ru.bsc.test.autotester.ro.StepRo;
+import ru.bsc.test.autotester.ro.*;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.utils.ZipUtils;
@@ -49,6 +47,9 @@ import static ru.bsc.test.at.executor.model.StepResult.RESULT_OK;
 @Slf4j
 public class ScenarioServiceImpl implements ScenarioService {
     private static final String DEFAULT_GROUP = "__default";
+    //@formatter:off
+    private static final TypeReference<List<StepResult>> RESULT_LIST_TYPE = new TypeReference<List<StepResult>>(){};
+    //@formatter:on
     private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
     private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
@@ -113,7 +114,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
 
                 String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
-                Path path = Paths.get("tmp", "results", groupDir, scenario.getCode());
+                Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
                 if (!Files.exists(path)) {
                     Files.createDirectories(path);
                 }
@@ -149,16 +150,29 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public void getReport(String executingUuid, ZipOutputStream outputStream) throws Exception {
-        getReportList(Collections.singletonList(executingUuid), outputStream);
+    public List<StepResult> getResult(ScenarioIdentityRo identity) {
+        try {
+            return loadResults(identity);
+        } catch (IOException e) {
+            log.error("Error while loading scenario", e);
+        }
+        return null;
     }
 
     @Override
-    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
+    public void getReport(List<ScenarioIdentityRo> identities, ZipOutputStream outputStream) throws Exception {
         reportGenerator.clear();
-        runningScriptsMap.forEach((s, executionResult) -> {
-            if (executionUuidList.contains(s)) {
-                executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);
+        identities.forEach(identity -> {
+            try {
+                List<StepResult> results = loadResults(identity);
+                if (results != null) {
+                    String scenarioGroup = identity.getGroup();
+                    String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + identity.getCode();
+                    Scenario scenario = scenarioRepository.findScenario(identity.getProjectCode(), scenarioPath);
+                    reportGenerator.add(scenario, results);
+                }
+            } catch (IOException e) {
+                log.error("Error while loading scenario", e);
             }
         });
         if (reportGenerator.isEmpty()) {
@@ -168,7 +182,7 @@ public class ScenarioServiceImpl implements ScenarioService {
         File tmpDirectory = new File("tmp", UUID.randomUUID().toString());
         if (tmpDirectory.mkdirs()) {
             reportGenerator.generate(tmpDirectory);
-            ZipUtils.pack(tmpDirectory, zipOutputStream);
+            ZipUtils.pack(tmpDirectory, outputStream);
         } else {
             throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
         }
@@ -305,5 +319,23 @@ public class ScenarioServiceImpl implements ScenarioService {
                 log.error("Error while loading after scenario", e);
             }
         }
+    }
+
+    private List<StepResult> loadResults(ScenarioIdentityRo identity) throws IOException {
+        String scenarioGroup = identity.getGroup();
+        String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
+        Path resultsFile = Paths.get(
+                "tmp",
+                "results",
+                identity.getProjectCode(),
+                groupDir,
+                identity.getCode(),
+                "results.json"
+        );
+        List<StepResult> results = null;
+        if (Files.exists(resultsFile)) {
+            results = objectMapper.readValue(resultsFile.toFile(), RESULT_LIST_TYPE);
+        }
+        return results;
     }
 }

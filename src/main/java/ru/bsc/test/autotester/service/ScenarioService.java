@@ -3,11 +3,9 @@ package ru.bsc.test.autotester.service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.model.ExecutionResult;
-import ru.bsc.test.autotester.ro.ProjectSearchRo;
-import ru.bsc.test.autotester.ro.ScenarioRo;
-import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
-import ru.bsc.test.autotester.ro.StepRo;
+import ru.bsc.test.autotester.ro.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,6 +33,8 @@ public interface ScenarioService {
 
     ExecutionResult getResult(String executingUuid);
 
+    List<StepResult> getResult(ScenarioIdentityRo identity);
+
     StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo) throws IOException;
 
     void deleteOne(String projectCode, String scenarioPath) throws IOException;
@@ -47,7 +47,5 @@ public interface ScenarioService {
 
     ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException;
 
-    void getReport(String uuid, ZipOutputStream executionUuid) throws Exception;
-
-    void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception;
+    void getReport(List<ScenarioIdentityRo> identities, ZipOutputStream executionUuid) throws Exception;
 }
