@@ -100,19 +100,22 @@ public abstract class BaseYamlRepository {
         // шаги поменяли местами
 
         // фильтруем удаленные шаги и те которые меняем при смене наименования
-        List<Step> savedStepList = new ArrayList<>(savedScenario.getStepList()).stream().filter(s -> s.exists(scenario.getStepList())).filter(s -> !s.exists(stepsForNewCodes)).collect(Collectors.toList());
+        List<Step> savedStepList = new ArrayList<>(savedScenario.getStepList()).stream().filter(s -> exists(s, scenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
         // фильтруем добавленные шаги и те которые меняем при смене наименования
-        List<Step> stepList = new ArrayList<>(scenario.getStepList()).stream().filter(s -> s.exists(savedScenario.getStepList())).filter(s -> !s.exists(stepsForNewCodes)).collect(Collectors.toList());
+        List<Step> stepList = new ArrayList<>(scenario.getStepList()).stream().filter(s -> exists(s, savedScenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
 
-        for(int i = 0; i < savedStepList.size(); i++){
-           if(!savedStepList.get(i).equalCode(stepList.get(i))){
-              stepsForNewCodes.add(savedStepList.get(i));
-           }
+        for (int i = 0; i < savedStepList.size(); i++) {
+            if (!Objects.equals(savedStepList.get(i).getCode(), stepList.get(i).getCode())) {
+                stepsForNewCodes.add(savedStepList.get(i));
+            }
         }
 
         return stepsForNewCodes;
     }
 
+    private boolean exists(Step step,  Collection<Step> coll){
+        return coll.stream().anyMatch(s -> Objects.equals(step.getCode(), s.getCode()));
+    }
 
     protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
         String newCode = null;
