@@ -1,10 +1,9 @@
-import {AfterContentChecked, Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterContentChecked, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ProjectService} from '../service/project.service';
 import {Project} from '../model/project';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {Scenario} from '../model/scenario';
-import {Globals} from '../globals';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import { saveAs } from 'file-saver/FileSaver';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -32,7 +31,6 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   executingStateTotal = 0;
 
   constructor(
-    public globals: Globals,
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
@@ -148,7 +146,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   // noinspection JSUnusedLocalSymbols
   onCbStateChange(event: any, scenario: Scenario) {
     this.selectAllFlag = !scenario._selected && this.scenarioList.
-    filter(s => s.scenarioGroup == this.filter.scenarioGroup).filter(s => s != scenario && !s._selected).length == 0;
+    filter(s => s.scenarioGroup === this.filter.scenarioGroup).filter(s => s !== scenario && !s._selected).length === 0;
   }
 
   saveNewScenario() {
