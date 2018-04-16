@@ -4,6 +4,7 @@ import {ProjectService} from '../service/project.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Scenario} from '../model/scenario';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-settings',
@@ -24,7 +25,8 @@ export class ProjectSettingsComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private customToastyService: CustomToastyService
+    private customToastyService: CustomToastyService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -57,12 +59,14 @@ export class ProjectSettingsComponent implements OnInit {
   }
 
   removeScenarioGroup(group: string): void {
-    if (confirm('All scenarios data will be removed')) {
-      const indexToRemove = this.project.groupList.indexOf(group);
-      if (indexToRemove > -1) {
-        this.project.groupList.splice(indexToRemove, 1);
+    this.translate.get('Remove scenario group').subscribe(msg =>{
+      if (confirm(msg)) {
+        const indexToRemove = this.project.groupList.indexOf(group);
+        if (indexToRemove > -1) {
+          this.project.groupList.splice(indexToRemove, 1);
+        }
       }
-    }
+    });
   }
 
   addGroup(): void {
