@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by smakarov
@@ -44,9 +43,9 @@ public abstract class BaseYamlRepository {
         Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
         Map<Step, String> codeCorrections = new HashMap<>();
         List<Step> stepsForeNewCodes = findStepsForNewCodes(savedScenario, scenario);
-        Stream<String> streamCodes = stepsForeNewCodes.stream().map(s -> s.getCode());
+        List<String> streamCodes = stepsForeNewCodes.stream().map(s -> s.getCode()).collect(Collectors.toList());
         for (Step step : scenario.getStepList()) {
-            if(streamCodes.anyMatch(s -> Objects.equals(s, step.getCode()))) {
+            if(streamCodes.stream().anyMatch(s -> Objects.equals(s, step.getCode()))) {
                 if (step.getCode() != null) {
                     codeSet.remove(step.getCode());
                 }
