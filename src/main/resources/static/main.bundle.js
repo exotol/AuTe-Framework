@@ -930,6 +930,7 @@ module.exports = "<ol class=\"breadcrumb\">\r\n  <li class=\"breadcrumb-item\"><
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectSettingsComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -944,11 +945,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ProjectSettingsComponent = (function () {
-    function ProjectSettingsComponent(projectService, route, customToastyService) {
+    function ProjectSettingsComponent(projectService, route, customToastyService, translate) {
         this.projectService = projectService;
         this.route = route;
         this.customToastyService = customToastyService;
+        this.translate = translate;
         this.tab = 'details';
     }
     ProjectSettingsComponent.prototype.ngOnInit = function () {
@@ -975,12 +978,15 @@ var ProjectSettingsComponent = (function () {
         return false;
     };
     ProjectSettingsComponent.prototype.removeScenarioGroup = function (group) {
-        if (confirm('All scenarios data will be removed')) {
-            var indexToRemove = this.project.groupList.indexOf(group);
-            if (indexToRemove > -1) {
-                this.project.groupList.splice(indexToRemove, 1);
+        var _this = this;
+        this.translate.get('Remove scenario group').subscribe(function (msg) {
+            if (confirm(msg)) {
+                var indexToRemove = _this.project.groupList.indexOf(group);
+                if (indexToRemove > -1) {
+                    _this.project.groupList.splice(indexToRemove, 1);
+                }
             }
-        }
+        });
     };
     ProjectSettingsComponent.prototype.addGroup = function () {
         var _this = this;
@@ -1018,10 +1024,10 @@ ProjectSettingsComponent = __decorate([
             'input[type=checkbox] { width: 24px; height: 24px; margin: 0; vertical-align: middle; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */]) === "function" && _d || Object])
 ], ProjectSettingsComponent);
 
-var _a, _b, _c;
+var _a, _b, _c, _d;
 //# sourceMappingURL=project-settings.component.js.map
 
 /***/ }),
