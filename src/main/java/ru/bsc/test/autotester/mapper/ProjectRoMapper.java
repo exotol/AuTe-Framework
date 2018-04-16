@@ -44,7 +44,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "useRandomTestId", source = "useRandomTestId"),
             @Mapping(target = "testIdHeaderName", source = "testIdHeaderName"),
             @Mapping(target = "scenarioList", ignore = true),
-            @Mapping(target = "groupList", ignore = true),
+            @Mapping(target = "groupList", source = "groupList"),
             @Mapping(target = "mqCheckInterval", ignore = true),
             @Mapping(target = "mqCheckCount", ignore = true),
     })

@@ -10,7 +10,6 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.autotester.component.Translator;
-import ru.bsc.test.autotester.exception.ProjectSavingException;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.repository.ProjectRepository;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by sdoroshin on 27.10.2017.
@@ -107,9 +107,28 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         Path path = Paths.get(environmentProperties.getProjectsDirectoryPath(), project.getCode(), MAIN_YML_FILENAME);
         try {
             clearProjectBeforeSave(project);
+            removeGroups(project);
             YamlUtils.dumpToFile(project, path.toString());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Save file {}", path, e);
+        }
+    }
+
+    private void removeGroups(Project project) throws Exception{
+        File file = Paths.get(
+                environmentProperties.getProjectsDirectoryPath(),
+                project.getCode()).toFile();
+        Set<String> readGroups = new HashSet<>(readGroups(file));
+        Set<String> groupSet = new HashSet<>(project.getGroupList());
+        List<String> removed = readGroups.stream().filter(group -> !groupSet.contains(group)).collect(Collectors.toList());
+        for(String group : removed){
+            FileUtils.deleteDirectory(Paths.get(
+                    environmentProperties.getProjectsDirectoryPath(),
+                    project.getCode(),
+                    "scenarios",
+                    group).toFile());
+            project.getGroupList().remove(group);
+
         }
     }
 
@@ -199,13 +218,17 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
     }
 
     private void loadGroups(Project project, File projectDirectory) {
+        project.setGroupList(readGroups(projectDirectory));
+    }
+
+    private List<String> readGroups(File projectDirectory){
         File scenariosDirectory = new File(projectDirectory, "scenarios");
         if (!scenariosDirectory.exists()) {
-            return;
+            return new ArrayList<>();
         }
         File[] files = scenariosDirectory.listFiles(File::isDirectory);
         if (files == null) {
-            return;
+            return new ArrayList<>();
         }
         List<String> groups = new ArrayList<>();
         for (File directory : files) {
@@ -214,7 +237,7 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                 groups.add(directory.getName());
             }
         }
-        project.setGroupList(groups);
+        return groups;
     }
 
     private void clearProjectBeforeSave(Project project) {
