@@ -1,5 +1,6 @@
 package ru.bsc.test.at.executor.mq;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
@@ -8,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -42,7 +47,38 @@ class RabbitMqManager extends AbstractMqManager {
     @Override
     public void sendTextMessage(String queueName, String message, Map<String, Object> properties, String testIdHeaderName, String testId) throws Exception {
         Channel channel = senderConnection.createChannel();
-        channel.basicPublish("", queueName, null, message.getBytes());
+
+        AMQP.BasicProperties.Builder propertiesBuilder = new AMQP.BasicProperties().builder();
+
+        Map<String, Object> headers = new HashMap<>();
+
+        if (properties != null) {
+            properties.forEach((name, value) -> {
+                String stringValue = value instanceof String ? (String) value : null;
+                if ("messageId".equals(name)) {
+                    propertiesBuilder.messageId(stringValue);
+                } else if ("contentType".equals(name)) {
+                    propertiesBuilder.contentType(stringValue);
+                } else if ("contentEncoding".equals(name)) {
+                    propertiesBuilder.contentEncoding(stringValue);
+                } else if ("correlationId".equals(name)) {
+                    propertiesBuilder.correlationId(stringValue);
+                } else if ("replyTo".equals(name)) {
+                    propertiesBuilder.replyTo(stringValue);
+                } else if ("timestamp".equals(name)) {
+                    try {
+                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy,HH:mm:ss SSS");
+                        propertiesBuilder.timestamp(formatter.parse(stringValue));
+                    } catch (ParseException e) {
+                        log.error("{}", e);
+                    }
+                } else {
+                    headers.put(name, value);
+                }
+            });
+        }
+
+        channel.basicPublish("", queueName, propertiesBuilder.headers(headers).build(), message.getBytes());
         channel.close();
     }
 

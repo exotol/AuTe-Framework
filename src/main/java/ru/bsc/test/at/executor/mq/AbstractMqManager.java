@@ -13,6 +13,9 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import java.io.Closeable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 @Slf4j
@@ -33,10 +36,26 @@ abstract public class AbstractMqManager implements Closeable {
         }
 
         if (properties != null) {
-            properties.forEach((key, value) -> {
+            properties.forEach((name, value) -> {
+                String stringValue = value instanceof String ? (String) value : null;
                 try {
-                    if (StringUtils.isNotEmpty(key) && value != null) {
-                        newMessage.setObjectProperty(key, value);
+                    if (StringUtils.isNotEmpty(name) && value != null) {
+                        if ("messageId".equals(name)) {
+                            newMessage.setJMSMessageID(stringValue);
+                        } else if ("correlationId".equals(name)) {
+                            newMessage.setJMSCorrelationID(stringValue);
+                        } else if ("replyTo".equals(name)) {
+                            newMessage.setJMSReplyTo(session.createQueue(stringValue));
+                        } else if ("timestamp".equals(name)) {
+                            try {
+                                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy,HH:mm:ss SSS");
+                                newMessage.setJMSTimestamp(formatter.parse(stringValue).getTime());
+                            } catch (ParseException e) {
+                                log.error("{}", e);
+                            }
+                        } else {
+                            newMessage.setObjectProperty(name, value);
+                        }
                     }
                 } catch (JMSException e) {
                     log.error("Set JMS object property error: {}", e);
