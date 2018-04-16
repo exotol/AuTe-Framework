@@ -26,6 +26,10 @@ public class MqStepExecutor extends AbstractStepExecutor {
     @Override
     public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
+        if (mqClient == null) {
+            throw new Exception("JMS is not configured in env.yml");
+        }
+
         // 0. Установить ответы сервисов, которые будут использоваться в SoapUI для определения ответа
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
