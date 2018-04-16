@@ -41,23 +41,23 @@ public class HistoryFilesProcessor {
         this.historyLimit = historyLimit != null ? historyLimit : DEFAULT_HISTORY_LIMIT;
     }
 
-    public void process(Path output) {
-        copyHistoryFile(output, HISTORY_JSON, this::processHistory);
-        copyHistoryFile(output, HISTORY_TREND_JSON);
-        copyHistoryFile(output, DURATION_TREND_JSON);
+    public void process(String projectCode, Path output) {
+        copyHistoryFile(projectCode, output, HISTORY_JSON, this::processHistory);
+        copyHistoryFile(projectCode, output, HISTORY_TREND_JSON);
+        copyHistoryFile(projectCode, output, DURATION_TREND_JSON);
     }
 
-    private void copyHistoryFile(Path output, String fileName) {
-        copyHistoryFile(output, fileName, null);
+    private void copyHistoryFile(String projectCode, Path output, String fileName) {
+        copyHistoryFile(projectCode, output, fileName, null);
     }
 
-    private void copyHistoryFile(Path output, String fileName, Consumer<Path> fileProcessor) {
+    private void copyHistoryFile(String projectCode, Path output, String fileName, Consumer<Path> fileProcessor) {
         try {
             Path source = output.resolve(HISTORY_DIRECTORY).resolve(fileName);
             if (Files.exists(source)) {
-                Path targetPath = Paths.get(HISTORY_DIRECTORY);
+                Path targetPath = Paths.get(HISTORY_DIRECTORY).resolve(projectCode);
                 if (!Files.exists(targetPath)) {
-                    Files.createDirectory(targetPath);
+                    Files.createDirectories(targetPath);
                 }
                 if (fileProcessor != null) {
                     fileProcessor.accept(source);

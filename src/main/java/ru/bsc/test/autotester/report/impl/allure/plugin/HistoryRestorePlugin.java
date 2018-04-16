@@ -32,12 +32,13 @@ public class HistoryRestorePlugin implements Reader {
 
     @Override
     public void readResults(Configuration configuration, ResultsVisitor visitor, Path directory) {
+        ProjectContext projectContext = configuration.requireContext(ProjectContext.class);
         Path targetDirectory = directory.resolve(HISTORY_DIRECTORY);
-        if (!targetDirectory.toFile().mkdir()) {
+        if (!targetDirectory.toFile().mkdirs()) {
             return;
         }
         SAVING_FILES.forEach(name -> {
-            Path sourceFile = Paths.get(HISTORY_DIRECTORY, name);
+            Path sourceFile = Paths.get(HISTORY_DIRECTORY, projectContext.getValue(), name);
             Path targetFile = targetDirectory.resolve(name);
             if (Files.exists(sourceFile)) {
                 try {

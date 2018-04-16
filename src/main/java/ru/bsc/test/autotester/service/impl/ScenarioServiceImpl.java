@@ -1,5 +1,7 @@
 package ru.bsc.test.autotester.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +54,10 @@ public class ScenarioServiceImpl implements ScenarioService {
     //@formatter:on
     private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
     private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().setVisibility(
+            PropertyAccessor.FIELD,
+            JsonAutoDetect.Visibility.ANY
+    );
     private final StepRoMapper stepRoMapper;
     private final ScenarioRoMapper scenarioRoMapper;
     private final ProjectRoMapper projectRoMapper;
@@ -112,7 +116,6 @@ public class ScenarioServiceImpl implements ScenarioService {
             try {
                 String scenarioGroup = scenario.getScenarioGroup();
                 String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
-
                 String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
                 Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
                 if (!Files.exists(path)) {

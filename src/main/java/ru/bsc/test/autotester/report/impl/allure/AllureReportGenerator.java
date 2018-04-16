@@ -40,6 +40,7 @@ import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.report.impl.allure.attach.builder.AttachBuilder;
 import ru.bsc.test.autotester.report.impl.allure.plugin.DefaultCategoriesPlugin;
 import ru.bsc.test.autotester.report.impl.allure.plugin.HistoryRestorePlugin;
+import ru.bsc.test.autotester.report.impl.allure.plugin.ProjectContext;
 import ru.yandex.qatools.allure.model.Status;
 import ru.yandex.qatools.allure.model.Step;
 import ru.yandex.qatools.allure.model.TestCaseResult;
@@ -70,6 +71,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     private final Gson gson = new Gson();
     private final AttachBuilder<StepResult> stepResultAttachBuilder;
     private final AttachBuilder<RequestData> requestDataAttachBuilder;
+    private final ReportGenerator generator;
     private final Configuration configuration;
     private final HistoryFilesProcessor historyFilesProcessor;
 
@@ -82,7 +84,8 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         this.stepResultAttachBuilder = stepResultAttachBuilder;
         this.requestDataAttachBuilder = requestDataAttachBuilder;
         this.historyFilesProcessor = historyFilesProcessor;
-        configuration = createConfiguration();
+        this.configuration = createConfiguration();
+        this.generator = new ReportGenerator(configuration);
     }
 
     @Override
@@ -101,11 +104,13 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             }
         }
 
-        final ReportGenerator generator = new ReportGenerator(configuration);
+        ProjectContext projectContext = configuration.requireContext(ProjectContext.class);
+        String projectCode = detectProjectCode();
+        projectContext.setProjectCode(projectCode);
         Path output = new File(directory + File.separator + "output").toPath();
         final Path resultsDirectory = resultDirectory.toPath();
         generator.generate(output, resultsDirectory);
-        historyFilesProcessor.process(output);
+        historyFilesProcessor.process(projectCode, output);
         FileUtils.deleteDirectory(resultDirectory);
     }
 
@@ -115,6 +120,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 new MarkdownContext(),
                 new FreemarkerContext(),
                 new RandomUidContext(),
+                new ProjectContext(),
                 new MarkdownDescriptionsPlugin(),
                 new TagsPlugin(),
                 new SeverityPlugin(),
@@ -164,6 +170,14 @@ public class AllureReportGenerator extends AbstractReportGenerator {
             }
         }
         return Collections.emptyList();
+    }
+
+    private String detectProjectCode() {
+        List<StepResult> results = getScenarioStepResultMap().values().stream().findFirst().orElse(null);
+        if (CollectionUtils.isEmpty(results)) {
+            return null;
+        }
+        return results.get(0).getProjectCode();
     }
 
     private List<AllurePreparedData> buildReportData(
@@ -227,33 +241,11 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     }
 
     private Function<Map.Entry<ru.bsc.test.at.executor.model.Step, List<StepResult>>, List<Step>> buildSteps(File resultDirectory) {
-        return resultGroup -> {
-            ru.bsc.test.at.executor.model.Step step = resultGroup.getKey();
-            if (CollectionUtils.isEmpty(step.getStepParameterSetList())) {
-                StepResult result = resultGroup.getValue().get(0);
-                return Collections.singletonList(buildStep(resultDirectory, stepName(step), result));
-            } else {
-                return testCaseSteps(resultDirectory, step, resultGroup.getValue());
-            }
-        };
-    }
-
-    private List<Step> testCaseSteps(
-            File resultDirectory,
-            ru.bsc.test.at.executor.model.Step step,
-            List<StepResult> results
-    ) {
-        List<StepParameterSet> testCases = step.getStepParameterSetList();
-        List<Step> steps = new ArrayList<>();
-        for (int i = 0; i < testCases.size(); i++) {
-            StepParameterSet testCase = testCases.get(i);
-            String stepName = stepName(step);
-            String testCaseName = isNotEmpty(testCase.getDescription()) ? testCase.getDescription() : valueOf(i + 1);
-            String name = stepName + " - " + testCaseName;
-            StepResult stepResult = results.get(i);
-            steps.add(buildStep(resultDirectory, name, stepResult));
-        }
-        return steps;
+        return resultGroup -> Collections.singletonList(buildStep(
+                resultDirectory,
+                stepName(resultGroup.getKey()),
+                resultGroup.getValue().get(0)
+        ));
     }
 
     private Step buildStep(File resultDirectory, String name, StepResult result) {
