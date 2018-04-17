@@ -21,10 +21,14 @@
     </style>
 </head>
 <body>
+<div>
+    <label for="sync-scroll">Synchronize scroll</label>
+    <input id="sync-scroll" type="checkbox" checked/>
+</div>
 {% autoescape 'html' %}
 <div class="json-pane">
     <h2>Actual</h2>
-    <div class="json-result-pane">
+    <div id="actual-pane" class="json-result-pane">
     <pre>
         {%- for diff in diffs -%}
             {%- if diff.operation == 'EQUAL' -%}
@@ -38,7 +42,7 @@
 </div>
 <div class="json-pane">
     <h2>Expected</h2>
-    <div class="json-result-pane">
+    <div id="expected-pane" class="json-result-pane">
     <pre>
         {%- for diff in diffs -%}
             {%- if diff.operation == 'EQUAL' -%}
@@ -51,4 +55,35 @@
     </div>
 </div>
 {% endautoescape %}
+<script type="application/javascript">
+    const actualPane = document.getElementById('actual-pane');
+    const expectedPane = document.getElementById('expected-pane');
+    const syncScroll = document.getElementById('sync-scroll');
+    var synchronizeActual = true;
+    var synchronizeExpected = true;
+
+    actualPane.onscroll = function () {
+        if (!syncScroll.checked) {
+            return;
+        }
+        if (!synchronizeActual) {
+            synchronizeExpected = true;
+            expectedPane.scrollTop = actualPane.scrollTop;
+            expectedPane.scrollLeft = actualPane.scrollLeft;
+        }
+        synchronizeActual = false;
+    };
+
+    expectedPane.onscroll = function () {
+        if (!syncScroll.checked) {
+            return;
+        }
+        if (!synchronizeExpected) {
+            synchronizeActual = true;
+            actualPane.scrollTop = expectedPane.scrollTop;
+            actualPane.scrollLeft = expectedPane.scrollLeft;
+        }
+        synchronizeExpected = false;
+    }
+</script>
 </body>
