@@ -91,7 +91,7 @@
         <pre>{{stepResult | json}}</pre>
       </div>
       <div *ngIf="stepResult.editable && (tab == 'stepEdit' || tab == 'all')">
-        <app-step-item [step]="stepResult.step"></app-step-item>
+        <app-step-item [step]="getStep(stepResult.step)"></app-step-item>
         <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
       </div>
     </div>

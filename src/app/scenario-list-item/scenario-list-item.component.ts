@@ -3,6 +3,7 @@ import {Scenario} from '../model/scenario';
 import {ScenarioService} from '../service/scenario.service';
 import {StepResult} from '../model/step-result';
 import {StartScenarioInfo} from '../model/start-scenario-info';
+import {Step} from '../model/step';
 
 @Component({
   selector: 'app-scenario-list-item',
@@ -17,6 +18,9 @@ export class ScenarioListItemComponent implements OnInit {
   projectCode: string;
   @Input()
   isLinkTitleScenario = true;
+  @Input()
+  stepList : Step[];
+
   @Output() onStateChange = new EventEmitter<any>();
   @Output() cbStateChange = new EventEmitter<any>();
 

@@ -4,6 +4,7 @@ import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Scenario} from '../model/scenario';
+import {Step} from '../model/step';
 
 @Component({
   selector: 'app-step-result-item',
@@ -21,6 +22,9 @@ export class StepResultItemComponent implements OnInit {
   stepResult: StepResult;
   @Input()
   scenario: Scenario;
+  @Input()
+  stepList: Step[];
+
   expectedDiff: string;
   actualDiff: string;
 
@@ -254,4 +258,11 @@ export class StepResultItemComponent implements OnInit {
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
+  getStep(step: Step) {
+    if(!this.stepList || !step){
+      return step;
+    } else {
+      return this.stepList.find(s => s.code == step.code)
+    }
+  }
 }
