@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.autotester.diff.Diff;
 import ru.bsc.test.autotester.diff.DiffMatchPatch;
@@ -24,23 +26,47 @@ public class JsonDiffCalculator {
     private final JsonParser parser = new JsonParser();
 
     public List<Diff> calculate(String actual, String expected) {
-        String actualJson = actual;
-        String expectedJson = expected;
+        return dmp.diffMain(format(actual), format(expected));
+    }
 
-        try {
-            JsonElement jsonElement = parser.parse(actual);
-            actualJson = gson.toJson(jsonElement);
-        } catch (Exception e) {
-            log.error("Error while parsing actual result: {}", actual, e);
+    private String format(String str){
+
+        if(isJson(str)){
+            try {
+                JsonElement jsonElement = parser.parse(str);
+                return gson.toJson(jsonElement);
+            } catch (Exception e) {
+                return str;
+            }
         }
 
-        try {
-            JsonElement jsonElement = parser.parse(expected);
-            expectedJson = gson.toJson(jsonElement);
-        } catch (Exception e) {
-            log.error("Error while parsing expected result: {}", expected, e);
+        if (isXml(str)) {
+            try {
+                Document doc = Jsoup.parse(str);
+                return doc.outerHtml();
+            } catch (Exception e) {
+                return str;
+            }
         }
+        return str;
+    }
 
-        return dmp.diffMain(expectedJson, actualJson);
+    private boolean isJson(String str){
+        if(str == null){
+            return false;
+        }
+        String trimmed = str.trim();
+        return trimmed.startsWith("{") && trimmed.endsWith("}") ||
+               trimmed.startsWith("[") && trimmed.endsWith("]");
+
+    }
+
+    private boolean isXml(String str){
+        if(str == null){
+            return false;
+        }
+        String trimmed = str.trim();
+        return trimmed.startsWith("<") && trimmed.endsWith(">");
+
     }
 }
