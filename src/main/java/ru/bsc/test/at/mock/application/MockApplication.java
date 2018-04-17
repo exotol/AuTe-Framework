@@ -7,20 +7,21 @@ import com.github.tomakehurst.wiremock.core.WireMockApp;
 import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
 import com.github.tomakehurst.wiremock.http.StubRequestHandler;
 import com.github.tomakehurst.wiremock.servlet.NotImplementedContainer;
+import com.github.tomakehurst.wiremock.servlet.WireMockHandlerDispatchingServlet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import ru.bsc.test.at.mock.filter.CorsFilter;
 import ru.bsc.test.at.mock.wiremock.webcontextlistener.configuration.CustomWarConfiguration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -60,6 +61,13 @@ public class MockApplication {
     }
 
     @Bean
+    public FilterRegistrationBean corsFilter() {
+        FilterRegistrationBean filter = new FilterRegistrationBean<>(new CorsFilter());
+        filter.addUrlPatterns("/*");
+        return filter;
+    }
+
+    @Bean
     public WireMockApp wireMockApp() {
         WireMockApp wireMockApp = new WireMockApp(new CustomWarConfiguration(context, "."), new NotImplementedContainer());
 
@@ -72,13 +80,21 @@ public class MockApplication {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
+    public ServletRegistrationBean wiremockAdminHandlerBean() {
+        ServletRegistrationBean bean = new ServletRegistrationBean<>(new WireMockHandlerDispatchingServlet(),"/__admin/*");
+        bean.addInitParameter("RequestHandlerClass", AdminRequestHandler.class.getName());
+        bean.setLoadOnStartup(1);
+        bean.setName("wiremockAdmin");
+        return bean;
+    }
+
+    @Bean
+    public ServletRegistrationBean wiremockMockHandlerBean() {
+        ServletRegistrationBean bean = new ServletRegistrationBean<>(new WireMockHandlerDispatchingServlet(), "/*");
+        bean.addInitParameter("RequestHandlerClass", StubRequestHandler.class.getName());
+        bean.setLoadOnStartup(1);
+        bean.setName("wiremockStub");
+        return bean;
     }
 
     @Bean
