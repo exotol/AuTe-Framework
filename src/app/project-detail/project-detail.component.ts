@@ -82,6 +82,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.router.navigate([], {queryParams: {scenarioGroup: group ? group : ''}});
     this.updateFailCountSum();
 
+    this.updateSelectAllFlag();
     return false;
   }
 
@@ -91,7 +92,12 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.router.navigate([]);
     this.updateFailCountSum();
 
+    this.updateSelectAllFlag();
     return false;
+  }
+
+  updateSelectAllFlag() {
+    this.selectAllFlag = this.scenarioList.filter(s => s.scenarioGroup == this.filter.scenarioGroup).filter(s => !s._selected).length === 0;
   }
 
   isDisplayScenario(scenario: Scenario) {
