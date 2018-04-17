@@ -748,13 +748,19 @@ var ProjectDetailComponent = (function () {
         this.filter.scenarioGroup = group;
         this.router.navigate([], { queryParams: { scenarioGroup: group ? group : '' } });
         this.updateFailCountSum();
+        this.updateSelectAllFlag();
         return false;
     };
     ProjectDetailComponent.prototype.selectAllGroups = function () {
         this.filter = null;
         this.router.navigate([]);
         this.updateFailCountSum();
+        this.updateSelectAllFlag();
         return false;
+    };
+    ProjectDetailComponent.prototype.updateSelectAllFlag = function () {
+        var _this = this;
+        this.selectAllFlag = this.scenarioList.filter(function (s) { return s.scenarioGroup == _this.filter.scenarioGroup; }).filter(function (s) { return !s._selected; }).length === 0;
     };
     ProjectDetailComponent.prototype.isDisplayScenario = function (scenario) {
         return !this.filter ||
