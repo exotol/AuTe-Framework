@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+// Это реализация для работы с RabbitMQ.
+// Сообщения не отправляются в очередь через стандартные интерфейсы JMS, если у очереди указан параметр x-dead-letter-exchange
+
 @Slf4j
 class RabbitMqManager extends AbstractMqManager {
 
@@ -25,8 +28,6 @@ class RabbitMqManager extends AbstractMqManager {
     RabbitMqManager(String host, int port, String username, String password) throws JMSException {
 
         try {
-            // Это костыль для отправки сообщений в RabbitMQ.
-            // Сообщения не отправляются в очередь через стандартные интерфейсы JMS, если у очереди указан параметр x-dead-letter-exchange
             ConnectionFactory connectionFactory = new ConnectionFactory();
             connectionFactory.setHost(host);
             connectionFactory.setPort(port);
@@ -91,14 +92,11 @@ class RabbitMqManager extends AbstractMqManager {
     public Message waitMessage(String queueName, Long timeoutMs, String testIdHeaderName, String testId) throws JMSException {
         try {
             Channel channel = senderConnection.createChannel();
-            // channel.queueBind(queueName, "", queueName);
-
             final QueueingConsumer consumer = new QueueingConsumer(channel);
             channel.basicConsume(queueName, true, consumer);
 
             QueueingConsumer.Delivery delivery = consumer.nextDelivery(timeoutMs);
             if (delivery != null) {
-
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                 RMQTextMessage message = new RMQTextMessage();
                 message.setText(new String(delivery.getBody()));
