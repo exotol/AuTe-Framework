@@ -110,7 +110,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 XPath xPath = XPathFactory.newInstance().newXPath();
                 String valueFromMock = xPath.compile(step.getParseMockRequestXPath()).evaluate(xmlDocument);
 
-                scenarioVariables.put(step.getParseMockRequestScenarioVariable(), valueFromMock);
+                scenarioVariables.put(step.getParseMockRequestScenarioVariable().trim(), valueFromMock);
             }
         }
     }
@@ -235,14 +235,14 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                             } else if (sqlResultType == SqlResultType.OBJECT) {
                                 log.debug("Reading Object from result set ...");
                                 Object result = rs.next() ? rs.getObject(1) : null;
-                                scenarioVariables.put(sqlData.getSqlSavedParameter(), result);
+                                scenarioVariables.put(sqlData.getSqlSavedParameter().trim(), result);
                             } else if (sqlResultType == SqlResultType.LIST) {
                                 log.debug("Reading List from result set ...");
                                 List<Object> columnData = new ArrayList<>();
                                 while (rs.next()) {
                                     columnData.add(rs.getObject(1));
                                 }
-                                scenarioVariables.put(sqlData.getSqlSavedParameter(), columnData);
+                                scenarioVariables.put(sqlData.getSqlSavedParameter().trim(), columnData);
                             } else {
                                 log.debug("Reading custom result set ...");
                                 List<String> columnNameList = new LinkedList<>();
@@ -257,7 +257,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                                     }
                                     resultData.add(values);
                                 }
-                                scenarioVariables.put(sqlData.getSqlSavedParameter(), resultData);
+                                scenarioVariables.put(sqlData.getSqlSavedParameter().trim(), resultData);
                             }
                         }
                     }

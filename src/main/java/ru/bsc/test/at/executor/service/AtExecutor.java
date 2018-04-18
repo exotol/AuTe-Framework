@@ -209,7 +209,7 @@ public class AtExecutor {
 
                     if (stepParameterSet.getStepParameterList() != null) {
                         stepParameterSet.getStepParameterList()
-                                .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName(), stepParameter.getValue()));
+                                .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName().trim(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
                     try (

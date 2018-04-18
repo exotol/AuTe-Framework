@@ -86,7 +86,7 @@ public class MqMockHelper {
                     XPath xPath = XPathFactory.newInstance().newXPath();
                     String valueFromMock = xPath.compile(variable.getXpath()).evaluate(xmlDocument);
 
-                    scenarioVariables.put(variable.getVariableName(), valueFromMock);
+                    scenarioVariables.put(variable.getVariableName().trim(), valueFromMock);
                 }
             }
         }
