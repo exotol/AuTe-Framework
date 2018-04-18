@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.core.MappingsSaver;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ class BscMappingSaver implements MappingsSaver {
 
     @Override
     public void save(List<StubMapping> stubMappings) {
-        String mappingPath = "./mapping";
+        String mappingPath = ".";
         File mappingActual = new File(mappingPath + "/mappings/");
         File newName = new File(mappingPath + "/mappings_" + dateFormat.format(Calendar.getInstance().getTime()) + "/");
         boolean isRenamed = mappingActual.renameTo(newName);
@@ -47,6 +48,7 @@ class BscMappingSaver implements MappingsSaver {
                 file.mkdirs();
                 Files.write(stubMapping.toString(), new File(file, stubMapping.getUuid() + ".json"), StandardCharsets.UTF_8);
             }
+            FileUtils.deleteDirectory(newName);
         } catch (IOException e) {
             log.error("Error while save subMapping list", e);
         }

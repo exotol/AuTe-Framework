@@ -58,7 +58,7 @@ public class MockApplication {
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(new Class[]{MockApplication.class}, args);
+        SpringApplication.run(new Class[]{MockApplication.class, SpringWebConfig.class}, args);
     }
 
     @Bean
@@ -92,9 +92,9 @@ public class MockApplication {
     @Bean
     public ServletRegistrationBean wiremockMockHandlerBean() {
         Servlet servlet = new WireMockHandlerDispatchingServlet();
-        ServletRegistrationBean bean = new ServletRegistrationBean<>(servlet, "/wm/*");
+        ServletRegistrationBean bean = new ServletRegistrationBean<>(servlet, "/bsc-wire-mock/*");
         bean.addInitParameter("RequestHandlerClass", StubRequestHandler.class.getName());
-        bean.addInitParameter(WireMockHandlerDispatchingServlet.MAPPED_UNDER_KEY, "/wm/");
+        bean.addInitParameter(WireMockHandlerDispatchingServlet.MAPPED_UNDER_KEY, "/bsc-wire-mock/");
         bean.setLoadOnStartup(1);
         bean.setName("wiremockStub");
         return bean;
