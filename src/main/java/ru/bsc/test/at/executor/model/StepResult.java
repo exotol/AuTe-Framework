@@ -1,6 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class StepResult {
 
     public static final String RESULT_OK = "OK";

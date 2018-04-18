@@ -20,6 +20,7 @@ public class Scenario implements Serializable, AbstractModel {
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
     private Boolean failed;
+    private Boolean hasResults;
 
     public Scenario copy() {
         Scenario scenario = new Scenario();
@@ -41,9 +42,5 @@ public class Scenario implements Serializable, AbstractModel {
 
     public Boolean getAfterScenarioIgnore() {
         return afterScenarioIgnore != null && afterScenarioIgnore;
-    }
-
-    public Boolean getFailed() {
-        return failed;
     }
 }
