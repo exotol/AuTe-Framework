@@ -87,9 +87,6 @@
         <li [class.active]="tab == 'script'">
           <a href="#" (click)="selectTab('script')">{{'Script' | translate}} <span *ngIf="step.script" class="glyphicon glyphicon-tag"></span></a>
         </li>
-        <li [class.active]="tab == 'parse-mock-requests'">
-          <a href="#" (click)="selectTab('parse-mock-requests')">{{'Parse mock requests' | translate}} <span *ngIf="step.parseMockRequestUrl" class="glyphicon glyphicon-tag"></span></a>
-        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
@@ -407,6 +404,22 @@
             </div>
           </div>
           <button class="btn btn-default" (click)="addExpectedMqRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock MQ request' | translate}}</button>
+          <hr/>
+          <h4>{{'Parse mock requests' | translate}}</h4>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>{{'Mock URL' | translate}}</label>
+              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'XML XPath' | translate}}</label>
+              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'Scenario variable name' | translate}}</label>
+              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
+            </div>
+          </div>
         </div>
         <div *ngIf="tab == 'polling'">
           <div class="row">
@@ -431,22 +444,6 @@
           <textarea placeholder="" rows="6" title="{{'Script' | translate}}" class="form-control" [(ngModel)]="step.script"></textarea>
           <div class="help-block">
             <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>
-          </div>
-        </div>
-        <div *ngIf="tab == 'parse-mock-requests'">
-          <div class="row">
-            <div class="col-sm-12">
-              <label>{{'Mock URL' | translate}}</label>
-              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
-            </div>
-            <div class="col-sm-12">
-              <label>{{'XML XPath' | translate}}</label>
-              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
-            </div>
-            <div class="col-sm-12">
-              <label>{{'Scenario variable name' | translate}}</label>
-              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
-            </div>
           </div>
         </div>
         <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
