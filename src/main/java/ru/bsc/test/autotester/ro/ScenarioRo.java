@@ -22,4 +22,5 @@ public class ScenarioRo implements AbstractRo {
     private Boolean beforeScenarioIgnore;
     private Boolean afterScenarioIgnore;
     private Boolean failed;
+    private Boolean hasResults;
 }

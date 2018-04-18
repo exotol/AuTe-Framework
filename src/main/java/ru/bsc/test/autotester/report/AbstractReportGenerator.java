@@ -22,5 +22,9 @@ public abstract class AbstractReportGenerator {
         scenarioStepResultMap.clear();
     }
 
+    public boolean isEmpty() {
+        return scenarioStepResultMap.isEmpty();
+    }
+
     public abstract void generate(File directory) throws Exception;
 }

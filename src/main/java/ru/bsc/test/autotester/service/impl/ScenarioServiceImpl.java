@@ -1,5 +1,9 @@
 package ru.bsc.test.autotester.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +13,8 @@ import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
+import ru.bsc.test.at.executor.service.IExecutingFinishObserver;
+import ru.bsc.test.at.executor.service.IStopObserver;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
@@ -17,10 +23,7 @@ import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.ro.ProjectSearchRo;
-import ru.bsc.test.autotester.ro.ScenarioRo;
-import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
-import ru.bsc.test.autotester.ro.StepRo;
+import ru.bsc.test.autotester.ro.*;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.utils.ZipUtils;
@@ -28,22 +31,36 @@ import ru.bsc.test.autotester.utils.ZipUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipOutputStream;
 
+import static ru.bsc.test.at.executor.model.StepResult.RESULT_FAIL;
+import static ru.bsc.test.at.executor.model.StepResult.RESULT_OK;
+
 /**
  * Created by sdoroshin on 21.03.2017.
- *
  */
 @Service
 @Slf4j
 public class ScenarioServiceImpl implements ScenarioService {
+    private static final String DEFAULT_GROUP = "__default";
+    //@formatter:off
+    private static final TypeReference<List<StepResult>> RESULT_LIST_TYPE = new TypeReference<List<StepResult>>(){};
+    //@formatter:on
+    private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
+    private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    private final ObjectMapper objectMapper = new ObjectMapper().setVisibility(
+            PropertyAccessor.FIELD,
+            JsonAutoDetect.Visibility.ANY
+    );
     private final StepRoMapper stepRoMapper;
     private final ScenarioRoMapper scenarioRoMapper;
     private final ProjectRoMapper projectRoMapper;
-
     private final ScenarioRepository scenarioRepository;
     private final ProjectService projectService;
     private final EnvironmentProperties environmentProperties;
@@ -51,25 +68,22 @@ public class ScenarioServiceImpl implements ScenarioService {
 
     @Autowired
     public ScenarioServiceImpl(
-            ScenarioRepository scenarioRepository,
-            ProjectService projectService,
-            EnvironmentProperties environmentProperties,
             StepRoMapper stepRoMapper,
             ScenarioRoMapper scenarioRoMapper,
             ProjectRoMapper projectRoMapper,
+            ScenarioRepository scenarioRepository,
+            ProjectService projectService,
+            EnvironmentProperties environmentProperties,
             AbstractReportGenerator reportGenerator
     ) {
-        this.scenarioRepository = scenarioRepository;
-        this.projectService = projectService;
-        this.environmentProperties = environmentProperties;
         this.stepRoMapper = stepRoMapper;
         this.scenarioRoMapper = scenarioRoMapper;
         this.projectRoMapper = projectRoMapper;
+        this.scenarioRepository = scenarioRepository;
+        this.projectService = projectService;
+        this.environmentProperties = environmentProperties;
         this.reportGenerator = reportGenerator;
     }
-
-    private final ConcurrentMap<String, ExecutionResult> runningScriptsMap = new ConcurrentHashMap<>();
-    private final Set<String> stopExecutingSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Override
     public StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList) {
@@ -84,46 +98,43 @@ public class ScenarioServiceImpl implements ScenarioService {
         startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, executionResult);
 
-        new Thread(() -> atExecutor.executeScenarioList(project, scenarioList,
-                resultMap,
-                () ->  stopExecutingSet.remove(runningUuid),
-                scenarioResultListMap -> {
-                    executionResult.setFinished(true);
-                    synchronized (projectService) {
-                        scenarioResultListMap.forEach((scenario, stepResults) -> {
-                            String scenarioPath = (StringUtils.isEmpty(scenario.getScenarioGroup()) ?
-                                                   "" :
-                                                   scenario.getScenarioGroup() + "/") + scenario.getCode();
-                            try {
-                                Scenario scenarioToUpdate = scenarioRepository.findScenario(
-                                        project.getCode(),
-                                        scenarioPath
-                                );
-                                boolean failed = stepResults
-                                        .stream()
-                                        .anyMatch(stepResult ->
-                                                StepResult.RESULT_FAIL.equals(stepResult.getResult()));
-
-                                boolean success = stepResults
-                                        .stream()
-                                        .anyMatch(stepResult ->
-                                                StepResult.RESULT_OK.equals(stepResult.getResult()));
-
-                                scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
-                                scenarioRepository.saveScenario(
-                                        project.getCode(),
-                                        scenarioPath,
-                                        scenarioToUpdate,
-                                        false
-                                );
-                            } catch (IOException e) {
-                                log.error("", e);
-                            }
-                        });
-                    }
+        new Thread(() -> {
+            IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
+            IExecutingFinishObserver finishObserver = scenarioResultListMap -> {
+                executionResult.setFinished(true);
+                synchronized (projectService) {
+                    processResults(project, scenarioResultListMap);
                 }
-        )).start();
+            };
+            atExecutor.executeScenarioList(project, scenarioList, resultMap, stopObserver, finishObserver);
+        }).start();
         return startScenarioInfoRo;
+    }
+
+    private void processResults(Project project, Map<Scenario, List<StepResult>> results) {
+        results.forEach((scenario, stepResults) -> {
+            try {
+                String scenarioGroup = scenario.getScenarioGroup();
+                String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
+                String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
+                Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
+                if (!Files.exists(path)) {
+                    Files.createDirectories(path);
+                }
+                Path resultFile = path.resolve("results.json");
+                Files.deleteIfExists(resultFile);
+                objectMapper.writeValue(resultFile.toFile(), stepResults);
+
+                Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
+                boolean failed = stepResults.stream().anyMatch(stepResult -> RESULT_FAIL.equals(stepResult.getResult()));
+                boolean success = stepResults.stream().anyMatch(stepResult -> RESULT_OK.equals(stepResult.getResult()));
+                scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
+                scenarioToUpdate.setHasResults(true);
+                scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        });
     }
 
     @Override
@@ -142,29 +153,39 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
-    public void getReport(String executingUuid, ZipOutputStream outputStream) throws Exception {
-        getReportList(Collections.singletonList(executingUuid), outputStream);
+    public List<StepResult> getResult(ScenarioIdentityRo identity) {
+        try {
+            return loadResults(identity);
+        } catch (IOException e) {
+            log.error("Error while loading scenario", e);
+        }
+        return null;
     }
 
     @Override
-    public void getReportList(List<String> executionUuidList, ZipOutputStream zipOutputStream) throws Exception {
-        int[] reportCounter = { 0 };
+    public void getReport(List<ScenarioIdentityRo> identities, ZipOutputStream outputStream) throws Exception {
         reportGenerator.clear();
-        runningScriptsMap.forEach((s, executionResult) -> {
-            if (executionUuidList.contains(s)) {
-                executionResult.getScenarioStepResultListMap().forEach(reportGenerator::add);
-                reportCounter[0]++;
+        identities.forEach(identity -> {
+            try {
+                List<StepResult> results = loadResults(identity);
+                if (results != null) {
+                    String scenarioGroup = identity.getGroup();
+                    String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + identity.getCode();
+                    Scenario scenario = scenarioRepository.findScenario(identity.getProjectCode(), scenarioPath);
+                    reportGenerator.add(scenario, results);
+                }
+            } catch (IOException e) {
+                log.error("Error while loading scenario", e);
             }
         });
-        if (reportCounter[0] == 0) {
+        if (reportGenerator.isEmpty()) {
             throw new ResourceNotFoundException();
         }
 
-        String tmpRandom = UUID.randomUUID().toString();
-        File tmpDirectory = new File("." + File.separator + "tmp" + File.separator + tmpRandom);
+        File tmpDirectory = new File("tmp", UUID.randomUUID().toString());
         if (tmpDirectory.mkdirs()) {
             reportGenerator.generate(tmpDirectory);
-            ZipUtils.pack(tmpDirectory, zipOutputStream);
+            ZipUtils.pack(tmpDirectory, outputStream);
         } else {
             throw new FileAlreadyExistsException(tmpDirectory.getAbsolutePath());
         }
@@ -301,5 +322,23 @@ public class ScenarioServiceImpl implements ScenarioService {
                 log.error("Error while loading after scenario", e);
             }
         }
+    }
+
+    private List<StepResult> loadResults(ScenarioIdentityRo identity) throws IOException {
+        String scenarioGroup = identity.getGroup();
+        String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
+        Path resultsFile = Paths.get(
+                "tmp",
+                "results",
+                identity.getProjectCode(),
+                groupDir,
+                identity.getCode(),
+                "results.json"
+        );
+        List<StepResult> results = null;
+        if (Files.exists(resultsFile)) {
+            results = objectMapper.readValue(resultsFile.toFile(), RESULT_LIST_TYPE);
+        }
+        return results;
     }
 }
