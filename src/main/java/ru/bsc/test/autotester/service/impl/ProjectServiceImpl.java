@@ -1,8 +1,8 @@
 package ru.bsc.test.autotester.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.repository.ProjectRepository;
@@ -63,5 +63,25 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception {
         projectRepository.renameGroup(projectCode, oldGroupName, newGroupName);
+    }
+
+    @Override
+    public void updateBeforeAfterScenariosSettings(String projectCode, String oldPath, String newPath) {
+        Project project = projectRepository.findProject(projectCode);
+        if (StringUtils.equals(oldPath, newPath)) {
+            return;
+        }
+        boolean updated = false;
+        if (StringUtils.equals(project.getBeforeScenarioPath(), oldPath)) {
+            project.setBeforeScenarioPath(newPath);
+            updated = true;
+        }
+        if (StringUtils.equals(project.getAfterScenarioPath(), oldPath)) {
+            project.setAfterScenarioPath(newPath);
+            updated = true;
+        }
+        if (updated) {
+            projectRepository.saveProject(project);
+        }
     }
 }
