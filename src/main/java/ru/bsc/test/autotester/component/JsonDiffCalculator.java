@@ -26,7 +26,7 @@ public class JsonDiffCalculator {
     private final JsonParser parser = new JsonParser();
 
     public List<Diff> calculate(String actual, String expected) {
-        return dmp.diffMain(format(actual), format(expected));
+        return dmp.diffMain(format(expected), format(actual));
     }
 
     private String format(String str){
