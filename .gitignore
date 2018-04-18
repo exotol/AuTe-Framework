@@ -1,5 +1,7 @@
 .idea
 *.iml
+*.log
+env.yaml
 target
 pom.xml.versionsBackup
 out
