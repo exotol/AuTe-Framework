@@ -52,7 +52,7 @@ public class WireMockAdmin implements Closeable {
     }
 
     private String sendPost(String url, String jsonRequestBody) throws IOException {
-        log.debug("Post request = {}", jsonRequestBody);
+        log.debug("Post request. Url = {}, body = {}", url, jsonRequestBody);
         HttpPost httpPostAddMapping = new HttpPost(wireMockAdminUrl + url);
         httpPostAddMapping.setEntity(new StringEntity(jsonRequestBody, ContentType.APPLICATION_JSON));
 
