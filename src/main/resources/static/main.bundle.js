@@ -765,7 +765,9 @@ var ProjectDetailComponent = (function () {
     };
     ProjectDetailComponent.prototype.updateSelectAllFlag = function () {
         var _this = this;
-        this.selectAllFlag = this.scenarioList.filter(function (s) { return s.scenarioGroup == _this.filter.scenarioGroup; }).filter(function (s) { return !s._selected; }).length === 0;
+        this.selectAllFlag = this.scenarioList
+            .filter(function (s) { return !_this.filter || s.scenarioGroup == _this.filter.scenarioGroup; })
+            .filter(function (s) { return !s._selected; }).length === 0;
     };
     ProjectDetailComponent.prototype.isDisplayScenario = function (scenario) {
         return !this.filter ||
@@ -817,7 +819,7 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.onCbStateChange = function (event, scenario) {
         var _this = this;
         this.selectAllFlag = !scenario._selected && this.scenarioList.
-            filter(function (s) { return s.scenarioGroup === _this.filter.scenarioGroup; }).filter(function (s) { return s !== scenario && !s._selected; }).length === 0;
+            filter(function (s) { return !_this.filter || s.scenarioGroup === _this.filter.scenarioGroup; }).filter(function (s) { return s !== scenario && !s._selected; }).length === 0;
     };
     ProjectDetailComponent.prototype.saveNewScenario = function () {
         var _this = this;
