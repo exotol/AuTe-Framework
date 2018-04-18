@@ -440,21 +440,6 @@ var MqMockResponse = (function () {
 
 /***/ }),
 
-/***/ "../../../../../src/app/model/multiple-reports-request.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MultipleReportsRequest; });
-var MultipleReportsRequest = (function () {
-    function MultipleReportsRequest() {
-    }
-    return MultipleReportsRequest;
-}());
-
-//# sourceMappingURL=multiple-reports-request.js.map
-
-/***/ }),
-
 /***/ "../../../../../src/app/model/name-value-property.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -467,6 +452,24 @@ var NameValueProperty = (function () {
 }());
 
 //# sourceMappingURL=name-value-property.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/model/scenario-identity.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioIdentity; });
+var ScenarioIdentity = (function () {
+    function ScenarioIdentity(projectCode, group, code) {
+        this.projectCode = projectCode;
+        this.group = group;
+        this.code = code;
+    }
+    return ScenarioIdentity;
+}());
+
+//# sourceMappingURL=scenario-identity.js.map
 
 /***/ }),
 
@@ -676,6 +679,7 @@ module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__model_scenario_identity__ = __webpack_require__("../../../../../src/app/model/scenario-identity.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -686,6 +690,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -839,15 +844,15 @@ var ProjectDetailComponent = (function () {
     };
     ProjectDetailComponent.prototype.getReportsBySelectedScenarios = function () {
         var _this = this;
-        var executionUuidList = [];
+        var scenarioIdentities = [];
         this.scenarioComponentList
-            .filter(function (item) { return item.scenario._selected && _this.isDisplayScenario(item.scenario); })
-            .filter(function (item) { return item.state === 'finished' && item.startScenarioInfo; })
-            .forEach(function (scenarioItemComponent) {
-            executionUuidList.push(scenarioItemComponent.startScenarioInfo.runningUuid);
+            .filter(function (item) { return item.scenario._selected && _this.isDisplayScenario(item.scenario) && item.scenario.hasResults; })
+            .forEach(function (item) {
+            var identity = new __WEBPACK_IMPORTED_MODULE_10__model_scenario_identity__["a" /* ScenarioIdentity */](item.projectCode, item.scenario.scenarioGroup, item.scenario.code);
+            scenarioIdentities.push(identity);
         });
         this.scenarioService
-            .downloadReport(executionUuidList)
+            .downloadReport(scenarioIdentities)
             .subscribe(function (blobReport) {
             __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6_file_saver_FileSaver__["saveAs"])(blobReport, 'reports.zip');
         });
@@ -1225,7 +1230,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"startScenarioInfo && startScenarioInfo.runningUuid && state == 'finished'\"><a href=\"/rest/execution/{{startScenarioInfo.runningUuid}}/report\" target=\"_blank\">Get report</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"stepResultList\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"scenario.hasResults\"><a href=\"\" target=\"_blank\" (click)=\"getReport()\">{{'Get report' | translate}}</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"scenario.hasResults\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} ({{executedSteps}}/{{totalSteps}})</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1236,6 +1241,9 @@ module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_scenario__ = __webpack_require__("../../../../../src/app/model/scenario.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__ = __webpack_require__("../../../../file-saver/FileSaver.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_scenario_identity__ = __webpack_require__("../../../../../src/app/model/scenario-identity.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioListItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1246,6 +1254,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -1303,6 +1313,7 @@ var ScenarioListItemComponent = (function () {
                     _this.executedSteps = allSteps.filter(function (stepResult) { return stepResult.editable; }).length;
                     _this.totalSteps = scenarioResult.totalSteps;
                     if (executionResult.finished) {
+                        _this.scenario.hasResults = true;
                         _this.state = 'finished';
                     }
                     else {
@@ -1327,7 +1338,19 @@ var ScenarioListItemComponent = (function () {
         }
     };
     ScenarioListItemComponent.prototype.resultDetailsToggle = function () {
-        this.showResultDetails = !this.showResultDetails;
+        var _this = this;
+        if (!this.stepResultList) {
+            var identity = new __WEBPACK_IMPORTED_MODULE_4__model_scenario_identity__["a" /* ScenarioIdentity */](this.projectCode, this.scenario.scenarioGroup, this.scenario.code);
+            this.scenarioService.getResults(identity).subscribe(function (data) {
+                _this.stepResultList = data;
+                _this.totalSteps = _this.stepResultList.length;
+                _this.executedSteps = _this.totalSteps;
+                _this.showResultDetails = !_this.showResultDetails;
+            });
+        }
+        else {
+            this.showResultDetails = !this.showResultDetails;
+        }
     };
     ScenarioListItemComponent.prototype.stop = function () {
         if (this.startScenarioInfo) {
@@ -1346,6 +1369,17 @@ var ScenarioListItemComponent = (function () {
             }
         }
         return '';
+    };
+    ScenarioListItemComponent.prototype.getReport = function () {
+        var scenarioIdentities = [];
+        var identity = new __WEBPACK_IMPORTED_MODULE_4__model_scenario_identity__["a" /* ScenarioIdentity */](this.projectCode, this.scenario.scenarioGroup, this.scenario.code);
+        scenarioIdentities.push(identity);
+        this.scenarioService
+            .downloadReport(scenarioIdentities)
+            .subscribe(function (blobReport) {
+            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__["saveAs"])(blobReport, 'report.zip');
+        });
+        return false;
     };
     ScenarioListItemComponent.prototype.onClick = function (event) {
         this.cbStateChange.emit(event);
@@ -1786,7 +1820,6 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__("../../../../../src/app/globals.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_multiple_reports_request__ = __webpack_require__("../../../../../src/app/model/multiple-reports-request.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1797,7 +1830,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -1843,10 +1875,12 @@ var ScenarioService = (function () {
         var scenarioPath = (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code;
         return this.http.delete(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath);
     };
-    ScenarioService.prototype.downloadReport = function (executionUuidList) {
-        var multipleReportsRequest = new __WEBPACK_IMPORTED_MODULE_4__model_multiple_reports_request__["a" /* MultipleReportsRequest */]();
-        multipleReportsRequest.executionUuidList = executionUuidList;
-        return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/multiple-reports', multipleReportsRequest, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (data) { return data.blob(); });
+    ScenarioService.prototype.getResults = function (identity) {
+        return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/results', identity)
+            .map(function (data) { return data.json(); });
+    };
+    ScenarioService.prototype.downloadReport = function (identities) {
+        return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/report', identities, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (data) { return data.blob(); });
     };
     return ScenarioService;
 }());
