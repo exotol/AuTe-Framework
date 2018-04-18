@@ -104,7 +104,7 @@
   "Map (default)": "Map (default)",
   "Row": "Row",
   "Expected status": "Expected status",
-  "Add mock": "Add mock",
+  "Add REST-mock": "Add REST-mock",
   "Service name": "Service name",
   "Ignored tags": "Ignored tags",
   "Expected request": "Expected request",
