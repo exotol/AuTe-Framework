@@ -217,8 +217,11 @@ public class ScenarioServiceImpl implements ScenarioService {
         synchronized (projectService) {
             Scenario scenario = scenarioRepository.findScenario(projectCode, scenarioPath);
             if (scenario != null) {
+                String oldPath = scenario.getPath();
                 scenario = scenarioRoMapper.updateScenario(scenarioRo, scenario);
                 scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, true);
+                String newPath = scenario.getPath();
+                projectService.updateBeforeAfterScenariosSettings(projectCode, oldPath, newPath);
                 return projectRoMapper.scenarioToScenarioRo(projectCode, scenario);
             }
             return null;
