@@ -157,11 +157,15 @@ public class HttpClient {
             if (formData.getFieldType() == null || FieldType.TEXT.equals(formData.getFieldType())) {
                 entity.addTextBody(formData.getFieldName(), AbstractStepExecutor.insertSavedValues(formData.getValue(), scenarioVariables), ContentType.TEXT_PLAIN);
             } else {
+                log.debug("Try to identify Mime type projectPath = {}, formData = {}, fromData.getFilePath = {}", projectPath, formData, formData.getFilePath());
                 File file = new File((projectPath == null ? "" : projectPath) + formData.getFilePath());
+                String detectedMimeType = new Tika().detect(file);
+                log.debug("Tika detection result = {}", detectedMimeType);
+                log.debug("Try to get content type from formData.getMimeType = {}, tika detected mime type = {}", formData.getMimeType(), detectedMimeType);
                 entity.addBinaryBody(
                         formData.getFieldName(),
                         file,
-                        ContentType.parse( StringUtils.isEmpty(formData.getMimeType()) ? new Tika().detect(file) : formData.getMimeType()),
+                        ContentType.parse( StringUtils.isEmpty(formData.getMimeType()) ? detectedMimeType : formData.getMimeType()),
                         file.getName()
                 );
             }
