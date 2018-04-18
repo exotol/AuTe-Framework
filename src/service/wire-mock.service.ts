@@ -11,9 +11,7 @@ import 'rxjs/add/operator/map';
 export class WireMockService {
 
   // URL to WireMock
-  public serviceUrl: string = window['serviceUrl'];
-  // public serviceUrl = 'http://localhost:7770';
-  public adminUrl: string = window['serviceUrl'] + '/__admin';
+  public adminUrl = '/__admin';
   private headers = new Headers({'Content-Type': 'text/plain'});
 
   constructor(private http: Http) { }

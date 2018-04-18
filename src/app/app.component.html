@@ -13,7 +13,7 @@
       <ul class="nav navbar-nav">
         <li [routerLinkActive]="'active'"><a [routerLink]="['/mapping']">Mappings</a></li>
         <li [routerLinkActive]="'active'"><a [routerLink]="['/requests']">REST log</a></li>
-        <li [routerLinkActive]="'active'" *ngIf="window['mqMockerUrl']"><a [routerLink]="['/mq-log']">MQ log</a></li>
+        <li [routerLinkActive]="'active'"><a [routerLink]="['/mq-log']">MQ log</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><button class="btn btn-default navbar-btn" (click)="saveToBackStorage()"><span class="glyphicon glyphicon-floppy-save"></span>Save to back storage</button></li>

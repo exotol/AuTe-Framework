@@ -9,6 +9,7 @@ import 'rxjs/add/operator/switchMap';
 import {ToastyService, ToastOptions} from 'ng2-toasty';
 import {HeaderItem} from '../../model/request-mapping';
 import {BasicAuthCredentials} from '../../model/basic-auth-credentials';
+import {PlatformLocation} from '@angular/common';
 
 
 @Component({
@@ -20,13 +21,18 @@ export class MappingDetailComponent implements OnInit {
   mapping: Mapping;
   customRequestHeaders: HeaderItem[];
   customResponseHeaders: HeaderItem[];
+  baseUrl: string;
 
   constructor(
     public wireMockService: WireMockService,
     private route: ActivatedRoute,
     private toastyService: ToastyService,
-    private router: Router
-  ) { }
+    private router: Router,
+    platformLocation: PlatformLocation
+  ) {
+    console.log((platformLocation as any).location);
+    this.baseUrl = (platformLocation as any).location.origin;
+  }
 
   ngOnInit() {
     this.route.paramMap

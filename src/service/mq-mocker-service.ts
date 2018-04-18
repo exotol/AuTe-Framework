@@ -6,23 +6,19 @@ import {MqLogItem} from '../model/mq-log-item';
 @Injectable()
 export class MqMockerService {
 
-  public mqMockerAdminUrl: string = window['mqMockerUrl'] + '/__admin';
+  public mqMockerAdminUrl = '/mq-mock/__admin';
 
   constructor(private http: Http) { }
 
   getRequestList(): Observable<MqLogItem[]> {
-    if (window['mqMockerUrl']) {
-      return this.http
-        .get(this.mqMockerAdminUrl + '/request-list')
-        .map(value => value.json() as MqLogItem[])
-        .map(value => value.reverse());
-    }
+    return this.http
+      .get(this.mqMockerAdminUrl + '/request-list')
+      .map(value => value.json() as MqLogItem[])
+      .map(value => value.reverse());
   }
 
   clear(): Observable<any> {
-    if (window['mqMockerUrl']) {
-      return this.http
-        .post(this.mqMockerAdminUrl + '/request-list/clear', {});
-    }
+    return this.http
+      .post(this.mqMockerAdminUrl + '/request-list/clear', {});
   }
 }
