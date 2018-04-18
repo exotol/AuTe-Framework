@@ -98,7 +98,9 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   }
 
   updateSelectAllFlag() {
-    this.selectAllFlag = this.scenarioList.filter(s => s.scenarioGroup == this.filter.scenarioGroup).filter(s => !s._selected).length === 0;
+    this.selectAllFlag = this.scenarioList
+      .filter(s => !this.filter || s.scenarioGroup == this.filter.scenarioGroup)
+      .filter(s => !s._selected).length === 0;
   }
 
   isDisplayScenario(scenario: Scenario) {
@@ -153,7 +155,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   // noinspection JSUnusedLocalSymbols
   onCbStateChange(event: any, scenario: Scenario) {
     this.selectAllFlag = !scenario._selected && this.scenarioList.
-    filter(s => s.scenarioGroup === this.filter.scenarioGroup).filter(s => s !== scenario && !s._selected).length === 0;
+    filter(s => !this.filter || s.scenarioGroup === this.filter.scenarioGroup).filter(s => s !== scenario && !s._selected).length === 0;
   }
 
   saveNewScenario() {
