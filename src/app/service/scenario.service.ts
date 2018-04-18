@@ -7,7 +7,8 @@ import {Step} from '../model/step';
 import {Globals} from '../globals';
 import {StartScenarioInfo} from '../model/start-scenario-info';
 import {ExecutionResult} from '../model/execution-result';
-import {MultipleReportsRequest} from '../model/multiple-reports-request';
+import {ScenarioIdentity} from "../model/scenario-identity";
+import {StepResult} from "../model/step-result";
 
 @Injectable()
 export class ScenarioService {
@@ -82,12 +83,15 @@ export class ScenarioService {
     );
   }
 
-  downloadReport(executionUuidList: string[]): Observable<Blob> {
-    const multipleReportsRequest = new MultipleReportsRequest();
-    multipleReportsRequest.executionUuidList = executionUuidList;
+  getResults(identity: ScenarioIdentity): Observable<StepResult[]> {
+    return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/results', identity)
+      .map(data => data.json() as StepResult[]);
+  }
+
+  downloadReport(identities: ScenarioIdentity[]): Observable<Blob> {
     return this.http.post(
-      this.globals.serviceBaseUrl + '/rest/execution/multiple-reports',
-      multipleReportsRequest,
+      this.globals.serviceBaseUrl + '/rest/execution/report',
+      identities,
       {responseType: ResponseContentType.Blob }
     ).map(data => data.blob());
   }

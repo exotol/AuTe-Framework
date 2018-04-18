@@ -129,6 +129,7 @@
   "Results": "Результаты",
   "Starting": "Запуск",
   "Stop": "Стоп",
+  "Get report": "Скачать отчет",
   "Get report on selected scenarios": "Скачать отчет по выбранным сценариям",
   "XPath message filter": "XPath фильтр сообщений",
   "Expected MQ requests": "Ожидаемые запросы MQ",
