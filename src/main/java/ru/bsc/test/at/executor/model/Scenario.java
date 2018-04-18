@@ -1,6 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -42,5 +43,9 @@ public class Scenario implements Serializable, AbstractModel {
 
     public Boolean getAfterScenarioIgnore() {
         return afterScenarioIgnore != null && afterScenarioIgnore;
+    }
+
+    public String getPath() {
+        return StringUtils.isNotEmpty(scenarioGroup) ? scenarioGroup + "/" + code : code;
     }
 }
