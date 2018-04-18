@@ -9,6 +9,7 @@ export class Scenario {
   afterScenarioIgnore: boolean;
 
   failed: boolean;
+  hasResults: boolean;
 
   _selected = false;
 }

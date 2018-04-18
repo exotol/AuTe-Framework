@@ -4,6 +4,8 @@ import {ScenarioService} from '../service/scenario.service';
 import {StepResult} from '../model/step-result';
 import {StartScenarioInfo} from '../model/start-scenario-info';
 import {Step} from '../model/step';
+import { saveAs } from 'file-saver/FileSaver';
+import {ScenarioIdentity} from "../model/scenario-identity";
 
 @Component({
   selector: 'app-scenario-list-item',
@@ -85,6 +87,7 @@ export class ScenarioListItemComponent implements OnInit {
             this.totalSteps = scenarioResult.totalSteps;
 
             if (executionResult.finished) {
+              this.scenario.hasResults = true;
               this.state = 'finished';
             } else {
               setTimeout(() => {
@@ -108,7 +111,17 @@ export class ScenarioListItemComponent implements OnInit {
   }
 
   resultDetailsToggle() {
-    this.showResultDetails = !this.showResultDetails;
+    if (!this.stepResultList) {
+      const identity = new ScenarioIdentity(this.projectCode, this.scenario.scenarioGroup, this.scenario.code);
+      this.scenarioService.getResults(identity).subscribe(data => {
+        this.stepResultList = data;
+        this.totalSteps = this.stepResultList.length;
+        this.executedSteps = this.totalSteps;
+        this.showResultDetails = !this.showResultDetails;
+      });
+    } else {
+      this.showResultDetails = !this.showResultDetails;
+    }
   }
 
   stop(): void {
@@ -125,6 +138,18 @@ export class ScenarioListItemComponent implements OnInit {
       if (this.scenario.failed === false) { return 'passedScenario'; }
     }
     return '';
+  }
+
+  getReport() {
+    const scenarioIdentities = [];
+    const identity = new ScenarioIdentity(this.projectCode, this.scenario.scenarioGroup, this.scenario.code);
+    scenarioIdentities.push(identity);
+    this.scenarioService
+      .downloadReport(scenarioIdentities)
+      .subscribe(blobReport => {
+        saveAs(blobReport, 'report.zip')
+      });
+    return false;
   }
 
   onClick(event : any) {

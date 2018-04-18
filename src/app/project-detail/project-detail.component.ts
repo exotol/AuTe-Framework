@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver/FileSaver';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ScenarioService} from '../service/scenario.service';
 import {TranslateService} from '@ngx-translate/core';
+import {ScenarioIdentity} from "../model/scenario-identity";
 
 @Component({
   selector: 'app-project-detail',
@@ -82,6 +83,7 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.router.navigate([], {queryParams: {scenarioGroup: group ? group : ''}});
     this.updateFailCountSum();
 
+    this.updateSelectAllFlag();
     return false;
   }
 
@@ -91,7 +93,12 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
     this.router.navigate([]);
     this.updateFailCountSum();
 
+    this.updateSelectAllFlag();
     return false;
+  }
+
+  updateSelectAllFlag() {
+    this.selectAllFlag = this.scenarioList.filter(s => s.scenarioGroup == this.filter.scenarioGroup).filter(s => !s._selected).length === 0;
   }
 
   isDisplayScenario(scenario: Scenario) {
@@ -174,16 +181,16 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   }
 
   getReportsBySelectedScenarios() {
-    const executionUuidList = [];
+    const scenarioIdentities = [];
     this.scenarioComponentList
-      .filter(item => item.scenario._selected && this.isDisplayScenario(item.scenario))
-      .filter(item => item.state === 'finished' && item.startScenarioInfo)
-      .forEach(scenarioItemComponent => {
-        executionUuidList.push(scenarioItemComponent.startScenarioInfo.runningUuid);
+      .filter(item => item.scenario._selected && this.isDisplayScenario(item.scenario) && item.scenario.hasResults)
+      .forEach(item => {
+        const identity = new ScenarioIdentity(item.projectCode, item.scenario.scenarioGroup, item.scenario.code);
+        scenarioIdentities.push(identity);
       });
 
     this.scenarioService
-      .downloadReport(executionUuidList)
+      .downloadReport(scenarioIdentities)
       .subscribe(blobReport => {
         saveAs(blobReport, 'reports.zip')
       });

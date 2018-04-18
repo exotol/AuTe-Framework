@@ -72,20 +72,11 @@
         <li [class.active]="tab == 'sql'">
           <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sqlDataList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
-        <li [class.active]="tab == 'mockServiceResponse'">
-          <a href="#" (click)="selectTab('mockServiceResponse')">{{'Mock responses' | translate}} <span *ngIf="step.mockServiceResponseList && step.mockServiceResponseList.length != 0" class="glyphicon glyphicon-tag"></span></a>
+        <li [class.active]="tab == 'mqResponses'">
+          <a href="#" (click)="selectTab('mqResponses')">{{'MQ Responses' | translate}} <span *ngIf="step.mockServiceResponseList?.length != 0 || (step.mqName || step.mqMessage) || step.mqMockResponseList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
-        <li [class.active]="tab == 'expectedServiceRequestList'">
-          <a href="#" (click)="selectTab('expectedServiceRequestList')">{{'Expected mock requests' | translate}} <span *ngIf="step.expectedServiceRequestList && step.expectedServiceRequestList.length != 0" class="glyphicon glyphicon-tag"></span></a>
-        </li>
-        <li [class.active]="tab == 'mq'">
-          <a href="#" (click)="selectTab('mq')">{{'Message Queue' | translate}} <span *ngIf="step.mqName || step.mqMessage" class="glyphicon glyphicon-tag"></span></a>
-        </li>
-        <li [class.active]="tab == 'mqMockResponseList'">
-          <a href="#" (click)="selectTab('mqMockResponseList')">{{'MQ mock responses' | translate}} <span *ngIf="step.mqMockResponseList && step.mqMockResponseList.length > 0" class="glyphicon glyphicon-tag"></span></a>
-        </li>
-        <li [class.active]="tab == 'expectedMqRequests'">
-          <a href="#" (click)="selectTab('expectedMqRequests')">{{'Expected MQ requests' | translate}} <span *ngIf="step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
+        <li [class.active]="tab == 'mqRequests'">
+          <a href="#" (click)="selectTab('mqRequests')">{{'MQ Requests' | translate}} <span *ngIf="step.expectedServiceRequestList?.length != 0 || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'polling'">
           <a href="#" (click)="selectTab('polling')">{{'Polling' | translate}} <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
@@ -96,28 +87,10 @@
         <li [class.active]="tab == 'script'">
           <a href="#" (click)="selectTab('script')">{{'Script' | translate}} <span *ngIf="step.script" class="glyphicon glyphicon-tag"></span></a>
         </li>
-        <li [class.active]="tab == 'parse-mock-requests'">
-          <a href="#" (click)="selectTab('parse-mock-requests')">{{'Parse mock requests' | translate}} <span *ngIf="step.parseMockRequestUrl" class="glyphicon glyphicon-tag"></span></a>
-        </li>
         <li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li>
       </ul>
       <div class="tab-content" style="padding: 10px;">
-        <div class="row" *ngIf="tab == 'summary'">
-          <div class="col-sm-6">
-            <textarea title="{{'Request body' | translate}}" class="form-control" rows="5" [(ngModel)]="step.request"></textarea>
-          </div>
-          <div class="col-sm-6">
-            <textarea title="{{'Expected response' | translate}}" class="form-control" rows="5" [(ngModel)]="step.expectedResponse"></textarea>
-          </div>
-        </div>
-        <div *ngIf="tab == 'script' || tab == 'all'">
-          <label>{{'Script' | translate}}:</label>
-          <textarea placeholder="" rows="6" title="{{'Script' | translate}}" class="form-control" [(ngModel)]="step.script"></textarea>
-          <div class="help-block">
-            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>
-          </div>
-        </div>
-        <div class="row" *ngIf="tab == 'details' || tab == 'all'">
+        <div *ngIf="tab == 'details'" class="row">
           <div class="col-sm-6">
             <div class="row">
               <div class="col-sm-6" *ngIf="step.stepMode == 'REST'">
@@ -225,7 +198,7 @@
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
         </div>
-        <div *ngIf="tab == 'scenarioVariables' || tab == 'all'">
+        <div *ngIf="tab == 'scenarioVariables'">
           <div class="row">
             <div class="col-sm-6">
               <label>{{'Expected response' | translate}}</label>
@@ -237,11 +210,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf="tab == 'headers' || tab == 'all'">
-          <label>{{'Request headers' | translate}}:</label>
-          <textarea placeholder="HeaderName: headerValue" rows="5" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
-        </div>
-        <div *ngIf="tab == 'sql' || tab == 'all'">
+        <div *ngIf="tab == 'sql'">
           <div *ngFor="let sqlData of step.sqlDataList">
             <div class="row">
               <div class="col-sm-12">
@@ -271,7 +240,40 @@
             <span class="glyphicon glyphicon-plus"></span> {{'Add' | translate}}
           </button>
         </div>
-        <div *ngIf="tab == 'mockServiceResponse' || tab == 'all'">
+        <div *ngIf="tab == 'scenarioVariables' || tab == 'sql'">
+          <div class="row">
+            <div class="col-sm-12">
+              <hr/>
+              <label>{{'Check scenario variables' | translate}}</label>
+            </div>
+          </div>
+          <div class="row" *ngFor="let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])">
+            <div class="col-sm-4" style="text-align: right;">
+              <label>
+                <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>
+              </label>
+            </div>
+            <div class="col-sm-8">
+              <div class="input-group">
+                <input placeholder="{{'Checked value' | translate}}" title="" class="form-control" [(ngModel)]="step.savedValuesCheck[checkedValueName]"/>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" (click)="removeCheckedValue(checkedValueName)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <button class="btn btn-default" (click)="addCheckedValue()"><span class="glyphicon glyphicon-plus"></span> {{'Add' | translate}}</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="tab == 'headers'">
+          <label>{{'Request headers' | translate}}:</label>
+          <textarea placeholder="HeaderName: headerValue" rows="5" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
+        </div>
+        <div *ngIf="tab == 'mqResponses'">
+          <h4>{{'Mock responses' | translate}}</h4>
           <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">
             <div class="col-sm-1">
               <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
@@ -281,27 +283,9 @@
             </div>
           </div>
           <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add mock' | translate}}</button>
-        </div>
-        <div *ngIf="tab == 'expectedServiceRequestList' || tab == 'all'">
-          <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedServiceRequest of step.expectedServiceRequestList">
-            <div class="col-sm-12">
-              <div class="input-group" style="margin-bottom: 5px;">
-                <input placeholder="{{'Service name' | translate}} *" class="form-control" title="" [style.border-color]="expectedServiceRequest.serviceName ? '' : 'red'" [(ngModel)]="expectedServiceRequest.serviceName"/>
-                <span class="input-group-btn">
-                  <button class="btn" (click)="removeExpectedServiceRequest(expectedServiceRequest)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
-                </span>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <input class="form-control" placeholder="{{'Ignored tags' | translate}}" style="margin-bottom: 5px;" title="" [(ngModel)]="expectedServiceRequest.ignoredTags"/>
-                </div>
-              </div>
-              <textarea class="form-control" placeholder="{{'Expected request' | translate}}" title="" rows="7" [(ngModel)]="expectedServiceRequest.expectedServiceRequest"></textarea>
-            </div>
-          </div>
-          <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock request' | translate}}</button>
-        </div>
-        <div *ngIf="tab == 'mq' || tab == 'all'">
+
+          <hr/>
+          <h4>{{'Message Queue' | translate}}</h4>
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Queue name' | translate}}</label>
@@ -337,8 +321,9 @@
               <button class="btn btn-sm btn-default" (click)="addMqProperty()"><span class="glyphicon glyphicon-plus"></span> {{'Add property' | translate}}</button>
             </div>
           </div>
-        </div>
-        <div *ngIf="tab == 'mqMockResponseList'">
+
+          <hr/>
+          <h4>{{'MQ mock responses' | translate}}</h4>
           <div class="row" *ngFor="let mqMockResponse of step.mqMockResponseList">
             <div class="col-sm-1">
               <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMqMockResponse(mqMockResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
@@ -349,7 +334,27 @@
           </div>
           <button class="btn btn-sm btn-default" (click)="addMqMockResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add MQ mock' | translate}}</button>
         </div>
-        <div *ngIf="tab == 'expectedMqRequests'">
+        <div *ngIf="tab == 'mqRequests'">
+          <h4>{{'Expected mock requests' | translate}}</h4>
+          <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedServiceRequest of step.expectedServiceRequestList">
+            <div class="col-sm-12">
+              <div class="input-group" style="margin-bottom: 5px;">
+                <input placeholder="{{'Service name' | translate}} *" class="form-control" title="" [style.border-color]="expectedServiceRequest.serviceName ? '' : 'red'" [(ngModel)]="expectedServiceRequest.serviceName"/>
+                <span class="input-group-btn">
+                  <button class="btn" (click)="removeExpectedServiceRequest(expectedServiceRequest)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+                </span>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <input class="form-control" placeholder="{{'Ignored tags' | translate}}" style="margin-bottom: 5px;" title="" [(ngModel)]="expectedServiceRequest.ignoredTags"/>
+                </div>
+              </div>
+              <textarea class="form-control" placeholder="{{'Expected request' | translate}}" title="" rows="7" [(ngModel)]="expectedServiceRequest.expectedServiceRequest"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock request' | translate}}</button>
+
+          <hr/>
           <h4>{{'Save to variables' | translate}}</h4>
           <div class="row" *ngIf="step.scenarioVariableFromMqRequestList?.length > 0">
             <div class="col-sm-3">
@@ -399,27 +404,8 @@
             </div>
           </div>
           <button class="btn btn-default" (click)="addExpectedMqRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock MQ request' | translate}}</button>
-        </div>
-        <div *ngIf="tab == 'polling' || tab == 'all'">
-          <div class="row">
-            <div class="col-sm-2">
-              <label>
-                <input type="checkbox" title="Use polling" [(ngModel)]="step.usePolling"/>
-                {{'Use polling' | translate}}
-              </label>
-            </div>
-            <div class="col-sm-10">
-              <label>{{'Polling' | translate}} json xpath:</label>
-              <input placeholder="$.body.items" class="form-control" title="{{'Polling' | translate}} json xpath" [(ngModel)]="step.pollingJsonXPath" />
-              <div class="help-block">{{'Waiting for json element exists. Example' | translate}}: $.body.items</div>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="tab == 'parameterSet' || tab == 'all'">
-          <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
-        </div>
-        <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
-        <div *ngIf="tab == 'parse-mock-requests'">
+          <hr/>
+          <h4>{{'Parse mock requests' | translate}}</h4>
           <div class="row">
             <div class="col-sm-12">
               <label>{{'Mock URL' | translate}}</label>
@@ -435,34 +421,32 @@
             </div>
           </div>
         </div>
-        <div *ngIf="tab == 'scenarioVariables' || tab == 'sql' || tab == 'all'">
+        <div *ngIf="tab == 'polling'">
           <div class="row">
-            <div class="col-sm-12">
-              <hr/>
-              <label>{{'Check scenario variables' | translate}}</label>
-            </div>
-          </div>
-          <div class="row" *ngFor="let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])">
-            <div class="col-sm-4" style="text-align: right;">
+            <div class="col-sm-2">
               <label>
-                <a href="#" (click)="updateCheckedValueName(checkedValueName)">{{checkedValueName}} <small><span class="glyphicon glyphicon-edit"></span></small></a>
+                <input type="checkbox" title="Use polling" [(ngModel)]="step.usePolling"/>
+                {{'Use polling' | translate}}
               </label>
             </div>
-            <div class="col-sm-8">
-              <div class="input-group">
-                <input placeholder="{{'Checked value' | translate}}" title="" class="form-control" [(ngModel)]="step.savedValuesCheck[checkedValueName]"/>
-                <span class="input-group-btn">
-                  <button class="btn btn-default" (click)="removeCheckedValue(checkedValueName)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <button class="btn btn-default" (click)="addCheckedValue()"><span class="glyphicon glyphicon-plus"></span> {{'Add' | translate}}</button>
+            <div class="col-sm-10">
+              <label>{{'Polling' | translate}} json xpath:</label>
+              <input placeholder="$.body.items" class="form-control" title="{{'Polling' | translate}} json xpath" [(ngModel)]="step.pollingJsonXPath" />
+              <div class="help-block">{{'Waiting for json element exists. Example' | translate}}: $.body.items</div>
             </div>
           </div>
         </div>
+        <div *ngIf="tab == 'parameterSet'">
+          <app-step-parameter-set [stepParameterSetList]="step.stepParameterSetList"></app-step-parameter-set>
+        </div>
+        <div *ngIf="tab == 'script'">
+          <label>{{'Script' | translate}}:</label>
+          <textarea placeholder="" rows="6" title="{{'Script' | translate}}" class="form-control" [(ngModel)]="step.script"></textarea>
+          <div class="help-block">
+            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>
+          </div>
+        </div>
+        <div *ngIf="tab == 'json'"><pre>{{step | json}}</pre></div>
       </div>
     </div>
   </div>
