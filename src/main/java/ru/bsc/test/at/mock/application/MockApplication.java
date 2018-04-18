@@ -31,6 +31,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import java.time.LocalDate;
 
@@ -90,8 +91,10 @@ public class MockApplication {
 
     @Bean
     public ServletRegistrationBean wiremockMockHandlerBean() {
-        ServletRegistrationBean bean = new ServletRegistrationBean<>(new WireMockHandlerDispatchingServlet(), "/*");
+        Servlet servlet = new WireMockHandlerDispatchingServlet();
+        ServletRegistrationBean bean = new ServletRegistrationBean<>(servlet, "/wm/*");
         bean.addInitParameter("RequestHandlerClass", StubRequestHandler.class.getName());
+        bean.addInitParameter(WireMockHandlerDispatchingServlet.MAPPED_UNDER_KEY, "/wm/");
         bean.setLoadOnStartup(1);
         bean.setName("wiremockStub");
         return bean;
