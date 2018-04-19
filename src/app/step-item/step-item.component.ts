@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, DoCheck, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Step} from '../model/step';
 import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
@@ -9,6 +9,7 @@ import {ExpectedMqRequest} from '../model/expected-mq-request';
 import {SqlData} from '../model/sql-data';
 import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
 import {NameValueProperty} from '../model/name-value-property';
+import {StepService} from '../service/step.service';
 
 @Component({
   selector: 'app-step-item',
@@ -26,7 +27,7 @@ import {NameValueProperty} from '../model/name-value-property';
     '.request-body-field > .request-body-field__remove { margin-right: 0; flex: 0 0; }'
   ]
 })
-export class StepItemComponent implements OnInit {
+export class StepItemComponent implements OnInit , DoCheck {
 
   @Input()
   step: Step;
@@ -40,6 +41,8 @@ export class StepItemComponent implements OnInit {
 
   Object = Object;
 
+  oldStep: Step;
+
   tab = 'details';
   toastOptions: ToastOptions = {
     title: 'Warning',
@@ -50,13 +53,15 @@ export class StepItemComponent implements OnInit {
   };
 
   constructor(
-    private toastyService: ToastyService
+    private toastyService: ToastyService,
+    private stepService: StepService
   ) { }
 
   ngOnInit() {
     if (this.step && !this.step.stepMode) {
       this.step.stepMode = 'REST';
     }
+    this.oldStep = this.stepService.copyStep(this.step);
   }
 
   selectTab(tabName: string) {
@@ -242,5 +247,13 @@ export class StepItemComponent implements OnInit {
     if (indexToRemove > -1) {
       this.step.mqPropertyList.splice(indexToRemove, 1);
     }
+  }
+
+  ngDoCheck(): void {
+    this.step._changed = !this.stepService.equals(this.step, this.oldStep);
+  }
+
+  fireSave(): void {
+    this.oldStep = this.stepService.copyStep(this.step);
   }
 }

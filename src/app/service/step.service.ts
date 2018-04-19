@@ -33,4 +33,16 @@ export class StepService {
       {headers: this.headers}
     ).map(value => value.json() as Step);
   }
+
+  copyStep(step: Step): Step{
+    return Object.assign({}, step);
+  }
+
+  equals(s1: Step, s2: Step): boolean{
+     let replacer = function (name, val) {
+        return name === '_changed' ? undefined : val;
+     }
+     return JSON.stringify(s1, replacer) === JSON.stringify(s2, replacer);
+  }
+
 }

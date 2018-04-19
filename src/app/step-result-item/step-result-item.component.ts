@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
+import {StepItemComponent} from '../step-item/step-item.component';
 
 @Component({
   selector: 'app-step-result-item',
@@ -24,6 +25,12 @@ export class StepResultItemComponent implements OnInit {
   scenario: Scenario;
   @Input()
   stepList: Step[];
+  @Input()
+  changed;
+  @Input()
+  step : Step;
+
+  @ViewChild(StepItemComponent) stepItem: StepItemComponent;
 
   expectedDiff: string;
   actualDiff: string;
@@ -42,7 +49,17 @@ export class StepResultItemComponent implements OnInit {
     this.route.params.subscribe((params: ParamMap) => {
       this.projectCode = params['projectCode'];
       this.formatText();
+      this.checkChanges();
     });
+
+    this.step = this.stepResult.step;
+    if(this.stepList) {
+      let foundStep = this.stepList.find(s => s.code === this.step.code);
+      if (this.stepService.equals(this.step, foundStep)) {
+        this.step = foundStep;
+      }
+    }
+
   }
 
   formatText() {
@@ -252,17 +269,18 @@ export class StepResultItemComponent implements OnInit {
 
   saveStep() {
     const toasty = this.customToastyService.saving();
-    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
+    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.step)
       .subscribe(() => {
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
+        this.stepItem.fireSave();
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
-  getStep(step: Step) {
-    if(!this.stepList || !step){
-      return step;
-    } else {
-      return this.stepList.find(s => s.code == step.code)
+  checkChanges() {
+    if(this.stepList && !this.changed) {
+      let step = this.stepResult.step;
+      this.changed = !this.stepService.equals(step, this.stepList.find(s => s.code === step.code));
     }
   }
+
 }
