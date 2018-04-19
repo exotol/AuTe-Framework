@@ -147,5 +147,6 @@
   "Request JMS body": "Request JMS body",
   "Expected JMS response": "Expected JMS response",
   "Output queue name": "The queue in which the message is sent",
-  "Input queue name": "The queue from which the message is expected"
+  "Input queue name": "The queue from which the message is expected",
+  "Old scenario directory not removed": "Old scenario directory not removed"
 }

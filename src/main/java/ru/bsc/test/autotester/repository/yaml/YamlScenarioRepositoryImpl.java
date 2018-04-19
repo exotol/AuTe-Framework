@@ -66,22 +66,27 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
             throw new IOException("Empty scenario name");
         }
 
+        String newCode = translator.translate(data.getName());
+        String newScenarioPath = getScenarioPath(data.getScenarioGroup(), newCode);
+        if (!Objects.equals(newScenarioPath + "/", scenarioPath)) {
+            if (Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath).toFile().exists()) {
+                throw new IOException("Directory already exists");
+            }
+        }
         if (scenarioPath != null) {
             Path path = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
             if (Files.exists(path)) {
-                boolean notAllRemoved = Files.walk(path, FileVisitOption.FOLLOW_LINKS)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .map(File::delete)
-                        .anyMatch(value -> !value);
-                if (notAllRemoved) {
+                File renamed = new File(path.toFile().getParentFile(), data.getCode() + "-" + UUID.randomUUID().toString());
+                boolean canRemove = path.toFile().renameTo(renamed);
+                if (canRemove) {
+                    FileUtils.deleteDirectory(renamed);
+                } else {
                     throw new IOException("Old scenario directory not removed");
                 }
             }
         }
 
-        data.setCode(translator.translate(data.getName()));
-        String newScenarioPath = data.getPath();
+        data.setCode(newCode);
         File scenarioFile = Paths.get(
                 projectsPath,
                 projectCode,
@@ -92,6 +97,10 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
         Scenario copy = data.copy();
         saveScenarioToFiles(copy, scenarioFile);
         return data;
+    }
+
+    private String getScenarioPath(String scenarioGroup, String code) {
+        return StringUtils.isNotEmpty(scenarioGroup) ? scenarioGroup + "/" + code : code;
     }
 
     @Override
