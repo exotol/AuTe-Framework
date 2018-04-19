@@ -189,7 +189,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
-            log.error("", e);
+            log.info("", e);
             retry = true;
         }
         if (retry) {
@@ -430,19 +430,5 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 mqMockerAdmin.addMock(mockMessage);
             }
         }
-    }
-
-    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
-        long result;
-        try {
-            result = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            try {
-                result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
-            } catch (NumberFormatException ex) {
-                result = defaultValue;
-            }
-        }
-        return result;
     }
 }

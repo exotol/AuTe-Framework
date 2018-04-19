@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static ru.bsc.test.at.executor.service.AtExecutor.parseLongOrVariable;
 
 @Slf4j
 public class RestStepExecutor extends AbstractStepExecutor {

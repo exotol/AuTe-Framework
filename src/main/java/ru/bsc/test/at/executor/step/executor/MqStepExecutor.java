@@ -19,6 +19,8 @@ import javax.script.ScriptEngineManager;
 import java.sql.Connection;
 import java.util.Map;
 
+import static ru.bsc.test.at.executor.service.AtExecutor.parseLongOrVariable;
+
 public class MqStepExecutor extends AbstractStepExecutor {
 
     private final static int POLLING_RETRY_COUNT = 50;

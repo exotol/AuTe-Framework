@@ -17,7 +17,6 @@ import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;
 import ru.bsc.test.at.executor.step.executor.IStepExecutor;
 
 import java.io.PrintWriter;
@@ -158,7 +157,7 @@ public class AtExecutor {
         return result;
     }
 
-  public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
+    public static long parseLongOrVariable(Map<String, Object> scenarioVariables, String value, long defaultValue) {
         log.debug("parseLongOrVariable {}, {}, {}", scenarioVariables, value, defaultValue);
         long result;
         try {
@@ -201,7 +200,7 @@ public class AtExecutor {
 
                     // COM-123 Timeout
                     if (step.getTimeoutMs() != null) {
-                        long timeout = AbstractStepExecutor.parseLongOrVariable(scenarioVariables, step.getTimeoutMs(), 0);
+                        long timeout = parseLongOrVariable(scenarioVariables, step.getTimeoutMs(), 0);
                         if (timeout > 0) {
                             Thread.sleep(Math.min(timeout, 60000L));
                         }
