@@ -12,7 +12,6 @@
     {{stepResult.requestUrl}}
   </div>
   <div class="col-sm-11 col-sm-offset-1">
-    <div *ngIf="changed" style="color: red;">{{'Executed step diff' | translate}}</div>
     <a href="#" style="text-decoration: none; border-bottom: 1px dashed;" (click)="displayDetails = !displayDetails; false;">{{'Details' | translate}} <span class="glyphicon" [class.glyphicon-chevron-right]="!displayDetails" [class.glyphicon-chevron-down]="displayDetails"></span></a>
   </div>
   <div class="clearfix"></div>
@@ -92,7 +91,7 @@
         <pre>{{stepResult | json}}</pre>
       </div>
       <div *ngIf="stepResult.editable && (tab == 'stepEdit' || tab == 'all')">
-        <app-step-item [step]="step"></app-step-item>
+        <app-step-item [step]="stepResult.step" [showDiffOnChange]="true"></app-step-item>
         <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
       </div>
     </div>

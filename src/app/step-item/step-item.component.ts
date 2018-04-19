@@ -33,6 +33,8 @@ export class StepItemComponent implements OnInit , DoCheck {
   step: Step;
   @Input()
   showUpDownDeleteCloneButtons: Boolean;
+  @Input()
+  showDiffOnChange: Boolean;
 
   @Output() onDeleteClick = new EventEmitter<any>();
   @Output() onUpClick = new EventEmitter<any>();
@@ -253,7 +255,7 @@ export class StepItemComponent implements OnInit , DoCheck {
     this.step._changed = !this.stepService.equals(this.step, this.oldStep);
   }
 
-  fireSave(): void {
+  resetChangeState(): void {
     this.oldStep = this.stepService.copyStep(this.step);
   }
 }

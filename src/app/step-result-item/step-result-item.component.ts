@@ -25,10 +25,6 @@ export class StepResultItemComponent implements OnInit {
   scenario: Scenario;
   @Input()
   stepList: Step[];
-  @Input()
-  changed;
-  @Input()
-  step : Step;
 
   @ViewChild(StepItemComponent) stepItem: StepItemComponent;
 
@@ -49,17 +45,7 @@ export class StepResultItemComponent implements OnInit {
     this.route.params.subscribe((params: ParamMap) => {
       this.projectCode = params['projectCode'];
       this.formatText();
-      this.checkChanges();
     });
-
-    this.step = this.stepResult.step;
-    if(this.stepList) {
-      let foundStep = this.stepList.find(s => s.code === this.step.code);
-      if (this.stepService.equals(this.step, foundStep)) {
-        this.step = foundStep;
-      }
-    }
-
   }
 
   formatText() {
@@ -269,18 +255,19 @@ export class StepResultItemComponent implements OnInit {
 
   saveStep() {
     const toasty = this.customToastyService.saving();
-    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.step)
+    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
-        this.stepItem.fireSave();
+        this.refreshStepList();
+        this.stepItem.resetChangeState();
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
-  checkChanges() {
-    if(this.stepList && !this.changed) {
-      let step = this.stepResult.step;
-      this.changed = !this.stepService.equals(step, this.stepList.find(s => s.code === step.code));
-    }
+  refreshStepList() {
+     let index = this.stepList.findIndex(s => s.code === this.stepResult.step.code);
+     if(index >= 0) {
+       this.stepList[index] = this.stepService.copyStep(this.stepResult.step);
+     }
   }
 
 }
