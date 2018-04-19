@@ -125,7 +125,6 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 new OwnerPlugin(),
                 new DefaultCategoriesPlugin(),
                 new CategoriesPlugin(),
-                new CategoriesTrendPlugin(),
                 new HistoryRestorePlugin(),
                 new HistoryPlugin(),
                 new HistoryTrendPlugin(),
