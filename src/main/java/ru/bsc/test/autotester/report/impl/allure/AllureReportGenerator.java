@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.RequestData;
 import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.report.impl.allure.attach.builder.AttachBuilder;
@@ -56,7 +55,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.String.valueOf;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.yandex.qatools.allure.model.Status.FAILED;
@@ -89,7 +87,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    public void generate(File directory) throws Exception {
+    public synchronized void generate(File directory) throws Exception {
         File resultDirectory = new File(directory, "results-directory");
 
         if (!resultDirectory.exists() && !resultDirectory.mkdirs()) {
@@ -127,7 +125,6 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 new OwnerPlugin(),
                 new DefaultCategoriesPlugin(),
                 new CategoriesPlugin(),
-                new CategoriesTrendPlugin(),
                 new HistoryRestorePlugin(),
                 new HistoryPlugin(),
                 new HistoryTrendPlugin(),
