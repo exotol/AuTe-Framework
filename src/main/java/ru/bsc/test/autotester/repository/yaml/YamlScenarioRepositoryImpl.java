@@ -5,12 +5,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.yaml.snakeyaml.reader.ReaderException;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.component.Translator;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
 import ru.bsc.test.autotester.repository.yaml.base.BaseYamlRepository;
-import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -202,8 +202,8 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                         if (new File(scenarioYmlInGroup, SCENARIO_YML_FILENAME).exists()) {
                             try {
                                 scenarios.add(loadScenarioFromFiles(scenarioYmlInGroup, directory.getName(), fetchSteps));
-                            } catch (IOException e) {
-                                log.error("Read file {}", scenarioYmlInGroup, e);
+                            } catch (IOException | ReaderException e) {
+                                log.error("Read file {} {}", scenarioYmlInGroup, e);
                             }
                         }
                     }
