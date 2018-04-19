@@ -166,7 +166,7 @@ public class AtExecutor {
             try {
                 result = Integer.parseInt(String.valueOf(scenarioVariables.get(value)));
             } catch (NumberFormatException ex) {
-                log.warn("parseLongOrVariable: got error! Take the default value", ex);
+                log.info("parseLongOrVariable: got error! Take the default value: {}", ex.getMessage());
                 result = defaultValue;
             }
         }

@@ -79,23 +79,41 @@ public class Step implements Serializable, AbstractModel {
         step.setScript(getScript());
         step.setSavedValuesCheck(new HashMap<>(getSavedValuesCheck()));
         step.setResponseCompareMode(getResponseCompareMode());
-        for (ExpectedServiceRequest expectedServiceRequest : getExpectedServiceRequests()) {
-            step.getExpectedServiceRequests().add(expectedServiceRequest.copy());
+        if (getExpectedServiceRequests() != null) {
+            step.setExpectedServiceRequests(new LinkedList<>());
+            for (ExpectedServiceRequest expectedServiceRequest : getExpectedServiceRequests()) {
+                step.getExpectedServiceRequests().add(expectedServiceRequest.copy());
+            }
         }
-        for (MockServiceResponse mockServiceResponse : getMockServiceResponseList()) {
-            step.getMockServiceResponseList().add(mockServiceResponse.copy());
+        if (getMockServiceResponseList() != null) {
+            step.setMockServiceResponseList(new LinkedList<>());
+            for (MockServiceResponse mockServiceResponse : getMockServiceResponseList()) {
+                step.getMockServiceResponseList().add(mockServiceResponse.copy());
+            }
         }
-        for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
-            step.getStepParameterSetList().add(stepParameterSet.copy());
+        if (getStepParameterSetList() != null) {
+            step.setStepParameterSetList(new LinkedList<>());
+            for (StepParameterSet stepParameterSet : getStepParameterSetList()) {
+                step.getStepParameterSetList().add(stepParameterSet.copy());
+            }
         }
-        for (FormData formData : getFormDataList()) {
-            step.getFormDataList().add(formData.copy());
+        if (getFormDataList() != null) {
+            step.setFormDataList(new LinkedList<>());
+            for (FormData formData : getFormDataList()) {
+                step.getFormDataList().add(formData.copy());
+            }
         }
-        for (NameValueProperty property : getMqPropertyList()) {
-            step.getMqPropertyList().add(property.copy());
+        if (getMqPropertyList() != null) {
+            step.setMqPropertyList(new LinkedList<>());
+            for (NameValueProperty property : getMqPropertyList()) {
+                step.getMqPropertyList().add(property.copy());
+            }
         }
-        for (SqlData sqlData : getSqlDataList()) {
-            step.getSqlDataList().add(sqlData.copy());
+        if (getSqlDataList() != null) {
+            step.setSqlDataList(new LinkedList<>());
+            for (SqlData sqlData : getSqlDataList()) {
+                step.getSqlDataList().add(sqlData.copy());
+            }
         }
 
         step.setMqName(getMqName());
