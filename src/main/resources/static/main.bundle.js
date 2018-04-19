@@ -765,9 +765,14 @@ var ProjectDetailComponent = (function () {
     };
     ProjectDetailComponent.prototype.updateSelectAllFlag = function () {
         var _this = this;
-        this.selectAllFlag = this.scenarioList
-            .filter(function (s) { return !_this.filter || s.scenarioGroup == _this.filter.scenarioGroup; })
-            .filter(function (s) { return !s._selected; }).length === 0;
+        if (this.scenarioList) {
+            this.selectAllFlag = this.scenarioList
+                .filter(function (s) { return !_this.filter || s.scenarioGroup == _this.filter.scenarioGroup; })
+                .filter(function (s) { return !s._selected; }).length === 0;
+        }
+        else {
+            this.selectAllFlag = false;
+        }
     };
     ProjectDetailComponent.prototype.isDisplayScenario = function (scenario) {
         return !this.filter ||
@@ -784,7 +789,9 @@ var ProjectDetailComponent = (function () {
     ProjectDetailComponent.prototype.selectAll = function () {
         var _this = this;
         this.selectAllFlag = !this.selectAllFlag;
-        this.scenarioComponentList.forEach(function (item) { return item.scenario._selected = _this.selectAllFlag && _this.isDisplayScenario(item.scenario); });
+        this.scenarioComponentList
+            .filter(function (item) { return _this.isDisplayScenario(item.scenario); })
+            .forEach(function (item) { return item.scenario._selected = _this.selectAllFlag; });
     };
     ProjectDetailComponent.prototype.updateFailCountSum = function () {
         var _this = this;
@@ -818,8 +825,9 @@ var ProjectDetailComponent = (function () {
     // noinspection JSUnusedLocalSymbols
     ProjectDetailComponent.prototype.onCbStateChange = function (event, scenario) {
         var _this = this;
-        this.selectAllFlag = !scenario._selected && this.scenarioList.
-            filter(function (s) { return !_this.filter || s.scenarioGroup === _this.filter.scenarioGroup; }).filter(function (s) { return s !== scenario && !s._selected; }).length === 0;
+        this.selectAllFlag = !scenario._selected && this.scenarioList
+            .filter(function (s) { return !_this.filter || s.scenarioGroup == _this.filter.scenarioGroup; })
+            .filter(function (s) { return s !== scenario && !s._selected; }).length === 0;
     };
     ProjectDetailComponent.prototype.saveNewScenario = function () {
         var _this = this;
