@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by smakarov
@@ -37,102 +36,12 @@ public abstract class BaseYamlRepository {
 
     protected void saveScenarioToFiles(Scenario scenario, File scenarioFile) throws IOException {
         File scenarioRootDirectory = scenarioFile.getParentFile();
-        Scenario savedScenario = loadScenarioFromFiles(scenarioRootDirectory, scenario.getScenarioGroup(), true);
-
-        int i = 1;
-        Set<String> codeSet = scenario.getStepList().stream().map(Step::getCode).collect(Collectors.toSet());
-        Map<Step, String> codeCorrections = new HashMap<>();
-        List<Step> stepsForeNewCodes = findStepsForNewCodes(savedScenario, scenario);
-        List<String> codesList = stepsForeNewCodes.stream().map(s -> s.getCode()).collect(Collectors.toList());
-        for (Step step : scenario.getStepList()) {
-            if(codesList.stream().anyMatch(s -> Objects.equals(s, step.getCode()))) {
-                if (step.getCode() != null) {
-                    codeSet.remove(step.getCode());
-                }
-                String newCode = generateStepCode(step, i, codeSet);
-                codeSet.add(newCode);
-                String oldCode = step.getCode();
-                step.setCode(newCode);
-                codeCorrections.put(step, oldCode);
-            }
-            i++;
+        for (int i = 0; i < scenario.getStepList().size(); i++) {
+            int order = i + 1;
+            saveStepToFiles(order, scenario.getStepList().get(i), scenarioRootDirectory);
         }
-
-        for (Step step : scenario.getStepList()) {
-            saveStepToFiles(codeCorrections.get(step), step, scenarioRootDirectory);
-        }
-        String scenarioGroupSaved = scenario.getScenarioGroup();
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
-        scenario.setScenarioGroup(scenarioGroupSaved);
-    }
-
-    /**
-     * Ищем шаги у которых меняем код (поменялся номер шага, поменялось наименование)
-     * @param savedScenario шаги из файловой системы (до изменений)
-     * @param scenario шаги на текущий момент
-     * @return
-     */
-    private List<Step> findStepsForNewCodes(Scenario savedScenario, Scenario scenario){
-        // поменялось наименование
-        Map<String, Step> savedScenarioCodeMap = new HashMap<>();
-        for(Step step : savedScenario.getStepList()){
-            savedScenarioCodeMap.put(step.getCode(), step);
-        }
-
-        List<Step> stepsForNewCodes = new ArrayList<>();
-        for(Step step : scenario.getStepList()){
-            if(step.getCode() == null){
-                stepsForNewCodes.add(step);
-            }else {
-                Step savedStep = savedScenarioCodeMap.get(step.getCode());
-                if(savedStep == null){
-                    stepsForNewCodes.add(step);
-                }else{
-                    if(!Objects.equals(step.getStepComment(), savedStep.getStepComment())){
-                        stepsForNewCodes.add(step);
-                    }
-                }
-            }
-        }
-
-        // шаги поменяли местами
-
-        // фильтруем удаленные шаги и те которые меняем при смене наименования
-        List<Step> savedStepList = new ArrayList<>(savedScenario.getStepList()).stream().filter(s -> exists(s, scenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
-        // фильтруем добавленные шаги и те которые меняем при смене наименования
-        List<Step> stepList = new ArrayList<>(scenario.getStepList()).stream().filter(s -> exists(s, savedScenario.getStepList())).filter(s -> !exists(s, stepsForNewCodes)).collect(Collectors.toList());
-
-        for (int i = 0; i < savedStepList.size(); i++) {
-            if (!Objects.equals(savedStepList.get(i).getCode(), stepList.get(i).getCode())) {
-                stepsForNewCodes.add(savedStepList.get(i));
-            }
-        }
-
-        return stepsForNewCodes;
-    }
-
-    private boolean exists(Step step,  Collection<Step> coll){
-        return coll.stream().anyMatch(s -> Objects.equals(step.getCode(), s.getCode()));
-    }
-
-    protected String generateStepCode(Step step, int stepNumber,  Collection<String> existingCodes){
-        String newCode = null;
-        if (step.getStepComment() != null) {
-            String transliterated = translator.translate(step.getStepComment());
-            if (StringUtils.isNotEmpty(transliterated)) {
-                newCode = String.valueOf(stepNumber) + "-" + transliterated;
-            }
-        }
-        if (StringUtils.isEmpty(newCode)) {
-            newCode = String.valueOf(stepNumber);
-        }
-        int j = 2;
-        while (existingCodes.contains(newCode)) {
-            newCode = String.valueOf(stepNumber) + "-" + String.valueOf(j);
-            j++;
-        }
-        return newCode;
     }
 
     protected void loadStepFromFiles(Step step, File scenarioRootDirectory) {
@@ -219,13 +128,8 @@ public abstract class BaseYamlRepository {
         return result;
     }
 
-    private void saveStepToFiles(String stepCode, Step step, File scenarioRootDirectory) throws IOException {
-        if (stepCode != null) {
-            FileUtils.deleteDirectory(new File(scenarioRootDirectory + "/" + stepPath(stepCode)));
-        }
-
-        step.setCode(getStepCode(step.getCode()));
-
+    private void saveStepToFiles(int order, Step step, File scenarioRootDirectory) throws IOException {
+        step.setCode(generateCodeForStep(order, step));
         if (step.getRequest() != null) {
             try {
                 if (step.getRequestFile() == null) {
@@ -324,8 +228,12 @@ public abstract class BaseYamlRepository {
         );
     }
 
-    protected String getStepCode(String stepCode){
-        return StringUtils.isEmpty(stepCode) ? UUID.randomUUID().toString() : stepCode;
+    private String generateCodeForStep(int order, Step step) {
+        String result = String.valueOf(order);
+        if (StringUtils.isNotEmpty(step.getStepComment())) {
+            result += "-" + translator.translate(step.getStepComment());
+        }
+        return result;
     }
 
     private <T extends CodeAccessible> void saveItemsToFiles(
@@ -372,12 +280,8 @@ public abstract class BaseYamlRepository {
         return null;
     }
 
-    private String stepPath(String code) {
-        return "steps/" + code + "/";
-    }
-
     private String stepPath(Step step) {
-        return stepPath(step.getCode());
+        return "steps/" + step.getCode() + "/";
     }
 
     private String stepExpectedResponseFile(Step step) {

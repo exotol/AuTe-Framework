@@ -32,15 +32,12 @@ import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 @Slf4j
 public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements ScenarioRepository {
 
-    private final EnvironmentProperties environmentProperties;
+    private final String projectsPath;
 
     @Autowired
-    public YamlScenarioRepositoryImpl(
-            EnvironmentProperties environmentProperties,
-            Translator translator
-    ) {
+    public YamlScenarioRepositoryImpl(EnvironmentProperties environmentProperties, Translator translator) {
         super(translator);
-        this.environmentProperties = environmentProperties;
+        this.projectsPath = environmentProperties.getProjectsDirectoryPath();
     }
 
     @Override
@@ -56,7 +53,6 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     @Override
     public Scenario findScenario(String projectCode, String scenarioPath) throws IOException {
         String[] pathParts = scenarioPath.split("/");
-        String projectsPath = environmentProperties.getProjectsDirectoryPath();
         return loadScenarioFromFiles(
                 Paths.get(projectsPath, projectCode, "scenarios", scenarioPath).toFile(),
                 pathParts.length > 1 ? pathParts[0] : null,
@@ -65,91 +61,37 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     }
 
     @Override
-    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario, boolean updateDirectoryName) throws IOException {
-        String projectsPath = environmentProperties.getProjectsDirectoryPath();
-
-        if (StringUtils.isBlank(scenario.getName())) {
+    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario data) throws IOException {
+        if (StringUtils.isBlank(data.getName())) {
             throw new IOException("Empty scenario name");
         }
 
-        if (scenarioPath == null) {
-            scenarioPath = scenarioPath(scenario);
-            if (Paths.get(
-                    projectsPath,
-                    projectCode,
-                    "scenarios",
-                    scenarioPath
-            ).toFile().exists()) {
-                throw new IOException("Directory already exists");
-            }
-        } else {
-            if (updateDirectoryName) {
-
-                String newScenarioPath = scenarioPath(scenario);
-                if (!scenarioPath.equals(newScenarioPath)) {  // path changed
-                    try {
-                        Files.move(
-                                Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                                Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
-                        );
-                    } catch (IOException ioException) {
-                        throw new IOException("Directory already exists");
-                    }
-                    scenarioPath = newScenarioPath;
+        if (scenarioPath != null) {
+            Path path = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
+            if (Files.exists(path)) {
+                boolean notAllRemoved = Files.walk(path, FileVisitOption.FOLLOW_LINKS)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .map(File::delete)
+                        .anyMatch(value -> !value);
+                if (notAllRemoved) {
+                    throw new IOException("Old scenario directory not removed");
                 }
-
-                if (!scenario.getCode().equals(translator.translate(scenario.getName()))) { // code changed
-                    scenario.setCode(null);
-                    newScenarioPath =  scenarioPath(scenario);
-                    try {
-                        Files.move(
-                                Paths.get(projectsPath, projectCode, "scenarios", scenarioPath),
-                                Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath)
-                        );
-                    } catch (IOException ioException) {
-                        throw new IOException("Directory already exists");
-                    }
-                    scenarioPath = newScenarioPath;
-                }
-
             }
         }
 
+        data.setCode(translator.translate(data.getName()));
+        String newScenarioPath = data.getPath();
         File scenarioFile = Paths.get(
                 projectsPath,
                 projectCode,
                 "scenarios",
-                scenarioPath,
+                newScenarioPath,
                 SCENARIO_YML_FILENAME
         ).toFile();
-        File scenarioRootDirectory = scenarioFile.getParentFile();
-
-        // Прочитать существующий сценарий (для создаваемого сценария этот файл еще не существует)
-        if (new File(scenarioRootDirectory, SCENARIO_YML_FILENAME).exists()) {
-            Scenario existsScenario = loadScenarioFromFiles(scenarioRootDirectory, null, true);
-
-            // Найти шаги, которые удалены
-            existsScenario.getStepList().forEach(existsStep -> {
-                boolean isExists = scenario.getStepList().stream()
-                        .anyMatch(step -> Objects.equals(existsStep.getCode(), step.getCode()));
-                if (!isExists && existsStep.getCode() != null) {
-                    Path stepsDirectory = Paths.get(
-                            scenarioRootDirectory.getAbsolutePath(),
-                            "steps",
-                            existsStep.getCode()
-                    );
-                    try {
-                        FileUtils.deleteDirectory(stepsDirectory.toFile());
-                    } catch (IOException e) {
-                        log.error("Delete step directory {}", stepsDirectory, e);
-                    }
-                }
-            });
-        }
-
-        saveScenarioToFiles(scenario, scenarioFile);
-        scenario.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
-        return scenario;
+        Scenario copy = data.copy();
+        saveScenarioToFiles(copy, scenarioFile);
+        return data;
     }
 
     @Override
@@ -161,12 +103,7 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
-        Path scenarioDirectory = Paths.get(
-                environmentProperties.getProjectsDirectoryPath(),
-                projectCode,
-                "scenarios",
-                scenarioPath
-        );
+        Path scenarioDirectory = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
         Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
@@ -174,11 +111,7 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     }
 
     private List<Scenario> findScenarios(String projectCode, boolean fetchSteps) {
-        File scenariosDirectory = Paths.get(
-                environmentProperties.getProjectsDirectoryPath(),
-                projectCode,
-                "scenarios"
-        ).toFile();
+        File scenariosDirectory = Paths.get(projectsPath, projectCode, "scenarios").toFile();
         if (!scenariosDirectory.exists()) {
             return Collections.emptyList();
         }

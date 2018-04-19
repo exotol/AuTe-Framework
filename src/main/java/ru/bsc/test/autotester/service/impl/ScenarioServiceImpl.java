@@ -130,7 +130,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 boolean success = stepResults.stream().anyMatch(stepResult -> RESULT_OK.equals(stepResult.getResult()));
                 scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
                 scenarioToUpdate.setHasResults(true);
-                scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
+                scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate);
             } catch (IOException e) {
                 log.error("", e);
             }
@@ -198,7 +198,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             if (scenario != null) {
                 Step newStep = stepRoMapper.convertStepRoToStep(stepRo);
                 scenario.getStepList().add(newStep);
-                scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
+                scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
                 return stepRoMapper.stepToStepRo(newStep);
             }
             return null;
@@ -219,7 +219,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             if (scenario != null) {
                 String oldPath = scenario.getPath();
                 scenario = scenarioRoMapper.updateScenario(scenarioRo, scenario);
-                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, true);
+                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
                 String newPath = scenario.getPath();
                 projectService.updateBeforeAfterScenariosSettings(projectCode, oldPath, newPath);
                 return projectRoMapper.scenarioToScenarioRo(projectCode, scenario);
@@ -258,7 +258,7 @@ public class ScenarioServiceImpl implements ScenarioService {
             Scenario scenario = findOne(projectCode, scenarioPath);
             if (scenario != null) {
                 stepRoMapper.updateScenarioStepList(stepRoList, scenario);
-                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
+                scenario = scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
                 return stepRoMapper.convertStepListToStepRoList(scenario.getStepList());
             }
             throw new ResourceNotFoundException();
@@ -283,7 +283,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                     .findAny()
                     .orElse(null);
             stepRoMapper.updateStep(stepRo, existsStep);
-            scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
+            scenarioRepository.saveScenario(projectCode, scenarioPath, scenario);
             return stepRoMapper.stepToStepRo(existsStep);
         }
     }
@@ -297,7 +297,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException {
         synchronized (this) {
             Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
-            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario, false);
+            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario);
             return projectRoMapper.scenarioToScenarioRo(projectCode, newScenario);
         }
     }
