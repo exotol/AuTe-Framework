@@ -264,10 +264,12 @@ export class StepResultItemComponent implements OnInit {
   }
 
   refreshStepList() {
-     let index = this.stepList.findIndex(s => s.code === this.stepResult.step.code);
-     if(index >= 0) {
-       this.stepList[index] = this.stepService.copyStep(this.stepResult.step);
-     }
+    if(this.stepList) {
+      let index = this.stepList.findIndex(s => s.code === this.stepResult.step.code);
+      if (index >= 0) {
+        this.stepList[index] = this.stepService.copyStep(this.stepResult.step);
+      }
+    }
   }
 
 }
