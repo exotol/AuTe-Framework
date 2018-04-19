@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver/FileSaver';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ScenarioService} from '../service/scenario.service';
 import {TranslateService} from '@ngx-translate/core';
-import {ScenarioIdentity} from "../model/scenario-identity";
+import {ScenarioIdentity} from '../model/scenario-identity';
 
 @Component({
   selector: 'app-project-detail',
@@ -98,9 +98,13 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
   }
 
   updateSelectAllFlag() {
-    this.selectAllFlag = this.scenarioList
-      .filter(s => !this.filter || s.scenarioGroup == this.filter.scenarioGroup)
-      .filter(s => !s._selected).length === 0;
+    if (this.scenarioList) {
+      this.selectAllFlag = this.scenarioList
+        .filter(s => !this.filter || s.scenarioGroup == this.filter.scenarioGroup)
+        .filter(s => !s._selected).length === 0;
+    } else {
+      this.selectAllFlag = false;
+    }
   }
 
   isDisplayScenario(scenario: Scenario) {
@@ -119,7 +123,9 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   selectAll() {
     this.selectAllFlag = !this.selectAllFlag;
-    this.scenarioComponentList.forEach(item => item.scenario._selected = this.selectAllFlag && this.isDisplayScenario(item.scenario));
+    this.scenarioComponentList
+      .filter(item => this.isDisplayScenario(item.scenario))
+      .forEach(item => item.scenario._selected = this.selectAllFlag);
   }
 
   updateFailCountSum() {
@@ -154,8 +160,9 @@ export class ProjectDetailComponent implements OnInit, AfterContentChecked {
 
   // noinspection JSUnusedLocalSymbols
   onCbStateChange(event: any, scenario: Scenario) {
-    this.selectAllFlag = !scenario._selected && this.scenarioList.
-    filter(s => !this.filter || s.scenarioGroup === this.filter.scenarioGroup).filter(s => s !== scenario && !s._selected).length === 0;
+    this.selectAllFlag = !scenario._selected && this.scenarioList
+      .filter(s => !this.filter || s.scenarioGroup == this.filter.scenarioGroup)
+      .filter(s => s !== scenario && !s._selected).length === 0;
   }
 
   saveNewScenario() {
