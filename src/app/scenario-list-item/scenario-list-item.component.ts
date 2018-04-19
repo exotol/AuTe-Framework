@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {ScenarioService} from '../service/scenario.service';
 import {StepResult} from '../model/step-result';
@@ -6,6 +6,8 @@ import {StartScenarioInfo} from '../model/start-scenario-info';
 import {Step} from '../model/step';
 import { saveAs } from 'file-saver/FileSaver';
 import {ScenarioIdentity} from "../model/scenario-identity";
+import {StepResultItemComponent} from '../step-result-item/step-result-item.component';
+import {StepService} from '../service/step.service';
 
 @Component({
   selector: 'app-scenario-list-item',
@@ -26,6 +28,8 @@ export class ScenarioListItemComponent implements OnInit {
   @Output() onStateChange = new EventEmitter<any>();
   @Output() cbStateChange = new EventEmitter<any>();
 
+  @ViewChildren(StepResultItemComponent) childrenComponents: QueryList<StepResultItemComponent>;
+
   stepResultList: StepResult[];
 
   state = 'none';
@@ -36,7 +40,8 @@ export class ScenarioListItemComponent implements OnInit {
   totalSteps: number;
 
   constructor(
-    private scenarioService: ScenarioService
+    private scenarioService: ScenarioService,
+    private stepService: StepService
   ) { }
 
   ngOnInit() {
@@ -154,5 +159,19 @@ export class ScenarioListItemComponent implements OnInit {
 
   onClick(event : any) {
     this.cbStateChange.emit(event);
+  }
+
+  updateExecutedResults(step: Step) {
+    this.childrenComponents.forEach(comp => {
+      if(comp.stepItem) {
+        let s = comp.step;
+        if (s.code === step.code) {
+          // setTimeout need remove exception in dev mode https://blog.angular-university.io/angular-debugging/
+          setTimeout(() => {
+            comp.stepItem.changed = true;
+          });
+        }
+      }
+    });
   }
 }

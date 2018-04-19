@@ -40,6 +40,7 @@ export class StepItemComponent implements OnInit , DoCheck {
   @Output() onUpClick = new EventEmitter<any>();
   @Output() onDownClick = new EventEmitter<any>();
   @Output() onCloneClick = new EventEmitter<any>();
+  @Output() onChange = new EventEmitter<any>();
 
   Object = Object;
 
@@ -53,6 +54,8 @@ export class StepItemComponent implements OnInit , DoCheck {
     timeout: 15000,
     theme: 'bootstrap'
   };
+
+  changed: Boolean = false;
 
   constructor(
     private toastyService: ToastyService,
@@ -252,10 +255,15 @@ export class StepItemComponent implements OnInit , DoCheck {
   }
 
   ngDoCheck(): void {
-    this.step._changed = !this.stepService.equals(this.step, this.oldStep);
+    if(!this.stepService.equals(this.step, this.oldStep)){
+      this.changed = true;
+      this.onChange.emit(this.step);
+    }
   }
 
   resetChangeState(): void {
     this.oldStep = this.stepService.copyStep(this.step);
+    this.changed = false;
   }
+
 }

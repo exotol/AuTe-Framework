@@ -50,5 +50,4 @@ export class Step {
   mqInputQueueName: string;
   mqTimeoutMs: string;
 
-  _changed: boolean = false;
 }

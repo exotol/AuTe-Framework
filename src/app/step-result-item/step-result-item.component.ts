@@ -28,6 +28,7 @@ export class StepResultItemComponent implements OnInit {
 
   @ViewChild(StepItemComponent) stepItem: StepItemComponent;
 
+  step: Step;
   expectedDiff: string;
   actualDiff: string;
 
@@ -46,6 +47,14 @@ export class StepResultItemComponent implements OnInit {
       this.projectCode = params['projectCode'];
       this.formatText();
     });
+
+    this.step = this.stepResult.step;
+    if(this.stepList) {
+      let foundStep = this.stepList.find(s => s.code === this.step.code);
+      if (this.stepService.equals(this.step, foundStep)) {
+        this.step = foundStep;
+      }
+    }
   }
 
   formatText() {
@@ -258,18 +267,19 @@ export class StepResultItemComponent implements OnInit {
     this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
         this.refreshStepList();
-        this.stepItem.resetChangeState();
+        setTimeout(() => {
+          this.stepItem.resetChangeState();
+        });
         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
   refreshStepList() {
     if(this.stepList) {
-      let index = this.stepList.findIndex(s => s.code === this.stepResult.step.code);
+      let index = this.stepList.findIndex(s => s.code === this.step.code);
       if (index >= 0) {
-        this.stepList[index] = this.stepService.copyStep(this.stepResult.step);
+        this.stepList[index] = this.stepService.copyStep(this.step);
       }
     }
   }
-
 }
