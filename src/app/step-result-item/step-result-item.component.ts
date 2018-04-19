@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
@@ -257,9 +257,9 @@ export class StepResultItemComponent implements OnInit {
     const toasty = this.customToastyService.saving();
     this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
-        this.customToastyService.success('Сохранено', 'Шаг сохранен');
         this.refreshStepList();
         this.stepItem.resetChangeState();
+        this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
