@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
@@ -13,10 +13,11 @@ import {CustomToastyService} from '../service/custom-toasty.service';
   styleUrls: ['./scenario-detail.component.css']
 })
 export class ScenarioDetailComponent implements OnInit {
-
+  readonly HEAD_HEIGHT = 170;
   scenario: Scenario;
   stepList: Step[];
   projectCode: string;
+  stepListHeight: number = window.innerHeight - this.HEAD_HEIGHT;
 
   constructor(
     private router: Router,
@@ -120,5 +121,10 @@ export class ScenarioDetailComponent implements OnInit {
 
   handleError() {
     this.router.navigate(['/'], {replaceUrl: true});
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.stepListHeight = event.target.innerHeight - this.HEAD_HEIGHT;
   }
 }
