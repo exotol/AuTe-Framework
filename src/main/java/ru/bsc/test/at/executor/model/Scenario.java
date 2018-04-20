@@ -27,13 +27,13 @@ public class Scenario implements Serializable, AbstractModel {
         Scenario scenario = new Scenario();
         scenario.setName(getName());
         scenario.setScenarioGroup(getScenarioGroup());
-
+        scenario.setBeforeScenarioIgnore(this.beforeScenarioIgnore);
+        scenario.setAfterScenarioIgnore(this.afterScenarioIgnore);
         scenario.setStepList(new LinkedList<>());
         for (Step step : getStepList()) {
             Step clonedStep = step.copy();
             scenario.getStepList().add(clonedStep);
         }
-
         return scenario;
     }
 
