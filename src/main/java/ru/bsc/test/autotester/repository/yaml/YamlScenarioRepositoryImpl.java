@@ -87,6 +87,10 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                     throw new IOException("Old scenario directory not removed");
                 }
             }
+        } else {
+            if (Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath).toFile().exists()) {
+                throw new IOException("Directory already exists");
+            }
         }
 
         data.setCode(newCode);

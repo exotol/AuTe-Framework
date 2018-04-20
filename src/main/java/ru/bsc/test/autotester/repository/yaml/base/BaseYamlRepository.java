@@ -40,8 +40,10 @@ public abstract class BaseYamlRepository {
             int order = i + 1;
             saveStepToFiles(order, scenario.getStepList().get(i), scenarioRootDirectory);
         }
+        String scenarioGroup = scenario.getScenarioGroup();
         scenario.setScenarioGroup(null);
         YamlUtils.dumpToFile(scenario, scenarioFile.getAbsolutePath());
+        scenario.setScenarioGroup(scenarioGroup);
     }
 
     protected void loadStepFromFiles(Step step, File scenarioRootDirectory) {
