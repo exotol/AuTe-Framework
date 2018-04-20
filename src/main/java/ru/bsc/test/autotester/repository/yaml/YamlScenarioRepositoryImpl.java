@@ -97,8 +97,10 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                 newScenarioPath,
                 SCENARIO_YML_FILENAME
         ).toFile();
-        Scenario copy = data.copy();
-        saveScenarioToFiles(copy, scenarioFile);
+
+        File scenarioRootDirectory = scenarioFile.getParentFile();
+        saveScenarioToFiles(data, scenarioFile);
+        data.getStepList().forEach(step -> loadStepFromFiles(step, scenarioRootDirectory));
         return data;
     }
 
