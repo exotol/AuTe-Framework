@@ -16,5 +16,4 @@ public class StandRo implements AbstractRo {
     private String dbUser;
     private String dbPassword;
     private String wireMockUrl;
-    private String mqMockUrl;
 }

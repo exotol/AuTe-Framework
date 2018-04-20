@@ -195,7 +195,6 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
             Stand stand = new Stand();
             stand.setServiceUrl(standProperties.getServiceUrl());
             stand.setWireMockUrl(standProperties.getWireMockUrl());
-            stand.setMqMockUrl(standProperties.getMqMockUrl());
             if (standProperties.getDataBase() != null) {
                 stand.setDbUrl(standProperties.getDataBase().getUrl());
                 stand.setDbUser(standProperties.getDataBase().getUser());

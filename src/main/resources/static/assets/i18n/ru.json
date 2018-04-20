@@ -67,7 +67,7 @@
   "Case description": "Описание кейса",
   "Add case": "Добавить кейс",
   "Step description": "Описание шага",
-  "Step diff": "Шаг был изменен",
+  "Step diff": "Данные по шагу были изменены",
   "Up": "Вверх",
   "Down": "Вниз",
   "Request method": "Метод запроса",

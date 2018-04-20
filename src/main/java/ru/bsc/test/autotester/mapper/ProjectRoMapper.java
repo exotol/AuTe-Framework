@@ -66,8 +66,7 @@ public abstract class ProjectRoMapper {
             @Mapping(target = "dbUrl", source = "dbUrl"),
             @Mapping(target = "dbUser", source = "dbUser"),
             @Mapping(target = "dbPassword", source = "dbPassword"),
-            @Mapping(target = "wireMockUrl", source = "wireMockUrl"),
-            @Mapping(target = "mqMockUrl", source = "mqMockUrl"),
+            @Mapping(target = "wireMockUrl", source = "wireMockUrl")
     })
     abstract Stand updateStandFromRo(StandRo standRo);
 
