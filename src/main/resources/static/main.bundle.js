@@ -1090,6 +1090,7 @@ module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1107,13 +1108,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ScenarioDetailComponent = (function () {
-    function ScenarioDetailComponent(router, route, scenarioService, stepService, customToastyService) {
+    function ScenarioDetailComponent(router, route, scenarioService, stepService, customToastyService, translate) {
         this.router = router;
         this.route = route;
         this.scenarioService = scenarioService;
         this.stepService = stepService;
         this.customToastyService = customToastyService;
+        this.translate = translate;
         this.HEAD_HEIGHT = 170;
         this.stepListHeight = window.innerHeight - this.HEAD_HEIGHT;
     }
@@ -1137,7 +1140,12 @@ var ScenarioDetailComponent = (function () {
                 .subscribe(function (savedStepList) {
                 _this.customToastyService.success('Сохранено', 'Шаги сохранены');
                 _this.stepList = savedStepList;
-            }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty_1); });
+            }, function (error) {
+                var message = JSON.parse(error._body).message;
+                _this.translate.get(message).subscribe(function (value) {
+                    _this.customToastyService.error('Ошибка', value);
+                });
+            }, function () { return _this.customToastyService.clear(toasty_1); });
         }
     };
     ScenarioDetailComponent.prototype.addStep = function () {
@@ -1182,8 +1190,8 @@ var ScenarioDetailComponent = (function () {
             var toasty_2 = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
             this.stepService.cloneStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, step)
                 .subscribe(function (clonedStep) {
-                var ind = _this.stepList.indexOf(step);
-                _this.stepList.splice(ind + 1, 0, clonedStep);
+                var index = _this.stepList.indexOf(step);
+                _this.stepList.splice(index + 1, 0, clonedStep);
                 _this.customToastyService.success('Сохранено', 'Шаг склонирован');
             }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty_2); });
         }
@@ -1222,10 +1230,10 @@ ScenarioDetailComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/scenario-detail/scenario-detail.component.html"),
         styles: [__webpack_require__("../../../../../src/app/scenario-detail/scenario-detail.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */]) === "function" && _f || Object])
 ], ScenarioDetailComponent);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=scenario-detail.component.js.map
 
 /***/ }),
@@ -1535,7 +1543,6 @@ var ScenarioSettingsComponent = (function () {
     ScenarioSettingsComponent.prototype.handleError = function (error) {
         var _this = this;
         var message = JSON.parse(error._body).message;
-        console.log(message);
         this.translate.get(message).subscribe(function (value) {
             _this.customToastyService.error('Ошибка', value);
         });
@@ -1559,13 +1566,12 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -2512,9 +2518,11 @@ var StepItemComponent = (function () {
         this.step.formDataList.push(new __WEBPACK_IMPORTED_MODULE_5__model_form_data__["a" /* FormData */]());
     };
     StepItemComponent.prototype.removeMqMockResponse = function (mqMockResponse) {
-        var indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
-        if (indexToRemove > -1) {
-            this.step.mqMockResponseList.splice(indexToRemove, 1);
+        if (confirm('Confirm: remove MQ mock response')) {
+            var indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
+            if (indexToRemove > -1) {
+                this.step.mqMockResponseList.splice(indexToRemove, 1);
+            }
         }
     };
     StepItemComponent.prototype.removeVariableFromMq = function (variableFromMq) {
