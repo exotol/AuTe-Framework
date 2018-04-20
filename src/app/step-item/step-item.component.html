@@ -76,10 +76,10 @@
           <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sqlDataList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'mqResponses'">
-          <a href="#" (click)="selectTab('mqResponses')">{{'MQ Responses' | translate}} <span *ngIf="step.mockServiceResponseList?.length != 0 || (step.mqName || step.mqMessage) || step.mqMockResponseList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('mqResponses')">{{'Mock responses' | translate}} <span *ngIf="step.mockServiceResponseList?.length > 0 || (step.mqName || step.mqMessage) || step.mqMockResponseList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'mqRequests'">
-          <a href="#" (click)="selectTab('mqRequests')">{{'MQ Requests' | translate}} <span *ngIf="step.expectedServiceRequestList?.length != 0 || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('mqRequests')">{{'Mock requests' | translate}} <span *ngIf="step.expectedServiceRequestList?.length > 0 || step.parseMockRequestUrl || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'polling'">
           <a href="#" (click)="selectTab('polling')">{{'Polling' | translate}} <span *ngIf="step.usePolling" class="glyphicon glyphicon-tag"></span></a>
@@ -276,7 +276,7 @@
           <textarea placeholder="HeaderName: headerValue" rows="5" title="{{'Request headers' | translate}}" class="form-control" [(ngModel)]="step.requestHeaders"></textarea>
         </div>
         <div *ngIf="tab == 'mqResponses'">
-          <h4>{{'Mock responses' | translate}}</h4>
+          <h4>{{'REST mock responses' | translate}}</h4>
           <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">
             <div class="col-sm-1">
               <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
@@ -285,7 +285,7 @@
               <app-mock-service-response [mockServiceResponse]="mockServiceResponse"></app-mock-service-response>
             </div>
           </div>
-          <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add mock' | translate}}</button>
+          <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add REST-mock' | translate}}</button>
 
           <hr/>
           <h4>{{'Message Queue' | translate}}</h4>
@@ -338,7 +338,7 @@
           <button class="btn btn-sm btn-default" (click)="addMqMockResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add MQ mock' | translate}}</button>
         </div>
         <div *ngIf="tab == 'mqRequests'">
-          <h4>{{'Expected mock requests' | translate}}</h4>
+          <h4>{{'Expected REST requests' | translate}}</h4>
           <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedServiceRequest of step.expectedServiceRequestList">
             <div class="col-sm-12">
               <div class="input-group" style="margin-bottom: 5px;">
@@ -355,10 +355,27 @@
               <textarea class="form-control" placeholder="{{'Expected request' | translate}}" title="" rows="7" [(ngModel)]="expectedServiceRequest.expectedServiceRequest"></textarea>
             </div>
           </div>
-          <button class="btn btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock request' | translate}}</button>
+          <button class="btn btn-sm  btn-default" (click)="addExpectedServiceRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock request' | translate}}</button>
 
           <hr/>
-          <h4>{{'Save to variables' | translate}}</h4>
+          <h4>{{'Save scenario variables from REST request' | translate}}</h4>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>{{'Mock URL' | translate}}</label>
+              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'XML XPath' | translate}}</label>
+              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
+            </div>
+            <div class="col-sm-12">
+              <label>{{'Scenario variable name' | translate}}</label>
+              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
+            </div>
+          </div>
+
+          <hr/>
+          <h4>{{'Save scenario variables from MQ request' | translate}}</h4>
           <div class="row" *ngIf="step.scenarioVariableFromMqRequestList?.length > 0">
             <div class="col-sm-3">
               <label>{{'Source queue name' | translate}}</label>
@@ -384,7 +401,7 @@
               <button class="btn" (click)="removeVariableFromMq(variableFromMq)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
             </div>
           </div>
-          <button class="btn btn-default" (click)="addVariableFromMq()"><span class="glyphicon glyphicon-plus"></span> {{'Add variable from MQ request' | translate}}</button>
+          <button class="btn btn-sm btn-default" (click)="addVariableFromMq()"><span class="glyphicon glyphicon-plus"></span> {{'Add scenario variable' | translate}}</button>
           <hr/>
           <h4>{{'Expected MQ requests' | translate}}</h4>
           <div class="row" style="margin-bottom: 40px;" *ngFor="let expectedMqRequest of step.expectedMqRequestList">
@@ -406,23 +423,7 @@
               <textarea class="form-control" placeholder="{{'Expected MQ request' | translate}}" title="" rows="7" [(ngModel)]="expectedMqRequest.requestBody"></textarea>
             </div>
           </div>
-          <button class="btn btn-default" (click)="addExpectedMqRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock MQ request' | translate}}</button>
-          <hr/>
-          <h4>{{'Parse mock requests' | translate}}</h4>
-          <div class="row">
-            <div class="col-sm-12">
-              <label>{{'Mock URL' | translate}}</label>
-              <input title="{{'Mock URL' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestUrl"/>
-            </div>
-            <div class="col-sm-12">
-              <label>{{'XML XPath' | translate}}</label>
-              <input title="{{'XML XPath' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestXPath"/>
-            </div>
-            <div class="col-sm-12">
-              <label>{{'Scenario variable name' | translate}}</label>
-              <input title="{{'Scenario variable name' | translate}}" class="form-control" [(ngModel)]="step.parseMockRequestScenarioVariable"/>
-            </div>
-          </div>
+          <button class="btn btn-sm  btn-default" (click)="addExpectedMqRequest()"><span class="glyphicon glyphicon-plus"></span> {{'Add expected mock MQ request' | translate}}</button>
         </div>
         <div *ngIf="tab == 'polling'">
           <div class="row">

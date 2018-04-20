@@ -105,7 +105,7 @@
   "Map (default)": "Map (default)",
   "Row": "Row",
   "Expected status": "Expected status",
-  "Add mock": "Add mock",
+  "Add REST-mock": "Add REST-mock",
   "Service name": "Service name",
   "Ignored tags": "Ignored tags",
   "Expected request": "Expected request",
@@ -148,5 +148,6 @@
   "Request JMS body": "Request JMS body",
   "Expected JMS response": "Expected JMS response",
   "Output queue name": "The queue in which the message is sent",
-  "Input queue name": "The queue from which the message is expected"
+  "Input queue name": "The queue from which the message is expected",
+  "Old scenario directory not removed": "Old scenario directory not removed"
 }

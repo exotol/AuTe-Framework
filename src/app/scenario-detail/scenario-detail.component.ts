@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
@@ -15,10 +15,11 @@ import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-ite
   styleUrls: ['./scenario-detail.component.css']
 })
 export class ScenarioDetailComponent implements OnInit {
-
+  readonly HEAD_HEIGHT = 170;
   scenario: Scenario;
   stepList: Step[];
   projectCode: string;
+  stepListHeight: number = window.innerHeight - this.HEAD_HEIGHT;
 
   @ViewChild(ScenarioListItemComponent) scenarioListItemComponent: ScenarioListItemComponent;
 
@@ -125,6 +126,11 @@ export class ScenarioDetailComponent implements OnInit {
 
   handleError() {
     this.router.navigate(['/'], {replaceUrl: true});
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.stepListHeight = event.target.innerHeight - this.HEAD_HEIGHT;
   }
 
   onChangeItem(step: Step) {
