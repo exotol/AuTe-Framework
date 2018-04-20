@@ -91,8 +91,13 @@
         <pre>{{stepResult | json}}</pre>
       </div>
       <div *ngIf="stepResult.editable && (tab == 'stepEdit' || tab == 'all')">
-        <app-step-item [step]="step" [showDiffOnChange]="true"></app-step-item>
+        <app-step-item [step]="step"></app-step-item>
+        <div style="display: inline-flex">
         <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
+        <div *ngIf="changed">
+            <span class="form-control"  style="font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018">{{'Step diff' | translate}}</span>
+        </div>
+        </div>
       </div>
     </div>
   </div>

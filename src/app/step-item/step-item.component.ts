@@ -33,8 +33,6 @@ export class StepItemComponent implements OnInit , DoCheck {
   step: Step;
   @Input()
   showUpDownDeleteCloneButtons: Boolean;
-  @Input()
-  showDiffOnChange: Boolean;
 
   @Output() onDeleteClick = new EventEmitter<any>();
   @Output() onUpClick = new EventEmitter<any>();
@@ -54,8 +52,6 @@ export class StepItemComponent implements OnInit , DoCheck {
     timeout: 15000,
     theme: 'bootstrap'
   };
-
-  changed: Boolean = false;
 
   constructor(
     private toastyService: ToastyService,
@@ -258,14 +254,12 @@ export class StepItemComponent implements OnInit , DoCheck {
 
   ngDoCheck(): void {
     if(!this.stepService.equals(this.step, this.oldStep)){
-      this.changed = true;
       this.onChange.emit(this.step);
     }
   }
 
   resetChangeState(): void {
     this.oldStep = this.stepService.copyStep(this.step);
-    this.changed = false;
   }
 
 }

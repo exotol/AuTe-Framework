@@ -165,10 +165,10 @@ export class ScenarioListItemComponent implements OnInit {
     this.childrenComponents.forEach(comp => {
       if(comp.stepItem) {
         let s = comp.step;
-        if (s.code === step.code) {
+        if (s.code === step.code && this.stepList.indexOf(s) == -1) {
           // setTimeout need remove exception in dev mode https://blog.angular-university.io/angular-debugging/
           setTimeout(() => {
-            comp.stepItem.changed = true;
+            comp.changed = true;
           });
         }
       }

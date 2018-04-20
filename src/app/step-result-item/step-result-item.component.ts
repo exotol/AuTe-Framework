@@ -35,6 +35,7 @@ export class StepResultItemComponent implements OnInit {
   tab = 'details';
   projectCode: string;
   displayDetails = false;
+  changed : Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -267,10 +268,11 @@ export class StepResultItemComponent implements OnInit {
     this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
         this.refreshStepList();
-        setTimeout(() => {
-          this.stepItem.resetChangeState();
+        this.stepItem.resetChangeState();
+        setTimeout(()=>{
+          this.changed = false
         });
-        this.customToastyService.success('Сохранено', 'Шаг сохранен');
+         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
