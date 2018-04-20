@@ -6,6 +6,8 @@ import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-scenario-detail',
@@ -20,7 +22,6 @@ export class ScenarioDetailComponent implements OnInit {
   stepListHeight: number = window.innerHeight - this.HEAD_HEIGHT;
 
   @ViewChild(ScenarioListItemComponent) scenarioListItemComponent: ScenarioListItemComponent;
-
 
   constructor(
     private router: Router,
