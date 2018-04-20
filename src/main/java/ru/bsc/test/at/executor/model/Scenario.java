@@ -34,6 +34,8 @@ public class Scenario implements Serializable, AbstractModel {
             Step clonedStep = step.copy();
             scenario.getStepList().add(clonedStep);
         }
+        scenario.setFailed(getFailed());
+        scenario.setHasResults(getHasResults());
         return scenario;
     }
 
