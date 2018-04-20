@@ -126,6 +126,7 @@ public class Step implements Serializable, AbstractModel {
         step.setParseMockRequestXPath(getParseMockRequestXPath());
         step.setParseMockRequestScenarioVariable(getParseMockRequestScenarioVariable());
         step.setTimeoutMs(getTimeoutMs());
+        step.setStepMode(getStepMode());
 
         if (step.getMqMockResponseList() == null) {
             step.setMqMockResponseList(new LinkedList<>());
