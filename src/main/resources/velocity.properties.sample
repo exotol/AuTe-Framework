@@ -1,6 +1,0 @@
-userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective,ru.bsc.wiremock.velocity.directive.GroovyDirective
-resource.loader=file
-file.resource.loader.path=c:/work/bsc-wire-mock-velocity
-
-# Sample: "${wiremock.mapping.path}/mappings/velocity-at-mapping.json"
-wiremock.mapping.path=c:/work/bsc-wire-mock-mapping

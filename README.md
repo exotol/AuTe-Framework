@@ -23,7 +23,7 @@ shared.loader=c:/projects/RC/conf/
 Файл velocity.properties необходимо расположить в указанной выше директории (shared.loader). Содержимое файла:
 
 ```
-userdirective=ru.bsc.wiremock.velocity.directive.XPathDirective,ru.bsc.wiremock.velocity.directive.GroovyDirective
+userdirective=ru.bsc.test.at.mock.wiremock.velocity.directive.XPathDirective,ru.bsc.test.at.mock.wiremock.velocity.directive.GroovyDirective
 resource.loader=file
  
 # Sample: "${wiremock.mapping.path}/
