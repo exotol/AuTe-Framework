@@ -108,7 +108,10 @@ export class ScenarioDetailComponent implements OnInit {
           const index = this.stepList.indexOf(step);
           this.stepList.splice(index + 1, 0, clonedStep);
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
-        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+        }, error => {
+          console.error(error);
+          this.customToastyService.error('Ошибка', error);
+        }, () => this.customToastyService.clear(toasty));
     }
   }
 
