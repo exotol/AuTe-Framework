@@ -49,4 +49,5 @@ export class Step {
   mqOutputQueueName: string;
   mqInputQueueName: string;
   mqTimeoutMs: string;
+
 }

@@ -33,4 +33,20 @@ export class StepService {
       {headers: this.headers}
     ).map(value => value.json() as Step);
   }
+
+  copyStep(step: Step): Step{
+    return Object.assign({}, step);
+  }
+
+  equals(s1: Step, s2: Step): boolean{
+     return JSON.stringify(s1, this.replacer) === JSON.stringify(s2, this.replacer);
+  }
+
+  replacer = function (name, val) {
+    if(name === 'stepMode' && !val){
+      return 'REST';
+    }
+    return val;
+  }
+
 }

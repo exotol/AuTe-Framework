@@ -17,7 +17,7 @@
       <h3>{{scenario.name}}</h3>
       <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']">{{'Settings' | translate}}</a>
     </div>
-    <app-scenario-list-item [scenario]="scenario" [projectCode]="projectCode" [isLinkTitleScenario]="false"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="projectCode" [isLinkTitleScenario]="false" [stepList]="stepList" ></app-scenario-list-item>
   </div>
   <hr/>
   <div class="help-block" *ngIf="!stepList">
@@ -44,6 +44,7 @@
           (onUpClick)="onUpClick(step)"
           (onDownClick)="onDownClick(step)"
           (onCloneClick)="onCloneClick(step)"
+          (onChange)="onChangeItem(step)"
         ></app-step-item>
       </div>
 

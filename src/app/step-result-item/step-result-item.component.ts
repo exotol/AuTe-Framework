@@ -1,9 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {StepResult} from '../model/step-result';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Scenario} from '../model/scenario';
+import {Step} from '../model/step';
+import {StepItemComponent} from '../step-item/step-item.component';
 
 @Component({
   selector: 'app-step-result-item',
@@ -21,12 +23,19 @@ export class StepResultItemComponent implements OnInit {
   stepResult: StepResult;
   @Input()
   scenario: Scenario;
+  @Input()
+  stepList: Step[];
+
+  @ViewChild(StepItemComponent) stepItem: StepItemComponent;
+
+  step: Step;
   expectedDiff: string;
   actualDiff: string;
 
   tab = 'details';
   projectCode: string;
   displayDetails = false;
+  changed : Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +48,14 @@ export class StepResultItemComponent implements OnInit {
       this.projectCode = params['projectCode'];
       this.formatText();
     });
+
+    this.step = this.stepResult.step;
+    if(this.stepList) {
+      let foundStep = this.stepList.find(s => s.code === this.step.code);
+      if (this.stepService.equals(this.step, foundStep)) {
+        this.step = foundStep;
+      }
+    }
   }
 
   formatText() {
@@ -250,8 +267,21 @@ export class StepResultItemComponent implements OnInit {
     const toasty = this.customToastyService.saving();
     this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
       .subscribe(() => {
-        this.customToastyService.success('Сохранено', 'Шаг сохранен');
+        this.refreshStepList();
+        this.stepItem.resetChangeState();
+        setTimeout(()=>{
+          this.changed = false
+        });
+         this.customToastyService.success('Сохранено', 'Шаг сохранен');
       }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
   }
 
+  refreshStepList() {
+    if(this.stepList) {
+      let index = this.stepList.findIndex(s => s.code === this.step.code);
+      if (index >= 0) {
+        this.stepList[index] = this.stepService.copyStep(this.step);
+      }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, DoCheck, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Step} from '../model/step';
 import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
@@ -9,6 +9,7 @@ import {ExpectedMqRequest} from '../model/expected-mq-request';
 import {SqlData} from '../model/sql-data';
 import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
 import {NameValueProperty} from '../model/name-value-property';
+import {StepService} from '../service/step.service';
 
 @Component({
   selector: 'app-step-item',
@@ -26,7 +27,7 @@ import {NameValueProperty} from '../model/name-value-property';
     '.request-body-field > .request-body-field__remove { margin-right: 0; flex: 0 0; }'
   ]
 })
-export class StepItemComponent implements OnInit {
+export class StepItemComponent implements OnInit , DoCheck {
 
   @Input()
   step: Step;
@@ -37,8 +38,11 @@ export class StepItemComponent implements OnInit {
   @Output() onUpClick = new EventEmitter<any>();
   @Output() onDownClick = new EventEmitter<any>();
   @Output() onCloneClick = new EventEmitter<any>();
+  @Output() onChange = new EventEmitter<any>();
 
   Object = Object;
+
+  oldStep: Step;
 
   tab = 'details';
   toastOptions: ToastOptions = {
@@ -50,13 +54,15 @@ export class StepItemComponent implements OnInit {
   };
 
   constructor(
-    private toastyService: ToastyService
+    private toastyService: ToastyService,
+    private stepService: StepService
   ) { }
 
   ngOnInit() {
     if (this.step && !this.step.stepMode) {
       this.step.stepMode = 'REST';
     }
+    this.oldStep = this.stepService.copyStep(this.step);
   }
 
   selectTab(tabName: string) {
@@ -245,4 +251,15 @@ export class StepItemComponent implements OnInit {
       this.step.mqPropertyList.splice(indexToRemove, 1);
     }
   }
+
+  ngDoCheck(): void {
+    if(!this.stepService.equals(this.step, this.oldStep)){
+      this.onChange.emit(this.step);
+    }
+  }
+
+  resetChangeState(): void {
+    this.oldStep = this.stepService.copyStep(this.step);
+  }
+
 }

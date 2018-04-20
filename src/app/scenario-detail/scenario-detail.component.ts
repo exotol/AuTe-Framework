@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
@@ -6,6 +6,7 @@ import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -19,6 +20,8 @@ export class ScenarioDetailComponent implements OnInit {
   stepList: Step[];
   projectCode: string;
   stepListHeight: number = window.innerHeight - this.HEAD_HEIGHT;
+
+  @ViewChild(ScenarioListItemComponent) scenarioListItemComponent: ScenarioListItemComponent;
 
   constructor(
     private router: Router,
@@ -136,5 +139,9 @@ export class ScenarioDetailComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.stepListHeight = event.target.innerHeight - this.HEAD_HEIGHT;
+  }
+
+  onChangeItem(step: Step) {
+    this.scenarioListItemComponent.updateExecutedResults(step);
   }
 }
