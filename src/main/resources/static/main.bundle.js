@@ -1074,7 +1074,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-detail/scenario-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectCode]\">{{scenario.projectCode}}.\r\n        {{scenario.projectName}}</a></li>\r\n      <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n        <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n      </li>\r\n      <li class=\"breadcrumb-item active\">{{scenario.code}}. {{scenario.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"scenario?.projectCode\"></app-search>\r\n  </div>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <div style=\"margin-bottom: 10px;\">\r\n      <h3>{{scenario.name}}</h3>\r\n      <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']\">{{'Settings' | translate}}</a>\r\n    </div>\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"projectCode\" [isLinkTitleScenario]=\"false\"></app-scenario-list-item>\r\n  </div>\r\n  <hr/>\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    {{'Loading' | translate}}\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">{{'Save steps' | translate}}</button>\r\n      <button class=\"btn btn-danger pull-right\" (click)=\"deleteScenario()\">{{'Delete' | translate}}</button>\r\n    </div>\r\n\r\n    <div [style.max-height]=\"stepListHeight + 'px'\" style=\"overflow-y: auto;\">\r\n      <div *ngFor=\"let step of stepList\">\r\n        <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n          <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\">\r\n            <span class=\"glyphicon glyphicon-hand-left\"></span> {{'Insert step' | translate}}\r\n          </button>\r\n        </div>\r\n        <app-step-item\r\n          [step]=\"step\"\r\n          [showUpDownDeleteCloneButtons]=\"true\"\r\n          (onDeleteClick)=\"onDeleteClick(step)\"\r\n          (onUpClick)=\"onUpClick(step)\"\r\n          (onDownClick)=\"onDownClick(step)\"\r\n          (onCloneClick)=\"onCloneClick(step)\"\r\n        ></app-step-item>\r\n      </div>\r\n\r\n      <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n        <button class=\"btn btn-default\" (click)=\"addStep()\">\r\n          <span class=\"glyphicon glyphicon-plus\"></span> {{'Add step' | translate}}\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectCode]\">{{scenario.projectCode}}.\r\n        {{scenario.projectName}}</a></li>\r\n      <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n        <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n      </li>\r\n      <li class=\"breadcrumb-item active\">{{scenario.code}}. {{scenario.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"scenario?.projectCode\"></app-search>\r\n  </div>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <div style=\"margin-bottom: 10px;\">\r\n      <h3>{{scenario.name}}</h3>\r\n      <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']\">{{'Settings' | translate}}</a>\r\n    </div>\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"projectCode\" [isLinkTitleScenario]=\"false\" [stepList]=\"stepList\" ></app-scenario-list-item>\r\n  </div>\r\n  <hr/>\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    {{'Loading' | translate}}\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">{{'Save steps' | translate}}</button>\r\n      <button class=\"btn btn-danger pull-right\" (click)=\"deleteScenario()\">{{'Delete' | translate}}</button>\r\n    </div>\r\n\r\n    <div [style.max-height]=\"stepListHeight + 'px'\" style=\"overflow-y: auto;\">\r\n      <div *ngFor=\"let step of stepList\">\r\n        <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n          <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\">\r\n            <span class=\"glyphicon glyphicon-hand-left\"></span> {{'Insert step' | translate}}\r\n          </button>\r\n        </div>\r\n        <app-step-item\r\n          [step]=\"step\"\r\n          [showUpDownDeleteCloneButtons]=\"true\"\r\n          (onDeleteClick)=\"onDeleteClick(step)\"\r\n          (onUpClick)=\"onUpClick(step)\"\r\n          (onDownClick)=\"onDownClick(step)\"\r\n          (onCloneClick)=\"onCloneClick(step)\"\r\n          (onChange)=\"onChangeItem(step)\"\r\n        ></app-step-item>\r\n      </div>\r\n\r\n      <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n        <button class=\"btn btn-default\" (click)=\"addStep()\">\r\n          <span class=\"glyphicon glyphicon-plus\"></span> {{'Add step' | translate}}\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1090,7 +1090,8 @@ module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_switchMap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scenario_list_item_scenario_list_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioDetailComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1101,6 +1102,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1193,7 +1195,10 @@ var ScenarioDetailComponent = (function () {
                 var index = _this.stepList.indexOf(step);
                 _this.stepList.splice(index + 1, 0, clonedStep);
                 _this.customToastyService.success('Сохранено', 'Шаг склонирован');
-            }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty_2); });
+            }, function (error) {
+                console.error(error);
+                _this.customToastyService.error('Ошибка', error);
+            }, function () { return _this.customToastyService.clear(toasty_2); });
         }
     };
     ScenarioDetailComponent.prototype.deleteScenario = function () {
@@ -1216,8 +1221,15 @@ var ScenarioDetailComponent = (function () {
     ScenarioDetailComponent.prototype.onResize = function (event) {
         this.stepListHeight = event.target.innerHeight - this.HEAD_HEIGHT;
     };
+    ScenarioDetailComponent.prototype.onChangeItem = function (step) {
+        this.scenarioListItemComponent.updateExecutedResults(step);
+    };
     return ScenarioDetailComponent;
 }());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_7__scenario_list_item_scenario_list_item_component__["a" /* ScenarioListItemComponent */]),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_7__scenario_list_item_scenario_list_item_component__["a" /* ScenarioListItemComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__scenario_list_item_scenario_list_item_component__["a" /* ScenarioListItemComponent */]) === "function" && _a || Object)
+], ScenarioDetailComponent.prototype, "scenarioListItemComponent", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* HostListener */])('window:resize', ['$event']),
     __metadata("design:type", Function),
@@ -1230,10 +1242,10 @@ ScenarioDetailComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/scenario-detail/scenario-detail.component.html"),
         styles: [__webpack_require__("../../../../../src/app/scenario-detail/scenario-detail.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */]) === "function" && _f || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["c" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__service_step_service__["a" /* StepService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_8__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__ngx_translate_core__["c" /* TranslateService */]) === "function" && _g || Object])
 ], ScenarioDetailComponent);
 
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=scenario-detail.component.js.map
 
 /***/ }),
@@ -1259,7 +1271,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"scenario.hasResults\"><a href=\"\" target=\"_blank\" (click)=\"getReport()\">{{'Get report' | translate}}</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"scenario.hasResults\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} <ng-container *ngIf=\"executedSteps && totalSteps\">({{executedSteps}}/{{totalSteps}})</ng-container></button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"scenario.hasResults\"><a href=\"\" target=\"_blank\" (click)=\"getReport()\">{{'Get report' | translate}}</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"scenario.hasResults\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} <ng-container *ngIf=\"executedSteps && totalSteps\">({{executedSteps}}/{{totalSteps}})</ng-container></button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\" [stepList]=\"stepList\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1273,6 +1285,8 @@ module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__ = __webpack_require__("../../../../file-saver/FileSaver.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_scenario_identity__ = __webpack_require__("../../../../../src/app/model/scenario-identity.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__step_result_item_step_result_item_component__ = __webpack_require__("../../../../../src/app/step-result-item/step-result-item.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioListItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1288,9 +1302,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var ScenarioListItemComponent = (function () {
-    function ScenarioListItemComponent(scenarioService) {
+    function ScenarioListItemComponent(scenarioService, stepService) {
         this.scenarioService = scenarioService;
+        this.stepService = stepService;
         this.isLinkTitleScenario = true;
         this.onStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.cbStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
@@ -1413,6 +1430,20 @@ var ScenarioListItemComponent = (function () {
     ScenarioListItemComponent.prototype.onClick = function (event) {
         this.cbStateChange.emit(event);
     };
+    ScenarioListItemComponent.prototype.updateExecutedResults = function (step) {
+        var _this = this;
+        this.childrenComponents.forEach(function (comp) {
+            if (comp.stepItem) {
+                var s = comp.step;
+                if (s.code === step.code && _this.stepList.indexOf(s) == -1) {
+                    // setTimeout need remove exception in dev mode https://blog.angular-university.io/angular-debugging/
+                    setTimeout(function () {
+                        comp.changed = true;
+                    });
+                }
+            }
+        });
+    };
     return ScenarioListItemComponent;
 }());
 __decorate([
@@ -1428,6 +1459,10 @@ __decorate([
     __metadata("design:type", Object)
 ], ScenarioListItemComponent.prototype, "isLinkTitleScenario", void 0);
 __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
+    __metadata("design:type", Array)
+], ScenarioListItemComponent.prototype, "stepList", void 0);
+__decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], ScenarioListItemComponent.prototype, "onStateChange", void 0);
@@ -1435,16 +1470,20 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], ScenarioListItemComponent.prototype, "cbStateChange", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* ViewChildren */])(__WEBPACK_IMPORTED_MODULE_5__step_result_item_step_result_item_component__["a" /* StepResultItemComponent */]),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["_17" /* QueryList */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["_17" /* QueryList */]) === "function" && _b || Object)
+], ScenarioListItemComponent.prototype, "childrenComponents", void 0);
 ScenarioListItemComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-scenario-list-item',
         template: __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.html"),
         styles: [__webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */]) === "function" && _d || Object])
 ], ScenarioListItemComponent);
 
-var _a, _b;
+var _a, _b, _c, _d;
 //# sourceMappingURL=scenario-list-item.component.js.map
 
 /***/ }),
@@ -1566,12 +1605,13 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
+var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1994,6 +2034,12 @@ var StepService = (function () {
         this.http = http;
         this.serviceUrl = '/rest/projects';
         this.headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Headers */]({ 'Content-Type': 'application/json' });
+        this.replacer = function (name, val) {
+            if (name === 'stepMode' && !val) {
+                return 'REST';
+            }
+            return val;
+        };
     }
     StepService.prototype.saveStep = function (projectCode, scenarioGroup, scenarioCode, step) {
         var scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
@@ -2002,6 +2048,12 @@ var StepService = (function () {
     StepService.prototype.cloneStep = function (projectCode, scenarioGroup, scenarioCode, step) {
         var scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
         return this.http.post(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code + '/clone', {}, { headers: this.headers }).map(function (value) { return value.json(); });
+    };
+    StepService.prototype.copyStep = function (step) {
+        return Object.assign({}, step);
+    };
+    StepService.prototype.equals = function (s1, s2) {
+        return JSON.stringify(s1, this.replacer) === JSON.stringify(s2, this.replacer);
     };
     return StepService;
 }());
@@ -2342,6 +2394,7 @@ module.exports = "<div class=\"container-fluid\" style=\"padding-bottom: 30px;\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__model_sql_data__ = __webpack_require__("../../../../../src/app/model/sql-data.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__model_scenario_variable_from_mq_request__ = __webpack_require__("../../../../../src/app/model/scenario-variable-from-mq-request.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__model_name_value_property__ = __webpack_require__("../../../../../src/app/model/name-value-property.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2363,13 +2416,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var StepItemComponent = (function () {
-    function StepItemComponent(toastyService) {
+    function StepItemComponent(toastyService, stepService) {
         this.toastyService = toastyService;
+        this.stepService = stepService;
         this.onDeleteClick = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.onUpClick = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.onDownClick = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.onCloneClick = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
+        this.onChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.Object = Object;
         this.tab = 'details';
         this.toastOptions = {
@@ -2384,6 +2440,7 @@ var StepItemComponent = (function () {
         if (this.step && !this.step.stepMode) {
             this.step.stepMode = 'REST';
         }
+        this.oldStep = this.stepService.copyStep(this.step);
     };
     StepItemComponent.prototype.selectTab = function (tabName) {
         if (this.tab === tabName) {
@@ -2549,6 +2606,14 @@ var StepItemComponent = (function () {
             this.step.mqPropertyList.splice(indexToRemove, 1);
         }
     };
+    StepItemComponent.prototype.ngDoCheck = function () {
+        if (!this.stepService.equals(this.step, this.oldStep)) {
+            this.onChange.emit(this.step);
+        }
+    };
+    StepItemComponent.prototype.resetChangeState = function () {
+        this.oldStep = this.stepService.copyStep(this.step);
+    };
     return StepItemComponent;
 }());
 __decorate([
@@ -2575,6 +2640,10 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
     __metadata("design:type", Object)
 ], StepItemComponent.prototype, "onCloneClick", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
+    __metadata("design:type", Object)
+], StepItemComponent.prototype, "onChange", void 0);
 StepItemComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-item',
@@ -2592,10 +2661,10 @@ StepItemComponent = __decorate([
             '.request-body-field > .request-body-field__remove { margin-right: 0; flex: 0 0; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__["b" /* ToastyService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_11__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_11__service_step_service__["a" /* StepService */]) === "function" && _c || Object])
 ], StepItemComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=step-item.component.js.map
 
 /***/ }),
@@ -2727,7 +2796,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            <div>\r\n              {{'Sql' | translate}}:<br/>\r\n              <ng-container *ngFor=\"let query of stepResult.sqlQueryList\">\r\n                {{query}}<br/>\r\n              </ng-container>\r\n            </div>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\" innerHTML=\"<pre class='pretransparent'>{{actualDiff}}</pre>\">\r\n            </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\" innerHTML=\"<pre class='pretransparent'>{{expectedDiff}}</pre>\">\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"stepResult.step\"></app-step-item>\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            <div>\r\n              {{'Sql' | translate}}:<br/>\r\n              <ng-container *ngFor=\"let query of stepResult.sqlQueryList\">\r\n                {{query}}<br/>\r\n              </ng-container>\r\n            </div>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\" innerHTML=\"<pre class='pretransparent'>{{actualDiff}}</pre>\">\r\n            </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\" innerHTML=\"<pre class='pretransparent'>{{expectedDiff}}</pre>\">\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"step\"></app-step-item>\r\n        <div style=\"display: inline-flex\">\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n        <div *ngIf=\"changed\">\r\n            <span class=\"form-control\"  style=\"font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018\">{{'Step diff' | translate}}</span>\r\n        </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2741,6 +2810,7 @@ module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n 
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__model_scenario__ = __webpack_require__("../../../../../src/app/model/scenario.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__step_item_step_item_component__ = __webpack_require__("../../../../../src/app/step-item/step-item.component.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepResultItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2757,6 +2827,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var StepResultItemComponent = StepResultItemComponent_1 = (function () {
     function StepResultItemComponent(route, stepService, customToastyService) {
         this.route = route;
@@ -2764,6 +2835,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
         this.customToastyService = customToastyService;
         this.tab = 'details';
         this.displayDetails = false;
+        this.changed = false;
     }
     StepResultItemComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -2771,6 +2843,13 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             _this.projectCode = params['projectCode'];
             _this.formatText();
         });
+        this.step = this.stepResult.step;
+        if (this.stepList) {
+            var foundStep = this.stepList.find(function (s) { return s.code === _this.step.code; });
+            if (this.stepService.equals(this.step, foundStep)) {
+                this.step = foundStep;
+            }
+        }
     };
     StepResultItemComponent.prototype.formatText = function () {
         var diffs = this.stepResult.diff;
@@ -2955,8 +3034,22 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
         var toasty = this.customToastyService.saving();
         this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
             .subscribe(function () {
+            _this.refreshStepList();
+            _this.stepItem.resetChangeState();
+            setTimeout(function () {
+                _this.changed = false;
+            });
             _this.customToastyService.success('Сохранено', 'Шаг сохранен');
         }, function (error) { return _this.customToastyService.error('Ошибка', error); }, function () { return _this.customToastyService.clear(toasty); });
+    };
+    StepResultItemComponent.prototype.refreshStepList = function () {
+        var _this = this;
+        if (this.stepList) {
+            var index = this.stepList.findIndex(function (s) { return s.code === _this.step.code; });
+            if (index >= 0) {
+                this.stepList[index] = this.stepService.copyStep(this.step);
+            }
+        }
     };
     return StepResultItemComponent;
 }());
@@ -2968,6 +3061,14 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
     __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__model_scenario__["a" /* Scenario */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__model_scenario__["a" /* Scenario */]) === "function" && _b || Object)
 ], StepResultItemComponent.prototype, "scenario", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
+    __metadata("design:type", Array)
+], StepResultItemComponent.prototype, "stepList", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_6__step_item_step_item_component__["a" /* StepItemComponent */]),
+    __metadata("design:type", typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__step_item_step_item_component__["a" /* StepItemComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__step_item_step_item_component__["a" /* StepItemComponent */]) === "function" && _c || Object)
+], StepResultItemComponent.prototype, "stepItem", void 0);
 StepResultItemComponent = StepResultItemComponent_1 = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-step-result-item',
@@ -2979,10 +3080,10 @@ StepResultItemComponent = StepResultItemComponent_1 = __decorate([
             '.input-group-btn > select { padding: 0; width: 85px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-right: 0; }'
         ]
     }),
-    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* ActivatedRoute */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _f || Object])
 ], StepResultItemComponent);
 
-var StepResultItemComponent_1, _a, _b, _c, _d, _e;
+var StepResultItemComponent_1, _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=step-result-item.component.js.map
 
 /***/ }),
