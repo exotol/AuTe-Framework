@@ -65,7 +65,6 @@ export class ScenarioSettingsComponent implements OnInit {
 
   private handleError(error: any) {
     const message = JSON.parse(error._body).message;
-    console.log(message);
     this.translate.get(message).subscribe(value => {
       this.customToastyService.error('Ошибка', value);
     });
