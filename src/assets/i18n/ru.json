@@ -159,5 +159,5 @@
   "Add expected mock MQ request": "Добавить ожидаемый MQ-запрос",
   "Scenario variable name": "Имя переменной сценария",
   "Mock URL": "URL заглушки",
-  "Old scenario directory not removed": "Ошибка перезаписи директории сценария"
+  "Old scenario directory not removed": "Ошибка перезаписи директории сценария. Возможно директория открыта в другом приложении."
 }

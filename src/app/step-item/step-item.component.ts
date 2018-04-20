@@ -210,9 +210,11 @@ export class StepItemComponent implements OnInit {
   }
 
   removeMqMockResponse(mqMockResponse: MqMockResponse) {
-    const indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
-    if (indexToRemove > -1) {
-      this.step.mqMockResponseList.splice(indexToRemove, 1);
+    if (confirm('Confirm: remove MQ mock response')) {
+      const indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
+      if (indexToRemove > -1) {
+        this.step.mqMockResponseList.splice(indexToRemove, 1);
+      }
     }
   }
 

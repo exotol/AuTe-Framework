@@ -6,6 +6,7 @@ import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-scenario-detail',
@@ -24,7 +25,8 @@ export class ScenarioDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private scenarioService: ScenarioService,
     private stepService: StepService,
-    private customToastyService: CustomToastyService
+    private customToastyService: CustomToastyService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -48,7 +50,12 @@ export class ScenarioDetailComponent implements OnInit {
         .subscribe(savedStepList => {
           this.customToastyService.success('Сохранено', 'Шаги сохранены');
           this.stepList = savedStepList;
-        }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
+        }, error => {
+          const message = JSON.parse(error._body).message;
+          this.translate.get(message).subscribe(value => {
+            this.customToastyService.error('Ошибка', value);
+          });
+        }, () => this.customToastyService.clear(toasty));
     }
   }
 
@@ -98,8 +105,8 @@ export class ScenarioDetailComponent implements OnInit {
       const toasty = this.customToastyService.saving('Создание клона шага...', 'Создание может занять некоторое время...');
       this.stepService.cloneStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, step)
         .subscribe(clonedStep => {
-          let ind = this.stepList.indexOf(step)
-          this.stepList.splice(ind + 1, 0, clonedStep);
+          const index = this.stepList.indexOf(step);
+          this.stepList.splice(index + 1, 0, clonedStep);
           this.customToastyService.success('Сохранено', 'Шаг склонирован');
         }, error => this.customToastyService.error('Ошибка', error), () => this.customToastyService.clear(toasty));
     }
