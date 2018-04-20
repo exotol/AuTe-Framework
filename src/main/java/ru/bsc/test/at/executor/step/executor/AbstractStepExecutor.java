@@ -9,8 +9,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
-import ru.bsc.test.at.executor.ei.mqmocker.model.MqMockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.MqMockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.model.BasicAuthCredentials;
 import ru.bsc.test.at.executor.ei.wiremock.model.MatchesXPath;
@@ -98,7 +97,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 put("equalTo", testId);
             }});
             mockRequest.setUrl(step.getParseMockRequestUrl());
-            RequestList list = wireMockAdmin.findRequests(mockRequest);
+            RequestList list = wireMockAdmin.findRestRequests(mockRequest);
             if (list.getRequests() != null && !list.getRequests().isEmpty()) {
 
                 // Parse request
@@ -173,7 +172,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                         DEFAULT_CONTENT_TYPE;
                 mockDefinition.getResponse().getHeaders().put("Content-Type", contentType);
 
-                wireMockAdmin.addMapping(mockDefinition);
+                wireMockAdmin.addRestMapping(mockDefinition);
             }
         }
     }
@@ -414,11 +413,11 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void setMqMockResponses(MqMockerAdmin mqMockerAdmin, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
-        log.debug("Setting MQ mock responses {} {} {} {}", mqMockerAdmin, testId, mqMockResponseList, scenarioVariables);
+    void setMqMockResponses(WireMockAdmin wireMockAdmin, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
+        log.debug("Setting MQ mock responses {} {} {} {}", wireMockAdmin, testId, mqMockResponseList, scenarioVariables);
         if (mqMockResponseList != null) {
-            if (mqMockerAdmin == null) {
-                throw new Exception("MqMockerAdmin is not configured in env.yml");
+            if (wireMockAdmin == null) {
+                throw new Exception("wireMockAdmin is not configured in env.yml");
             }
             for (MqMockResponse mqMockResponse : mqMockResponseList) {
                 MqMockDefinition mockMessage = new MqMockDefinition();
@@ -427,7 +426,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
                 mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
                 mockMessage.setTestId(testId);
-                mqMockerAdmin.addMock(mockMessage);
+                wireMockAdmin.addMqMapping(mockMessage);
             }
         }
     }

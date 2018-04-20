@@ -51,7 +51,7 @@ public class ServiceRequestsComparatorHelper {
         // Список актуальных запросов к сервисам
         MockRequest mockRequest = new MockRequest();
         mockRequest.getHeaders().put(project.getTestIdHeaderName(), createEqualToHeader(testId));
-        List<WireMockRequest> actualRequestList = wireMockAdmin.findRequests(mockRequest).getRequests();
+        List<WireMockRequest> actualRequestList = wireMockAdmin.findRestRequests(mockRequest).getRequests();
 
         // compare request size
         if (expectedRequestList.size() != actualRequestList.size()) {

@@ -5,8 +5,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
-import ru.bsc.test.at.executor.ei.mqmocker.model.MockedRequest;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockedRequest;
 import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedMqRequest;
 import ru.bsc.test.at.executor.model.ScenarioVariableFromMqRequest;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MqMockHelper {
 
-    public void assertMqRequests(MqMockerAdmin mqMockerAdmin, String testId, Step step, Map<String, Object> scenarioVariables, Integer mqCheckCount, Long mqCheckInterval) throws Exception {
+    public void assertMqRequests(WireMockAdmin mqMockerAdmin, String testId, Step step, Map<String, Object> scenarioVariables, Integer mqCheckCount, Long mqCheckInterval) throws Exception {
         if (mqMockerAdmin == null) {
             return;
         }
@@ -55,11 +55,11 @@ public class MqMockHelper {
             }
         });
 
-        List<MockedRequest> actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
+        List<MockedRequest> actualMqRequestList = mqMockerAdmin.getMqRequestListByTestId(testId);
 
         for (int counter = 0; counter < Math.min(mqCheckCount != null ? mqCheckCount : 10, 30) && expectedMqRequestList.size() != actualMqRequestList.size(); counter++) {
             Thread.sleep(Math.min(mqCheckInterval != null ? mqCheckInterval : 500L, 5000L));
-            actualMqRequestList = mqMockerAdmin.getRequestListByTestId(testId);
+            actualMqRequestList = mqMockerAdmin.getMqRequestListByTestId(testId);
         }
 
         if (expectedMqRequestList.size() != actualMqRequestList.size()) {

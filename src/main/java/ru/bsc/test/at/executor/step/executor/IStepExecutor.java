@@ -1,6 +1,5 @@
 package ru.bsc.test.at.executor.step.executor;
 
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
 import ru.bsc.test.at.executor.helper.MqClient;
@@ -20,6 +19,6 @@ public interface IStepExecutor {
         return Arrays.asList(new RestStepExecutor(), new MqStepExecutor());
     }
 
-    void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception;
+    void execute(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception;
     boolean support(Step step);
 }

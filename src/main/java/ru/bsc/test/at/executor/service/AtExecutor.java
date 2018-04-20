@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
 import ru.bsc.test.at.executor.helper.HttpClient;
@@ -211,10 +210,7 @@ public class AtExecutor {
                                 .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName().trim(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    try (
-                            WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null;
-                            MqMockerAdmin mqMockerAdmin = stand != null && isNotEmpty(stand.getMqMockUrl()) ? new MqMockerAdmin(stand.getMqMockUrl() + "/__admin") : null
-                    ) {
+                    try (WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
                         if (stand == null) {
                             log.error("Stand is not configured");
                             throw new Exception("Stand is not configured.");
@@ -225,7 +221,7 @@ public class AtExecutor {
                         for (IStepExecutor stepExecutor : stepExecutorList) {
                             if (stepExecutor.support(step)) {
                                 stepResult.setSavedParameters(scenarioVariables.toString());
-                                stepExecutor.execute(wireMockAdmin, mqMockerAdmin, connection, stand, httpClient, mqClient, scenarioVariables, testId, project, step, stepResult, projectPath);
+                                stepExecutor.execute(wireMockAdmin, connection, stand, httpClient, mqClient, scenarioVariables, testId, project, step, stepResult, projectPath);
                                 break;
                             }
                         }
@@ -233,7 +229,7 @@ public class AtExecutor {
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
                         serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
 
-                        mqMockHelper.assertMqRequests(mqMockerAdmin, testId, step, scenarioVariables, project.getMqCheckCount(), project.getMqCheckInterval());
+                        mqMockHelper.assertMqRequests(wireMockAdmin, testId, step, scenarioVariables, project.getMqCheckCount(), project.getMqCheckInterval());
 
                         stepResult.setSavedParameters(scenarioVariables.toString());
                         stepResult.setResult(StepResult.RESULT_OK);

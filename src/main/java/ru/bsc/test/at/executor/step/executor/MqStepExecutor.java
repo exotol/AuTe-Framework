@@ -1,7 +1,6 @@
 package ru.bsc.test.at.executor.step.executor;
 
 import org.apache.commons.lang3.StringUtils;
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
 import ru.bsc.test.at.executor.helper.MqClient;
@@ -26,7 +25,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
 
     @Override
-    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
+    public void execute(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
         if (mqClient == null) {
             throw new Exception("JMS is not configured in env.yml");

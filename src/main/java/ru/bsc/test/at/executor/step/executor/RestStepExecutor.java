@@ -1,7 +1,6 @@
 package ru.bsc.test.at.executor.step.executor;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.bsc.test.at.executor.ei.mqmocker.MqMockerAdmin;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.helper.HttpClient;
 import ru.bsc.test.at.executor.helper.MqClient;
@@ -33,7 +32,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
     private final static int POLLING_RETRY_COUNT = 50;
 
     @Override
-    public void execute(WireMockAdmin wireMockAdmin, MqMockerAdmin mqMockerAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
+    public void execute(WireMockAdmin wireMockAdmin, Connection connection, Stand stand, HttpClient httpClient, MqClient mqClient, Map<String, Object> scenarioVariables, String testId, Project project, Step step, StepResult stepResult, String projectPath) throws Exception {
 
         log.debug("Executing test step {} {} {} {}", stand, scenarioVariables, testId, project, step);
         stepResult.setSavedParameters(scenarioVariables.toString());
@@ -42,7 +41,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         setMockResponses(wireMockAdmin, project, testId, step.getMockServiceResponseList());
 
         // 0.1 Установить ответы для имитации внешних сервисов, работающих через очереди сообщений
-        setMqMockResponses(mqMockerAdmin, testId, step.getMqMockResponseList(), scenarioVariables);
+        setMqMockResponses(wireMockAdmin, testId, step.getMqMockResponseList(), scenarioVariables);
 
         // 1. Выполнить запрос БД и сохранить полученные значения
         executeSql(connection, step, scenarioVariables, stepResult);
