@@ -39,14 +39,6 @@ export class StepService {
   }
 
   equals(s1: Step, s2: Step): boolean{
-     return JSON.stringify(s1, this.replacer) === JSON.stringify(s2, this.replacer);
+     return JSON.stringify(s1) === JSON.stringify(s2);
   }
-
-  replacer = function (name, val) {
-    if(name === 'stepMode'){
-      return 'REST'; // TODO tmp hack
-    }
-    return val;
-  }
-
 }

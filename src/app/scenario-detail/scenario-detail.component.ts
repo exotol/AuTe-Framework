@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Scenario} from '../model/scenario';
 import {Step} from '../model/step';
 import {ScenarioService} from '../service/scenario.service';
@@ -6,7 +6,6 @@ import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
-import {StepItemComponent} from '../step-item/step-item.component';
 import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 
 @Component({
