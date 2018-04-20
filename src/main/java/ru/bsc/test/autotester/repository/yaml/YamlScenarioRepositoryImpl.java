@@ -68,14 +68,15 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
 
         String newCode = translator.translate(data.getName());
         String newScenarioPath = getScenarioPath(data.getScenarioGroup(), newCode);
-        String[] pathParts = scenarioPath.split("/");
-        String codePart = pathParts.length > 1 ? pathParts[1] : pathParts[0];
-        if (!Objects.equals(codePart, newCode)) {
-            if (Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath).toFile().exists()) {
-                throw new IOException("Directory already exists");
-            }
-        }
         if (scenarioPath != null) {
+            String[] pathParts = scenarioPath.split("/");
+            String codePart = pathParts.length > 1 ? pathParts[1] : pathParts[0];
+            if (!Objects.equals(codePart, newCode)) {
+                if (Paths.get(projectsPath, projectCode, "scenarios", newScenarioPath).toFile().exists()) {
+                    throw new IOException("Directory already exists");
+                }
+            }
+
             Path path = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
             if (Files.exists(path)) {
                 File renamed = new File(path.toFile().getParentFile(), data.getCode() + "-" + UUID.randomUUID().toString());
