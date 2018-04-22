@@ -101,7 +101,7 @@ public class MockApplication {
     }
 
     @Bean
-    public Docket petApi() {
+    public Docket wiremockApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
