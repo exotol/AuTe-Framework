@@ -5,9 +5,8 @@ import {StepResult} from '../model/step-result';
 import {StartScenarioInfo} from '../model/start-scenario-info';
 import {Step} from '../model/step';
 import { saveAs } from 'file-saver/FileSaver';
-import {ScenarioIdentity} from "../model/scenario-identity";
+import {ScenarioIdentity} from '../model/scenario-identity';
 import {StepResultItemComponent} from '../step-result-item/step-result-item.component';
-import {StepService} from '../service/step.service';
 
 @Component({
   selector: 'app-scenario-list-item',
@@ -23,7 +22,7 @@ export class ScenarioListItemComponent implements OnInit {
   @Input()
   isLinkTitleScenario = true;
   @Input()
-  stepList : Step[];
+  stepList: Step[];
 
   @Output() onStateChange = new EventEmitter<any>();
   @Output() cbStateChange = new EventEmitter<any>();
@@ -40,8 +39,7 @@ export class ScenarioListItemComponent implements OnInit {
   totalSteps: number;
 
   constructor(
-    private scenarioService: ScenarioService,
-    private stepService: StepService
+    private scenarioService: ScenarioService
   ) { }
 
   ngOnInit() {
@@ -74,10 +72,11 @@ export class ScenarioListItemComponent implements OnInit {
       this.scenarioService.executionStatus(this.startScenarioInfo.runningUuid)
         .subscribe(executionResult => {
           if (executionResult.scenarioResultList && executionResult.scenarioResultList[0]) {
+            this.scenario.hasResults = true;
             const scenarioResult = executionResult.scenarioResultList[0];
-            let allSteps:StepResult [] = scenarioResult.stepResultList;
+            const allSteps: StepResult [] = scenarioResult.stepResultList;
             if (allSteps.length > 0) {
-              if (this.stepResultList.length == 0) {
+              if (this.stepResultList.length === 0) {
                 this.stepResultList.push(allSteps[0]);
               }
               this.stepResultList[this.stepResultList.length - 1] = allSteps[this.stepResultList.length - 1];
@@ -92,7 +91,6 @@ export class ScenarioListItemComponent implements OnInit {
             this.totalSteps = scenarioResult.totalSteps;
 
             if (executionResult.finished) {
-              this.scenario.hasResults = true;
               this.state = 'finished';
             } else {
               setTimeout(() => {
@@ -157,15 +155,15 @@ export class ScenarioListItemComponent implements OnInit {
     return false;
   }
 
-  onClick(event : any) {
+  onClick(event: any) {
     this.cbStateChange.emit(event);
   }
 
   updateExecutedResults(step: Step) {
     this.childrenComponents.forEach(comp => {
-      if(comp.stepItem) {
-        let s = comp.step;
-        if (s.code === step.code && this.stepList.indexOf(s) == -1) {
+      if (comp.stepItem) {
+        const s = comp.step;
+        if (s.code === step.code && this.stepList.indexOf(s) === -1) {
           // setTimeout need remove exception in dev mode https://blog.angular-university.io/angular-debugging/
           setTimeout(() => {
             comp.changed = true;
