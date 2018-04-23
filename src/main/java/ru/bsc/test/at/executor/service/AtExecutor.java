@@ -210,7 +210,7 @@ public class AtExecutor {
                                 .forEach(stepParameter -> scenarioVariables.put(stepParameter.getName().trim(), stepParameter.getValue()));
                         stepResult.setDescription(stepParameterSet.getDescription());
                     }
-                    try (WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl() + "/__admin") : null) {
+                    try (WireMockAdmin wireMockAdmin = stand != null && isNotEmpty(stand.getWireMockUrl()) ? new WireMockAdmin(stand.getWireMockUrl()) : null) {
                         if (stand == null) {
                             log.error("Stand is not configured");
                             throw new Exception("Stand is not configured.");
