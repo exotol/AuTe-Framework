@@ -1275,7 +1275,6 @@ module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_file_saver_FileSaver__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_scenario_identity__ = __webpack_require__("../../../../../src/app/model/scenario-identity.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__step_result_item_step_result_item_component__ = __webpack_require__("../../../../../src/app/step-result-item/step-result-item.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioListItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1292,11 +1291,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var ScenarioListItemComponent = (function () {
-    function ScenarioListItemComponent(scenarioService, stepService) {
+    function ScenarioListItemComponent(scenarioService) {
         this.scenarioService = scenarioService;
-        this.stepService = stepService;
         this.isLinkTitleScenario = true;
         this.onStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.cbStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
@@ -1333,10 +1330,11 @@ var ScenarioListItemComponent = (function () {
             this.scenarioService.executionStatus(this.startScenarioInfo.runningUuid)
                 .subscribe(function (executionResult) {
                 if (executionResult.scenarioResultList && executionResult.scenarioResultList[0]) {
+                    _this.scenario.hasResults = true;
                     var scenarioResult = executionResult.scenarioResultList[0];
                     var allSteps = scenarioResult.stepResultList;
                     if (allSteps.length > 0) {
-                        if (_this.stepResultList.length == 0) {
+                        if (_this.stepResultList.length === 0) {
                             _this.stepResultList.push(allSteps[0]);
                         }
                         _this.stepResultList[_this.stepResultList.length - 1] = allSteps[_this.stepResultList.length - 1];
@@ -1348,7 +1346,6 @@ var ScenarioListItemComponent = (function () {
                     _this.executedSteps = allSteps.filter(function (stepResult) { return stepResult.editable; }).length;
                     _this.totalSteps = scenarioResult.totalSteps;
                     if (executionResult.finished) {
-                        _this.scenario.hasResults = true;
                         _this.state = 'finished';
                     }
                     else {
@@ -1424,7 +1421,7 @@ var ScenarioListItemComponent = (function () {
         this.childrenComponents.forEach(function (comp) {
             if (comp.stepItem) {
                 var s = comp.step;
-                if (s.code === step.code && _this.stepList.indexOf(s) == -1) {
+                if (s.code === step.code && _this.stepList.indexOf(s) === -1) {
                     // setTimeout need remove exception in dev mode https://blog.angular-university.io/angular-debugging/
                     setTimeout(function () {
                         comp.changed = true;
@@ -1469,10 +1466,10 @@ ScenarioListItemComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.html"),
         styles: [__webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__service_step_service__["a" /* StepService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_scenario_service__["a" /* ScenarioService */]) === "function" && _c || Object])
 ], ScenarioListItemComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c;
 //# sourceMappingURL=scenario-list-item.component.js.map
 
 /***/ }),
