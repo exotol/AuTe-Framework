@@ -276,38 +276,6 @@ paths:
               $ref: '#/definitions/Step'
         404:
           description: Scenario not found
-    post:
-      tags:
-        - Step
-        - Scenario
-      summary: Create new step
-      operationId: createStep
-      parameters:
-        - name: projectCode
-          in: path
-          type: string
-          required: true
-        - name: scenarioGroup
-          in: path
-          type: string
-          required: true
-          description: Scenario group code (not required)
-        - name: scenarioCode
-          in: path
-          type: string
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Step'
-      responses:
-        404:
-          description: Scenario not found
-        200:
-          description: Step created
-          schema:
-            $ref: '#/definitions/Step'
     put:
       tags:
         - Step

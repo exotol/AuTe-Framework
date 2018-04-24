@@ -100,6 +100,7 @@ public class RestScenarioController {
     }
 
     @RequestMapping(value = { "{scenarioCode:.+}/steps", "{scenarioGroup:.+}/{scenarioCode:.+}/steps" }, method = RequestMethod.POST)
+    //TODO не используется. Удалить
     public StepRo createNewStep(
             @PathVariable String projectCode,
             @PathVariable(required = false) String scenarioGroup,
