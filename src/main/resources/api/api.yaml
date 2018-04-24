@@ -16,6 +16,8 @@ tags:
     description: Step of Scenario, contains details about one request to service
   - name: Test execution
     description: ''
+  - name: Version
+    description: Components versions
 schemes:
   - http
 paths:
@@ -377,6 +379,40 @@ paths:
           description: Step updated
           schema:
             $ref: '#/definitions/Step'
+  '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}/steps/{stepCode}/clone':
+    post:
+      tags:
+        - Step
+      summary: Clone Step
+      operationId: cloneStep
+      parameters:
+        - name: projectCode
+          in: path
+          type: string
+          required: true
+        - name: scenarioGroup
+          in: path
+          type: string
+          required: true
+          description: Scenario group code (not required)
+        - name: scenarioCode
+          in: path
+          type: string
+          required: true
+        - name: stepCode
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Step'
+      responses:
+        200:
+          description: Step updated
+          schema:
+            $ref: '#/definitions/Step'
   '/projects/{projectCode}/scenarios/{scenarioGroup}/{scenarioCode}/start':
     post:
       tags:
@@ -458,6 +494,37 @@ paths:
       responses:
         200:
           description: Zip archive
+  '/version/manager':
+    get:
+      tags:
+        - Version
+      summary: Get AT-manager version
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Version'
+  '/version/executor':
+    get:
+      tags:
+        - Version
+      summary: Get AT-executor version
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Version'
+  '/version/wiremock':
+    get:
+      tags:
+        - Version
+      summary: Get AT-Wiremock version
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Version'
+
 definitions:
   Project:
     type: object
@@ -698,6 +765,14 @@ definitions:
     type: object
     properties:
       runningUuid:
+        type: string
+  Version:
+    type: object
+    description: Component's version
+    properties:
+      implementationVersion:
+        type: string
+      implementationDate:
         type: string
 externalDocs:
   description: Find out more about Swagger
