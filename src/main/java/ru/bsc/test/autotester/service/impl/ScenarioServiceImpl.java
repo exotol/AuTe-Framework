@@ -340,7 +340,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 identity.getCode(),
                 "results.json"
         );
-        List<StepResult> results = new LinkedList<>();
+        List<StepResult> results = null;
         if (Files.exists(resultsFile)) {
             results = objectMapper.readValue(resultsFile.toFile(), RESULT_LIST_TYPE);
         }
