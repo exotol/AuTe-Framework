@@ -89,7 +89,8 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     @Override
     public synchronized void generate(File directory) throws Exception {
         File resultDirectory = new File(directory, "results-directory");
-
+        log.info("Generate allure report to: {}", directory);
+        log.info("Scenario step results map size: {}", getScenarioStepResultMap().size());
         if (!resultDirectory.exists() && !resultDirectory.mkdirs()) {
             throw new Exception("mkdirs failed: " + resultDirectory.getAbsolutePath());
         }
@@ -110,6 +111,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         generator.generate(output, resultsDirectory);
         historyFilesProcessor.process(projectCode, output);
         FileUtils.deleteDirectory(resultDirectory);
+        log.info("Allure report successfully generated: {}", directory);
     }
 
     private Configuration createConfiguration() {
@@ -151,21 +153,25 @@ public class AllureReportGenerator extends AbstractReportGenerator {
     }
 
     private List<Plugin> loadPlugins() {
+        log.info("Loading allure plugins");
         Path pluginsPath = Paths.get(PLUGINS_DIRECTORY);
         if (Files.exists(pluginsPath) && Files.isDirectory(pluginsPath)) {
             try {
                 final DefaultPluginLoader pluginLoader = new DefaultPluginLoader();
                 final ClassLoader classLoader = getClass().getClassLoader();
-                return Files.list(pluginsPath)
+                List<Plugin> plugins = Files.list(pluginsPath)
                         .filter(Files::isDirectory)
                         .map(pluginDirectory -> pluginLoader.loadPlugin(classLoader, pluginDirectory))
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toList());
+                log.info("Plugins loaded: {}", plugins.size());
+                return plugins;
             } catch (IOException e) {
                 log.error("Exception while loading plugins", e);
             }
         }
+        log.warn("Allure plugins directory not exists, plugins not loaded");
         return Collections.emptyList();
     }
 

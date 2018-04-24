@@ -17,7 +17,7 @@ public interface ScenarioRepository {
 
     Scenario findScenario(String projectCode, String scenarioPath) throws IOException;
 
-    Scenario saveScenario(String projectCode, String scenarioPath, Scenario data) throws IOException;
+    Scenario saveScenario(String projectCode, String scenarioPath, Scenario data, boolean updateDirectoryName) throws IOException;
 
     Set<Scenario> findByRelativeUrl(String projectCode, String relativeUrl);
 

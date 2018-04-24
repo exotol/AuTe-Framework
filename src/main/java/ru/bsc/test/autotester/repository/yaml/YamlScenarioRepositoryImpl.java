@@ -61,12 +61,12 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     }
 
     @Override
-    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario data) throws IOException {
+    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario data, boolean updateDirectoryName) throws IOException {
         if (StringUtils.isBlank(data.getName())) {
             throw new IOException("Empty scenario name");
         }
 
-        String newCode = translator.translate(data.getName());
+        String newCode = updateDirectoryName ? translator.translate(data.getName()) : data.getCode();
         String newScenarioPath = getScenarioPath(data.getScenarioGroup(), newCode);
         if (scenarioPath != null) {
             String[] pathParts = scenarioPath.split("/");
