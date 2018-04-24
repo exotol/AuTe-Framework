@@ -119,9 +119,18 @@ public class ScenarioServiceImpl implements ScenarioService {
                 String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
 
                 Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                boolean failed = stepResults.stream().anyMatch(stepResult -> RESULT_FAIL.equals(stepResult.getResult()));
-                boolean success = stepResults.stream().anyMatch(stepResult -> RESULT_OK.equals(stepResult.getResult()));
-                scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
+                boolean failed = stepResults.stream().filter(stepResult -> RESULT_FAIL.equals(stepResult.getResult())).count() > 0;
+                boolean success = stepResults.stream().filter(stepResult -> RESULT_OK.equals(stepResult.getResult())).count() > 0;
+                if (failed) {
+                    scenarioToUpdate.setFailed(true);
+                } else {
+                    if (success) {
+                        scenarioToUpdate.setFailed(false);
+                    } else {
+                        scenarioToUpdate.setFailed(null);
+                    }
+                }
+                // scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
                 scenarioToUpdate.setHasResults(true);
                 scenario = scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
 
