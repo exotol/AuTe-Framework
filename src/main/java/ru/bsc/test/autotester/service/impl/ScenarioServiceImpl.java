@@ -299,7 +299,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     public ScenarioRo addScenarioToProject(String projectCode, ScenarioRo scenarioRo) throws IOException {
         synchronized (this) {
             Scenario newScenario = scenarioRoMapper.updateScenario(scenarioRo, new Scenario());
-            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario, false);
+            newScenario = scenarioRepository.saveScenario(projectCode, null, newScenario, true);
             return projectRoMapper.scenarioToScenarioRo(projectCode, newScenario);
         }
     }
@@ -340,7 +340,7 @@ public class ScenarioServiceImpl implements ScenarioService {
                 identity.getCode(),
                 "results.json"
         );
-        List<StepResult> results = null;
+        List<StepResult> results = new LinkedList<>();
         if (Files.exists(resultsFile)) {
             results = objectMapper.readValue(resultsFile.toFile(), RESULT_LIST_TYPE);
         }

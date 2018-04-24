@@ -67,7 +67,9 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
         }
 
         String newCode = updateDirectoryName ? translator.translate(data.getName()) : data.getCode();
+        log.info("newCode: {}", newCode);
         String newScenarioPath = getScenarioPath(data.getScenarioGroup(), newCode);
+        log.info("newScenarioPath: {}", newScenarioPath);
         if (scenarioPath != null) {
             String[] pathParts = scenarioPath.split("/");
             String codePart = pathParts.length > 1 ? pathParts[1] : pathParts[0];
@@ -104,6 +106,8 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
                 newScenarioPath,
                 SCENARIO_YML_FILENAME
         ).toFile();
+
+        log.info("scenarioFile: {}", scenarioFile);
 
         File scenarioRootDirectory = scenarioFile.getParentFile();
         saveScenarioToFiles(data, scenarioFile);
