@@ -57,7 +57,7 @@ public class RestExecutionController {
 
     @RequestMapping(value = "/results", method = POST)
     public List<StepResultRo> getResults(@RequestBody ScenarioIdentityRo identity) {
-        return stepRoMapper.convertStepResultListToStepResultRo(scenarioService.getResult(identity));
+        return stepRoMapper.convertStepResultListToStepResultRoWithDiff(scenarioService.getResult(identity));
     }
 
     @RequestMapping(value = "/report", method = POST, produces="application/zip")
