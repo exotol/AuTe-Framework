@@ -22,5 +22,4 @@ public interface ProjectRepository {
     void addNewGroup(String projectCode, String groupName) throws Exception;
 
     void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception;
-
 }
