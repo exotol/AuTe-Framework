@@ -279,7 +279,7 @@ export class StepResultItemComponent implements OnInit {
 
   saveStep() {
     const toasty = this.customToastyService.saving();
-    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
+    this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.step)
       .subscribe(() => {
         this.refreshStepList();
         this.stepItem.resetChangeState();
