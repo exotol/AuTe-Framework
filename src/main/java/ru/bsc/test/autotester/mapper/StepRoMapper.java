@@ -1,13 +1,17 @@
 package ru.bsc.test.autotester.mapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.bsc.test.at.executor.model.*;
+import ru.bsc.test.autotester.component.JsonDiffCalculator;
 import ru.bsc.test.autotester.ro.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +21,9 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 @Mapper(config = Config.class)
 public abstract class StepRoMapper {
+
+    @Autowired
+    private JsonDiffCalculator diffCalculator;
 
     @Mappings({
             @Mapping(target = "code", source = "code"),
@@ -141,6 +148,18 @@ public abstract class StepRoMapper {
     abstract StepParameterRo stepParameterToStepParameterRo(StepParameter stepParameter);
 
     public abstract List<StepResultRo> convertStepResultListToStepResultRo(List<StepResult> stepResultList);
+
+    public List<StepResultRo> convertStepResultListToStepResultRoWithDiff(List<StepResult> stepResultList) {
+        List<StepResultRo> stepResultRos = convertStepResultListToStepResultRo(stepResultList);
+        if (stepResultRos != null) {
+            stepResultRos.stream()
+                    .filter(Objects::nonNull)
+                    .filter(s -> StringUtils.isNotEmpty(s.getActual()))
+                    .filter(s -> StringUtils.isNotEmpty(s.getExpected()))
+                    .forEach(s -> s.setDiff(diffCalculator.calculate(s.getActual(), s.getExpected())));
+        }
+        return stepResultRos;
+    }
 
     @Mappings({
             @Mapping(target = "testId", source = "testId"),
