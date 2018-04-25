@@ -44,14 +44,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectRo updateFromRo(String projectCode, ProjectRo projectRo) {
         synchronized (this) {
-            Project project = findOne(projectCode);
-            if (project != null) {
-                project = projectRoMapper.updateProjectFromRo(projectRo);
-                projectRepository.saveProject(project);
-                project = projectRepository.findProject(project.getCode());
-                return projectRoMapper.projectToProjectRo(project);
+            boolean existsProject = findOne(projectCode) != null;
+            Project projectFromRo = projectRoMapper.updateProjectFromRo(projectRo);
+            if (!existsProject) {
+                projectRepository.saveProject(projectFromRo);
             }
-            return null;
+            Project project = projectFromRo;
+            projectRepository.saveProject(project);
+            project = projectRepository.findProject(project.getCode());
+            return projectRoMapper.projectToProjectRo(project);
         }
     }
 

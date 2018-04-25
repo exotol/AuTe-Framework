@@ -119,7 +119,7 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
                 environmentProperties.getProjectsDirectoryPath(),
                 project.getCode()).toFile();
         Set<String> readGroups = new HashSet<>(readGroups(file));
-        Set<String> groupSet = new HashSet<>(project.getGroupList());
+        Set<String> groupSet = new HashSet<>(project.getGroupList() == null ? new ArrayList<>() : project.getGroupList());
         List<String> removed = readGroups.stream().filter(group -> !groupSet.contains(group)).collect(Collectors.toList());
         for(String group : removed){
             FileUtils.deleteDirectory(Paths.get(
@@ -143,7 +143,7 @@ public class YamlProjectRepositoryImpl extends BaseYamlRepository implements Pro
         if (file.exists()) {
             throw new Exception("Directory already exists");
         } else {
-            if (!file.mkdir()) {
+            if (!file.mkdirs()) {
                 throw new Exception("Directory not created");
             }
         }
