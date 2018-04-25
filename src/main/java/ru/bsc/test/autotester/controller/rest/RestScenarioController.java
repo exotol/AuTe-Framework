@@ -131,6 +131,8 @@ public class RestScenarioController {
             @PathVariable String scenarioCode) throws IOException {
         String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenarioCode;
         Scenario scenario = scenarioService.findOne(projectCode, scenarioPath);
+        // TODO Сохранить сценарий для обновления всех путей
+        scenario = scenarioService.saveScenario(projectCode, scenarioPath, scenario);
         Project project = projectService.findOne(projectCode);
         if (scenario != null) {
             return scenarioService.startScenarioExecutingList(project, Collections.singletonList(scenario));

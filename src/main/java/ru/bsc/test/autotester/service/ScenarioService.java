@@ -37,6 +37,8 @@ public interface ScenarioService {
 
     StepRo addStepToScenario(String projectCode, String scenarioPath, StepRo stepRo) throws IOException;
 
+    Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException;
+
     void deleteOne(String projectCode, String scenarioPath) throws IOException;
 
     List<ScenarioRo> findScenarioByStepRelativeUrl(String projectCode, ProjectSearchRo projectSearchRo);

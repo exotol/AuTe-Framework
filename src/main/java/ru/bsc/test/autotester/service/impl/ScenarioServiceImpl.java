@@ -217,6 +217,11 @@ public class ScenarioServiceImpl implements ScenarioService {
     }
 
     @Override
+    public Scenario saveScenario(String projectCode, String scenarioPath, Scenario scenario) throws IOException {
+        return scenarioRepository.saveScenario(projectCode, scenarioPath, scenario, false);
+    }
+
+    @Override
     public void deleteOne(String projectCode, String scenarioPath) throws IOException {
         synchronized (projectService) {
             scenarioRepository.delete(projectCode, scenarioPath);
