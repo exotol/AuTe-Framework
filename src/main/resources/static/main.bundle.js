@@ -3091,7 +3091,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
     StepResultItemComponent.prototype.saveStep = function () {
         var _this = this;
         var toasty = this.customToastyService.saving();
-        this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
+        this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.step)
             .subscribe(function () {
             _this.refreshStepList();
             _this.stepItem.resetChangeState();
