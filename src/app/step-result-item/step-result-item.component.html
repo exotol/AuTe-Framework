@@ -18,7 +18,7 @@
   <div class="col-sm-11 col-sm-offset-1" *ngIf="displayDetails">
     <ul class="nav nav-tabs">
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
-      <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Edit step' | translate}}</a></li>
+      <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Step' | translate}}</a></li>
       <li [class.active]="tab == 'requests'"><a href="#" (click)="selectTab('requests')">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>
       <!--li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li-->
     </ul>
@@ -92,11 +92,15 @@
       </div>
       <div *ngIf="stepResult.editable && (tab == 'stepEdit' || tab == 'all')">
         <app-step-item [step]="step"></app-step-item>
-        <div style="display: inline-flex">
-        <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
-        <div *ngIf="changed">
+        <div style="display: inline-flex" *ngIf="!readonly">
+          <button class="btn btn-xs btn-success" (click)="saveStep()">{{'Save step' | translate}}</button>
+          <div *ngIf="changed && false">
             <span class="form-control"  style="font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018">{{'Step diff' | translate}}</span>
+          </div>
         </div>
+        <div style="display: inline-flex; color: darkred; font-weight: bold;" *ngIf="readonly && showRestartNotify">
+          <button disabled class="btn btn-xs btn-success">{{'Save step' | translate}}</button>
+          <span style="margin-top: 6px; margin-left: 6px;">{{'Step was changed. Restart scenario.' | translate}}</span>
         </div>
       </div>
     </div>

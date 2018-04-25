@@ -59,10 +59,15 @@ export class StepItemComponent implements OnInit , DoCheck {
   ) { }
 
   ngOnInit() {
-    if (this.step && !this.step.stepMode) {
-      this.step.stepMode = 'REST';
-    }
     this.oldStep = this.stepService.copyStep(this.step);
+  }
+
+  calculateStepMode(): string {
+    if (this.step.stepMode === 'JMS') {
+      return 'JMS';
+    } else {
+      return 'REST';
+    }
   }
 
   selectTab(tabName: string) {

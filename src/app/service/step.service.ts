@@ -11,6 +11,82 @@ export class StepService {
   public serviceUrl = '/rest/projects';
   private headers = new Headers({'Content-Type': 'application/json'});
 
+  static isEquals(a, b): Boolean {
+    if (a === b) {
+      return true;
+    }
+    let valA = a === undefined ? null : ( a === false ? null : a);
+    let valB = b === undefined ? null : ( b === false ? null : b);
+
+    if (a instanceof Array && a.length === 0) {
+      valA = null;
+    }
+
+    if (b instanceof Array && b.length === 0) {
+      valB = null;
+    }
+    return valA === valB;
+  }
+
+  static differ(a, b, namespace?) {
+    namespace = (namespace || '') + '.';
+
+    if (StepService.isEquals(a, b)) {
+      return [];
+    }
+
+    if (!a || !b) {
+      return [{type: 'DELETED', id: namespace}];
+    }
+
+    const keysInA = Object.keys(a),
+      keysInB = Object.keys(b);
+
+    const diffA = keysInA.reduce(function(changes, key) {
+      const ns = namespace + key;
+
+      if (typeof b[key] === 'undefined') {
+        return changes.concat([{type: 'DELETED', id: ns}]);
+      }
+
+      if (a[key] instanceof Array && b[key] instanceof Array) {
+        if (a[key].length !== b[key].length) {
+          return changes.concat([{type: 'CHANGED', id: ns}]);
+        } else {
+          for (let i = 0; i < a[key].length; i++) {
+            const p = [];
+            if (!StepService.isEquals(a[key][i], b[key][i])) {
+              const c = StepService.differ(a[key], b[key], ns);
+              if (c.length > 0) {
+                p.push(c);
+              }
+            }
+            if (p.length > 0) {
+              return changes.concat(p);
+            }
+          }
+        }
+      } else if (a[key] !== null && typeof b[key] && typeof a[key] === 'object' && typeof b[key] === 'object') {
+        return changes.concat(StepService.differ(a[key], b[key], ns));
+      } else if (! StepService.isEquals(a[key], b[key])) {
+        return changes.concat([{type: 'CHANGED', id: ns}]);
+      }
+      return changes;
+    }, []);
+
+    const diffB = keysInB.reduce(function(changes, key) {
+      const ns = namespace + key;
+
+      if (typeof a[key] === 'undefined') {
+        return changes.concat([{ type: 'ADDED', id: ns }]);
+      }
+
+      return changes;
+    }, []);
+
+    return diffA.concat(diffB);
+  }
+
   constructor(
     private globals: Globals,
     private http: Http
@@ -34,19 +110,19 @@ export class StepService {
     ).map(value => value.json() as Step);
   }
 
-  copyStep(step: Step): Step{
+  copyStep(step: Step): Step {
     return Object.assign({}, step);
   }
 
-  equals(s1: Step, s2: Step): boolean{
+  equals(s1: Step, s2: Step): boolean {
      return JSON.stringify(s1, this.replacer) === JSON.stringify(s2, this.replacer);
   }
 
   replacer = function (name, val) {
-    if(name === 'stepMode' && !val){
+    if (name === 'stepMode' && !val) {
       return 'REST';
     }
     return val;
-  }
+  };
 
 }
