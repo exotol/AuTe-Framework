@@ -44,17 +44,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectRo updateFromRo(String projectCode, ProjectRo projectRo) {
         synchronized (this) {
-            boolean existsProject = findOne(projectCode) != null;
-            Project projectFromRo = projectRoMapper.updateProjectFromRo(projectRo);
-            if (!existsProject) {
-                projectRepository.saveProject(projectFromRo);
+            Project project = findOne(projectCode);
+            if (project != null) {
+                project = projectRoMapper.updateProjectFromRo(projectRo);
+                projectRepository.saveProject(project);
+                project = projectRepository.findProject(project.getCode());
+                return projectRoMapper.projectToProjectRo(project);
             }
-            Project project = projectFromRo;
+            return null;
+        }
+    }
+
+    @Override
+    public ProjectRo createFromRo(ProjectRo projectRo) {
+        synchronized (this) {
+            Project project = projectRoMapper.updateProjectFromRo(projectRo);
             projectRepository.saveProject(project);
             project = projectRepository.findProject(project.getCode());
             return projectRoMapper.projectToProjectRo(project);
         }
     }
+
+
 
     @Override
     public void addNewGroup(String projectCode, String groupName) throws Exception {
