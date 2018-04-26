@@ -52,7 +52,7 @@ public class MqRunnerComponent {
     @Value("${test.id.header.name:testIdHeader}")
     private String testIdHeaderName;
 
-    private final List<MockMessage> mockMappingList = new LinkedList<>(); // Collections.synchronizedList(new LinkedList<>())
+    private final List<MockMessage> mockMappingList = new LinkedList<>();
     private Buffer fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer());
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
 
