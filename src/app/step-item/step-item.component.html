@@ -17,11 +17,12 @@
       <div class="input-group">
         <div class="input-group-btn">
           <select class="form-control" title="{{'Request method' | translate}}" [(ngModel)]="step.stepMode">
+            <option [ngValue]="null" hidden>REST</option>
             <option [ngValue]="'REST'">REST</option>
             <option [ngValue]="'JMS'">JMS</option>
           </select>
         </div>
-        <div class="input-group-btn" *ngIf="step.stepMode == 'REST'">
+        <div class="input-group-btn" *ngIf="calculateStepMode() == 'REST'">
           <select class="form-control" title="{{'Request method' | translate}}" [(ngModel)]="step.requestMethod">
             <option [ngValue]="''"></option>
             <option [ngValue]="'POST'">POST</option>
@@ -35,21 +36,21 @@
           class="form-control"
           title=""
           [(ngModel)]="step.relativeUrl"
-          *ngIf="step.stepMode == 'REST'" />
+          *ngIf="calculateStepMode() == 'REST'" />
         <input
           placeholder="{{'Output queue name' | translate}}"
           class="form-control"
           style="width: 50%;"
           title=""
           [(ngModel)]="step.mqOutputQueueName"
-          *ngIf="step.stepMode == 'JMS'" />
+          *ngIf="calculateStepMode() == 'JMS'" />
         <input
           placeholder="{{'Input queue name' | translate}}"
           class="form-control"
           style="width: 50%;"
           title=""
           [(ngModel)]="step.mqInputQueueName"
-          *ngIf="step.stepMode == 'JMS'" />
+          *ngIf="calculateStepMode() == 'JMS'" />
         <div class="input-group-btn">
           <button class="btn btn-default" title="{{'Delete' | translate}}" *ngIf="showUpDownDeleteCloneButtons" (click)="deleteStep()"><span class="glyphicon glyphicon-minus"></span> {{'Delete' | translate}}</button>
           <button class="btn btn-default" title="{{'Disabled toggle' | translate}}" *ngIf="!step.disabled" (click)="disabledToggle()"><span class="glyphicon glyphicon-flag"></span> {{'Disable' | translate}}</button>
@@ -93,10 +94,10 @@
         <div *ngIf="tab == 'details'" class="row">
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-sm-6" *ngIf="step.stepMode == 'REST'">
+              <div class="col-sm-6" *ngIf="calculateStepMode() == 'REST'">
                 <label>{{'Request body type' | translate}}:</label>
               </div>
-              <div class="col-sm-6" *ngIf="step.stepMode == 'JMS'">
+              <div class="col-sm-6" *ngIf="calculateStepMode() == 'JMS'">
                 <label>{{'Wait response timeout' | translate}}:</label>
               </div>
               <div class="col-sm-3">
@@ -107,13 +108,13 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-6" *ngIf="step.stepMode == 'REST'">
+              <div class="col-sm-6" *ngIf="calculateStepMode() == 'REST'">
                 <select class="form-control" title="{{'Request body type' | translate}}" [(ngModel)]="step.requestBodyType">
                   <option [ngValue]="'JSON'">{{'JSON request body (default)' | translate}}</option>
                   <option [ngValue]="'FORM'">{{'FORM-data request body' | translate}}</option>
                 </select>
               </div>
-              <div class="col-sm-6" *ngIf="step.stepMode == 'JMS'">
+              <div class="col-sm-6" *ngIf="calculateStepMode() == 'JMS'">
                 <input title="" placeholder="N or variable (ms, 1000 default)" class="form-control" [(ngModel)]="step.mqTimeoutMs"/>
               </div>
               <div class="col-sm-3">
@@ -126,7 +127,7 @@
           </div>
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-sm-4" *ngIf="step.stepMode == 'REST'">
+              <div class="col-sm-4" *ngIf="calculateStepMode() == 'REST'">
                 <label>{{'Expected status' | translate}}:</label>
               </div>
               <div class="col-sm-4">
@@ -137,7 +138,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-4" *ngIf="step.stepMode == 'REST'">
+              <div class="col-sm-4" *ngIf="calculateStepMode() == 'REST'">
                 <input title="" placeholder="Example: 200, 404, 500, [empty]" class="form-control" [(ngModel)]="step.expectedStatusCode"/>
               </div>
               <div class="col-sm-4">
@@ -158,7 +159,7 @@
             </div>
           </div>
           <div class="clearfix"></div>
-          <div class="col-sm-6" *ngIf="step.stepMode == 'REST'">
+          <div class="col-sm-6" *ngIf="calculateStepMode() == 'REST'">
             <label>{{'Request body' | translate}}:</label>
             <div *ngIf="step.requestBodyType != 'FORM'">
               <textarea title="{{'Request body' | translate}}" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
@@ -185,15 +186,15 @@
               <button class="btn" style="margin-top: 7px; margin-left: 7px;" (click)="addFormData()">{{'Add field' | translate}}</button>
             </div>
           </div>
-          <div class="col-sm-6" *ngIf="step.stepMode == 'REST'">
+          <div class="col-sm-6" *ngIf="calculateStepMode() == 'REST'">
             <label>{{'Expected response' | translate}}:</label>
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>
-          <div class="col-sm-6" *ngIf="step.stepMode == 'JMS'">
+          <div class="col-sm-6" *ngIf="calculateStepMode() == 'JMS'">
             <label>{{'Request JMS body' | translate}}:</label>
             <textarea title="{{'Request body' | translate}}" class="form-control" rows="10" [(ngModel)]="step.request"></textarea>
           </div>
-          <div class="col-sm-6" *ngIf="step.stepMode == 'JMS'">
+          <div class="col-sm-6" *ngIf="calculateStepMode() == 'JMS'">
             <label>{{'Expected JMS response' | translate}}:</label>
             <textarea title="{{'Expected response' | translate}}" class="form-control" rows="10" [(ngModel)]="step.expectedResponse"></textarea>
           </div>

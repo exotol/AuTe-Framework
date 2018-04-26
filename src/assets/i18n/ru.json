@@ -161,6 +161,9 @@
   "Scenario variable name": "Имя переменной сценария",
   "Mock URL": "URL заглушки",
   "Old scenario directory not removed": "Ошибка перезаписи директории сценария. Возможно директория открыта в другом приложении.",
+  "Step": "Шаг",
+  "Step was changed. Restart scenario.": "Шаг был изменен. Перезапустите сценарий.",
+  "Readonly mode. Open scenario details to edit.": "Только чтение. Откройте детали сценария для редактирования."
   "Header name": "Наименование заголовка",
   "Header value": "Значение заголовка"
 }
