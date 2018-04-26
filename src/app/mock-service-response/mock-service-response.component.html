@@ -30,8 +30,12 @@
   <div class="row">
     <div class="col-sm-12" style="margin-top: 10px">
       <ul class="nav nav-tabs">
-        <li [class.active]="tab == 'responseBody'" style="padding: auto"><a href="#" (click)="selectTab('responseBody')">{{'Response body' | translate}}</a></li>
-        <li [class.active]="tab == 'headers'" style="padding: auto"><a href="#" (click)="selectTab('headers')">{{'Headers'| translate}}</a></li>
+        <li [class.active]="tab == 'responseBody'" >
+          <a href="#" (click)="selectTab('responseBody')" style="padding: inherit">{{'Response body' | translate}}</a>
+        </li>
+        <li [class.active]="tab == 'headers'" >
+          <a href="#" (click)="selectTab('headers')" style="padding: inherit">{{'Headers'| translate}}</a>
+        </li>
       </ul>
       <div class="tab-content">
         <div *ngIf="tab == 'responseBody'">
