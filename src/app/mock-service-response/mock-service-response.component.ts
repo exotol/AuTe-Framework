@@ -21,11 +21,7 @@ export class MockServiceResponseComponent implements OnInit {
   }
 
   selectTab(tabName: string) {
-    if (this.tab === tabName) {
-      this.tab = 'none';
-    } else {
-      this.tab = tabName;
-    }
+    this.tab = tabName;
     return false;
   }
 

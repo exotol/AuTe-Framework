@@ -71,7 +71,11 @@ export class StepItemComponent implements OnInit , DoCheck {
   }
 
   selectTab(tabName: string) {
-    this.tab = tabName;
+    if (this.tab === tabName) {
+      this.tab = 'none';
+    } else {
+      this.tab = tabName;
+    }
     return false;
   }
 
