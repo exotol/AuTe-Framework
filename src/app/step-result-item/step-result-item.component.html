@@ -98,9 +98,10 @@
             <span class="form-control"  style="font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018">{{'Step diff' | translate}}</span>
           </div>
         </div>
-        <div style="display: inline-flex; color: darkred; font-weight: bold;" *ngIf="readonly && showRestartNotify">
+        <div style="display: inline-flex; color: darkred; font-weight: bold;" *ngIf="readonly">
           <button disabled class="btn btn-xs btn-success">{{'Save step' | translate}}</button>
-          <span style="margin-top: 6px; margin-left: 6px;">{{'Step was changed. Restart scenario.' | translate}}</span>
+          <span style="margin-top: 2px; margin-left: 6px;" *ngIf="showRestartNotify">{{'Step was changed. Restart scenario.' | translate}}</span>
+          <span style="margin-top: 2px; margin-left: 6px;" *ngIf="!showRestartNotify">{{'Readonly mode. Open scenario details to edit.' | translate}}</span>
         </div>
       </div>
     </div>
