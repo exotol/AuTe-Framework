@@ -30,6 +30,14 @@ export class ProjectService {
     ).map(value => value.json() as Project);
   }
 
+  create(project: Project): Observable<Project> {
+    return this.http.put(
+      this.globals.serviceBaseUrl + this.serviceUrl,
+      project,
+      { headers: this.headers }
+    ).map(value => value.json() as Project);
+  }
+
   findOne(projectCode: string): Observable<Project> {
     return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
       .map(value => value.json() as Project);
