@@ -3,6 +3,8 @@ package ru.bsc.test.autotester.ro;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by sdoroshin on 14.09.2017.
  */
@@ -20,5 +22,6 @@ public class MockServiceResponseRo implements AbstractRo {
     private String userName;
     private String password;
     private String pathFilter;
+    private List<HeaderItemRo> headers;
 
 }

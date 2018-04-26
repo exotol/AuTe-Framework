@@ -188,9 +188,12 @@ public abstract class StepRoMapper {
             @Mapping(target = "contentType", source = "contentType"),
             @Mapping(target = "password", source = "password"),
             @Mapping(target = "userName", source = "userName"),
-            @Mapping(target = "pathFilter", source = "pathFilter")
+            @Mapping(target = "pathFilter", source = "pathFilter"),
+            @Mapping(target = "headers", source = "headers")
     })
     abstract MockServiceResponseRo mockServiceResponseToMockServiceResponseRo(MockServiceResponse mockServiceResponse);
+
+    abstract HeaderItemRo headerItemToHeaderItemRo(HeaderItem headerItem);
 
     @Mappings({
             @Mapping(target = "code", source = "code"),
@@ -202,6 +205,8 @@ public abstract class StepRoMapper {
             @Mapping(target = "pathFilter", source = "pathFilter")
     })
     abstract MockServiceResponse updateMockServiceResponseFromRo(MockServiceResponseRo mockServiceResponseRo);
+
+    abstract HeaderItem updateHeaderFromRo(HeaderItemRo headerItemRo);
 
     @Mappings({
             @Mapping(target = "code", source = "code"),
