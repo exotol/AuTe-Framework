@@ -28,7 +28,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-12" style="margin-top: 10px">
       <ul class="nav nav-tabs">
         <li [class.active]="tab == 'responseBody'" style="padding: auto"><a href="#" (click)="selectTab('responseBody')">{{'Response body' | translate}}</a></li>
         <li [class.active]="tab == 'headers'" style="padding: auto"><a href="#" (click)="selectTab('headers')">{{'Headers'| translate}}</a></li>
@@ -38,7 +38,7 @@
           <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="mockServiceResponse.responseBody"></textarea>
         </div>
         <div *ngIf="tab == 'headers'" class="row">
-          <div class="form-group" *ngFor="let header of mockServiceResponse.headers">
+          <div class="form-group" style="margin-top: 10px" *ngFor="let header of mockServiceResponse.headers">
             <div class="col-sm-4">
               <input class="form-control" placeholder="{{'Header name' | translate}}" title="" [(ngModel)]="header.headerName">
             </div>
