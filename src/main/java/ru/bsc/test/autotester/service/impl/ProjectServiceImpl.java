@@ -65,8 +65,6 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-
-
     @Override
     public void addNewGroup(String projectCode, String groupName) throws Exception {
         projectRepository.addNewGroup(projectCode, groupName);
