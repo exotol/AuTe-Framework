@@ -11,12 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class ProjectListComponent implements OnInit {
 
-  @Input()
   newProjectName: string;
-
-  @Input()
   newProjectCode: string;
-
   projectList: Project[];
 
   constructor(
