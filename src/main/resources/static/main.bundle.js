@@ -319,7 +319,7 @@ HelpComponent = __decorate([
 /***/ "../../../../../src/app/mock-service-response/mock-service-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"Content-Type: application/json, text/xml\" title=\"\" [(ngModel)]=\"mockServiceResponse.contentType\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder='Basic Authentication(username), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.userName\"/>\r\n      </div>\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder='Basic Authentication(password), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.password\"/>\r\n      </div>\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder=\"{{'XPath filter' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.pathFilter\"/>\r\n      </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"Content-Type: application/json, text/xml\" title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.contentType\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder='Basic Authentication(username), [empty]' title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.userName\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder='Basic Authentication(password), [empty]' title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.password\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath filter' | translate}}\" title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.pathFilter\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\" style=\"margin-top: 10px\">\r\n      <ul class=\"nav nav-tabs\">\r\n        <li [class.active]=\"tab == 'responseBody'\" >\r\n          <a href=\"#\" (click)=\"selectTab('responseBody')\" style=\"padding: inherit\">{{'Response body' | translate}}</a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'headers'\" >\r\n          <a href=\"#\" (click)=\"selectTab('headers')\" style=\"padding: inherit\">{{'Headers'| translate}}</a>\r\n        </li>\r\n      </ul>\r\n      <div class=\"tab-content\">\r\n        <div *ngIf=\"tab == 'responseBody'\">\r\n          <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n        </div>\r\n        <div *ngIf=\"tab == 'headers'\" class=\"row\">\r\n          <div class=\"form-group\" style=\"margin-top: 10px\" *ngFor=\"let header of mockServiceResponse.headers\">\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\" placeholder=\"{{'Header name' | translate}}\" title=\"\" [(ngModel)]=\"header.headerName\">\r\n            </div>\r\n            <div class=\"col-sm-1\">\r\n              <select class=\"form-control\" title=\"\" [(ngModel)]=\"header.compareType\">\r\n                <option [ngValue]=\"'equalTo'\">equalTo</option>\r\n              </select>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\" placeholder=\"{{'Header value' | translate}}\" title=\"\" [(ngModel)]=\"header.headerValue\">\r\n            </div>\r\n            <button class=\"btn btn-sm  btn-default\" (click)=\"deleteHeader(header)\">\r\n             <span class=\"glyphicon glyphicon-remove\"></span></button>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <div class=\"col-sm-1\">\r\n              <button class=\"btn btn-sm  btn-default\" (click)=\"addHeader();\"><span class=\"glyphicon glyphicon-plus\"></span>Add header</button>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -343,14 +343,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var MockServiceResponseComponent = (function () {
     function MockServiceResponseComponent() {
+        this.tab = 'responseBody';
     }
     MockServiceResponseComponent.prototype.ngOnInit = function () {
+        if (!this.mockServiceResponse.headers) {
+            this.mockServiceResponse.headers = [];
+        }
+    };
+    MockServiceResponseComponent.prototype.selectTab = function (tabName) {
+        this.tab = tabName;
+        return false;
+    };
+    MockServiceResponseComponent.prototype.addHeader = function () {
+        this.mockServiceResponse.headers.push(new __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* HeaderItem */]());
+    };
+    MockServiceResponseComponent.prototype.deleteHeader = function (header) {
+        this.mockServiceResponse.headers = this.mockServiceResponse.headers.filter(function (value) { return value !== header; });
     };
     return MockServiceResponseComponent;
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["b" /* MockServiceResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["b" /* MockServiceResponse */]) === "function" && _a || Object)
 ], MockServiceResponseComponent.prototype, "mockServiceResponse", void 0);
 MockServiceResponseComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
@@ -414,11 +428,19 @@ var FormData = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MockServiceResponse; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MockServiceResponse; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HeaderItem; });
 var MockServiceResponse = (function () {
     function MockServiceResponse() {
     }
     return MockServiceResponse;
+}());
+
+var HeaderItem = (function () {
+    function HeaderItem() {
+        this.compareType = 'equalTo';
+    }
+    return HeaderItem;
 }());
 
 //# sourceMappingURL=mock-service-response.js.map
@@ -452,6 +474,21 @@ var NameValueProperty = (function () {
 }());
 
 //# sourceMappingURL=name-value-property.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/model/project.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Project; });
+var Project = (function () {
+    function Project() {
+    }
+    return Project;
+}());
+
+//# sourceMappingURL=project.js.map
 
 /***/ }),
 
@@ -889,7 +926,7 @@ var _a, _b, _c, _d, _e, _f, _g;
 /***/ "../../../../../src/app/project-list/project-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n"
+module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<div class=\"container\">\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <label>{{'Create new project' | translate}}</label>\r\n      <div class=\"input-group\" style=\"width: 100%\">\r\n        <input placeholder=\"{{'Project name' | translate}}\" class=\"form-control\" title=\"{{'Project name' | translate}}\" [(ngModel)]=\"newProjectName\" />\r\n        <div>\r\n        <input placeholder=\"{{'Project code' | translate}}\" class=\"form-control\" title=\"{{'Project name' | translate}}\" [(ngModel)]=\"newProjectCode\" />\r\n        <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewProject()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n"
 
 /***/ }),
 
@@ -898,7 +935,10 @@ module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_project__ = __webpack_require__("../../../../../src/app/model/project.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectListComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -911,14 +951,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
+
+
 var ProjectListComponent = (function () {
-    function ProjectListComponent(projectService) {
+    function ProjectListComponent(customToastyService, projectService, translate) {
+        this.customToastyService = customToastyService;
         this.projectService = projectService;
-        this.displayImportProjectForm = false;
+        this.translate = translate;
     }
     ProjectListComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.projectService.findAll().subscribe(function (value) { return _this.projectList = value; });
+    };
+    ProjectListComponent.prototype.saveNewProject = function () {
+        var _this = this;
+        var newProject = new __WEBPACK_IMPORTED_MODULE_1__model_project__["a" /* Project */]();
+        newProject.name = this.newProjectName;
+        newProject.code = this.newProjectCode;
+        var toasty = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
+        var t = this;
+        this.projectService.create(newProject)
+            .subscribe(function (savedProject) {
+            t.projectList.push(savedProject);
+            t.customToastyService.success('Сохранено', 'Проект создан');
+        }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty); });
+    };
+    ProjectListComponent.prototype.handleError = function (error) {
+        var _this = this;
+        var message = JSON.parse(error._body).message;
+        console.log(message);
+        this.translate.get(message).subscribe(function (value) {
+            _this.customToastyService.error('Ошибка', value);
+        });
     };
     return ProjectListComponent;
 }());
@@ -927,10 +992,10 @@ ProjectListComponent = __decorate([
         selector: 'app-project-list',
         template: __webpack_require__("../../../../../src/app/project-list/project-list.component.html")
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_project_service__["a" /* ProjectService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */]) === "function" && _c || Object])
 ], ProjectListComponent);
 
-var _a;
+var _a, _b, _c;
 //# sourceMappingURL=project-list.component.js.map
 
 /***/ }),
@@ -1590,12 +1655,13 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
+var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1829,6 +1895,9 @@ var ProjectService = (function () {
     };
     ProjectService.prototype.save = function (project) {
         return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code, project, { headers: this.headers }).map(function (value) { return value.json(); });
+    };
+    ProjectService.prototype.create = function (project) {
+        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl, project, { headers: this.headers }).map(function (value) { return value.json(); });
     };
     ProjectService.prototype.findOne = function (projectCode) {
         return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
@@ -2508,7 +2577,7 @@ var StepItemComponent = (function () {
         if (!this.step.mockServiceResponseList) {
             this.step.mockServiceResponseList = [];
         }
-        this.step.mockServiceResponseList.push(new __WEBPACK_IMPORTED_MODULE_2__model_mock_service_response__["a" /* MockServiceResponse */]());
+        this.step.mockServiceResponseList.push(new __WEBPACK_IMPORTED_MODULE_2__model_mock_service_response__["b" /* MockServiceResponse */]());
     };
     StepItemComponent.prototype.addMqMockResponse = function () {
         if (!this.step.mqMockResponseList) {

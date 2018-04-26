@@ -7,6 +7,7 @@
   "Download selected scenarios as YAML": "Скачать выбранные сценарии в формате YAML",
   "Loading": "Загрузка...",
   "Create": "Создать",
+  "Create new project": "Создать проект",
   "Create new scenario": "Создать сценарий",
   "All": "Все",
   "Scenario name": "Название сценария",
@@ -163,5 +164,7 @@
   "Old scenario directory not removed": "Ошибка перезаписи директории сценария. Возможно директория открыта в другом приложении.",
   "Step": "Шаг",
   "Step was changed. Restart scenario.": "Шаг был изменен. Перезапустите сценарий.",
-  "Readonly mode. Open scenario details to edit.": "Только чтение. Откройте детали сценария для редактирования."
+  "Readonly mode. Open scenario details to edit.": "Только чтение. Откройте детали сценария для редактирования.",
+  "Header name": "Наименование заголовка",
+  "Header value": "Значение заголовка"
 }
