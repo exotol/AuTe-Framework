@@ -17,6 +17,8 @@ public interface ProjectService {
 
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
+    ProjectRo createFromRo(ProjectRo projectRo);
+
     void addNewGroup(String projectCode, String groupName) throws Exception;
 
     void renameGroup(String projectCode, String oldGroupName, String newGroupName) throws Exception;

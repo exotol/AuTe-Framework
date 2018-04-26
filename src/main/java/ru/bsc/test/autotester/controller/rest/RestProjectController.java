@@ -58,6 +58,11 @@ public class RestProjectController {
         return projectService.updateFromRo(projectCode, projectRo);
     }
 
+    @RequestMapping(method = RequestMethod.PUT)
+    public ProjectRo create(@RequestBody ProjectRo projectRo) {
+        return projectService.createFromRo(projectRo);
+    }
+
     @RequestMapping(value = "{projectCode}/scenarios", method = RequestMethod.GET)
     public List<ScenarioRo> getScenarios(@PathVariable String projectCode) {
         return projectRoMapper.convertScenarioListToScenarioRoList(scenarioService.findAllByProject(projectCode));

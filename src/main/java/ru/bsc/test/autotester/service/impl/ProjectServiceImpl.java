@@ -56,6 +56,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public ProjectRo createFromRo(ProjectRo projectRo) {
+        synchronized (this) {
+            Project project = projectRoMapper.updateProjectFromRo(projectRo);
+            projectRepository.saveProject(project);
+            project = projectRepository.findProject(project.getCode());
+            return projectRoMapper.projectToProjectRo(project);
+        }
+    }
+
+    @Override
     public void addNewGroup(String projectCode, String groupName) throws Exception {
         projectRepository.addNewGroup(projectCode, groupName);
     }
