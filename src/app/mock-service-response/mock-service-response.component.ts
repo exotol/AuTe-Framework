@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MockServiceResponse} from '../model/mock-service-response';
+import {HeaderItem, MockServiceResponse} from '../model/mock-service-response';
 
 @Component({
   selector: 'app-mock-service-response',
@@ -10,8 +10,30 @@ export class MockServiceResponseComponent implements OnInit {
   @Input()
   mockServiceResponse: MockServiceResponse;
 
+  tab = 'responseBody';
+
   constructor() { }
 
   ngOnInit() {
+    if(!this.mockServiceResponse.headers){
+      this.mockServiceResponse.headers = [];
+    }
+  }
+
+  selectTab(tabName: string) {
+    if (this.tab === tabName) {
+      this.tab = 'none';
+    } else {
+      this.tab = tabName;
+    }
+    return false;
+  }
+
+  addHeader() {
+    this.mockServiceResponse.headers.push(new HeaderItem());
+  }
+
+  deleteHeader(header: HeaderItem){
+    this.mockServiceResponse.headers = this.mockServiceResponse.headers.filter(value => value !== header);
   }
 }
