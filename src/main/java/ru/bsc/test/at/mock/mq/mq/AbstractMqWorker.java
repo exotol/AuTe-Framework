@@ -30,7 +30,7 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
 
     final String queueNameFrom;
     final String queueNameTo;
-    private List<MockMessage> mockMappingList;
+    private final List<MockMessage> mockMappingList;
 
     final String brokerUrl;
     final String username;
@@ -60,46 +60,48 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
         logger.error("{}", ex);
     }
 
-    private Document parseXmlDocument(String stringBody) throws IOException {
+    private Document parseXmlDocument(String stringBody) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             return db.parse(new InputSource(new StringReader(stringBody)));
-        } catch (ParserConfigurationException | SAXException e) {
-            logger.warn("Cannot parse XML document.", e);
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            logger.info("Cannot parse XML document: {}", e.getMessage());
             return null;
         }
     }
 
-    MockMessage findMockMessage(String testId, String stringBody) throws IOException {
-        final Document document = parseXmlDocument(stringBody);
+    MockMessage findMockMessage(String testId, String stringBody) {
+        synchronized (mockMappingList) {
+            final Document document = parseXmlDocument(stringBody);
 
-        Predicate<MockMessage> documentXpathFilterPredicate = mockMessage1 -> {
-            if (mockMessage1.getXpath() == null) {
-                return true;
-            }
-            try {
-                Object node = XPathFactory.newInstance().newXPath().evaluate(mockMessage1.getXpath(), document, XPathConstants.NODE);
-                return node != null;
-            } catch (XPathExpressionException e) {
-                return false;
-            }
-        };
+            Predicate<MockMessage> documentXpathFilterPredicate = mockMessage1 -> {
+                if (mockMessage1.getXpath() == null) {
+                    return true;
+                }
+                try {
+                    Object node = XPathFactory.newInstance().newXPath().evaluate(mockMessage1.getXpath(), document, XPathConstants.NODE);
+                    return node != null;
+                } catch (XPathExpressionException e) {
+                    return false;
+                }
+            };
 
-        return mockMappingList
-                .stream()
-                .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
-                .filter(mockMessage1 -> Objects.equals(testId, mockMessage1.getTestId()))
-                .filter(documentXpathFilterPredicate)
-                .findAny()
-                .orElse(mockMappingList
-                        .stream()
-                        .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
-                        .filter(mockMessage1 -> mockMessage1.getTestId() == null)
-                        .filter(documentXpathFilterPredicate)
-                        .findAny()
-                        .orElse(null)
-                );
+            return mockMappingList
+                    .stream()
+                    .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
+                    .filter(mockMessage1 -> Objects.equals(testId, mockMessage1.getTestId()))
+                    .filter(documentXpathFilterPredicate)
+                    .findAny()
+                    .orElse(mockMappingList
+                            .stream()
+                            .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
+                            .filter(mockMessage1 -> mockMessage1.getTestId() == null)
+                            .filter(documentXpathFilterPredicate)
+                            .findAny()
+                            .orElse(null)
+                    );
+        }
     }
 
     void copyMessageProperties(TextMessage message, TextMessage newMessage, String testId, Queue destination) throws JMSException {
