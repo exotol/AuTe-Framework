@@ -36,7 +36,7 @@ export class ProjectListComponent implements OnInit {
 
     const toasty = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
     const t = this;
-    this.projectService.save(newProject)
+    this.projectService.create(newProject)
       .subscribe(savedProject => {
         t.projectList.push(savedProject);
         t.customToastyService.success('Сохранено', 'Проект создан');
