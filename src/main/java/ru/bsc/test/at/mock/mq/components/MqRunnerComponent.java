@@ -52,7 +52,7 @@ public class MqRunnerComponent {
     @Value("${test.id.header.name:testIdHeader}")
     private String testIdHeaderName;
 
-    private List<MockMessage> mockMappingList = new LinkedList<>();
+    private final List<MockMessage> mockMappingList = new LinkedList<>();
     private Buffer fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer());
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
 
@@ -62,71 +62,75 @@ public class MqRunnerComponent {
     }
 
     String addMapping(MockMessage mockMessage) {
-        if (StringUtils.isEmpty(mockMessage.getSourceQueueName())) {
-            return null;
-        }
-        mockMessage.setGuid(UUID.randomUUID().toString());
-        mockMappingList.add(mockMessage);
+        synchronized (mockMappingList) {
+            if (StringUtils.isEmpty(mockMessage.getSourceQueueName())) {
+                return null;
+            }
+            mockMessage.setGuid(UUID.randomUUID().toString());
+            mockMappingList.add(mockMessage);
 
-        if (!queueListenerMap.containsKey(mockMessage.getSourceQueueName())) {
-            AbstractMqWorker newMqListener;
+            if (!queueListenerMap.containsKey(mockMessage.getSourceQueueName())) {
+                AbstractMqWorker newMqListener;
 
-            // TODO: Переделать с использованием Enum
-            if ("RABBIT_MQ".equals(mqManager)) {
-                newMqListener = new RabbitMQWorker(
-                        mockMessage.getSourceQueueName(),
-                        defaultDestinationQueueName,
-                        mockMappingList,
-                        fifo,
-                        mqHost,
-                        mqUsername,
-                        mqPassword,
-                        mqPort,
-                        testIdHeaderName);
-            } else if("ACTIVE_MQ".equals(mqManager)) {
-                newMqListener = new ActiveMQWorker(
-                        mockMessage.getSourceQueueName(),
-                        defaultDestinationQueueName,
-                        mockMappingList,
-                        fifo,
-                        mqHost,
-                        mqUsername,
-                        mqPassword,
-                        testIdHeaderName);
-            } else {
-                newMqListener = new IbmMQWorker(
-                        mockMessage.getSourceQueueName(),
-                        defaultDestinationQueueName,
-                        mockMappingList,
-                        fifo,
-                        mqHost,
-                        mqUsername,
-                        mqPassword,
-                        mqPort,
-                        testIdHeaderName);
+                // TODO: Переделать с использованием Enum
+                if ("RABBIT_MQ".equals(mqManager)) {
+                    newMqListener = new RabbitMQWorker(
+                            mockMessage.getSourceQueueName(),
+                            defaultDestinationQueueName,
+                            mockMappingList,
+                            fifo,
+                            mqHost,
+                            mqUsername,
+                            mqPassword,
+                            mqPort,
+                            testIdHeaderName);
+                } else if ("ACTIVE_MQ".equals(mqManager)) {
+                    newMqListener = new ActiveMQWorker(
+                            mockMessage.getSourceQueueName(),
+                            defaultDestinationQueueName,
+                            mockMappingList,
+                            fifo,
+                            mqHost,
+                            mqUsername,
+                            mqPassword,
+                            testIdHeaderName);
+                } else {
+                    newMqListener = new IbmMQWorker(
+                            mockMessage.getSourceQueueName(),
+                            defaultDestinationQueueName,
+                            mockMappingList,
+                            fifo,
+                            mqHost,
+                            mqUsername,
+                            mqPassword,
+                            mqPort,
+                            testIdHeaderName);
+                }
+
+                queueListenerMap.put(mockMessage.getSourceQueueName(), newMqListener);
+                startListener(newMqListener);
             }
 
-            queueListenerMap.put(mockMessage.getSourceQueueName(), newMqListener);
-            startListener(newMqListener);
+            return mockMessage.getGuid();
         }
-
-        return mockMessage.getGuid();
     }
 
     void deleteMapping(String mappingGuid) throws IOException, TimeoutException {
-        MockMessage mapping = mockMappingList
-                .stream()
-                .filter(mockMessage -> Objects.equals(mockMessage.getGuid(), mappingGuid)).findAny()
-                .orElse(null);
-        mockMappingList.remove(mapping);
+        synchronized (mockMappingList) {
+            MockMessage mapping = mockMappingList
+                    .stream()
+                    .filter(mockMessage -> Objects.equals(mockMessage.getGuid(), mappingGuid)).findAny()
+                    .orElse(null);
+            mockMappingList.remove(mapping);
 
-        if (mapping != null) {
-            long count = mockMappingList.stream().filter(mockMessage -> Objects.equals(mockMessage.getSourceQueueName(), mapping.getSourceQueueName())).count();
-            if (count == 0) {
-                AbstractMqWorker mqWorker = queueListenerMap.get(mapping.getSourceQueueName());
-                if (mqWorker != null) {
-                    mqWorker.stop();
-                    queueListenerMap.remove(mapping.getSourceQueueName());
+            if (mapping != null) {
+                long count = mockMappingList.stream().filter(mockMessage -> Objects.equals(mockMessage.getSourceQueueName(), mapping.getSourceQueueName())).count();
+                if (count == 0) {
+                    AbstractMqWorker mqWorker = queueListenerMap.get(mapping.getSourceQueueName());
+                    if (mqWorker != null) {
+                        mqWorker.stop();
+                        queueListenerMap.remove(mapping.getSourceQueueName());
+                    }
                 }
             }
         }
@@ -137,7 +141,9 @@ public class MqRunnerComponent {
     }
 
     List<MockMessage> getMockMappingList() {
-        return mockMappingList;
+        synchronized (mockMappingList) {
+            return mockMappingList;
+        }
     }
 
     @PostConstruct
