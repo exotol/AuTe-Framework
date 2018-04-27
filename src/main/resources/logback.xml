@@ -9,7 +9,7 @@
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <!-- relative logs path for tomcat -->
-        <file>wire-mock.log</file>
+        <file>bsc-wire-mock.log</file>
         <append>true</append>
         <immediateFlush>true</immediateFlush>
         <encoder>
