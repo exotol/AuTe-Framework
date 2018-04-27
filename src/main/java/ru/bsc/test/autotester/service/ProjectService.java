@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.ro.ProjectRo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface ProjectService {
 
     ProjectRo updateFromRo(String projectCode, ProjectRo projectRo);
 
-    ProjectRo createFromRo(ProjectRo projectRo);
+    ProjectRo createFromRo(ProjectRo projectRo) throws IOException;
 
     void addNewGroup(String projectCode, String groupName) throws Exception;
 

@@ -59,7 +59,7 @@ public class RestProjectController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public ProjectRo create(@RequestBody ProjectRo projectRo) {
+    public ProjectRo create(@RequestBody ProjectRo projectRo) throws IOException {
         return projectService.createFromRo(projectRo);
     }
 

@@ -926,7 +926,7 @@ var _a, _b, _c, _d, _e, _f, _g;
 /***/ "../../../../../src/app/project-list/project-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<div class=\"container\">\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <label>{{'Create new project' | translate}}</label>\r\n      <div class=\"input-group\" style=\"width: 100%\">\r\n        <input placeholder=\"{{'Project name' | translate}}\" class=\"form-control\" title=\"{{'Project name' | translate}}\" [(ngModel)]=\"newProjectName\" />\r\n        <div>\r\n        <input placeholder=\"{{'Project code' | translate}}\" class=\"form-control\" title=\"{{'Project name' | translate}}\" [(ngModel)]=\"newProjectCode\" />\r\n        <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewProject()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n"
+module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<div class=\"container\">\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <label>{{'Create new project' | translate}}</label>\r\n      <div class=\"input-group\">\r\n        <input\r\n          placeholder=\"{{'Project name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"newProjectName\"/>\r\n        <input\r\n          placeholder=\"{{'Project code' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"newProjectCode\"/>\r\n        <div class=\"input-group-btn\">\r\n          <button class=\"btn btn-success\" (click)=\"saveNewProject()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n"
 
 /***/ }),
 
@@ -966,16 +966,18 @@ var ProjectListComponent = (function () {
     };
     ProjectListComponent.prototype.saveNewProject = function () {
         var _this = this;
-        var newProject = new __WEBPACK_IMPORTED_MODULE_1__model_project__["a" /* Project */]();
-        newProject.name = this.newProjectName;
-        newProject.code = this.newProjectCode;
-        var toasty = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
-        var t = this;
-        this.projectService.create(newProject)
-            .subscribe(function (savedProject) {
-            t.projectList.push(savedProject);
-            t.customToastyService.success('Сохранено', 'Проект создан');
-        }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty); });
+        if (confirm('Confirm: create new project')) {
+            var newProject = new __WEBPACK_IMPORTED_MODULE_1__model_project__["a" /* Project */]();
+            newProject.name = this.newProjectName;
+            newProject.code = this.newProjectCode;
+            var toasty_1 = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
+            var t_1 = this;
+            this.projectService.create(newProject)
+                .subscribe(function (savedProject) {
+                t_1.projectList.push(savedProject);
+                t_1.customToastyService.success('Сохранено', 'Проект создан');
+            }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty_1); });
+        }
     };
     ProjectListComponent.prototype.handleError = function (error) {
         var _this = this;
@@ -1655,13 +1657,12 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 

@@ -1,14 +1,19 @@
 package ru.bsc.test.autotester.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
+import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.ro.ProjectRo;
 import ru.bsc.test.autotester.service.ProjectService;
 
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -16,15 +21,18 @@ import java.util.List;
  *
  */
 @Service
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectRoMapper projectRoMapper;
+    private final EnvironmentProperties environmentProperties;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectRoMapper projectRoMapper) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, ProjectRoMapper projectRoMapper, EnvironmentProperties environmentProperties) {
         this.projectRepository = projectRepository;
         this.projectRoMapper = projectRoMapper;
+        this.environmentProperties = environmentProperties;
     }
 
     @Override
@@ -56,9 +64,27 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectRo createFromRo(ProjectRo projectRo) {
+    public ProjectRo createFromRo(ProjectRo projectRo) throws IOException {
         synchronized (this) {
             Project project = projectRoMapper.updateProjectFromRo(projectRo);
+
+            if (StringUtils.isBlank(project.getCode())) {
+                throw new IOException("Empty project code");
+            }
+
+            if (StringUtils.isBlank(project.getName())) {
+                throw new IOException("Empty project name");
+            }
+
+            try {
+                if (Paths.get(environmentProperties.getProjectsDirectoryPath(), project.getCode()).toFile().exists()) {
+                    throw new IOException("Directory already exists");
+                }
+            } catch (InvalidPathException e) {
+                log.warn("Create project exception: {}", e.getMessage());
+                throw new IOException("Wrong project code");
+            }
+
             projectRepository.saveProject(project);
             project = projectRepository.findProject(project.getCode());
             return projectRoMapper.projectToProjectRo(project);
