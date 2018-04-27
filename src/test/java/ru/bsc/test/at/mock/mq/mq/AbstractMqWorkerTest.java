@@ -35,7 +35,7 @@ public class AbstractMqWorkerTest {
 
     @Test()
     @ThreadCount(1000)
-    public void listConcurrentAccessTest() {
+    public void testFindMockMessageConcurrentAccess() {
         for (int i = 0; i < 10; i++) {
             MockMessage message = testWorker.findMockMessage("testId", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><note></note>");
             synchronized (list) {
