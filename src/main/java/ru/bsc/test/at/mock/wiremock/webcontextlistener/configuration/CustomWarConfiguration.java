@@ -10,6 +10,7 @@ import org.apache.velocity.app.Velocity;
 import ru.bsc.test.at.mock.wiremock.transformers.CustomVelocityResponseTransformer;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -42,7 +43,7 @@ public class CustomWarConfiguration extends WarConfiguration {
             Properties properties = new Properties();
             properties.setProperty("userdirective", "ru.bsc.velocity.directive.XPathDirective,ru.bsc.velocity.directive.GroovyDirective");
             properties.setProperty("resource.loader", "file");
-            properties.setProperty("file.resource.loader.path", "./velocity");
+            properties.setProperty("file.resource.loader.path", "." + File.separator + "velocity");
 
             try (final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(VELOCITY_PROPERTIES.getValue())) {
                 properties.load(stream);

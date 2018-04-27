@@ -23,12 +23,30 @@ public class AbstractMqWorkerTest {
     @Before
     public void init() {
 
-        list.add(MockMessage.builder().sourceQueueName("queue6").testId("testId").build());
-        list.add(MockMessage.builder().sourceQueueName("queue5").testId("testId").build());
-        list.add(MockMessage.builder().sourceQueueName("queue4").testId("testId").build());
-        list.add(MockMessage.builder().sourceQueueName("queue3").testId("testId").build());
-        list.add(MockMessage.builder().sourceQueueName("queue2").testId("testId").build());
-        list.add(MockMessage.builder().sourceQueueName("queue").testId("testId").build());
+        MockMessage mockMessage = new MockMessage();
+        mockMessage.setSourceQueueName("queue4");
+        mockMessage.setTestId("testId");
+        list.add(mockMessage);
+
+        mockMessage = new MockMessage();
+        mockMessage.setSourceQueueName("queue3");
+        mockMessage.setTestId("testId");
+        list.add(mockMessage);
+
+        mockMessage = new MockMessage();
+        mockMessage.setSourceQueueName("queue2");
+        mockMessage.setTestId("testId");
+        list.add(mockMessage);
+
+        mockMessage = new MockMessage();
+        mockMessage.setSourceQueueName("queue1");
+        mockMessage.setTestId("testId");
+        list.add(mockMessage);
+
+        mockMessage = new MockMessage();
+        mockMessage.setSourceQueueName("queue");
+        mockMessage.setTestId("testId");
+        list.add(mockMessage);
 
         testWorker = new TestAbstractMqWorker("queue", null, list, null, null, null, null);
     }
@@ -39,7 +57,12 @@ public class AbstractMqWorkerTest {
         for (int i = 0; i < 10; i++) {
             MockMessage message = testWorker.findMockMessage("testId", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><note></note>");
             synchronized (list) {
-                list.add(MockMessage.builder().sourceQueueName("q").testId("t").build());
+
+                MockMessage mockMessage = new MockMessage();
+                mockMessage.setSourceQueueName("q");
+                mockMessage.setTestId("t");
+
+                list.add(mockMessage);
             }
             Assert.assertNotNull(message);
         }
