@@ -143,6 +143,8 @@
   "Number of repetitions": "Количество повторений",
   "JSON compare mode": "Режим сравнения JSON",
   "Empty scenario name": "Пустое имя сценария",
+  "Empty project name": "Пустое имя проекта",
+  "Empty project code": "Пустой код проекта",
   "Directory already exists": "Директория с таким именем уже существует",
   "XPath filter": "XPath фильтр",
   "Wait response timeout": "Время ожидания ответа",
@@ -166,5 +168,6 @@
   "Step was changed. Restart scenario.": "Шаг был изменен. Перезапустите сценарий.",
   "Readonly mode. Open scenario details to edit.": "Только чтение. Откройте детали сценария для редактирования.",
   "Header name": "Наименование заголовка",
-  "Header value": "Значение заголовка"
+  "Header value": "Значение заголовка",
+  "Wrong project code": "Неправильное название директории (код проекта)"
 }

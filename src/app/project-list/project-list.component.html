@@ -22,15 +22,24 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <label>{{'Create new project' | translate}}</label>
-      <div class="input-group" style="width: 100%">
-        <input placeholder="{{'Project name' | translate}}" class="form-control" title="{{'Project name' | translate}}" [(ngModel)]="newProjectName" />
-        <div>
-        <input placeholder="{{'Project code' | translate}}" class="form-control" title="{{'Project name' | translate}}" [(ngModel)]="newProjectCode" />
-        <span class="input-group-btn">
-            <button class="btn btn-success" (click)="saveNewProject()"><span class="glyphicon glyphicon-plus"></span> {{ 'Create' | translate}}</button>
-          </span>
+      <div class="input-group">
+        <input
+          placeholder="{{'Project name' | translate}}"
+          class="form-control"
+          style="width: 50%;"
+          title=""
+          [(ngModel)]="newProjectName"/>
+        <input
+          placeholder="{{'Project code' | translate}}"
+          class="form-control"
+          style="width: 50%;"
+          title=""
+          [(ngModel)]="newProjectCode"/>
+        <div class="input-group-btn">
+          <button class="btn btn-success" (click)="saveNewProject()"><span class="glyphicon glyphicon-plus"></span> {{ 'Create' | translate}}</button>
         </div>
       </div>
+
     </div>
   </div>
 </div>

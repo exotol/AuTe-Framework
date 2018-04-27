@@ -1,7 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Project} from '../model/project';
 import {ProjectService} from '../service/project.service';
-import {Scenario} from '../model/scenario';
 import {CustomToastyService} from '../service/custom-toasty.service';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -26,17 +25,19 @@ export class ProjectListComponent implements OnInit {
   }
 
   saveNewProject() {
-    const newProject = new Project();
-    newProject.name = this.newProjectName;
-    newProject.code = this.newProjectCode;
+    if (confirm('Confirm: create new project')) {
+      const newProject = new Project();
+      newProject.name = this.newProjectName;
+      newProject.code = this.newProjectCode;
 
-    const toasty = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
-    const t = this;
-    this.projectService.create(newProject)
-      .subscribe(savedProject => {
-        t.projectList.push(savedProject);
-        t.customToastyService.success('Сохранено', 'Проект создан');
-      }, error => this.handleError(error), () => this.customToastyService.clear(toasty));
+      const toasty = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
+      const t = this;
+      this.projectService.create(newProject)
+        .subscribe(savedProject => {
+          t.projectList.push(savedProject);
+          t.customToastyService.success('Сохранено', 'Проект создан');
+        }, error => this.handleError(error), () => this.customToastyService.clear(toasty));
+    }
   }
 
   private handleError(error: any) {
