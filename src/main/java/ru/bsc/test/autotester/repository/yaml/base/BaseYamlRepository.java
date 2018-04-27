@@ -134,9 +134,7 @@ public abstract class BaseYamlRepository {
         step.setCode(generateCodeForStep(order, step));
         if (step.getRequest() != null) {
             try {
-                if (step.getRequestFile() == null) {
-                    step.setRequestFile(stepPath(step) + REQUEST_JSON);
-                }
+                step.setRequestFile(stepPath(step) + REQUEST_JSON);
                 File file = new File(scenarioRootDirectory + "/" + step.getRequestFile());
                 FileUtils.writeStringToFile(file, step.getRequest(), FILE_ENCODING);
                 step.setRequest(null);
@@ -149,9 +147,7 @@ public abstract class BaseYamlRepository {
 
         if (step.getExpectedResponse() != null) {
             try {
-                if (step.getExpectedResponseFile() == null) {
-                    step.setExpectedResponseFile(stepPath(step) + stepExpectedResponseFile(step));
-                }
+                step.setExpectedResponseFile(stepPath(step) + stepExpectedResponseFile(step));
                 File file = new File(scenarioRootDirectory + "/" + step.getExpectedResponseFile());
                 FileUtils.writeStringToFile(file, step.getExpectedResponse(), FILE_ENCODING);
                 step.setExpectedResponse(null);
@@ -164,9 +160,7 @@ public abstract class BaseYamlRepository {
 
         if (step.getMqMessage() != null) {
             try {
-                if (step.getMqMessageFile() == null) {
-                    step.setMqMessageFile(stepPath(step) + stepMqMessageFile(step));
-                }
+                step.setMqMessageFile(stepPath(step) + stepMqMessageFile(step));
                 File file = new File(scenarioRootDirectory + "/" + step.getMqMessageFile());
                 FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
                 step.setMqMessage(null);
@@ -180,9 +174,7 @@ public abstract class BaseYamlRepository {
         step.getMockServiceResponseList().forEach(mockServiceResponse -> {
             if (mockServiceResponse.getResponseBody() != null) {
                 try {
-                    if (mockServiceResponse.getResponseBodyFile() == null) {
-                        mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse));
-                    }
+                    mockServiceResponse.setResponseBodyFile(stepPath(step) + mockResponseBodyFile(mockServiceResponse));
                     File file = new File(scenarioRootDirectory + "/" + mockServiceResponse.getResponseBodyFile());
                     FileUtils.writeStringToFile(file, mockServiceResponse.getResponseBody(), FILE_ENCODING);
                     mockServiceResponse.setResponseBody(null);
@@ -197,9 +189,7 @@ public abstract class BaseYamlRepository {
         step.getExpectedServiceRequests().forEach(expectedServiceRequest -> {
             if (expectedServiceRequest.getExpectedServiceRequest() != null) {
                 try {
-                    if (expectedServiceRequest.getExpectedServiceRequestFile() == null) {
-                        expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest));
-                    }
+                    expectedServiceRequest.setExpectedServiceRequestFile(stepPath(step) + expectedServiceRequestFile(expectedServiceRequest));
                     File file = new File(scenarioRootDirectory + "/" + expectedServiceRequest.getExpectedServiceRequestFile());
                     FileUtils.writeStringToFile(
                             file,
