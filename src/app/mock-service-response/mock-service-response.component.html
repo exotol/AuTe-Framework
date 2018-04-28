@@ -15,26 +15,23 @@
   </div>
   <div class="row">
     <div class="col-sm-4" style="margin-top: 10px">
-      <input class="form-control" placeholder='Basic Authentication(username), [empty]' title=""
-             [(ngModel)]="mockServiceResponse.userName"/>
+      <input class="form-control" placeholder='Basic Authentication(username), [empty]' title="" [(ngModel)]="mockServiceResponse.userName"/>
     </div>
     <div class="col-sm-4" style="margin-top: 10px">
-      <input class="form-control" placeholder='Basic Authentication(password), [empty]' title=""
-             [(ngModel)]="mockServiceResponse.password"/>
+      <input class="form-control" placeholder='Basic Authentication(password), [empty]' title="" [(ngModel)]="mockServiceResponse.password"/>
     </div>
     <div class="col-sm-4" style="margin-top: 10px">
-      <input class="form-control" placeholder="{{'XPath filter' | translate}}" title=""
-             [(ngModel)]="mockServiceResponse.pathFilter"/>
+      <input class="form-control" placeholder="{{'XPath filter' | translate}}" title="" [(ngModel)]="mockServiceResponse.pathFilter"/>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12" style="margin-top: 10px">
       <ul class="nav nav-tabs">
-        <li [class.active]="tab == 'responseBody'" >
-          <a href="#" (click)="selectTab('responseBody')" style="padding: inherit">{{'Response body' | translate}}</a>
+        <li [class.active]="tab == 'responseBody'">
+          <a href="#" (click)="selectTab('responseBody')">{{'Response body' | translate}} <span *ngIf="mockServiceResponse.responseBody" class="glyphicon glyphicon-tag"></span></a>
         </li>
-        <li [class.active]="tab == 'headers'" >
-          <a href="#" (click)="selectTab('headers')" style="padding: inherit">{{'Headers'| translate}}</a>
+        <li [class.active]="tab == 'headers'">
+          <a href="#" (click)="selectTab('headers')">{{'Headers' | translate}} <span *ngIf="mockServiceResponse.headers?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
       </ul>
       <div class="tab-content">

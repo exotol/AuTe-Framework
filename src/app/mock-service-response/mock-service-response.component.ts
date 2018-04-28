@@ -3,7 +3,11 @@ import {HeaderItem, MockServiceResponse} from '../model/mock-service-response';
 
 @Component({
   selector: 'app-mock-service-response',
-  templateUrl: './mock-service-response.component.html'
+  templateUrl: './mock-service-response.component.html',
+  styles: [
+    '.nav-tabs > li > a { padding: 3px 7px; }',
+    '.tab-content { border: 1px solid #ddd; border-top-width: 0;}'
+  ]
 })
 export class MockServiceResponseComponent implements OnInit {
 
