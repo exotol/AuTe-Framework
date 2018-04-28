@@ -85,7 +85,14 @@ export class ScenarioService {
 
   getResults(identity: ScenarioIdentity): Observable<StepResult[]> {
     return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/results', identity)
-      .map(data => data.json() as StepResult[]);
+      .map(data => {
+        try {
+          return data.json() as StepResult[];
+        } catch (e) {
+          console.log(e);
+          return [];
+        }
+      });
   }
 
   downloadReport(identities: ScenarioIdentity[]): Observable<Blob> {
