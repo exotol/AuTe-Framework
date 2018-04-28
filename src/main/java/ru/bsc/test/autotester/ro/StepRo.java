@@ -35,10 +35,7 @@ public class StepRo implements AbstractRo {
     private Map<String, String> savedValuesCheck;
     private List<StepParameterSetRo> stepParameterSetList = new ArrayList<>();
     private List<ExpectedServiceRequestRo> expectedServiceRequestList = new ArrayList<>();
-    private String mqName;
-    private String mqMessage;
-    private String mqMessageFile;
-    private List<NameValuePropertyRo> mqPropertyList;
+    private List<MqMessageRo> mqMessages = new ArrayList<>();
     private String responseCompareMode;
     private List<FormDataRo> formDataList;
     private List<SQLDataRo> sqlDataList;
@@ -52,12 +49,21 @@ public class StepRo implements AbstractRo {
     private String timeoutMs;
     private List<MqMockResponseRo> mqMockResponseList;
     private List<ExpectedMqRequestRo> expectedMqRequestList;
+    private List<ScenarioVariableFromMqRequestRo> scenarioVariableFromMqRequestList;
+    private String stepMode;
+
     @Deprecated
     private String sql;
     @Deprecated
     private String sqlSavedParameter;
-    private List<ScenarioVariableFromMqRequestRo> scenarioVariableFromMqRequestList;
-    private String stepMode;
+    @Deprecated
+    private String mqName;
+    @Deprecated
+    private String mqMessage;
+    @Deprecated
+    private String mqMessageFile;
+    @Deprecated
+    private List<NameValuePropertyRo> mqPropertyList;
 
     private String mqOutputQueueName;
     private String mqInputQueueName;

@@ -1,13 +1,14 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
+import ru.bsc.test.at.executor.model.MqMessage;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,23 +18,24 @@ import java.util.List;
 @Component
 public class MessageQueueAttachExtractor extends AbstractAttachExtractor<StepResult> {
 
-    private static final String FILE_NAME = "Message queue";
+    private static final String FILE_NAME_TEMPLATE = "MQ Message %d";
 
     @Override
     public List<Attachment> extract(File resultDirectory, StepResult result) {
-        String name = result.getStep().getMqName();
-        String message = result.getStep().getMqMessage();
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(message)) {
+        if (CollectionUtils.isEmpty(result.getStep().getMqMessages())) {
             return null;
         }
-        String data = "Message queue name: " + name + "\nMessage:" + message;
-        String relativePath = writeDataToFile(resultDirectory, data, FILE_NAME);
-        if (relativePath != null) {
-            return Collections.singletonList(new Attachment()
-                    .withTitle(FILE_NAME)
-                    .withSource(relativePath)
-                    .withType(TEXT_PLAIN));
+        List<MqMessage> messages = result.getStep().getMqMessages();
+        List<Attachment> attachments = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            MqMessage message = messages.get(i);
+            String data = "Message queue name: " + message.getQueueName() + "\nMessage:\n" + message.getMessage();
+            String attachName = String.format(FILE_NAME_TEMPLATE, i + 1);
+            String relativePath = writeDataToFile(resultDirectory, data, attachName);
+            if (relativePath != null) {
+                attachments.add(new Attachment().withTitle(attachName).withSource(relativePath).withType(TEXT_PLAIN));
+            }
         }
-        return null;
+        return attachments;
     }
 }

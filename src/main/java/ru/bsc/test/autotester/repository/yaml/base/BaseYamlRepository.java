@@ -1,10 +1,12 @@
 package ru.bsc.test.autotester.repository.yaml.base;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.autotester.component.Translator;
+import ru.bsc.test.autotester.ro.MqMessageRo;
 import ru.bsc.test.autotester.utils.FileExtensionsUtils;
 import ru.bsc.test.autotester.yaml.YamlUtils;
 
@@ -56,6 +58,13 @@ public abstract class BaseYamlRepository {
         if (step.getMqMessageFile() != null && step.getMqMessage() == null) {
             step.setMqMessage(readFile(scenarioRootDirectory + "/" + step.getMqMessageFile()));
         }
+        if (step.getMqMessages() != null) {
+            step.getMqMessages().forEach(message -> {
+                if (message.getMessageFile() != null && message.getMessage() == null) {
+                    message.setMessage(readFile(scenarioRootDirectory + File.separator + message.getMessageFile()));
+                }
+            });
+        }
 
         step.getMockServiceResponseList().forEach(mockServiceResponse -> {
             if (mockServiceResponse.getResponseBodyFile() != null && mockServiceResponse.getResponseBody() == null) {
@@ -98,8 +107,8 @@ public abstract class BaseYamlRepository {
         }
 
         /*
-            Данный блок необходим для сохранения информации о sql из старой версии модели
-            TODO: удалить этот блок после окончательного прекращения поддержки старого формата
+            Данные блоки необходимы для сохранения информации о sql и mq сообщений из старой версии модели
+            TODO: удалить данные блоки после окончательного прекращения поддержки старого формата
          */
         if (StringUtils.isNotEmpty(step.getSql())) {
             SqlData sqlData = new SqlData();
@@ -110,6 +119,19 @@ public abstract class BaseYamlRepository {
                 step.setSqlSavedParameter(null);
             }
             step.getSqlDataList().add(sqlData);
+        }
+
+        if (StringUtils.isNotEmpty(step.getMqName()) ||
+            StringUtils.isNotEmpty(step.getMqMessage()) ||
+            CollectionUtils.isNotEmpty(step.getMqPropertyList())) {
+            MqMessage message = new MqMessage();
+            message.setMessage(step.getMqMessage());
+            step.setMqMessage(null);
+            message.setQueueName(step.getMqName());
+            step.setMqName(null);
+            message.setProperties(step.getMqPropertyList());
+            step.setMqPropertyList(null);
+            step.getMqMessages().add(message);
         }
     }
 
@@ -158,17 +180,21 @@ public abstract class BaseYamlRepository {
             step.setExpectedResponseFile(null);
         }
 
-        if (step.getMqMessage() != null) {
-            try {
-                step.setMqMessageFile(stepPath(step) + stepMqMessageFile(step));
-                File file = new File(scenarioRootDirectory + "/" + step.getMqMessageFile());
-                FileUtils.writeStringToFile(file, step.getMqMessage(), FILE_ENCODING);
-                step.setMqMessage(null);
-            } catch (IOException e) {
-                log.error("Save file " + scenarioRootDirectory + "/" + step.getMqMessageFile(), e);
-            }
-        } else {
-            step.setMqMessageFile(null);
+        if (step.getMqMessages() != null) {
+            step.getMqMessages().forEach(message -> {
+                if (message.getMessage() != null) {
+                    try {
+                        message.setMessageFile(stepPath(step) + stepMqMessageFile(message));
+                        File file = new File(scenarioRootDirectory + File.separator + message.getMessageFile());
+                        FileUtils.writeStringToFile(file, message.getMessage(), FILE_ENCODING);
+                        message.setMessage(null);
+                    } catch (IOException e) {
+                        log.error("Save file {}", scenarioRootDirectory + File.separator + message.getMessageFile(), e);
+                    }
+                } else {
+                    message.setMessageFile(null);
+                }
+            });
         }
 
         step.getMockServiceResponseList().forEach(mockServiceResponse -> {
@@ -280,8 +306,13 @@ public abstract class BaseYamlRepository {
         return "expected-response." + FileExtensionsUtils.extensionByContent(step.getExpectedResponse());
     }
 
-    private String stepMqMessageFile(Step step) {
-        return "mq-message." + FileExtensionsUtils.extensionByContent(step.getMqMessage());
+    private String stepMqMessageFile(MqMessage message) {
+        return String.format(
+                "mq-messages%s%s.%s",
+                File.separator,
+                UUID.randomUUID().toString(),
+                FileExtensionsUtils.extensionByContent(message.getMessage())
+        );
     }
 
     private String mockResponseBodyFile(MockServiceResponse mockServiceResponse) {
