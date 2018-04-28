@@ -6,7 +6,7 @@ import {MqMockResponse} from './mq-mock-response';
 import {ExpectedMqRequest} from './expected-mq-request';
 import {SqlData} from './sql-data';
 import {ScenarioVariableFromMqRequest} from './scenario-variable-from-mq-request';
-import {NameValueProperty} from './name-value-property';
+import {MqMessage} from "./mq-message";
 
 export class Step {
   code: string;
@@ -30,9 +30,7 @@ export class Step {
   responseCompareMode = 'JSON';
   formDataList: FormData[] = [];
   multipartFormData: boolean;
-  mqName: string;
-  mqMessage: string;
-  mqPropertyList: NameValueProperty[];
+  mqMessages: MqMessage[];
   jsonCompareMode = 'NON_EXTENSIBLE';
   script: string;
   numberRepetitions: string;

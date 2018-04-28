@@ -1,28 +1,28 @@
 <div>
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-9">
       <input class="form-control" placeholder="{{'Service URL' | translate}}" title=""
              [(ngModel)]="mockServiceResponse.serviceUrl"/>
     </div>
     <div class="col-sm-3">
-      <input class="form-control" placeholder="HTTP-status: 200, 404, 500, [empty]" title=""
-             [(ngModel)]="mockServiceResponse.httpStatus"/>
-    </div>
-    <div class="col-sm-3">
-      <input class="form-control" placeholder="Content-Type: application/json, text/xml" title=""
-             [(ngModel)]="mockServiceResponse.contentType"/>
+      <div class="input-group">
+        <input class="form-control" placeholder="Content-Type: application/json, text/xml" title="" [(ngModel)]="mockServiceResponse.contentType"/>
+        <span class="input-group-btn">
+          <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="deleteResponse()"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+        </span>
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-3" style="margin-top: 10px">
+    <div class="col-sm-4" style="margin-top: 10px">
       <input class="form-control" placeholder='Basic Authentication(username), [empty]' title=""
              [(ngModel)]="mockServiceResponse.userName"/>
     </div>
-    <div class="col-sm-3" style="margin-top: 10px">
+    <div class="col-sm-4" style="margin-top: 10px">
       <input class="form-control" placeholder='Basic Authentication(password), [empty]' title=""
              [(ngModel)]="mockServiceResponse.password"/>
     </div>
-    <div class="col-sm-3" style="margin-top: 10px">
+    <div class="col-sm-4" style="margin-top: 10px">
       <input class="form-control" placeholder="{{'XPath filter' | translate}}" title=""
              [(ngModel)]="mockServiceResponse.pathFilter"/>
     </div>

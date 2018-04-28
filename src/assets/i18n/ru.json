@@ -81,7 +81,7 @@
   "Headers": "Заголовки",
   "Mock responses": "Ответы заглушек",
   "Expected mock requests": "Ожидаемые запросы заглушек",
-  "Message Queue": "Очередь сообщений",
+  "Messages Queue": "Очередь сообщений",
   "Polling": "Поллинг",
   "Test cases": "Тест-кейсы",
   "Expected response": "Ожидаемый ответ",

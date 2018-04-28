@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HeaderItem, MockServiceResponse} from '../model/mock-service-response';
 
 @Component({
@@ -9,6 +9,9 @@ export class MockServiceResponseComponent implements OnInit {
 
   @Input()
   mockServiceResponse: MockServiceResponse;
+
+  @Output()
+  onDelete = new EventEmitter<any>();
 
   tab = 'responseBody';
 
@@ -31,5 +34,9 @@ export class MockServiceResponseComponent implements OnInit {
 
   deleteHeader(header: HeaderItem){
     this.mockServiceResponse.headers = this.mockServiceResponse.headers.filter(value => value !== header);
+  }
+
+  deleteResponse() {
+    this.onDelete.emit();
   }
 }

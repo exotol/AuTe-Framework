@@ -74,7 +74,7 @@
           <a href="#" (click)="selectTab('sql')">Sql <span *ngIf="step.sqlDataList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'mqResponses'">
-          <a href="#" (click)="selectTab('mqResponses')">{{'Mock responses' | translate}} <span *ngIf="step.mockServiceResponseList?.length > 0 || (step.mqName || step.mqMessage) || step.mqMockResponseList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
+          <a href="#" (click)="selectTab('mqResponses')">{{'Mock responses' | translate}} <span *ngIf="step.mockServiceResponseList?.length > 0 || step.mqMessages?.length > 0 || step.mqMockResponseList?.length > 0" class="glyphicon glyphicon-tag"></span></a>
         </li>
         <li [class.active]="tab == 'mqRequests'">
           <a href="#" (click)="selectTab('mqRequests')">{{'Mock requests' | translate}} <span *ngIf="step.expectedServiceRequestList?.length > 0 || step.parseMockRequestUrl || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)" class="glyphicon glyphicon-tag"></span></a>
@@ -276,27 +276,29 @@
         <div *ngIf="tab == 'mqResponses'">
           <h4>{{'REST mock responses' | translate}}</h4>
           <div class="row" *ngFor="let mockServiceResponse of step.mockServiceResponseList">
-            <div class="col-sm-1">
-              <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMockServiceResponse(mockServiceResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
-            </div>
-            <div class="col-sm-11">
-              <app-mock-service-response [mockServiceResponse]="mockServiceResponse"></app-mock-service-response>
+            <div class="col-sm-12">
+              <app-mock-service-response [mockServiceResponse]="mockServiceResponse" (onDelete)="removeMockServiceResponse(mockServiceResponse)"></app-mock-service-response>
             </div>
           </div>
           <button class="btn btn-sm btn-default" (click)="addMockServiceResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add REST-mock' | translate}}</button>
 
           <hr/>
-          <h4>{{'Message Queue' | translate}}</h4>
-          <div class="row">
+          <h4>{{'Messages Queue' | translate}}</h4>
+          <div class="row" *ngFor="let mqMessage of step.mqMessages">
             <div class="col-sm-12">
               <label>{{'Queue name' | translate}}</label>
-              <input title="{{'Queue name' | translate}}" class="form-control" [(ngModel)]="step.mqName"/>
+              <div class="input-group" style="margin-bottom: 5px;">
+                <input title="{{'Queue name' | translate}}" class="form-control" [(ngModel)]="mqMessage.queueName"/>
+                <span class="input-group-btn">
+                  <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMqMessage(mqMessage)"><span class="glyphicon glyphicon-minus"></span>{{'Remove' | translate}}</button>
+                </span>
+              </div>
             </div>
             <div class="col-sm-12">
               <label>{{'Queue message' | translate}}</label>
-              <textarea class="form-control" placeholder="{{'Queue message' | translate}}" title="" rows="7" [(ngModel)]="step.mqMessage"></textarea>
+              <textarea class="form-control" placeholder="{{'Queue message' | translate}}" title="" rows="7" [(ngModel)]="mqMessage.message"></textarea>
             </div>
-            <ng-container *ngIf="step.mqPropertyList?.length > 0">
+            <ng-container *ngIf="mqMessage.properties?.length > 0">
               <div class="col-sm-12">
                 <label>{{'Mq properties' | translate}}</label>
               </div>
@@ -307,7 +309,7 @@
                 <label>{{'Value' | translate}}</label>
               </div>
             </ng-container>
-            <ng-container *ngFor="let property of step.mqPropertyList">
+            <ng-container *ngFor="let property of mqMessage.properties">
               <div class="col-sm-5" >
                 <input title="{{'Name' | translate}}" placeholder="messageId, correlationId, replyTo, timestamp, contentType, contentEncoding, ..." class="form-control" [(ngModel)]="property.name"/>
               </div>
@@ -315,22 +317,20 @@
                 <input title="{{'Value' | translate}}" [placeholder]="property.name == 'timestamp' ? 'dd-MM-yyyy,HH:mm:ss aaa' : ''" class="form-control" [(ngModel)]="property.value"/>
               </div>
               <div class="col-sm-1">
-                <button class="btn btn-sm btn-default" (click)="removeMqProperty(property)"><span class="glyphicon glyphicon-minus"></span></button>
+                <button class="btn btn-sm btn-default" (click)="removeMqProperty(mqMessage, property)"><span class="glyphicon glyphicon-minus"></span></button>
               </div>
             </ng-container>
             <div class="col-sm-12">
-              <button class="btn btn-sm btn-default" (click)="addMqProperty()"><span class="glyphicon glyphicon-plus"></span> {{'Add property' | translate}}</button>
+              <button class="btn btn-sm btn-default" (click)="addMqProperty(mqMessage)"><span class="glyphicon glyphicon-plus"></span> {{'Add property' | translate}}</button>
             </div>
           </div>
+          <button class="btn btn-sm btn-default" (click)="addMqMessage()"><span class="glyphicon glyphicon-plus"></span> {{'Add message' | translate}}</button>
 
           <hr/>
           <h4>{{'MQ mock responses' | translate}}</h4>
           <div class="row" *ngFor="let mqMockResponse of step.mqMockResponseList">
-            <div class="col-sm-1">
-              <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="removeMqMockResponse(mqMockResponse)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
-            </div>
-            <div class="col-sm-11">
-              <app-mq-mock-response [mqMockResponse]="mqMockResponse"></app-mq-mock-response>
+            <div class="col-sm-12">
+              <app-mq-mock-response [mqMockResponse]="mqMockResponse" (onDelete)="removeMqMockResponse(mqMockResponse)"></app-mq-mock-response>
             </div>
           </div>
           <button class="btn btn-sm btn-default" (click)="addMqMockResponse()"><span class="glyphicon glyphicon-plus"></span> {{'Add MQ mock' | translate}}</button>
