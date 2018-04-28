@@ -23,3 +23,35 @@ input[type=checkbox] {
   margin: 10px;
   padding: 10px 0;
 }
+
+#scenarioHeader {
+  transition: 0.5s all;
+}
+
+#scenarioHeader.sticky,
+#scenarioHeader.full-page {
+  background: lightgray;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+#scenarioHeader.full-page {
+  bottom: 0;
+}
+
+#scenarioHeader.sticky.failedScenario,
+#scenarioHeader.full-page.failedScenario {
+  background: rgb(247, 186, 163);
+}
+
+#scenarioHeader.sticky.passedScenario,
+#scenarioHeader.full-page.passedScenario {
+  background: rgb(181, 241, 181);
+}
+
+.row.result.title-result-container {
+  height: 90%;
+  overflow: auto;
+}

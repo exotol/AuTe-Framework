@@ -13,6 +13,7 @@ import {DiffComponent} from './shared/diff/diff.component';
 import {ProjectService} from './service/project.service';
 import {Http, HttpModule} from '@angular/http';
 import { ScenarioListItemComponent } from './scenario-list-item/scenario-list-item.component';
+import { ScenarioTitleItemComponent } from './scenario-list-item/scenario-title-item.component';
 import {ScenarioService} from './service/scenario.service';
 import {StepService} from './service/step.service';
 import { StepResultItemComponent } from './step-result-item/step-result-item.component';
@@ -56,6 +57,7 @@ const routes: Routes = [
     ProjectDetailComponent,
     ScenarioDetailComponent,
     ScenarioListItemComponent,
+    ScenarioTitleItemComponent,
     StepResultItemComponent,
     StepItemComponent,
     MockServiceResponseComponent,
