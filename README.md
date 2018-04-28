@@ -45,6 +45,36 @@ jms.jar
 
 После запуска приложения необходимо открыть в браузере: http://localhost:8080/
 
+### 3. Обновление фронта ###
+Для обновление фронта используется [powershell скрипт](update-front.ps1.sample).
+
+#### Подготовка ####
+Разрешить выполнение скриптов в powershell. Для этого запустить powershell от имени администратора и выполнить:
+```powershell
+Set-ExecutionPolicy RemoteSigned -Force
+``` 
+
+Сделать копию скрипта и перемиеновать его в **update-front.ps1**.
+
+В следующей строке изменить путь до проекта [rest-at-manager-ui](https://bitbucket.org/bscideas/rest-at-manager-ui):
+```powershell
+$manager_ui_path = "C:\projects\common-auto-test\rest-at-manager-ui"
+```
+
+*Необязательно.* Настроить в Intellij Idea терминал по-умолчанию. Для этого открыть **File | Settings | Tools | Terminal**
+ и в **Shell path** указать путь до powershell (*Например,C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe*)
+
+#### Выполнение ####
+Для обновления фронта запустить в powershell:
+```powershell
+.\update-front.ps1
+```
+
+Чтобы собрать фронт из определенной ветки branch-name:
+```powershell
+.\update-front.ps1 -branch branch-name
+```
+
 ### Дополнения ###
 
 Для выполнения тестов используется библиотека [at-executor](https://bitbucket.org/bscideas/rest-at-executor)
