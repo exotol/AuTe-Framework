@@ -20,14 +20,7 @@ import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 import ru.bsc.test.at.executor.helper.MqClient;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.helper.ResponseHelper;
-import ru.bsc.test.at.executor.model.MockServiceResponse;
-import ru.bsc.test.at.executor.model.MqMockResponse;
-import ru.bsc.test.at.executor.model.NameValueProperty;
-import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.SqlData;
-import ru.bsc.test.at.executor.model.SqlResultType;
-import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 
@@ -64,28 +57,31 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     private final static int POLLING_RETRY_TIMEOUT_MS = 1000;
     private static final String DEFAULT_CONTENT_TYPE = "text/xml";
 
-    void sendMessageToQuery(Project project, Step step, Map<String, Object> scenarioVariables, MqClient mqClient, String testIdHeaderName, String testId) throws Exception {
-        log.debug("Send message to query {} {} {}", project, step, scenarioVariables);
-        if (step.getMqName() != null && step.getMqMessage() != null) {
-            String message = insertSavedValues(step.getMqMessage(), scenarioVariables);
-
-            Map<String, Object> generatedProperties = new HashMap<>();
-            if (step.getMqPropertyList() != null) {
-                step.getMqPropertyList().forEach(nameValueProperty -> {
-                    NameValueProperty pair = new NameValueProperty();
-                    pair.setName(nameValueProperty.getName());
-                    try {
-                        generatedProperties.put(
-                                nameValueProperty.getName(),
-                                evaluateExpressions(insertSavedValues(nameValueProperty.getValue(), scenarioVariables), scenarioVariables, null)
-                        );
-                    } catch (ScriptException e) {
-                        log.error("{}", e);
-                    }
-                });
+    void sendMessagesToQuery(Project project, Step step, Map<String, Object> scenarioVariables, MqClient mqClient, String testIdHeaderName, String testId) throws Exception {
+        log.debug("Send MQ messages to query {} {} {}", project, step, scenarioVariables);
+        if (step.getMqMessages() == null) {
+            log.warn("Message list is empty");
+            return;
+        }
+        Map<String, Object> generatedProperties = new HashMap<>();
+        for (MqMessage message : step.getMqMessages()) {
+            if (message.isEmpty()) {
+                continue;
             }
-
-            mqClient.sendMessage(step.getMqName(), message, generatedProperties, testIdHeaderName, testId);
+            String messageText = insertSavedValues(message.getMessage(), scenarioVariables);
+            generatedProperties.clear();
+            message.getProperties().forEach(p -> {
+                NameValueProperty property = new NameValueProperty();
+                property.setName(p.getName());
+                try {
+                    String template = insertSavedValues(p.getValue(), scenarioVariables);
+                    String value = evaluateExpressions(template, scenarioVariables, null);
+                    generatedProperties.put(p.getName(), value);
+                } catch (ScriptException e) {
+                    log.error("Error while evaluate expression", e);
+                }
+            });
+            mqClient.sendMessage(message.getQueueName(), messageText, generatedProperties, testIdHeaderName, testId);
         }
     }
 

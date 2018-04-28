@@ -33,10 +33,7 @@ public class Step implements Serializable, AbstractModel {
     private Map<String, String> savedValuesCheck = new HashMap<>();
     private ResponseCompareMode responseCompareMode = ResponseCompareMode.JSON;
     private List<StepParameterSet> stepParameterSetList = new LinkedList<>();
-    private String mqName;
-    private String mqMessage;
-    private String mqMessageFile;
-    private List<NameValueProperty> mqPropertyList = new LinkedList<>();
+    private List<MqMessage> mqMessages = new LinkedList<>();
     private Boolean multipartFormData;
     private List<FormData> formDataList = new LinkedList<>();
     private String jsonCompareMode = "NON_EXTENSIBLE";
@@ -49,12 +46,21 @@ public class Step implements Serializable, AbstractModel {
     private List<MqMockResponse> mqMockResponseList;
     private List<ExpectedMqRequest> expectedMqRequestList;
     private List<SqlData> sqlDataList = new LinkedList<>();
+    private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
+    private StepMode stepMode;
+
     @Deprecated
     private String sql;
     @Deprecated
     private String sqlSavedParameter;
-    private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
-    private StepMode stepMode;
+    @Deprecated
+    private String mqName;
+    @Deprecated
+    private String mqMessage;
+    @Deprecated
+    private String mqMessageFile;
+    @Deprecated
+    private List<NameValueProperty> mqPropertyList = new LinkedList<>();
 
     // JMS step mode
     private String mqOutputQueueName;
@@ -102,6 +108,10 @@ public class Step implements Serializable, AbstractModel {
             for (FormData formData : getFormDataList()) {
                 step.getFormDataList().add(formData.copy());
             }
+        }
+        if (this.getMqMessages() != null) {
+            step.setMqMessages(new LinkedList<>());
+            this.getMqMessages().forEach(info -> this.getMqMessages().add(info.copy()));
         }
         if (getMqPropertyList() != null) {
             step.setMqPropertyList(new LinkedList<>());
