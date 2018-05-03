@@ -1,6 +1,6 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, Output, QueryList, ViewChildren} from '@angular/core';
-import {AfterViewInit} from "@angular/core/src/metadata/lifecycle_hooks";
-import {ScenarioListItemComponent} from "./scenario-list-item.component";
+import {Component, ElementRef, EventEmitter, HostListener, Output, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit} from '@angular/core/src/metadata/lifecycle_hooks';
+import {ScenarioListItemComponent} from './scenario-list-item.component';
 
 @Component({
   selector: 'app-scenario-title-item',
