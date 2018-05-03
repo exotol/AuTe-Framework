@@ -13,7 +13,7 @@
   </div>
 
   <div *ngIf="scenario">
-    <app-scenario-title-item [scenario]="scenario" [projectCode]="projectCode" (onSaveSteps)="saveSteps()" [isLinkTitleScenario]="false" [stepList]="stepList"></app-scenario-title-item>
+    <app-scenario-title-item [scenario]="scenario" [projectCode]="projectCode" (onSaveSteps)="saveSteps()" [stepList]="stepList"></app-scenario-title-item>
     <a [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']">{{'Settings' | translate}}</a>
   </div>
   <hr/>

@@ -6,8 +6,8 @@ import {Router, ActivatedRoute, ParamMap} from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {StepService} from '../service/step.service';
 import {CustomToastyService} from '../service/custom-toasty.service';
-import {ScenarioListItemComponent} from '../scenario-list-item/scenario-list-item.component';
 import {TranslateService} from '@ngx-translate/core';
+import {ScenarioTitleItemComponent} from '../scenario-list-item/scenario-title-item.component';
 
 @Component({
   selector: 'app-scenario-detail',
@@ -20,7 +20,7 @@ export class ScenarioDetailComponent implements OnInit {
   stepList: Step[];
   projectCode: string;
 
-  @ViewChild(ScenarioListItemComponent) scenarioListItemComponent: ScenarioListItemComponent;
+  @ViewChild(ScenarioTitleItemComponent) scenarioListItemComponent: ScenarioTitleItemComponent;
 
   constructor(
     private router: Router,
