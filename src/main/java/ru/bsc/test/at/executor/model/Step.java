@@ -109,9 +109,9 @@ public class Step implements Serializable, AbstractModel {
                 step.getFormDataList().add(formData.copy());
             }
         }
-        if (this.getMqMessages() != null) {
+        if (getMqMessages() != null) {
             step.setMqMessages(new LinkedList<>());
-            this.getMqMessages().forEach(info -> this.getMqMessages().add(info.copy()));
+            getMqMessages().forEach(info -> step.getMqMessages().add(info.copy()));
         }
         if (getMqPropertyList() != null) {
             step.setMqPropertyList(new LinkedList<>());
