@@ -10,6 +10,7 @@ import {SqlData} from '../model/sql-data';
 import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
 import {NameValueProperty} from '../model/name-value-property';
 import {StepService} from '../service/step.service';
+import {MqMessage} from "../model/mq-message";
 
 @Component({
   selector: 'app-step-item',
@@ -84,6 +85,36 @@ export class StepItemComponent implements OnInit , DoCheck {
       this.step.mockServiceResponseList = [];
     }
     this.step.mockServiceResponseList.push(new MockServiceResponse());
+  }
+
+  addMqMessage() {
+    if (!this.step.mqMessages) {
+      this.step.mqMessages = [];
+    }
+    this.step.mqMessages.push(new MqMessage());
+  }
+
+  removeMqMessage(message: MqMessage) {
+    if (confirm('Comfirm: remove MQ message')) {
+      const index = this.step.mqMessages.indexOf(message);
+      if (index > -1) {
+        this.step.mqMessages.splice(index, 1);
+      }
+    }
+  }
+
+  addMqProperty(mqMessage: MqMessage) {
+    if (!mqMessage.properties) {
+      mqMessage.properties = [];
+    }
+    mqMessage.properties.push(new NameValueProperty());
+  }
+
+  removeMqProperty(mqMessage: MqMessage, property: NameValueProperty) {
+    const indexToRemove = mqMessage.properties.indexOf(property);
+    if (indexToRemove > -1) {
+      mqMessage.properties.splice(indexToRemove, 1);
+    }
   }
 
   addMqMockResponse() {
@@ -241,20 +272,6 @@ export class StepItemComponent implements OnInit , DoCheck {
       this.step.scenarioVariableFromMqRequestList = [];
     }
     this.step.scenarioVariableFromMqRequestList.push(new ScenarioVariableFromMqRequest());
-  }
-
-  addMqProperty() {
-    if (!this.step.mqPropertyList) {
-      this.step.mqPropertyList = [];
-    }
-    this.step.mqPropertyList.push(new NameValueProperty());
-  }
-
-  removeMqProperty(property: NameValueProperty) {
-    const indexToRemove = this.step.mqPropertyList.indexOf(property);
-    if (indexToRemove > -1) {
-      this.step.mqPropertyList.splice(indexToRemove, 1);
-    }
   }
 
   ngDoCheck(): void {

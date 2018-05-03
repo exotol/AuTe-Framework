@@ -22,9 +22,14 @@
       <button style="padding-bottom: 1px; padding-top: 1px;" class="btn" *ngIf="scenario.hasResults" (click)="resultDetailsToggle()">{{'Results' | translate}} <ng-container *ngIf="executedSteps && totalSteps">({{executedSteps}}/{{totalSteps}})</ng-container></button>
     </div>
   </div>
-  <div class="row result" *ngIf="showResultDetails && stepResultList">
-    <ng-container *ngFor="let stepResult of stepResultList">
-      <app-step-result-item [stepResult]="stepResult" [scenario]="scenario" [stepList]="stepList"></app-step-result-item>
-    </ng-container>
-  </div>
+  <ng-container *ngIf="showResultDetails">
+    <div class="row well" *ngIf="stepResultList?.length > 0">
+      <ng-container *ngFor="let stepResult of stepResultList">
+        <app-step-result-item [stepResult]="stepResult" [scenario]="scenario" [stepList]="stepList"></app-step-result-item>
+      </ng-container>
+    </div>
+    <div class="well" style="color: red" *ngIf="stepResultList?.length == 0">
+      <p>{{'Results not found' | translate}}</p>
+    </div>
+  </ng-container>
 </div>

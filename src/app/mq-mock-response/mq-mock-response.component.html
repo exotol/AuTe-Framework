@@ -1,12 +1,19 @@
 <div>
-  <div class="row">
-    <div class="col-sm-4">
-      <input class="form-control" placeholder="{{'Source queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.sourceQueueName"/>
+  <div class="row" style="margin-bottom: 5px">
+    <div class="col-sm-12">
+      <div class="input-group">
+        <input class="form-control" placeholder="{{'Source queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.sourceQueueName"/>
+        <span class="input-group-btn">
+          <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="deleteMqMockResponse()"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+        </span>
+      </div>
     </div>
-    <div class="col-sm-4">
+  </div>
+  <div class="row" style="margin-bottom: 5px">
+    <div class="col-sm-6">
       <input class="form-control" placeholder="{{'Destination queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.destinationQueueName"/>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
       <input class="form-control" placeholder="{{'XPath message filter' | translate}}" title="" [(ngModel)]="mqMockResponse.xpath"/>
     </div>
   </div>
