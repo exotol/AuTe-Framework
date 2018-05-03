@@ -134,5 +134,5 @@ public abstract class StepRoMapper {
     @Mappings({
             @Mapping(target = "messageFile", ignore = true)
     })
-    abstract MqMessageRo convertMqMessageToRo(MqMessageRo ro);
+    abstract MqMessageRo convertMqMessageToRo(MqMessage ro);
 }
