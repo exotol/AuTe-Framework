@@ -8,7 +8,6 @@
   "Loading": "Loading...",
   "Create": "Create",
   "Create new scenario": "Create new scenario",
-  "Create new project": "Create new project",
   "All": "All",
   "Scenario name": "Scenario name",
   "Sort": "Sort",
@@ -81,7 +80,7 @@
   "Headers": "Headers",
   "Mock responses": "Mock responses",
   "Expected mock requests": "Expected mock requests",
-  "Messages Queue": "Messages Queue",
+  "Message Queue": "Message Queue",
   "Polling": "Polling",
   "Test cases": "Test cases",
   "Expected response": "Expected response",
@@ -129,7 +128,6 @@
   "Nothing found": "Nothing found",
   "Script": "Script",
   "Results": "Results",
-  "Results not found": "Results not found",
   "Starting": "Starting",
   "Stop": "Stop",
   "Get report": "Get report",
@@ -151,8 +149,5 @@
   "Expected JMS response": "Expected JMS response",
   "Output queue name": "The queue in which the message is sent",
   "Input queue name": "The queue from which the message is expected",
-  "Old scenario directory not removed": "Old scenario directory not removed",
-  "Step": "Step",
-  "Header name": "Header name",
-  "Header value": "Header value"
+  "Old scenario directory not removed": "Old scenario directory not removed"
 }

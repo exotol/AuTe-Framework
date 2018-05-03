@@ -123,25 +123,26 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__scenario_list_item_scenario_list_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__step_result_item_step_result_item_component__ = __webpack_require__("../../../../../src/app/step-result-item/step-result-item.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__step_item_step_item_component__ = __webpack_require__("../../../../../src/app/step-item/step-item.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__angular_forms__ = __webpack_require__("../../../forms/@angular/forms.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__mock_service_response_mock_service_response_component__ = __webpack_require__("../../../../../src/app/mock-service-response/mock-service-response.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__step_parameter_set_step_parameter_set_component__ = __webpack_require__("../../../../../src/app/step-parameter-set/step-parameter-set.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__globals__ = __webpack_require__("../../../../../src/app/globals.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__project_settings_project_settings_component__ = __webpack_require__("../../../../../src/app/project-settings/project-settings.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__ = __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__service_version_service__ = __webpack_require__("../../../../../src/app/service/version.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__ = __webpack_require__("../../../../../src/app/search-scenario/search-scenario.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__service_search_scenario_service__ = __webpack_require__("../../../../../src/app/service/search-scenario.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__ = __webpack_require__("../../../../../src/app/shared/directives/sync-scroll.directive.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__ = __webpack_require__("../../../../../src/app/shared/directives/text-select.directive.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__help_help_component__ = __webpack_require__("../../../../../src/app/help/help.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__mq_mock_response_mq_mock_response_component__ = __webpack_require__("../../../../../src/app/mq-mock-response/mq-mock-response.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32_ngx_textarea_autosize__ = __webpack_require__("../../../../ngx-textarea-autosize/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__scenario_list_item_scenario_title_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-title-item.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__service_scenario_service__ = __webpack_require__("../../../../../src/app/service/scenario.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__step_result_item_step_result_item_component__ = __webpack_require__("../../../../../src/app/step-result-item/step-result-item.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__step_item_step_item_component__ = __webpack_require__("../../../../../src/app/step-item/step-item.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__angular_forms__ = __webpack_require__("../../../forms/@angular/forms.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__mock_service_response_mock_service_response_component__ = __webpack_require__("../../../../../src/app/mock-service-response/mock-service-response.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__step_parameter_set_step_parameter_set_component__ = __webpack_require__("../../../../../src/app/step-parameter-set/step-parameter-set.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__globals__ = __webpack_require__("../../../../../src/app/globals.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__project_settings_project_settings_component__ = __webpack_require__("../../../../../src/app/project-settings/project-settings.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__scenario_settings_scenario_settings_component__ = __webpack_require__("../../../../../src/app/scenario-settings/scenario-settings.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__service_version_service__ = __webpack_require__("../../../../../src/app/service/version.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__search_scenario_search_scenario_component__ = __webpack_require__("../../../../../src/app/search-scenario/search-scenario.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__service_search_scenario_service__ = __webpack_require__("../../../../../src/app/service/search-scenario.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__shared_directives_sync_scroll_directive__ = __webpack_require__("../../../../../src/app/shared/directives/sync-scroll.directive.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__shared_directives_text_select_directive__ = __webpack_require__("../../../../../src/app/shared/directives/text-select.directive.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__help_help_component__ = __webpack_require__("../../../../../src/app/help/help.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__mq_mock_response_mq_mock_response_component__ = __webpack_require__("../../../../../src/app/mq-mock-response/mq-mock-response.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33_ngx_textarea_autosize__ = __webpack_require__("../../../../ngx-textarea-autosize/index.ts");
 /* unused harmony export HttpLoaderFactory */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -183,16 +184,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 function HttpLoaderFactory(http) {
     return new __WEBPACK_IMPORTED_MODULE_3__ngx_translate_http_loader__["a" /* TranslateHttpLoader */](http);
 }
 var routes = [
     { path: '', component: __WEBPACK_IMPORTED_MODULE_7__project_list_project_list_component__["a" /* ProjectListComponent */] },
-    { path: 'help', component: __WEBPACK_IMPORTED_MODULE_30__help_help_component__["a" /* HelpComponent */] },
+    { path: 'help', component: __WEBPACK_IMPORTED_MODULE_31__help_help_component__["a" /* HelpComponent */] },
     { path: 'project/:projectCode', component: __WEBPACK_IMPORTED_MODULE_8__project_detail_project_detail_component__["a" /* ProjectDetailComponent */] },
-    { path: 'project/:projectCode/settings', component: __WEBPACK_IMPORTED_MODULE_22__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */] },
-    { path: 'project/:projectCode/scenario/:scenarioCode/settings', component: __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] },
-    { path: 'project/:projectCode/scenario/:scenarioGroup/:scenarioCode/settings', component: __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] },
+    { path: 'project/:projectCode/settings', component: __WEBPACK_IMPORTED_MODULE_23__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */] },
+    { path: 'project/:projectCode/scenario/:scenarioCode/settings', component: __WEBPACK_IMPORTED_MODULE_24__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] },
+    { path: 'project/:projectCode/scenario/:scenarioGroup/:scenarioCode/settings', component: __WEBPACK_IMPORTED_MODULE_24__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */] },
     { path: 'project/:projectCode/scenario/:scenarioCode', component: __WEBPACK_IMPORTED_MODULE_9__scenario_detail_scenario_detail_component__["a" /* ScenarioDetailComponent */] },
     { path: 'project/:projectCode/scenario/:scenarioGroup/:scenarioCode', component: __WEBPACK_IMPORTED_MODULE_9__scenario_detail_scenario_detail_component__["a" /* ScenarioDetailComponent */] },
 ];
@@ -209,18 +211,19 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_8__project_detail_project_detail_component__["a" /* ProjectDetailComponent */],
             __WEBPACK_IMPORTED_MODULE_9__scenario_detail_scenario_detail_component__["a" /* ScenarioDetailComponent */],
             __WEBPACK_IMPORTED_MODULE_13__scenario_list_item_scenario_list_item_component__["a" /* ScenarioListItemComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__step_result_item_step_result_item_component__["a" /* StepResultItemComponent */],
-            __WEBPACK_IMPORTED_MODULE_17__step_item_step_item_component__["a" /* StepItemComponent */],
-            __WEBPACK_IMPORTED_MODULE_19__mock_service_response_mock_service_response_component__["a" /* MockServiceResponseComponent */],
-            __WEBPACK_IMPORTED_MODULE_20__step_parameter_set_step_parameter_set_component__["a" /* StepParameterSetComponent */],
-            __WEBPACK_IMPORTED_MODULE_22__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */],
-            __WEBPACK_IMPORTED_MODULE_23__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */],
+            __WEBPACK_IMPORTED_MODULE_14__scenario_list_item_scenario_title_item_component__["a" /* ScenarioTitleItemComponent */],
+            __WEBPACK_IMPORTED_MODULE_17__step_result_item_step_result_item_component__["a" /* StepResultItemComponent */],
+            __WEBPACK_IMPORTED_MODULE_18__step_item_step_item_component__["a" /* StepItemComponent */],
+            __WEBPACK_IMPORTED_MODULE_20__mock_service_response_mock_service_response_component__["a" /* MockServiceResponseComponent */],
+            __WEBPACK_IMPORTED_MODULE_21__step_parameter_set_step_parameter_set_component__["a" /* StepParameterSetComponent */],
+            __WEBPACK_IMPORTED_MODULE_23__project_settings_project_settings_component__["a" /* ProjectSettingsComponent */],
+            __WEBPACK_IMPORTED_MODULE_24__scenario_settings_scenario_settings_component__["a" /* ScenarioSettingsComponent */],
             __WEBPACK_IMPORTED_MODULE_10__shared_diff_diff_component__["a" /* DiffComponent */],
-            __WEBPACK_IMPORTED_MODULE_28__shared_directives_sync_scroll_directive__["a" /* SyncScrollDirective */],
-            __WEBPACK_IMPORTED_MODULE_26__search_scenario_search_scenario_component__["a" /* SearchComponent */],
-            __WEBPACK_IMPORTED_MODULE_29__shared_directives_text_select_directive__["a" /* TextSelectDirective */],
-            __WEBPACK_IMPORTED_MODULE_30__help_help_component__["a" /* HelpComponent */],
-            __WEBPACK_IMPORTED_MODULE_31__mq_mock_response_mq_mock_response_component__["a" /* MqMockResponseComponent */]
+            __WEBPACK_IMPORTED_MODULE_29__shared_directives_sync_scroll_directive__["a" /* SyncScrollDirective */],
+            __WEBPACK_IMPORTED_MODULE_27__search_scenario_search_scenario_component__["a" /* SearchComponent */],
+            __WEBPACK_IMPORTED_MODULE_30__shared_directives_text_select_directive__["a" /* TextSelectDirective */],
+            __WEBPACK_IMPORTED_MODULE_31__help_help_component__["a" /* HelpComponent */],
+            __WEBPACK_IMPORTED_MODULE_32__mq_mock_response_mq_mock_response_component__["a" /* MqMockResponseComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -234,11 +237,11 @@ AppModule = __decorate([
                     deps: [__WEBPACK_IMPORTED_MODULE_12__angular_http__["b" /* Http */]]
                 }
             }),
-            __WEBPACK_IMPORTED_MODULE_18__angular_forms__["a" /* FormsModule */],
-            __WEBPACK_IMPORTED_MODULE_18__angular_forms__["b" /* ReactiveFormsModule */],
-            __WEBPACK_IMPORTED_MODULE_32_ngx_textarea_autosize__["a" /* TextareaAutosizeModule */]
+            __WEBPACK_IMPORTED_MODULE_19__angular_forms__["a" /* FormsModule */],
+            __WEBPACK_IMPORTED_MODULE_19__angular_forms__["b" /* ReactiveFormsModule */],
+            __WEBPACK_IMPORTED_MODULE_33_ngx_textarea_autosize__["a" /* TextareaAutosizeModule */]
         ],
-        providers: [__WEBPACK_IMPORTED_MODULE_11__service_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_14__service_scenario_service__["a" /* ScenarioService */], __WEBPACK_IMPORTED_MODULE_15__service_step_service__["a" /* StepService */], __WEBPACK_IMPORTED_MODULE_25__service_custom_toasty_service__["a" /* CustomToastyService */], __WEBPACK_IMPORTED_MODULE_24__service_version_service__["a" /* VersionService */], __WEBPACK_IMPORTED_MODULE_21__globals__["a" /* Globals */], __WEBPACK_IMPORTED_MODULE_27__service_search_scenario_service__["a" /* SearchScenarioService */]],
+        providers: [__WEBPACK_IMPORTED_MODULE_11__service_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_15__service_scenario_service__["a" /* ScenarioService */], __WEBPACK_IMPORTED_MODULE_16__service_step_service__["a" /* StepService */], __WEBPACK_IMPORTED_MODULE_26__service_custom_toasty_service__["a" /* CustomToastyService */], __WEBPACK_IMPORTED_MODULE_25__service_version_service__["a" /* VersionService */], __WEBPACK_IMPORTED_MODULE_22__globals__["a" /* Globals */], __WEBPACK_IMPORTED_MODULE_28__service_search_scenario_service__["a" /* SearchScenarioService */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
     })
 ], AppModule);
@@ -319,7 +322,7 @@ HelpComponent = __decorate([
 /***/ "../../../../../src/app/mock-service-response/mock-service-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-9\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\"\r\n             [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <div class=\"input-group\">\r\n        <input class=\"form-control\" placeholder=\"Content-Type: application/json, text/xml\" title=\"\" [(ngModel)]=\"mockServiceResponse.contentType\"/>\r\n        <span class=\"input-group-btn\">\r\n          <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"deleteResponse()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n        </span>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-4\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder='Basic Authentication(username), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.userName\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder='Basic Authentication(password), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.password\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\" style=\"margin-top: 10px\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath filter' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.pathFilter\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\" style=\"margin-top: 10px\">\r\n      <ul class=\"nav nav-tabs\">\r\n        <li [class.active]=\"tab == 'responseBody'\">\r\n          <a href=\"#\" (click)=\"selectTab('responseBody')\">{{'Response body' | translate}} <span *ngIf=\"mockServiceResponse.responseBody\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'headers'\">\r\n          <a href=\"#\" (click)=\"selectTab('headers')\">{{'Headers' | translate}} <span *ngIf=\"mockServiceResponse.headers?.length > 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n      </ul>\r\n      <div class=\"tab-content\">\r\n        <div *ngIf=\"tab == 'responseBody'\">\r\n          <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n        </div>\r\n        <div *ngIf=\"tab == 'headers'\" class=\"row\">\r\n          <div class=\"form-group\" style=\"margin-top: 10px\" *ngFor=\"let header of mockServiceResponse.headers\">\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\" placeholder=\"{{'Header name' | translate}}\" title=\"\" [(ngModel)]=\"header.headerName\">\r\n            </div>\r\n            <div class=\"col-sm-1\">\r\n              <select class=\"form-control\" title=\"\" [(ngModel)]=\"header.compareType\">\r\n                <option [ngValue]=\"'equalTo'\">equalTo</option>\r\n              </select>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\" placeholder=\"{{'Header value' | translate}}\" title=\"\" [(ngModel)]=\"header.headerValue\">\r\n            </div>\r\n            <button class=\"btn btn-sm  btn-default\" (click)=\"deleteHeader(header)\">\r\n             <span class=\"glyphicon glyphicon-remove\"></span></button>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <div class=\"col-sm-1\">\r\n              <button class=\"btn btn-sm  btn-default\" (click)=\"addHeader();\"><span class=\"glyphicon glyphicon-plus\"></span>Add header</button>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Service URL' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.serviceUrl\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"HTTP-status: 200, 404, 500, [empty]\" title=\"\" [(ngModel)]=\"mockServiceResponse.httpStatus\"/>\r\n    </div>\r\n    <div class=\"col-sm-3\">\r\n      <input class=\"form-control\" placeholder=\"Content-Type: application/json, text/xml\" title=\"\" [(ngModel)]=\"mockServiceResponse.contentType\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder='Basic Authentication(username), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.userName\"/>\r\n      </div>\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder='Basic Authentication(password), [empty]' title=\"\" [(ngModel)]=\"mockServiceResponse.password\"/>\r\n      </div>\r\n      <div class=\"col-sm-3\" style=\"margin-top: 10px\">\r\n        <input class=\"form-control\" placeholder=\"{{'XPath filter' | translate}}\" title=\"\" [(ngModel)]=\"mockServiceResponse.pathFilter\"/>\r\n      </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mockServiceResponse.responseBody\"></textarea>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -343,45 +346,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var MockServiceResponseComponent = (function () {
     function MockServiceResponseComponent() {
-        this.onDelete = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
-        this.tab = 'responseBody';
     }
     MockServiceResponseComponent.prototype.ngOnInit = function () {
-        if (!this.mockServiceResponse.headers) {
-            this.mockServiceResponse.headers = [];
-        }
-    };
-    MockServiceResponseComponent.prototype.selectTab = function (tabName) {
-        this.tab = tabName;
-        return false;
-    };
-    MockServiceResponseComponent.prototype.addHeader = function () {
-        this.mockServiceResponse.headers.push(new __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* HeaderItem */]());
-    };
-    MockServiceResponseComponent.prototype.deleteHeader = function (header) {
-        this.mockServiceResponse.headers = this.mockServiceResponse.headers.filter(function (value) { return value !== header; });
-    };
-    MockServiceResponseComponent.prototype.deleteResponse = function () {
-        this.onDelete.emit();
     };
     return MockServiceResponseComponent;
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["b" /* MockServiceResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["b" /* MockServiceResponse */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mock_service_response__["a" /* MockServiceResponse */]) === "function" && _a || Object)
 ], MockServiceResponseComponent.prototype, "mockServiceResponse", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
-    __metadata("design:type", Object)
-], MockServiceResponseComponent.prototype, "onDelete", void 0);
 MockServiceResponseComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-mock-service-response',
-        template: __webpack_require__("../../../../../src/app/mock-service-response/mock-service-response.component.html"),
-        styles: [
-            '.nav-tabs > li > a { padding: 3px 7px; }',
-            '.tab-content { border: 1px solid #ddd; border-top-width: 0;}'
-        ]
+        template: __webpack_require__("../../../../../src/app/mock-service-response/mock-service-response.component.html")
     }),
     __metadata("design:paramtypes", [])
 ], MockServiceResponseComponent);
@@ -440,37 +417,14 @@ var FormData = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MockServiceResponse; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HeaderItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MockServiceResponse; });
 var MockServiceResponse = (function () {
     function MockServiceResponse() {
     }
     return MockServiceResponse;
 }());
 
-var HeaderItem = (function () {
-    function HeaderItem() {
-        this.compareType = 'equalTo';
-    }
-    return HeaderItem;
-}());
-
 //# sourceMappingURL=mock-service-response.js.map
-
-/***/ }),
-
-/***/ "../../../../../src/app/model/mq-message.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MqMessage; });
-var MqMessage = (function () {
-    function MqMessage() {
-    }
-    return MqMessage;
-}());
-
-//# sourceMappingURL=mq-message.js.map
 
 /***/ }),
 
@@ -501,21 +455,6 @@ var NameValueProperty = (function () {
 }());
 
 //# sourceMappingURL=name-value-property.js.map
-
-/***/ }),
-
-/***/ "../../../../../src/app/model/project.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Project; });
-var Project = (function () {
-    function Project() {
-    }
-    return Project;
-}());
-
-//# sourceMappingURL=project.js.map
 
 /***/ }),
 
@@ -644,6 +583,7 @@ var Step = (function () {
         this.responseCompareMode = 'JSON';
         this.formDataList = [];
         this.jsonCompareMode = 'NON_EXTENSIBLE';
+        this.stepMode = 'REST';
     }
     return Step;
 }());
@@ -655,7 +595,7 @@ var Step = (function () {
 /***/ "../../../../../src/app/mq-mock-response/mq-mock-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-12\">\r\n      <div class=\"input-group\">\r\n        <input class=\"form-control\" placeholder=\"{{'Source queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.sourceQueueName\"/>\r\n        <span class=\"input-group-btn\">\r\n          <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"deleteMqMockResponse()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n        </span>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Destination queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.destinationQueueName\"/>\r\n    </div>\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath message filter' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.xpath\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mqMockResponse.responseBody\"></textarea>\r\n    </div>\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Http URL' | translate}}</label>\r\n      <input class=\"form-control\" placeholder=\"{{'Http url' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.httpUrl\"/>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-4\">\r\n      <input class=\"form-control\" placeholder=\"{{'Source queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.sourceQueueName\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\">\r\n      <input class=\"form-control\" placeholder=\"{{'Destination queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.destinationQueueName\"/>\r\n    </div>\r\n    <div class=\"col-sm-4\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath message filter' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.xpath\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mqMockResponse.responseBody\"></textarea>\r\n    </div>\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Http URL' | translate}}</label>\r\n      <input class=\"form-control\" placeholder=\"{{'Http url' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.httpUrl\"/>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -679,10 +619,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var MqMockResponseComponent = (function () {
     function MqMockResponseComponent() {
-        this.onDelete = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
     }
-    MqMockResponseComponent.prototype.deleteMqMockResponse = function () {
-        this.onDelete.emit();
+    MqMockResponseComponent.prototype.ngOnInit = function () {
     };
     return MqMockResponseComponent;
 }());
@@ -690,15 +628,12 @@ __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mq_mock_response__["a" /* MqMockResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mq_mock_response__["a" /* MqMockResponse */]) === "function" && _a || Object)
 ], MqMockResponseComponent.prototype, "mqMockResponse", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
-    __metadata("design:type", Object)
-], MqMockResponseComponent.prototype, "onDelete", void 0);
 MqMockResponseComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
         selector: 'app-mq-mock-response',
         template: __webpack_require__("../../../../../src/app/mq-mock-response/mq-mock-response.component.html")
-    })
+    }),
+    __metadata("design:paramtypes", [])
 ], MqMockResponseComponent);
 
 var _a;
@@ -727,7 +662,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/project-detail/project-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item active\">{{project.code}}. {{project.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"project.code\"></app-search>\r\n  </div>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.code + '/settings']\">{{'Settings' | translate}}</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">{{'All' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">{{'Without group' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && group == filter.scenarioGroup\" *ngFor=\"let group of project.groupList\">\r\n        <a href=\"#\" (click)=\"selectGroup(group)\">{{group}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-7\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"{{'Select' | translate}}\" [checked]=\"selectAllFlag\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">{{'Execute selected scenarios' | translate}}</button>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"getReportsBySelectedScenarios()\">{{'Get report on selected scenarios' | translate}}</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuted != executingStateTotal\"\r\n               [style.display]=\"executingStateTotal > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateExecuted / executingStateTotal * 95) + '%'\">\r\n            {{Math.round(executingStateExecuted / executingStateTotal * 100)}}%\r\n            {{executingStateExecuted > 0 ? '(' + executingStateExecuted + '/' + executingStateTotal + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"project.code\" (onStateChange)=\"onStateChange($event, scenario)\" (cbStateChange)=\"onCbStateChange($event, scenario)\" [isLinkTitleScenario] = \"true\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>{{'Create new scenario' | translate}}</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"{{'Scenario name' | translate}}\" class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n"
+module.exports = "<ng-container *ngIf=\"project\">\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item active\">{{project.code}}. {{project.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"project.code\"></app-search>\r\n  </div>\r\n\r\n  <h4>{{project.name}}</h4>\r\n  <a [routerLink]=\"['/project/' + project.code + '/settings']\">{{'Settings' | translate}}</a>\r\n\r\n  <nav aria-label=\"Scenario groups\">\r\n    <ul class=\"pagination\">\r\n      <li [class.active]=\"!filter\">\r\n        <a href=\"#\" (click)=\"selectAllGroups()\">{{'All' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && !filter.scenarioGroup\">\r\n        <a href=\"#\" (click)=\"selectGroup()\">{{'Without group' | translate}}</a>\r\n      </li>\r\n      <li [class.active]=\"filter && group == filter.scenarioGroup\" *ngFor=\"let group of project.groupList\">\r\n        <a href=\"#\" (click)=\"selectGroup(group)\">{{group}}</a>\r\n      </li>\r\n    </ul>\r\n  </nav>\r\n\r\n  <div class=\"container-fluid\" style=\"background-color: #f5f5f5; padding-top: 10px;\">\r\n    <div class=\"row\">\r\n      <div style=\"height: 40px;\" class=\"col-sm-7\">\r\n        <label>\r\n          <input class=\"select-all\" type=\"checkbox\" title=\"{{'Select' | translate}}\" [checked]=\"selectAllFlag\" (click)=\"selectAll()\" />\r\n        </label>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"executeSelectedScenarios()\">{{'Execute selected scenarios' | translate}}</button>\r\n        <button class=\"btn btn-sm btn-default\" (click)=\"getReportsBySelectedScenarios()\">{{'Get report on selected scenarios' | translate}}</button>\r\n      </div>\r\n      <div class=\"col-sm-1\" style=\"font-weight: bold;\" [style.color]=\"failCount > 0 ? 'red' : ''\">\r\n        {{failCount}}\r\n      </div>\r\n      <div class=\"col-sm-4\">\r\n        <div class=\"progress\" style=\"background-color: #fff;\">\r\n          <div class=\"progress-bar progress-bar-striped\"\r\n               role=\"progressbar\"\r\n               [class.active]=\"executingStateExecuted != executingStateTotal\"\r\n               [style.display]=\"executingStateTotal > 0 ? '' : 'none'\"\r\n               [style.width]=\"(5 + executingStateExecuted / executingStateTotal * 95) + '%'\">\r\n            {{Math.round(executingStateExecuted / executingStateTotal * 100)}}%\r\n            {{executingStateExecuted > 0 ? '(' + executingStateExecuted + '/' + executingStateTotal + ')' : ''}}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div style=\"min-height: 33px;\" [style.display]=\"isDisplayScenario(scenario) ? '' : 'none'\" *ngFor=\"let scenario of scenarioList\">\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"project.code\" (onStateChange)=\"onStateChange($event, scenario)\" (cbStateChange)=\"onCbStateChange($event, scenario)\"></app-scenario-list-item>\r\n  </div>\r\n\r\n  <div class=\"container\">\r\n    <div class=\"panel panel-default\">\r\n      <div class=\"panel-body\">\r\n        <label>{{'Create new scenario' | translate}}</label>\r\n        <div class=\"input-group\">\r\n          <input placeholder=\"{{'Scenario name' | translate}}\" class=\"form-control\" title=\"{{'Scenario name' | translate}}\" [(ngModel)]=\"newScenarioName\" />\r\n          <span class=\"input-group-btn\">\r\n            <button class=\"btn btn-success\" (click)=\"saveNewScenario()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n          </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n</ng-container>\r\n<div class=\"help-block\" *ngIf=\"!project\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n"
 
 /***/ }),
 
@@ -958,7 +893,7 @@ var _a, _b, _c, _d, _e, _f, _g;
 /***/ "../../../../../src/app/project-list/project-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<div class=\"container\">\r\n  <div class=\"panel panel-default\">\r\n    <div class=\"panel-body\">\r\n      <label>{{'Create new project' | translate}}</label>\r\n      <div class=\"input-group\">\r\n        <input\r\n          placeholder=\"{{'Project name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"newProjectName\"/>\r\n        <input\r\n          placeholder=\"{{'Project code' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"newProjectCode\"/>\r\n        <div class=\"input-group-btn\">\r\n          <button class=\"btn btn-success\" (click)=\"saveNewProject()\"><span class=\"glyphicon glyphicon-plus\"></span> {{ 'Create' | translate}}</button>\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n"
+module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block\" *ngIf=\"!projectList\">\r\n  <span class=\"glyphicon glyphicon-time\"></span>\r\n  {{'Loading' | translate}}\r\n</div>\r\n<table class=\"table table-condensed\" *ngIf=\"projectList\">\r\n  <tbody>\r\n    <tr *ngFor=\"let project of projectList\">\r\n      <td>\r\n        <a [routerLink]=\"['/project', project.code]\">{{project.name}}</a>\r\n      </td>\r\n      <td>\r\n        <ng-container *ngIf=\"project.stand\">\r\n          {{project.stand.serviceUrl}}\r\n        </ng-container>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n"
 
 /***/ }),
 
@@ -967,10 +902,7 @@ module.exports = "<h4>{{'Projects' | translate}}</h4>\r\n<div class=\"help-block
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_project__ = __webpack_require__("../../../../../src/app/model/project.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__ = __webpack_require__("../../../../../src/app/service/custom-toasty.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__ = __webpack_require__("../../../../@ngx-translate/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_project_service__ = __webpack_require__("../../../../../src/app/service/project.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectListComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -983,41 +915,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
-
-
 var ProjectListComponent = (function () {
-    function ProjectListComponent(customToastyService, projectService, translate) {
-        this.customToastyService = customToastyService;
+    function ProjectListComponent(projectService) {
         this.projectService = projectService;
-        this.translate = translate;
+        this.displayImportProjectForm = false;
     }
     ProjectListComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.projectService.findAll().subscribe(function (value) { return _this.projectList = value; });
-    };
-    ProjectListComponent.prototype.saveNewProject = function () {
-        var _this = this;
-        if (confirm('Confirm: create new project')) {
-            var newProject = new __WEBPACK_IMPORTED_MODULE_1__model_project__["a" /* Project */]();
-            newProject.name = this.newProjectName;
-            newProject.code = this.newProjectCode;
-            var toasty_1 = this.customToastyService.saving('Сохранение проекта...', 'Сохранение может занять некоторое время...');
-            var t_1 = this;
-            this.projectService.create(newProject)
-                .subscribe(function (savedProject) {
-                t_1.projectList.push(savedProject);
-                t_1.customToastyService.success('Сохранено', 'Проект создан');
-            }, function (error) { return _this.handleError(error); }, function () { return _this.customToastyService.clear(toasty_1); });
-        }
-    };
-    ProjectListComponent.prototype.handleError = function (error) {
-        var _this = this;
-        var message = JSON.parse(error._body).message;
-        console.log(message);
-        this.translate.get(message).subscribe(function (value) {
-            _this.customToastyService.error('Ошибка', value);
-        });
     };
     return ProjectListComponent;
 }());
@@ -1026,10 +931,10 @@ ProjectListComponent = __decorate([
         selector: 'app-project-list',
         template: __webpack_require__("../../../../../src/app/project-list/project-list.component.html")
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__service_custom_toasty_service__["a" /* CustomToastyService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__service_project_service__["a" /* ProjectService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__service_project_service__["a" /* ProjectService */]) === "function" && _a || Object])
 ], ProjectListComponent);
 
-var _a, _b, _c;
+var _a;
 //# sourceMappingURL=project-list.component.js.map
 
 /***/ }),
@@ -1172,7 +1077,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-detail/scenario-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectCode]\">{{scenario.projectCode}}.\r\n        {{scenario.projectName}}</a></li>\r\n      <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n        <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n      </li>\r\n      <li class=\"breadcrumb-item active\">{{scenario.code}}. {{scenario.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"scenario?.projectCode\"></app-search>\r\n  </div>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <div style=\"margin-bottom: 10px;\">\r\n      <h3>{{scenario.name}}</h3>\r\n      <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']\">{{'Settings' | translate}}</a>\r\n    </div>\r\n    <app-scenario-list-item [scenario]=\"scenario\" [projectCode]=\"projectCode\" [isLinkTitleScenario]=\"false\" [stepList]=\"stepList\"></app-scenario-list-item>\r\n  </div>\r\n  <hr/>\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    {{'Loading' | translate}}\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">{{'Save steps' | translate}}</button>\r\n      <button class=\"btn btn-danger pull-right\" (click)=\"deleteScenario()\">{{'Delete' | translate}}</button>\r\n    </div>\r\n\r\n    <div *ngFor=\"let step of stepList\">\r\n      <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n        <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\"><span class=\"glyphicon glyphicon-hand-left\"></span> {{'Insert step' | translate}}</button>\r\n      </div>\r\n      <app-step-item\r\n        [step]=\"step\"\r\n        [showUpDownDeleteCloneButtons]=\"true\"\r\n        (onDeleteClick)=\"onDeleteClick(step)\"\r\n        (onUpClick)=\"onUpClick(step)\"\r\n        (onDownClick)=\"onDownClick(step)\"\r\n        (onCloneClick)=\"onCloneClick(step)\"\r\n        (onChange)=\"onChangeItem(step)\"\r\n      ></app-step-item>\r\n    </div>\r\n\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-default\" (click)=\"addStep()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add step' | translate}}</button>\r\n    </div>\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-success\" (click)=\"saveSteps()\">{{'Save steps' | translate}}</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"breadcrumb-search\">\r\n    <ol class=\"breadcrumb\" *ngIf=\"scenario\">\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"'/'\">{{'Projects' | translate}}</a></li>\r\n      <li class=\"breadcrumb-item\"><a [routerLink]=\"['/project', scenario.projectCode]\">{{scenario.projectCode}}.\r\n        {{scenario.projectName}}</a></li>\r\n      <li class=\"breadcrumb-item\" *ngIf=\"scenario.scenarioGroup\">\r\n        <a [routerLink]=\"['/project', scenario.projectCode]\" [queryParams]=\"{scenarioGroup: scenario.scenarioGroup}\">{{scenario.scenarioGroup}}</a>\r\n      </li>\r\n      <li class=\"breadcrumb-item active\">{{scenario.code}}. {{scenario.name}}</li>\r\n    </ol>\r\n    <app-search [projectCode]=\"scenario?.projectCode\"></app-search>\r\n  </div>\r\n\r\n  <div *ngIf=\"scenario\">\r\n    <app-scenario-title-item [scenario]=\"scenario\" [projectCode]=\"projectCode\" (onSaveSteps)=\"saveSteps()\"></app-scenario-title-item>\r\n    <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code + '/settings']\">{{'Settings' | translate}}</a>\r\n  </div>\r\n  <hr/>\r\n  <div class=\"help-block\" *ngIf=\"!stepList\">\r\n    <span class=\"glyphicon glyphicon-time\"></span>\r\n    {{'Loading' | translate}}\r\n  </div>\r\n  <div *ngIf=\"scenario && stepList\">\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-danger pull-right\" (click)=\"deleteScenario()\">{{'Delete' | translate}}</button>\r\n    </div>\r\n\r\n    <div *ngFor=\"let step of stepList\">\r\n      <div style=\"margin-bottom: 15px;\" class=\"col-sm-offset-11 col-sm-1 text-right\">\r\n        <button style=\"white-space: normal;\" class=\"btn btn-xs btn-block btn-default\" (click)=\"addStepBefore(step)\"><span class=\"glyphicon glyphicon-hand-left\"></span> {{'Insert step' | translate}}</button>\r\n      </div>\r\n      <app-step-item\r\n        [step]=\"step\"\r\n        [showUpDownDeleteCloneButtons]=\"true\"\r\n        (onDeleteClick)=\"onDeleteClick(step)\"\r\n        (onUpClick)=\"onUpClick(step)\"\r\n        (onDownClick)=\"onDownClick(step)\"\r\n        (onCloneClick)=\"onCloneClick(step)\"\r\n        (onChange)=\"onChangeItem(step)\"\r\n      ></app-step-item>\r\n    </div>\r\n\r\n    <div class=\"container-fluid\" style=\"margin-bottom: 20px;\">\r\n      <button class=\"btn btn-default\" (click)=\"addStep()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add step' | translate}}</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1345,7 +1250,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "input[type=checkbox] {\r\n  width: 24px;\r\n  height: 24px;\r\n  margin: 0;\r\n  vertical-align: middle;\r\n}\r\n\r\n.failedScenario {\r\n  background: rgba(247, 186, 163, 0.5);\r\n}\r\n\r\n.passedScenario {\r\n  background: rgba(181, 241, 181, 0.5);\r\n}\r\n\r\n.container-fluid {\r\n  padding-top: 7px;\r\n  padding-bottom: 25px;\r\n}\r\n\r\n.row.result {\r\n  background: #fff;\r\n  margin: 10px;\r\n  padding: 10px 0;\r\n}\r\n", ""]);
+exports.push([module.i, "input[type=checkbox] {\r\n  width: 24px;\r\n  height: 24px;\r\n  margin: 0;\r\n  vertical-align: middle;\r\n}\r\n\r\n.failedScenario {\r\n  background: rgba(247, 186, 163, 0.5);\r\n}\r\n\r\n.passedScenario {\r\n  background: rgba(181, 241, 181, 0.5);\r\n}\r\n\r\n.container-fluid {\r\n  padding-top: 7px;\r\n  padding-bottom: 25px;\r\n}\r\n\r\n.row.result {\r\n  background: #fff;\r\n  margin: 10px;\r\n  padding: 10px 0;\r\n}\r\n\r\n#scenarioHeader {\r\n  transition: 0.5s all;\r\n}\r\n\r\n#scenarioHeader.sticky,\r\n#scenarioHeader.full-page {\r\n  background: lightgray;\r\n  position: fixed;\r\n  top: 0;\r\n  width: 100%;\r\n  z-index: 100;\r\n}\r\n\r\n#scenarioHeader.full-page {\r\n  bottom: 0;\r\n}\r\n\r\n#scenarioHeader.sticky.failedScenario,\r\n#scenarioHeader.full-page.failedScenario {\r\n  background: rgb(247, 186, 163);\r\n}\r\n\r\n#scenarioHeader.sticky.passedScenario,\r\n#scenarioHeader.full-page.passedScenario {\r\n  background: rgb(181, 241, 181);\r\n}\r\n\r\n.row.result.title-result-container {\r\n  height: 90%;\r\n  overflow: auto;\r\n}\r\n", ""]);
 
 // exports
 
@@ -1358,7 +1263,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/scenario-list-item/scenario-list-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\" *ngIf=\"isLinkTitleScenario\">{{scenario.name}}</a>\r\n        <span *ngIf=\"!isLinkTitleScenario\">{{scenario.name}}</span>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"scenario.hasResults\"><a href=\"\" target=\"_blank\" (click)=\"getReport()\">{{'Get report' | translate}}</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"scenario.hasResults\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} <ng-container *ngIf=\"executedSteps && totalSteps\">({{executedSteps}}/{{totalSteps}})</ng-container></button>\r\n    </div>\r\n  </div>\r\n  <ng-container *ngIf=\"showResultDetails\">\r\n    <div class=\"row well\" *ngIf=\"stepResultList?.length > 0\">\r\n      <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n        <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\" [stepList]=\"stepList\"></app-step-result-item>\r\n      </ng-container>\r\n    </div>\r\n    <div class=\"well\" style=\"color: red\" *ngIf=\"stepResultList?.length == 0\">\r\n      <p>{{'Results not found' | translate}}</p>\r\n    </div>\r\n  </ng-container>\r\n</div>\r\n"
+module.exports = "<div style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-7\">\r\n      <label>\r\n        <input type=\"checkbox\" title=\"Select\" [(ngModel)]=\"scenario._selected\" (click)=\"onClick()\"/>\r\n        <a [routerLink]=\"['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]\">{{scenario.name}}</a>\r\n      </label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n\r\n      <span class=\"help-block small\" style=\"float: right;\" *ngIf=\"scenario.hasResults\"><a href=\"\" target=\"_blank\" (click)=\"getReport()\">{{'Get report' | translate}}</a></span>\r\n      <button style=\"display: none;\" class=\"btn btn-xs\" (click)=\"checkState()\">{{state}}</button>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn\" *ngIf=\"scenario.hasResults\" (click)=\"resultDetailsToggle()\">{{'Results' | translate}} <ng-container *ngIf=\"executedSteps && totalSteps\">({{executedSteps}}/{{totalSteps}})</ng-container></button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\" [stepList]=\"stepList\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1392,7 +1297,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ScenarioListItemComponent = (function () {
     function ScenarioListItemComponent(scenarioService) {
         this.scenarioService = scenarioService;
-        this.isLinkTitleScenario = true;
         this.onStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.cbStateChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
         this.state = 'none';
@@ -1540,10 +1444,6 @@ __decorate([
 ], ScenarioListItemComponent.prototype, "projectCode", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
-    __metadata("design:type", Object)
-], ScenarioListItemComponent.prototype, "isLinkTitleScenario", void 0);
-__decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
     __metadata("design:type", Array)
 ], ScenarioListItemComponent.prototype, "stepList", void 0);
 __decorate([
@@ -1569,6 +1469,103 @@ ScenarioListItemComponent = __decorate([
 
 var _a, _b, _c;
 //# sourceMappingURL=scenario-list-item.component.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/scenario-list-item/scenario-title-item.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div id=\"scenarioHeader\" #scenarioHeader style=\"padding-bottom: 10px;\" class=\"container-fluid\" *ngIf=\"scenario\" [ngClass] = \"getMapStyleForScenario()\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-6\">\r\n      <label><span>{{scenario.name}}</span></label>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <div *ngIf=\"state != 'executing' && scenario.failed\" style=\"color: red\">{{'Failed' | translate}}</div>\r\n      <div *ngIf=\"state == 'executing'\" style=\"color: gray\">...</div>\r\n    </div>\r\n    <div class=\"col-sm-5\">\r\n\r\n      <div class=\"input-group\">\r\n        <div class=\"input-group-btn\">\r\n          <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-primary\" *ngIf=\"state != 'executing' && state != 'starting'\" (click)=\"runScenario()\">{{'Run' | translate}}</button>\r\n          <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'executing'\" (click)=\"stop()\">{{'Stop' | translate}}</button>\r\n          <button style=\"padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-warning\" *ngIf=\"state == 'starting'\" disabled>{{'Starting' | translate}}...</button>\r\n        </div>\r\n\r\n        <div class=\"input-group-btn\">\r\n          <button\r\n            style=\"border-radius: 0; padding-bottom: 1px; padding-top: 1px;\"\r\n            class=\"btn\"\r\n            *ngIf=\"scenario.hasResults\"\r\n            (click)=\"getReport()\">{{'Get report' | translate}}</button>\r\n        </div>\r\n\r\n        <button\r\n          style=\"border-radius: 0 4px 4px 0; padding-bottom: 1px; padding-top: 1px;\"\r\n          class=\"btn\"\r\n          *ngIf=\"scenario.hasResults\"\r\n          (click)=\"resultDetailsToggle()\">{{'Results' | translate}} <ng-container *ngIf=\"executedSteps && totalSteps\">({{executedSteps}}/{{totalSteps}})</ng-container></button>\r\n\r\n        <div class=\"input-group-btn\">\r\n          <button style=\"border-radius: 4px; padding-bottom: 1px; padding-top: 1px;\" class=\"btn btn-success\" (click)=\"saveSteps()\">{{'Save steps' | translate}}</button>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row result title-result-container\" *ngIf=\"showResultDetails && stepResultList\">\r\n    <ng-container *ngFor=\"let stepResult of stepResultList\">\r\n      <app-step-result-item [stepResult]=\"stepResult\" [scenario]=\"scenario\" [stepList]=\"stepList\"></app-step-result-item>\r\n    </ng-container>\r\n  </div>\r\n</div>\r\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/scenario-list-item/scenario-title-item.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scenario_list_item_component__ = __webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ScenarioTitleItemComponent; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ScenarioTitleItemComponent = (function (_super) {
+    __extends(ScenarioTitleItemComponent, _super);
+    function ScenarioTitleItemComponent() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.onSaveSteps = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
+        return _this;
+    }
+    ScenarioTitleItemComponent.prototype.ngAfterViewInit = function () {
+        this.header = this.headerRefs.first.nativeElement;
+        this.headerOffset = this.header.offsetTop;
+    };
+    ScenarioTitleItemComponent.prototype.onScrollHandler = function () {
+        if (window.pageYOffset >= this.headerOffset) {
+            this.header.classList.add('sticky');
+        }
+        else {
+            this.header.classList.remove('sticky');
+        }
+    };
+    ScenarioTitleItemComponent.prototype.resultDetailsToggle = function () {
+        if (this.showResultDetails) {
+            document.body.style.overflow = 'visible';
+            this.header.classList.remove('full-page');
+        }
+        else {
+            document.body.style.overflow = 'hidden';
+            this.header.classList.add('full-page');
+        }
+        _super.prototype.resultDetailsToggle.call(this);
+    };
+    ScenarioTitleItemComponent.prototype.saveSteps = function () {
+        this.onSaveSteps.emit();
+    };
+    return ScenarioTitleItemComponent;
+}(__WEBPACK_IMPORTED_MODULE_1__scenario_list_item_component__["a" /* ScenarioListItemComponent */]));
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_16" /* ViewChildren */])('scenarioHeader'),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["_17" /* QueryList */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["_17" /* QueryList */]) === "function" && _a || Object)
+], ScenarioTitleItemComponent.prototype, "headerRefs", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
+    __metadata("design:type", Object)
+], ScenarioTitleItemComponent.prototype, "onSaveSteps", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* HostListener */])('window:scroll'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ScenarioTitleItemComponent.prototype, "onScrollHandler", null);
+ScenarioTitleItemComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_0" /* Component */])({
+        selector: 'app-scenario-title-item',
+        template: __webpack_require__("../../../../../src/app/scenario-list-item/scenario-title-item.component.html"),
+        styles: [__webpack_require__("../../../../../src/app/scenario-list-item/scenario-list-item.component.css")]
+    })
+], ScenarioTitleItemComponent);
+
+var _a;
+//# sourceMappingURL=scenario-title-item.component.js.map
 
 /***/ }),
 
@@ -1689,13 +1686,12 @@ var _a, _b, _c, _d, _e, _f;
 /***/ "../../../../../src/app/search-scenario/search-scenario.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__("../../../../css-loader/lib/url/escape.js");
 exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
 // imports
 
 
 // module
-exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + escape(__webpack_require__("../../../../../src/app/shared/style/img/icon.png")) + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
+exports.push([module.i, ".search-block {\r\n  position: relative;\r\n}\r\n\r\n.search-block input {\r\n  padding: 3px 5px;\r\n  width: 300px;\r\n}\r\n\r\n.search-result {\r\n  position: absolute;\r\n\r\n  top: 34px;\r\n  right: 0;\r\n  border: 1px solid #eeeeee;\r\n  border-top-width: 0;\r\n\r\n  box-shadow: 1px 1px 2px 2px rgba(238, 238, 238, 0.9);\r\n  background-color: #f5f5f5;\r\n  z-index: 5;\r\n\r\n  max-height: 400px;\r\n  width: 350px;\r\n  overflow-y: scroll;\r\n  overflow-wrap: break-word;\r\n}\r\n\r\n.search-result .error {\r\n  margin: 0;\r\n  padding: 3px;\r\n  text-align: center;\r\n  color: #ff4038;\r\n}\r\n.search-result ol {\r\n  padding: 0;\r\n  margin: 0;\r\n}\r\n\r\n.search-result ol li {\r\n  list-style: none;\r\n  background: url(" + __webpack_require__("../../../../../src/app/shared/style/img/icon.png") + ") no-repeat 2px 6px;\r\n  font-size: 12px;\r\n  padding: 3px;\r\n  padding-left: 22px;\r\n\r\n  cursor: pointer;\r\n}\r\n\r\n.search-result ol li:hover {\r\n  color: #ffffff;\r\n  background-color: #6699cc;\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1930,9 +1926,6 @@ var ProjectService = (function () {
     ProjectService.prototype.save = function (project) {
         return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + project.code, project, { headers: this.headers }).map(function (value) { return value.json(); });
     };
-    ProjectService.prototype.create = function (project) {
-        return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl, project, { headers: this.headers }).map(function (value) { return value.json(); });
-    };
     ProjectService.prototype.findOne = function (projectCode) {
         return this.http.get(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode)
             .map(function (value) { return value.json(); });
@@ -2031,15 +2024,7 @@ var ScenarioService = (function () {
     };
     ScenarioService.prototype.getResults = function (identity) {
         return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/results', identity)
-            .map(function (data) {
-            try {
-                return data.json();
-            }
-            catch (e) {
-                console.log(e);
-                return [];
-            }
-        });
+            .map(function (data) { return data.json(); });
     };
     ScenarioService.prototype.downloadReport = function (identities) {
         return this.http.post(this.globals.serviceBaseUrl + '/rest/execution/report', identities, { responseType: __WEBPACK_IMPORTED_MODULE_1__angular_http__["d" /* ResponseContentType */].Blob }).map(function (data) { return data.blob(); });
@@ -2123,7 +2108,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var StepService = StepService_1 = (function () {
+var StepService = (function () {
     function StepService(globals, http) {
         this.globals = globals;
         this.http = http;
@@ -2136,70 +2121,6 @@ var StepService = StepService_1 = (function () {
             return val;
         };
     }
-    StepService.isEquals = function (a, b) {
-        if (a === b) {
-            return true;
-        }
-        var valA = a === undefined ? null : (a === false ? null : a);
-        var valB = b === undefined ? null : (b === false ? null : b);
-        if (a instanceof Array && a.length === 0) {
-            valA = null;
-        }
-        if (b instanceof Array && b.length === 0) {
-            valB = null;
-        }
-        return valA === valB;
-    };
-    StepService.differ = function (a, b, namespace) {
-        namespace = (namespace || '') + '.';
-        if (StepService_1.isEquals(a, b)) {
-            return [];
-        }
-        if (!a || !b) {
-            return [{ type: 'DELETED', id: namespace }];
-        }
-        var keysInA = Object.keys(a), keysInB = Object.keys(b);
-        var diffA = keysInA.reduce(function (changes, key) {
-            var ns = namespace + key;
-            if (typeof b[key] === 'undefined') {
-                return changes.concat([{ type: 'DELETED', id: ns }]);
-            }
-            if (a[key] instanceof Array && b[key] instanceof Array) {
-                if (a[key].length !== b[key].length) {
-                    return changes.concat([{ type: 'CHANGED', id: ns }]);
-                }
-                else {
-                    for (var i = 0; i < a[key].length; i++) {
-                        var p = [];
-                        if (!StepService_1.isEquals(a[key][i], b[key][i])) {
-                            var c = StepService_1.differ(a[key], b[key], ns);
-                            if (c.length > 0) {
-                                p.push(c);
-                            }
-                        }
-                        if (p.length > 0) {
-                            return changes.concat(p);
-                        }
-                    }
-                }
-            }
-            else if (a[key] !== null && typeof b[key] && typeof a[key] === 'object' && typeof b[key] === 'object') {
-                return changes.concat(StepService_1.differ(a[key], b[key], ns));
-            }
-            else if (!StepService_1.isEquals(a[key], b[key])) {
-                return changes.concat([{ type: 'CHANGED', id: ns }]);
-            }
-            return changes;
-        }, []);
-        var diffB = keysInB.reduce(function (changes, key) {
-            var ns = namespace + key;
-            if (typeof a[key] === 'undefined') {
-                return changes.concat([{ type: 'ADDED', id: ns }]);
-            }
-            return changes;
-        }, []);
-        return diffA.concat(diffB);
-    };
     StepService.prototype.saveStep = function (projectCode, scenarioGroup, scenarioCode, step) {
         var scenarioPath = (scenarioGroup ? scenarioGroup + '/' : '') + scenarioCode;
         return this.http.put(this.globals.serviceBaseUrl + this.serviceUrl + '/' + projectCode + '/scenarios/' + scenarioPath + '/steps/' + step.code, step, { headers: this.headers }).map(function (value) { return value.json(); });
@@ -2216,12 +2137,12 @@ var StepService = StepService_1 = (function () {
     };
     return StepService;
 }());
-StepService = StepService_1 = __decorate([
+StepService = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__globals__["a" /* Globals */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__globals__["a" /* Globals */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _b || Object])
 ], StepService);
 
-var StepService_1, _a, _b;
+var _a, _b;
 //# sourceMappingURL=step.service.js.map
 
 /***/ }),
@@ -2534,7 +2455,7 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf
 /***/ "../../../../../src/app/step-item/step-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\" style=\"padding-bottom: 30px;\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-10\">\r\n      <textarea autosize rows=\"1\" style=\"font-weight: bold; border-width: 0; box-shadow: none;\" placeholder=\"{{'Step description' | translate}}\" class=\"form-control\" title=\"\" [(ngModel)]=\"step.stepComment\" ></textarea>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <input style=\"padding: 6px 1px;\" placeholder=\"{{'Timeout (ms)' | translate}}\" class=\"form-control\" title=\"\" [(ngModel)]=\"step.timeoutMs\" />\r\n    </div>\r\n    <div class=\"col-sm-1 text-right\" *ngIf=\"showUpDownDeleteCloneButtons\">\r\n      <button class=\"btn btn-xs btn-block btn-default\" (click)=\"upStep()\"><span class=\"glyphicon glyphicon-hand-up\"></span> {{'Up' | translate}}</button>\r\n      <div class=\"clearfix\"></div>\r\n      <button class=\"btn btn-xs btn-block btn-default\" (click)=\"downStep()\"><span class=\"glyphicon glyphicon-hand-down\"></span> {{'Down' | translate}}</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <div class=\"input-group\">\r\n        <div class=\"input-group-btn\">\r\n          <select class=\"form-control\" title=\"{{'Request method' | translate}}\" [(ngModel)]=\"step.stepMode\">\r\n            <option [ngValue]=\"null\" hidden>REST</option>\r\n            <option [ngValue]=\"'REST'\">REST</option>\r\n            <option [ngValue]=\"'JMS'\">JMS</option>\r\n          </select>\r\n        </div>\r\n        <div class=\"input-group-btn\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n          <select class=\"form-control\" title=\"{{'Request method' | translate}}\" [(ngModel)]=\"step.requestMethod\">\r\n            <option [ngValue]=\"''\"></option>\r\n            <option [ngValue]=\"'POST'\">POST</option>\r\n            <option [ngValue]=\"'GET'\">GET</option>\r\n            <option [ngValue]=\"'PUT'\">PUT</option>\r\n            <option [ngValue]=\"'DELETE'\">DELETE</option>\r\n          </select>\r\n        </div>\r\n        <input\r\n          placeholder=\"{{'Relative url. Example' | translate}}: /relative/url?parameter=value\"\r\n          class=\"form-control\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.relativeUrl\"\r\n          *ngIf=\"calculateStepMode() == 'REST'\" />\r\n        <input\r\n          placeholder=\"{{'Output queue name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.mqOutputQueueName\"\r\n          *ngIf=\"calculateStepMode() == 'JMS'\" />\r\n        <input\r\n          placeholder=\"{{'Input queue name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.mqInputQueueName\"\r\n          *ngIf=\"calculateStepMode() == 'JMS'\" />\r\n        <div class=\"input-group-btn\">\r\n          <button class=\"btn btn-default\" title=\"{{'Delete' | translate}}\" *ngIf=\"showUpDownDeleteCloneButtons\" (click)=\"deleteStep()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Delete' | translate}}</button>\r\n          <button class=\"btn btn-default\" title=\"{{'Disabled toggle' | translate}}\" *ngIf=\"!step.disabled\" (click)=\"disabledToggle()\"><span class=\"glyphicon glyphicon-flag\"></span> {{'Disable' | translate}}</button>\r\n          <button class=\"btn btn-default\" title=\"{{'Disabled toggle' | translate}}\" style=\"color: red;\" *ngIf=\"step.disabled\" (click)=\"disabledToggle()\"><span class=\"glyphicon glyphicon-flag\"></span> {{'Disabled' | translate}}</button>\r\n          <button class=\"btn btn-success\" title=\"{{'Clone' | translate}}\" *ngIf=\"showUpDownDeleteCloneButtons && step.code\" (click)=\"cloneStep()\"><span class=\"glyphicon glyphicon-paste\"></span> {{'Clone' | translate}}</button>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <ul class=\"nav nav-tabs\">\r\n        <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n        <li [class.active]=\"tab == 'scenarioVariables'\">\r\n          <a href=\"#\" (click)=\"selectTab('scenarioVariables')\">{{'Scenario variables' | translate}} <span *ngIf=\"step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'headers'\">\r\n          <a href=\"#\" (click)=\"selectTab('headers')\">{{'Headers' | translate}} <span *ngIf=\"step.requestHeaders\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'sql'\">\r\n          <a href=\"#\" (click)=\"selectTab('sql')\">Sql <span *ngIf=\"step.sqlDataList?.length > 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'mqResponses'\">\r\n          <a href=\"#\" (click)=\"selectTab('mqResponses')\">{{'Mock responses' | translate}} <span *ngIf=\"step.mockServiceResponseList?.length > 0 || step.mqMessages?.length > 0 || step.mqMockResponseList?.length > 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'mqRequests'\">\r\n          <a href=\"#\" (click)=\"selectTab('mqRequests')\">{{'Mock requests' | translate}} <span *ngIf=\"step.expectedServiceRequestList?.length > 0 || step.parseMockRequestUrl || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'polling'\">\r\n          <a href=\"#\" (click)=\"selectTab('polling')\">{{'Polling' | translate}} <span *ngIf=\"step.usePolling\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'parameterSet'\">\r\n          <a href=\"#\" (click)=\"selectTab('parameterSet')\">{{'Test cases' | translate}} <span *ngIf=\"step.stepParameterSetList && step.stepParameterSetList.length != 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'script'\">\r\n          <a href=\"#\" (click)=\"selectTab('script')\">{{'Script' | translate}} <span *ngIf=\"step.script\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n      </ul>\r\n      <div class=\"tab-content\" style=\"padding: 10px;\">\r\n        <div *ngIf=\"tab == 'details'\" class=\"row\">\r\n          <div class=\"col-sm-6\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n                <label>{{'Request body type' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'JMS'\">\r\n                <label>{{'Wait response timeout' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <label>{{'Number of repetitions' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <label>{{'Ignore response' | translate}}:</label>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n                <select class=\"form-control\" title=\"{{'Request body type' | translate}}\" [(ngModel)]=\"step.requestBodyType\">\r\n                  <option [ngValue]=\"'JSON'\">{{'JSON request body (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'FORM'\">{{'FORM-data request body' | translate}}</option>\r\n                </select>\r\n              </div>\r\n              <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'JMS'\">\r\n                <input title=\"\" placeholder=\"N or variable (ms, 1000 default)\" class=\"form-control\" [(ngModel)]=\"step.mqTimeoutMs\"/>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <input title=\"\" placeholder=\"N or variable\" class=\"form-control\" [(ngModel)]=\"step.numberRepetitions\"/>\r\n              </div>\r\n              <div class=\"col-sm-3\" style=\"text-align: center; padding-top: 10px;\">\r\n                <input title=\"\" type=\"checkbox\" [(ngModel)]=\"step.expectedResponseIgnore\"><br/>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-4\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n                <label>{{'Expected status' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-4\">\r\n                <label>{{'Compare mode' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-4\" *ngIf=\"step.responseCompareMode == 'JSON'\">\r\n                <label>{{'JSON compare mode' | translate}}:</label>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-4\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n                <input title=\"\" placeholder=\"Example: 200, 404, 500, [empty]\" class=\"form-control\" [(ngModel)]=\"step.expectedStatusCode\"/>\r\n              </div>\r\n              <div class=\"col-sm-4\">\r\n                <select class=\"form-control\" title=\"{{'Compare mode' | translate}}\" [(ngModel)]=\"step.responseCompareMode\">\r\n                  <option [ngValue]=\"'JSON'\">JSON (default)</option>\r\n                  <option [ngValue]=\"'FULL_MATCH'\">Full match</option>\r\n                  <option [ngValue]=\"'IGNORE_MASK'\">Mask *ignore*</option>\r\n                </select>\r\n              </div>\r\n              <div class=\"col-sm-4\" *ngIf=\"step.responseCompareMode == 'JSON'\">\r\n                <select class=\"form-control\" title=\"{{'JSON compare mode' | translate}}\" [(ngModel)]=\"step.jsonCompareMode\">\r\n                  <option [ngValue]=\"'NON_EXTENSIBLE'\">NON_EXTENSIBLE (Default. Not extensible, non-strict array ordering)</option>\r\n                  <option [ngValue]=\"'STRICT'\">STRICT (Not extensible, strict array ordering)</option>\r\n                  <option [ngValue]=\"'LENIENT'\">LENIENT (Extensible, non-strict array ordering)</option>\r\n                  <option [ngValue]=\"'STRICT_ORDER'\">STRICT_ORDER (Extensible, strict array ordering)</option>\r\n                </select>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n            <label>{{'Request body' | translate}}:</label>\r\n            <div *ngIf=\"step.requestBodyType != 'FORM'\">\r\n              <textarea title=\"{{'Request body' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.request\"></textarea>\r\n            </div>\r\n            <div *ngIf=\"step.requestBodyType == 'FORM'\">\r\n              <label>\r\n                <input title=\"\" type=\"checkbox\" [(ngModel)]=\"step.multipartFormData\">\r\n                {{'multipart/form-data' | translate}}\r\n              </label>\r\n              <div class=\"clearfix\"></div>\r\n              <div *ngFor=\"let formData of step.formDataList\" class=\"request-body-field\">\r\n                <input class=\"form-control request-body-field__name\" placeholder=\"{{'Field name' | translate}}\" title=\"\" [(ngModel)]=\"formData.fieldName\"/>\r\n                <select class=\"form-control request-body-field__type\" title=\"{{'Field type' | translate}}\" [(ngModel)]=\"formData.fieldType\">\r\n                  <option [ngValue]=\"'TEXT'\">{{'Text (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'FILE'\">{{'File' | translate}}</option>\r\n                </select>\r\n                <ng-container *ngIf=\"formData.fieldType == 'FILE'\">\r\n                  <input class=\"form-control\" placeholder=\"{{'File path' | translate}}\" title=\"\" [(ngModel)]=\"formData.filePath\"/>\r\n                  <input class=\"form-control\" placeholder=\"{{'MIME type' | translate}}\" title=\"\" [(ngModel)]=\"formData.mimeType\"/>\r\n                </ng-container>\r\n                <input class=\"form-control\" *ngIf=\"formData.fieldType != 'FILE'\" placeholder=\"{{'Field value' | translate}}\" title=\"\" [(ngModel)]=\"formData.value\"/>\r\n                <button class=\"btn btn-default request-body-field__remove\" (click)=\"removeFormData(formData)\">-</button>\r\n              </div>\r\n              <button class=\"btn\" style=\"margin-top: 7px; margin-left: 7px;\" (click)=\"addFormData()\">{{'Add field' | translate}}</button>\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'REST'\">\r\n            <label>{{'Expected response' | translate}}:</label>\r\n            <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'JMS'\">\r\n            <label>{{'Request JMS body' | translate}}:</label>\r\n            <textarea title=\"{{'Request body' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.request\"></textarea>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"calculateStepMode() == 'JMS'\">\r\n            <label>{{'Expected JMS response' | translate}}:</label>\r\n            <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'scenarioVariables'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-6\">\r\n              <label>{{'Expected response' | translate}}</label>\r\n              <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"13\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>{{'Scenario variables' | translate}} (JSON XPath):</label>\r\n              <textarea placeholder=\"parameterName = $.element.items[2].title\" rows=\"13\" title=\"{{'Request headers' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.jsonXPath\"></textarea>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'sql'\">\r\n          <div *ngFor=\"let sqlData of step.sqlDataList\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-12\">\r\n                <label>{{'Sql parameters' | translate}}</label>\r\n                <input placeholder=\"paramNameFirst, paramNameSecond\" class=\"form-control\" title=\"\" [(ngModel)]=\"sqlData.sqlSavedParameter\"/>\r\n                <label>{{'Sql query' | translate}}</label>\r\n                <input placeholder=\"select fieldFirst, fieldSecond from myTable\" class=\"form-control\" title=\"\" [(ngModel)]=\"sqlData.sql\"/>\r\n                <label>{{'Sql return type' | translate}}</label>\r\n                <select class=\"form-control\" title=\"{{'Sql return type' | translate}}\" [(ngModel)]=\"sqlData.sqlReturnType\" style=\"width: auto\">\r\n                  <option [ngValue]=\"'MAP'\">{{'Map (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'OBJECT'\">{{'Object' | translate}}</option>\r\n                  <option [ngValue]=\"'LIST'\">{{'List' | translate}}</option>\r\n                  <option [ngValue]=\"'ROW'\">{{'Row' | translate}}</option>\r\n                </select>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-12\">\r\n                <button class=\"btn btn-default\" (click)=\"removeSqlData(sqlData)\">\r\n                  <span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}\r\n                </button>\r\n              </div>\r\n            </div>\r\n            <hr/>\r\n          </div>\r\n          <button class=\"btn btn-default\" (click)=\"addSqlData()\">\r\n            <span class=\"glyphicon glyphicon-plus\"></span> {{'Add' | translate}}\r\n          </button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'scenarioVariables' || tab == 'sql'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <hr/>\r\n              <label>{{'Check scenario variables' | translate}}</label>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\" *ngFor=\"let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])\">\r\n            <div class=\"col-sm-4\" style=\"text-align: right;\">\r\n              <label>\r\n                <a href=\"#\" (click)=\"updateCheckedValueName(checkedValueName)\">{{checkedValueName}} <small><span class=\"glyphicon glyphicon-edit\"></span></small></a>\r\n              </label>\r\n            </div>\r\n            <div class=\"col-sm-8\">\r\n              <div class=\"input-group\">\r\n                <input placeholder=\"{{'Checked value' | translate}}\" title=\"\" class=\"form-control\" [(ngModel)]=\"step.savedValuesCheck[checkedValueName]\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn btn-default\" (click)=\"removeCheckedValue(checkedValueName)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <button class=\"btn btn-default\" (click)=\"addCheckedValue()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add' | translate}}</button>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'headers'\">\r\n          <label>{{'Request headers' | translate}}:</label>\r\n          <textarea placeholder=\"HeaderName: headerValue\" rows=\"5\" title=\"{{'Request headers' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.requestHeaders\"></textarea>\r\n        </div>\r\n        <div *ngIf=\"tab == 'mqResponses'\">\r\n          <h4>{{'REST mock responses' | translate}}</h4>\r\n          <div class=\"row\" *ngFor=\"let mockServiceResponse of step.mockServiceResponseList\">\r\n            <div class=\"col-sm-12\">\r\n              <app-mock-service-response [mockServiceResponse]=\"mockServiceResponse\" (onDelete)=\"removeMockServiceResponse(mockServiceResponse)\"></app-mock-service-response>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addMockServiceResponse()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add REST-mock' | translate}}</button>\r\n\r\n          <hr/>\r\n          <h4>{{'Messages Queue' | translate}}</h4>\r\n          <div class=\"row\" *ngFor=\"let mqMessage of step.mqMessages\">\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Queue name' | translate}}</label>\r\n              <div class=\"input-group\" style=\"margin-bottom: 5px;\">\r\n                <input title=\"{{'Queue name' | translate}}\" class=\"form-control\" [(ngModel)]=\"mqMessage.queueName\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"removeMqMessage(mqMessage)\"><span class=\"glyphicon glyphicon-minus\"></span>{{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Queue message' | translate}}</label>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Queue message' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mqMessage.message\"></textarea>\r\n            </div>\r\n            <ng-container *ngIf=\"mqMessage.properties?.length > 0\">\r\n              <div class=\"col-sm-12\">\r\n                <label>{{'Mq properties' | translate}}</label>\r\n              </div>\r\n              <div class=\"col-sm-5\">\r\n                <label>{{'Name' | translate}}</label>\r\n              </div>\r\n              <div class=\"col-sm-5\">\r\n                <label>{{'Value' | translate}}</label>\r\n              </div>\r\n            </ng-container>\r\n            <ng-container *ngFor=\"let property of mqMessage.properties\">\r\n              <div class=\"col-sm-5\" >\r\n                <input title=\"{{'Name' | translate}}\" placeholder=\"messageId, correlationId, replyTo, timestamp, contentType, contentEncoding, ...\" class=\"form-control\" [(ngModel)]=\"property.name\"/>\r\n              </div>\r\n              <div class=\"col-sm-6\">\r\n                <input title=\"{{'Value' | translate}}\" [placeholder]=\"property.name == 'timestamp' ? 'dd-MM-yyyy,HH:mm:ss aaa' : ''\" class=\"form-control\" [(ngModel)]=\"property.value\"/>\r\n              </div>\r\n              <div class=\"col-sm-1\">\r\n                <button class=\"btn btn-sm btn-default\" (click)=\"removeMqProperty(mqMessage, property)\"><span class=\"glyphicon glyphicon-minus\"></span></button>\r\n              </div>\r\n            </ng-container>\r\n            <div class=\"col-sm-12\">\r\n              <button class=\"btn btn-sm btn-default\" (click)=\"addMqProperty(mqMessage)\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add property' | translate}}</button>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addMqMessage()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add message' | translate}}</button>\r\n\r\n          <hr/>\r\n          <h4>{{'MQ mock responses' | translate}}</h4>\r\n          <div class=\"row\" *ngFor=\"let mqMockResponse of step.mqMockResponseList\">\r\n            <div class=\"col-sm-12\">\r\n              <app-mq-mock-response [mqMockResponse]=\"mqMockResponse\" (onDelete)=\"removeMqMockResponse(mqMockResponse)\"></app-mq-mock-response>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addMqMockResponse()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add MQ mock' | translate}}</button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'mqRequests'\">\r\n          <h4>{{'Expected REST requests' | translate}}</h4>\r\n          <div class=\"row\" style=\"margin-bottom: 40px;\" *ngFor=\"let expectedServiceRequest of step.expectedServiceRequestList\">\r\n            <div class=\"col-sm-12\">\r\n              <div class=\"input-group\" style=\"margin-bottom: 5px;\">\r\n                <input placeholder=\"{{'Service name' | translate}} *\" class=\"form-control\" title=\"\" [style.border-color]=\"expectedServiceRequest.serviceName ? '' : 'red'\" [(ngModel)]=\"expectedServiceRequest.serviceName\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn\" (click)=\"removeExpectedServiceRequest(expectedServiceRequest)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n              <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Ignored tags' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedServiceRequest.ignoredTags\"/>\r\n                </div>\r\n              </div>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Expected request' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"expectedServiceRequest.expectedServiceRequest\"></textarea>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm  btn-default\" (click)=\"addExpectedServiceRequest()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add expected mock request' | translate}}</button>\r\n\r\n          <hr/>\r\n          <h4>{{'Save scenario variables from REST request' | translate}}</h4>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Mock URL' | translate}}</label>\r\n              <input title=\"{{'Mock URL' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestUrl\"/>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'XML XPath' | translate}}</label>\r\n              <input title=\"{{'XML XPath' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestXPath\"/>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Scenario variable name' | translate}}</label>\r\n              <input title=\"{{'Scenario variable name' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestScenarioVariable\"/>\r\n            </div>\r\n          </div>\r\n\r\n          <hr/>\r\n          <h4>{{'Save scenario variables from MQ request' | translate}}</h4>\r\n          <div class=\"row\" *ngIf=\"step.scenarioVariableFromMqRequestList?.length > 0\">\r\n            <div class=\"col-sm-3\">\r\n              <label>{{'Source queue name' | translate}}</label>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <label>{{'XPath' | translate}}</label>\r\n            </div>\r\n            <div class=\"col-sm-3\">\r\n              <label>{{'Variable name' | translate}}</label>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\" *ngFor=\"let variableFromMq of step.scenarioVariableFromMqRequestList\">\r\n            <div class=\"col-sm-3\">\r\n              <input placeholder=\"{{'Source queue name' | translate}} *\" class=\"form-control\" title=\"\" [(ngModel)]=\"variableFromMq.sourceQueue\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\"  placeholder=\"{{'XPath' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"variableFromMq.xpath\"/>\r\n            </div>\r\n            <div class=\"col-sm-3\">\r\n              <input class=\"form-control\" placeholder=\"{{'Variable name' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"variableFromMq.variableName\"/>\r\n            </div>\r\n            <div class=\"col-sm-2\">\r\n              <button class=\"btn\" (click)=\"removeVariableFromMq(variableFromMq)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addVariableFromMq()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add scenario variable' | translate}}</button>\r\n          <hr/>\r\n          <h4>{{'Expected MQ requests' | translate}}</h4>\r\n          <div class=\"row\" style=\"margin-bottom: 40px;\" *ngFor=\"let expectedMqRequest of step.expectedMqRequestList\">\r\n            <div class=\"col-sm-12\">\r\n              <div class=\"input-group\" style=\"margin-bottom: 5px;\">\r\n                <input placeholder=\"{{'Source queue name' | translate}} *\" class=\"form-control\" title=\"\" [style.border-color]=\"expectedMqRequest.sourceQueue ? '' : 'red'\" [(ngModel)]=\"expectedMqRequest.sourceQueue\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn\" (click)=\"removeExpectedMqRequest(expectedMqRequest)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n              <div class=\"row\">\r\n                <div class=\"col-sm-8\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Ignored tags' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedMqRequest.ignoredTags\"/>\r\n                </div>\r\n                <div class=\"col-sm-4\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Repeat count' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedMqRequest.count\"/>\r\n                </div>\r\n              </div>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Expected MQ request' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"expectedMqRequest.requestBody\"></textarea>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm  btn-default\" (click)=\"addExpectedMqRequest()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add expected mock MQ request' | translate}}</button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'polling'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-2\">\r\n              <label>\r\n                <input type=\"checkbox\" title=\"Use polling\" [(ngModel)]=\"step.usePolling\"/>\r\n                {{'Use polling' | translate}}\r\n              </label>\r\n            </div>\r\n            <div class=\"col-sm-10\">\r\n              <label>{{'Polling' | translate}} json xpath:</label>\r\n              <input placeholder=\"$.body.items\" class=\"form-control\" title=\"{{'Polling' | translate}} json xpath\" [(ngModel)]=\"step.pollingJsonXPath\" />\r\n              <div class=\"help-block\">{{'Waiting for json element exists. Example' | translate}}: $.body.items</div>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'parameterSet'\">\r\n          <app-step-parameter-set [stepParameterSetList]=\"step.stepParameterSetList\"></app-step-parameter-set>\r\n        </div>\r\n        <div *ngIf=\"tab == 'script'\">\r\n          <label>{{'Script' | translate}}:</label>\r\n          <textarea placeholder=\"\" rows=\"6\" title=\"{{'Script' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.script\"></textarea>\r\n          <div class=\"help-block\">\r\n            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'json'\"><pre>{{step | json}}</pre></div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\" style=\"padding-bottom: 30px;\">\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-10\">\r\n      <textarea autosize rows=\"1\" style=\"font-weight: bold; border-width: 0; box-shadow: none;\" placeholder=\"{{'Step description' | translate}}\" class=\"form-control\" title=\"\" [(ngModel)]=\"step.stepComment\" ></textarea>\r\n    </div>\r\n    <div class=\"col-sm-1\">\r\n      <input style=\"padding: 6px 1px;\" placeholder=\"{{'Timeout (ms)' | translate}}\" class=\"form-control\" title=\"\" [(ngModel)]=\"step.timeoutMs\" />\r\n    </div>\r\n    <div class=\"col-sm-1 text-right\" *ngIf=\"showUpDownDeleteCloneButtons\">\r\n      <button class=\"btn btn-xs btn-block btn-default\" (click)=\"upStep()\"><span class=\"glyphicon glyphicon-hand-up\"></span> {{'Up' | translate}}</button>\r\n      <div class=\"clearfix\"></div>\r\n      <button class=\"btn btn-xs btn-block btn-default\" (click)=\"downStep()\"><span class=\"glyphicon glyphicon-hand-down\"></span> {{'Down' | translate}}</button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <div class=\"input-group\">\r\n        <div class=\"input-group-btn\">\r\n          <select class=\"form-control\" title=\"{{'Request method' | translate}}\" [(ngModel)]=\"step.stepMode\">\r\n            <option [ngValue]=\"'REST'\">REST</option>\r\n            <option [ngValue]=\"'JMS'\">JMS</option>\r\n          </select>\r\n        </div>\r\n        <div class=\"input-group-btn\" *ngIf=\"step.stepMode == 'REST'\">\r\n          <select class=\"form-control\" title=\"{{'Request method' | translate}}\" [(ngModel)]=\"step.requestMethod\">\r\n            <option [ngValue]=\"''\"></option>\r\n            <option [ngValue]=\"'POST'\">POST</option>\r\n            <option [ngValue]=\"'GET'\">GET</option>\r\n            <option [ngValue]=\"'PUT'\">PUT</option>\r\n            <option [ngValue]=\"'DELETE'\">DELETE</option>\r\n          </select>\r\n        </div>\r\n        <input\r\n          placeholder=\"{{'Relative url. Example' | translate}}: /relative/url?parameter=value\"\r\n          class=\"form-control\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.relativeUrl\"\r\n          *ngIf=\"step.stepMode == 'REST'\" />\r\n        <input\r\n          placeholder=\"{{'Output queue name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.mqOutputQueueName\"\r\n          *ngIf=\"step.stepMode == 'JMS'\" />\r\n        <input\r\n          placeholder=\"{{'Input queue name' | translate}}\"\r\n          class=\"form-control\"\r\n          style=\"width: 50%;\"\r\n          title=\"\"\r\n          [(ngModel)]=\"step.mqInputQueueName\"\r\n          *ngIf=\"step.stepMode == 'JMS'\" />\r\n        <div class=\"input-group-btn\">\r\n          <button class=\"btn btn-default\" title=\"{{'Delete' | translate}}\" *ngIf=\"showUpDownDeleteCloneButtons\" (click)=\"deleteStep()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Delete' | translate}}</button>\r\n          <button class=\"btn btn-default\" title=\"{{'Disabled toggle' | translate}}\" *ngIf=\"!step.disabled\" (click)=\"disabledToggle()\"><span class=\"glyphicon glyphicon-flag\"></span> {{'Disable' | translate}}</button>\r\n          <button class=\"btn btn-default\" title=\"{{'Disabled toggle' | translate}}\" style=\"color: red;\" *ngIf=\"step.disabled\" (click)=\"disabledToggle()\"><span class=\"glyphicon glyphicon-flag\"></span> {{'Disabled' | translate}}</button>\r\n          <button class=\"btn btn-success\" title=\"{{'Clone' | translate}}\" *ngIf=\"showUpDownDeleteCloneButtons && step.code\" (click)=\"cloneStep()\"><span class=\"glyphicon glyphicon-paste\"></span> {{'Clone' | translate}}</button>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <ul class=\"nav nav-tabs\">\r\n        <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n        <li [class.active]=\"tab == 'scenarioVariables'\">\r\n          <a href=\"#\" (click)=\"selectTab('scenarioVariables')\">{{'Scenario variables' | translate}} <span *ngIf=\"step.jsonXPath || (step.savedValuesCheck && Object.keys(step.savedValuesCheck).length)\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'headers'\">\r\n          <a href=\"#\" (click)=\"selectTab('headers')\">{{'Headers' | translate}} <span *ngIf=\"step.requestHeaders\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'sql'\">\r\n          <a href=\"#\" (click)=\"selectTab('sql')\">Sql <span *ngIf=\"step.sqlDataList?.length > 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'mqResponses'\">\r\n          <a href=\"#\" (click)=\"selectTab('mqResponses')\">{{'Mock responses' | translate}} <span *ngIf=\"step.mockServiceResponseList?.length > 0 || (step.mqName || step.mqMessage) || step.mqMockResponseList?.length > 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'mqRequests'\">\r\n          <a href=\"#\" (click)=\"selectTab('mqRequests')\">{{'Mock requests' | translate}} <span *ngIf=\"step.expectedServiceRequestList?.length > 0 || step.parseMockRequestUrl || (step.expectedMqRequestList?.length > 0 || step.scenarioVariableFromMqRequestList?.length > 0)\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'polling'\">\r\n          <a href=\"#\" (click)=\"selectTab('polling')\">{{'Polling' | translate}} <span *ngIf=\"step.usePolling\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'parameterSet'\">\r\n          <a href=\"#\" (click)=\"selectTab('parameterSet')\">{{'Test cases' | translate}} <span *ngIf=\"step.stepParameterSetList && step.stepParameterSetList.length != 0\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'script'\">\r\n          <a href=\"#\" (click)=\"selectTab('script')\">{{'Script' | translate}} <span *ngIf=\"step.script\" class=\"glyphicon glyphicon-tag\"></span></a>\r\n        </li>\r\n        <li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li>\r\n      </ul>\r\n      <div class=\"tab-content\" style=\"padding: 10px;\">\r\n        <div *ngIf=\"tab == 'details'\" class=\"row\">\r\n          <div class=\"col-sm-6\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'REST'\">\r\n                <label>{{'Request body type' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'JMS'\">\r\n                <label>{{'Wait response timeout' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <label>{{'Number of repetitions' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <label>{{'Ignore response' | translate}}:</label>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'REST'\">\r\n                <select class=\"form-control\" title=\"{{'Request body type' | translate}}\" [(ngModel)]=\"step.requestBodyType\">\r\n                  <option [ngValue]=\"'JSON'\">{{'JSON request body (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'FORM'\">{{'FORM-data request body' | translate}}</option>\r\n                </select>\r\n              </div>\r\n              <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'JMS'\">\r\n                <input title=\"\" placeholder=\"N or variable (ms, 1000 default)\" class=\"form-control\" [(ngModel)]=\"step.mqTimeoutMs\"/>\r\n              </div>\r\n              <div class=\"col-sm-3\">\r\n                <input title=\"\" placeholder=\"N or variable\" class=\"form-control\" [(ngModel)]=\"step.numberRepetitions\"/>\r\n              </div>\r\n              <div class=\"col-sm-3\" style=\"text-align: center; padding-top: 10px;\">\r\n                <input title=\"\" type=\"checkbox\" [(ngModel)]=\"step.expectedResponseIgnore\"><br/>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-4\" *ngIf=\"step.stepMode == 'REST'\">\r\n                <label>{{'Expected status' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-4\">\r\n                <label>{{'Compare mode' | translate}}:</label>\r\n              </div>\r\n              <div class=\"col-sm-4\" *ngIf=\"step.responseCompareMode == 'JSON'\">\r\n                <label>{{'JSON compare mode' | translate}}:</label>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-4\" *ngIf=\"step.stepMode == 'REST'\">\r\n                <input title=\"\" placeholder=\"Example: 200, 404, 500, [empty]\" class=\"form-control\" [(ngModel)]=\"step.expectedStatusCode\"/>\r\n              </div>\r\n              <div class=\"col-sm-4\">\r\n                <select class=\"form-control\" title=\"{{'Compare mode' | translate}}\" [(ngModel)]=\"step.responseCompareMode\">\r\n                  <option [ngValue]=\"'JSON'\">JSON (default)</option>\r\n                  <option [ngValue]=\"'FULL_MATCH'\">Full match</option>\r\n                  <option [ngValue]=\"'IGNORE_MASK'\">Mask *ignore*</option>\r\n                </select>\r\n              </div>\r\n              <div class=\"col-sm-4\" *ngIf=\"step.responseCompareMode == 'JSON'\">\r\n                <select class=\"form-control\" title=\"{{'JSON compare mode' | translate}}\" [(ngModel)]=\"step.jsonCompareMode\">\r\n                  <option [ngValue]=\"'NON_EXTENSIBLE'\">NON_EXTENSIBLE (Default. Not extensible, non-strict array ordering)</option>\r\n                  <option [ngValue]=\"'STRICT'\">STRICT (Not extensible, strict array ordering)</option>\r\n                  <option [ngValue]=\"'LENIENT'\">LENIENT (Extensible, non-strict array ordering)</option>\r\n                  <option [ngValue]=\"'STRICT_ORDER'\">STRICT_ORDER (Extensible, strict array ordering)</option>\r\n                </select>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'REST'\">\r\n            <label>{{'Request body' | translate}}:</label>\r\n            <div *ngIf=\"step.requestBodyType != 'FORM'\">\r\n              <textarea title=\"{{'Request body' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.request\"></textarea>\r\n            </div>\r\n            <div *ngIf=\"step.requestBodyType == 'FORM'\">\r\n              <label>\r\n                <input title=\"\" type=\"checkbox\" [(ngModel)]=\"step.multipartFormData\">\r\n                {{'multipart/form-data' | translate}}\r\n              </label>\r\n              <div class=\"clearfix\"></div>\r\n              <div *ngFor=\"let formData of step.formDataList\" class=\"request-body-field\">\r\n                <input class=\"form-control request-body-field__name\" placeholder=\"{{'Field name' | translate}}\" title=\"\" [(ngModel)]=\"formData.fieldName\"/>\r\n                <select class=\"form-control request-body-field__type\" title=\"{{'Field type' | translate}}\" [(ngModel)]=\"formData.fieldType\">\r\n                  <option [ngValue]=\"'TEXT'\">{{'Text (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'FILE'\">{{'File' | translate}}</option>\r\n                </select>\r\n                <ng-container *ngIf=\"formData.fieldType == 'FILE'\">\r\n                  <input class=\"form-control\" placeholder=\"{{'File path' | translate}}\" title=\"\" [(ngModel)]=\"formData.filePath\"/>\r\n                  <input class=\"form-control\" placeholder=\"{{'MIME type' | translate}}\" title=\"\" [(ngModel)]=\"formData.mimeType\"/>\r\n                </ng-container>\r\n                <input class=\"form-control\" *ngIf=\"formData.fieldType != 'FILE'\" placeholder=\"{{'Field value' | translate}}\" title=\"\" [(ngModel)]=\"formData.value\"/>\r\n                <button class=\"btn btn-default request-body-field__remove\" (click)=\"removeFormData(formData)\">-</button>\r\n              </div>\r\n              <button class=\"btn\" style=\"margin-top: 7px; margin-left: 7px;\" (click)=\"addFormData()\">{{'Add field' | translate}}</button>\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'REST'\">\r\n            <label>{{'Expected response' | translate}}:</label>\r\n            <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'JMS'\">\r\n            <label>{{'Request JMS body' | translate}}:</label>\r\n            <textarea title=\"{{'Request body' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.request\"></textarea>\r\n          </div>\r\n          <div class=\"col-sm-6\" *ngIf=\"step.stepMode == 'JMS'\">\r\n            <label>{{'Expected JMS response' | translate}}:</label>\r\n            <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"10\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'scenarioVariables'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-6\">\r\n              <label>{{'Expected response' | translate}}</label>\r\n              <textarea title=\"{{'Expected response' | translate}}\" class=\"form-control\" rows=\"13\" [(ngModel)]=\"step.expectedResponse\"></textarea>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>{{'Scenario variables' | translate}} (JSON XPath):</label>\r\n              <textarea placeholder=\"parameterName = $.element.items[2].title\" rows=\"13\" title=\"{{'Request headers' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.jsonXPath\"></textarea>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'sql'\">\r\n          <div *ngFor=\"let sqlData of step.sqlDataList\">\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-12\">\r\n                <label>{{'Sql parameters' | translate}}</label>\r\n                <input placeholder=\"paramNameFirst, paramNameSecond\" class=\"form-control\" title=\"\" [(ngModel)]=\"sqlData.sqlSavedParameter\"/>\r\n                <label>{{'Sql query' | translate}}</label>\r\n                <input placeholder=\"select fieldFirst, fieldSecond from myTable\" class=\"form-control\" title=\"\" [(ngModel)]=\"sqlData.sql\"/>\r\n                <label>{{'Sql return type' | translate}}</label>\r\n                <select class=\"form-control\" title=\"{{'Sql return type' | translate}}\" [(ngModel)]=\"sqlData.sqlReturnType\" style=\"width: auto\">\r\n                  <option [ngValue]=\"'MAP'\">{{'Map (default)' | translate}}</option>\r\n                  <option [ngValue]=\"'OBJECT'\">{{'Object' | translate}}</option>\r\n                  <option [ngValue]=\"'LIST'\">{{'List' | translate}}</option>\r\n                  <option [ngValue]=\"'ROW'\">{{'Row' | translate}}</option>\r\n                </select>\r\n              </div>\r\n            </div>\r\n            <div class=\"row\">\r\n              <div class=\"col-sm-12\">\r\n                <button class=\"btn btn-default\" (click)=\"removeSqlData(sqlData)\">\r\n                  <span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}\r\n                </button>\r\n              </div>\r\n            </div>\r\n            <hr/>\r\n          </div>\r\n          <button class=\"btn btn-default\" (click)=\"addSqlData()\">\r\n            <span class=\"glyphicon glyphicon-plus\"></span> {{'Add' | translate}}\r\n          </button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'scenarioVariables' || tab == 'sql'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <hr/>\r\n              <label>{{'Check scenario variables' | translate}}</label>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\" *ngFor=\"let checkedValueName of (step.savedValuesCheck ? Object.keys(step.savedValuesCheck) : [])\">\r\n            <div class=\"col-sm-4\" style=\"text-align: right;\">\r\n              <label>\r\n                <a href=\"#\" (click)=\"updateCheckedValueName(checkedValueName)\">{{checkedValueName}} <small><span class=\"glyphicon glyphicon-edit\"></span></small></a>\r\n              </label>\r\n            </div>\r\n            <div class=\"col-sm-8\">\r\n              <div class=\"input-group\">\r\n                <input placeholder=\"{{'Checked value' | translate}}\" title=\"\" class=\"form-control\" [(ngModel)]=\"step.savedValuesCheck[checkedValueName]\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn btn-default\" (click)=\"removeCheckedValue(checkedValueName)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <button class=\"btn btn-default\" (click)=\"addCheckedValue()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add' | translate}}</button>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'headers'\">\r\n          <label>{{'Request headers' | translate}}:</label>\r\n          <textarea placeholder=\"HeaderName: headerValue\" rows=\"5\" title=\"{{'Request headers' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.requestHeaders\"></textarea>\r\n        </div>\r\n        <div *ngIf=\"tab == 'mqResponses'\">\r\n          <h4>{{'REST mock responses' | translate}}</h4>\r\n          <div class=\"row\" *ngFor=\"let mockServiceResponse of step.mockServiceResponseList\">\r\n            <div class=\"col-sm-1\">\r\n              <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"removeMockServiceResponse(mockServiceResponse)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n            </div>\r\n            <div class=\"col-sm-11\">\r\n              <app-mock-service-response [mockServiceResponse]=\"mockServiceResponse\"></app-mock-service-response>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addMockServiceResponse()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add REST-mock' | translate}}</button>\r\n\r\n          <hr/>\r\n          <h4>{{'Message Queue' | translate}}</h4>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Queue name' | translate}}</label>\r\n              <input title=\"{{'Queue name' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.mqName\"/>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Queue message' | translate}}</label>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Queue message' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"step.mqMessage\"></textarea>\r\n            </div>\r\n            <ng-container *ngIf=\"step.mqPropertyList?.length > 0\">\r\n              <div class=\"col-sm-12\">\r\n                <label>{{'Mq properties' | translate}}</label>\r\n              </div>\r\n              <div class=\"col-sm-5\">\r\n                <label>{{'Name' | translate}}</label>\r\n              </div>\r\n              <div class=\"col-sm-5\">\r\n                <label>{{'Value' | translate}}</label>\r\n              </div>\r\n            </ng-container>\r\n            <ng-container *ngFor=\"let property of step.mqPropertyList\">\r\n              <div class=\"col-sm-5\" >\r\n                <input title=\"{{'Name' | translate}}\" placeholder=\"messageId, correlationId, replyTo, timestamp, contentType, contentEncoding, ...\" class=\"form-control\" [(ngModel)]=\"property.name\"/>\r\n              </div>\r\n              <div class=\"col-sm-6\">\r\n                <input title=\"{{'Value' | translate}}\" [placeholder]=\"property.name == 'timestamp' ? 'dd-MM-yyyy,HH:mm:ss aaa' : ''\" class=\"form-control\" [(ngModel)]=\"property.value\"/>\r\n              </div>\r\n              <div class=\"col-sm-1\">\r\n                <button class=\"btn btn-sm btn-default\" (click)=\"removeMqProperty(property)\"><span class=\"glyphicon glyphicon-minus\"></span></button>\r\n              </div>\r\n            </ng-container>\r\n            <div class=\"col-sm-12\">\r\n              <button class=\"btn btn-sm btn-default\" (click)=\"addMqProperty()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add property' | translate}}</button>\r\n            </div>\r\n          </div>\r\n\r\n          <hr/>\r\n          <h4>{{'MQ mock responses' | translate}}</h4>\r\n          <div class=\"row\" *ngFor=\"let mqMockResponse of step.mqMockResponseList\">\r\n            <div class=\"col-sm-1\">\r\n              <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"removeMqMockResponse(mqMockResponse)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n            </div>\r\n            <div class=\"col-sm-11\">\r\n              <app-mq-mock-response [mqMockResponse]=\"mqMockResponse\"></app-mq-mock-response>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addMqMockResponse()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add MQ mock' | translate}}</button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'mqRequests'\">\r\n          <h4>{{'Expected REST requests' | translate}}</h4>\r\n          <div class=\"row\" style=\"margin-bottom: 40px;\" *ngFor=\"let expectedServiceRequest of step.expectedServiceRequestList\">\r\n            <div class=\"col-sm-12\">\r\n              <div class=\"input-group\" style=\"margin-bottom: 5px;\">\r\n                <input placeholder=\"{{'Service name' | translate}} *\" class=\"form-control\" title=\"\" [style.border-color]=\"expectedServiceRequest.serviceName ? '' : 'red'\" [(ngModel)]=\"expectedServiceRequest.serviceName\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn\" (click)=\"removeExpectedServiceRequest(expectedServiceRequest)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n              <div class=\"row\">\r\n                <div class=\"col-sm-12\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Ignored tags' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedServiceRequest.ignoredTags\"/>\r\n                </div>\r\n              </div>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Expected request' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"expectedServiceRequest.expectedServiceRequest\"></textarea>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm  btn-default\" (click)=\"addExpectedServiceRequest()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add expected mock request' | translate}}</button>\r\n\r\n          <hr/>\r\n          <h4>{{'Save scenario variables from REST request' | translate}}</h4>\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Mock URL' | translate}}</label>\r\n              <input title=\"{{'Mock URL' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestUrl\"/>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'XML XPath' | translate}}</label>\r\n              <input title=\"{{'XML XPath' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestXPath\"/>\r\n            </div>\r\n            <div class=\"col-sm-12\">\r\n              <label>{{'Scenario variable name' | translate}}</label>\r\n              <input title=\"{{'Scenario variable name' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.parseMockRequestScenarioVariable\"/>\r\n            </div>\r\n          </div>\r\n\r\n          <hr/>\r\n          <h4>{{'Save scenario variables from MQ request' | translate}}</h4>\r\n          <div class=\"row\" *ngIf=\"step.scenarioVariableFromMqRequestList?.length > 0\">\r\n            <div class=\"col-sm-3\">\r\n              <label>{{'Source queue name' | translate}}</label>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <label>{{'XPath' | translate}}</label>\r\n            </div>\r\n            <div class=\"col-sm-3\">\r\n              <label>{{'Variable name' | translate}}</label>\r\n            </div>\r\n          </div>\r\n          <div class=\"row\" *ngFor=\"let variableFromMq of step.scenarioVariableFromMqRequestList\">\r\n            <div class=\"col-sm-3\">\r\n              <input placeholder=\"{{'Source queue name' | translate}} *\" class=\"form-control\" title=\"\" [(ngModel)]=\"variableFromMq.sourceQueue\"/>\r\n            </div>\r\n            <div class=\"col-sm-4\">\r\n              <input class=\"form-control\"  placeholder=\"{{'XPath' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"variableFromMq.xpath\"/>\r\n            </div>\r\n            <div class=\"col-sm-3\">\r\n              <input class=\"form-control\" placeholder=\"{{'Variable name' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"variableFromMq.variableName\"/>\r\n            </div>\r\n            <div class=\"col-sm-2\">\r\n              <button class=\"btn\" (click)=\"removeVariableFromMq(variableFromMq)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm btn-default\" (click)=\"addVariableFromMq()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add scenario variable' | translate}}</button>\r\n          <hr/>\r\n          <h4>{{'Expected MQ requests' | translate}}</h4>\r\n          <div class=\"row\" style=\"margin-bottom: 40px;\" *ngFor=\"let expectedMqRequest of step.expectedMqRequestList\">\r\n            <div class=\"col-sm-12\">\r\n              <div class=\"input-group\" style=\"margin-bottom: 5px;\">\r\n                <input placeholder=\"{{'Source queue name' | translate}} *\" class=\"form-control\" title=\"\" [style.border-color]=\"expectedMqRequest.sourceQueue ? '' : 'red'\" [(ngModel)]=\"expectedMqRequest.sourceQueue\"/>\r\n                <span class=\"input-group-btn\">\r\n                  <button class=\"btn\" (click)=\"removeExpectedMqRequest(expectedMqRequest)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n                </span>\r\n              </div>\r\n              <div class=\"row\">\r\n                <div class=\"col-sm-8\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Ignored tags' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedMqRequest.ignoredTags\"/>\r\n                </div>\r\n                <div class=\"col-sm-4\">\r\n                  <input class=\"form-control\" placeholder=\"{{'Repeat count' | translate}}\" style=\"margin-bottom: 5px;\" title=\"\" [(ngModel)]=\"expectedMqRequest.count\"/>\r\n                </div>\r\n              </div>\r\n              <textarea class=\"form-control\" placeholder=\"{{'Expected MQ request' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"expectedMqRequest.requestBody\"></textarea>\r\n            </div>\r\n          </div>\r\n          <button class=\"btn btn-sm  btn-default\" (click)=\"addExpectedMqRequest()\"><span class=\"glyphicon glyphicon-plus\"></span> {{'Add expected mock MQ request' | translate}}</button>\r\n        </div>\r\n        <div *ngIf=\"tab == 'polling'\">\r\n          <div class=\"row\">\r\n            <div class=\"col-sm-2\">\r\n              <label>\r\n                <input type=\"checkbox\" title=\"Use polling\" [(ngModel)]=\"step.usePolling\"/>\r\n                {{'Use polling' | translate}}\r\n              </label>\r\n            </div>\r\n            <div class=\"col-sm-10\">\r\n              <label>{{'Polling' | translate}} json xpath:</label>\r\n              <input placeholder=\"$.body.items\" class=\"form-control\" title=\"{{'Polling' | translate}} json xpath\" [(ngModel)]=\"step.pollingJsonXPath\" />\r\n              <div class=\"help-block\">{{'Waiting for json element exists. Example' | translate}}: $.body.items</div>\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'parameterSet'\">\r\n          <app-step-parameter-set [stepParameterSetList]=\"step.stepParameterSetList\"></app-step-parameter-set>\r\n        </div>\r\n        <div *ngIf=\"tab == 'script'\">\r\n          <label>{{'Script' | translate}}:</label>\r\n          <textarea placeholder=\"\" rows=\"6\" title=\"{{'Script' | translate}}\" class=\"form-control\" [(ngModel)]=\"step.script\"></textarea>\r\n          <div class=\"help-block\">\r\n            <pre>stepStatus.exception - String. Если поле заполнено, то возникнет ошибка с указанным в поле текстом.<br/>scenarioVariables - Map. Список всех переменных сценария, доступны чтение и запись.<br/>response.statusCode - int. Код ответа.<br/>response.content - String. Содержимое ответа.<br/>response.headers - Map. Заголовки ответа. Пример: response.headers['header-name'][0]<br/>Пример сохранения заголовка в переменную:<br/>scenarioVariables.MY_VARIABLE = response.headers.get('header-name')[0];</pre>\r\n          </div>\r\n        </div>\r\n        <div *ngIf=\"tab == 'json'\"><pre>{{step | json}}</pre></div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2554,7 +2475,6 @@ module.exports = "<div class=\"container-fluid\" style=\"padding-bottom: 30px;\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__model_scenario_variable_from_mq_request__ = __webpack_require__("../../../../../src/app/model/scenario-variable-from-mq-request.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__model_name_value_property__ = __webpack_require__("../../../../../src/app/model/name-value-property.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__model_mq_message__ = __webpack_require__("../../../../../src/app/model/mq-message.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2565,7 +2485,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -2598,15 +2517,10 @@ var StepItemComponent = (function () {
         };
     }
     StepItemComponent.prototype.ngOnInit = function () {
+        if (this.step && !this.step.stepMode) {
+            this.step.stepMode = 'REST';
+        }
         this.oldStep = this.stepService.copyStep(this.step);
-    };
-    StepItemComponent.prototype.calculateStepMode = function () {
-        if (this.step.stepMode === 'JMS') {
-            return 'JMS';
-        }
-        else {
-            return 'REST';
-        }
     };
     StepItemComponent.prototype.selectTab = function (tabName) {
         if (this.tab === tabName) {
@@ -2621,33 +2535,7 @@ var StepItemComponent = (function () {
         if (!this.step.mockServiceResponseList) {
             this.step.mockServiceResponseList = [];
         }
-        this.step.mockServiceResponseList.push(new __WEBPACK_IMPORTED_MODULE_2__model_mock_service_response__["b" /* MockServiceResponse */]());
-    };
-    StepItemComponent.prototype.addMqMessage = function () {
-        if (!this.step.mqMessages) {
-            this.step.mqMessages = [];
-        }
-        this.step.mqMessages.push(new __WEBPACK_IMPORTED_MODULE_12__model_mq_message__["a" /* MqMessage */]());
-    };
-    StepItemComponent.prototype.removeMqMessage = function (message) {
-        if (confirm('Comfirm: remove MQ message')) {
-            var index = this.step.mqMessages.indexOf(message);
-            if (index > -1) {
-                this.step.mqMessages.splice(index, 1);
-            }
-        }
-    };
-    StepItemComponent.prototype.addMqProperty = function (mqMessage) {
-        if (!mqMessage.properties) {
-            mqMessage.properties = [];
-        }
-        mqMessage.properties.push(new __WEBPACK_IMPORTED_MODULE_10__model_name_value_property__["a" /* NameValueProperty */]());
-    };
-    StepItemComponent.prototype.removeMqProperty = function (mqMessage, property) {
-        var indexToRemove = mqMessage.properties.indexOf(property);
-        if (indexToRemove > -1) {
-            mqMessage.properties.splice(indexToRemove, 1);
-        }
+        this.step.mockServiceResponseList.push(new __WEBPACK_IMPORTED_MODULE_2__model_mock_service_response__["a" /* MockServiceResponse */]());
     };
     StepItemComponent.prototype.addMqMockResponse = function () {
         if (!this.step.mqMockResponseList) {
@@ -2785,6 +2673,18 @@ var StepItemComponent = (function () {
             this.step.scenarioVariableFromMqRequestList = [];
         }
         this.step.scenarioVariableFromMqRequestList.push(new __WEBPACK_IMPORTED_MODULE_9__model_scenario_variable_from_mq_request__["a" /* ScenarioVariableFromMqRequest */]());
+    };
+    StepItemComponent.prototype.addMqProperty = function () {
+        if (!this.step.mqPropertyList) {
+            this.step.mqPropertyList = [];
+        }
+        this.step.mqPropertyList.push(new __WEBPACK_IMPORTED_MODULE_10__model_name_value_property__["a" /* NameValueProperty */]());
+    };
+    StepItemComponent.prototype.removeMqProperty = function (property) {
+        var indexToRemove = this.step.mqPropertyList.indexOf(property);
+        if (indexToRemove > -1) {
+            this.step.mqPropertyList.splice(indexToRemove, 1);
+        }
     };
     StepItemComponent.prototype.ngDoCheck = function () {
         if (!this.stepService.equals(this.step, this.oldStep)) {
@@ -2976,7 +2876,7 @@ var _a;
 /***/ "../../../../../src/app/step-result-item/step-result-item.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            <div>\r\n              {{'Sql' | translate}}:<br/>\r\n              <ng-container *ngFor=\"let query of stepResult.sqlQueryList\">\r\n                {{query}}<br/>\r\n              </ng-container>\r\n            </div>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\" innerHTML=\"<pre class='pretransparent'>{{actualDiff}}</pre>\">\r\n            </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\" innerHTML=\"<pre class='pretransparent'>{{expectedDiff}}</pre>\">\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"step\"></app-step-item>\r\n        <div style=\"display: inline-flex\" *ngIf=\"!readonly\">\r\n          <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n          <div *ngIf=\"changed && false\">\r\n            <span class=\"form-control\"  style=\"font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018\">{{'Step diff' | translate}}</span>\r\n          </div>\r\n        </div>\r\n        <div style=\"display: inline-flex; color: darkred; font-weight: bold;\" *ngIf=\"readonly\">\r\n          <button disabled class=\"btn btn-xs btn-success\">{{'Save step' | translate}}</button>\r\n          <span style=\"margin-top: 2px; margin-left: 6px;\" *ngIf=\"showRestartNotify\">{{'Step was changed. Restart scenario.' | translate}}</span>\r\n          <span style=\"margin-top: 2px; margin-left: 6px;\" *ngIf=\"!showRestartNotify\">{{'Readonly mode. Open scenario details to edit.' | translate}}</span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div class=\"form-group\" >\r\n  <div class=\"col-sm-1\">\r\n    <span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green;\" *ngIf=\"stepResult.result == 'OK'\"></span>\r\n    <span class=\"glyphicon glyphicon-time\" style=\"color: orange;\" *ngIf=\"stepResult.result != 'OK' && stepResult.result != 'Fail'\"></span>\r\n    <span class=\"glyphicon glyphicon-remove-circle\" style=\"color: red;\" *ngIf=\"stepResult.result == 'Fail'\"></span>\r\n    {{stepResult.result}}\r\n  </div>\r\n  <div class=\"col-sm-11\">{{stepResult.step.stepComment}} {{stepResult.description}}</div>\r\n  <div class=\"clearfix\"></div>\r\n  <div style=\"color: gray;\" class=\"col-sm-11 col-sm-offset-1\">\r\n    {{stepResult.step.requestMethod}}\r\n    {{stepResult.requestUrl}}\r\n  </div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\">\r\n    <a href=\"#\" style=\"text-decoration: none; border-bottom: 1px dashed;\" (click)=\"displayDetails = !displayDetails; false;\">{{'Details' | translate}} <span class=\"glyphicon\" [class.glyphicon-chevron-right]=\"!displayDetails\" [class.glyphicon-chevron-down]=\"displayDetails\"></span></a>\r\n  </div>\r\n  <div class=\"clearfix\"></div>\r\n  <div class=\"col-sm-11 col-sm-offset-1\" *ngIf=\"displayDetails\">\r\n    <ul class=\"nav nav-tabs\">\r\n      <li [class.active]=\"tab == 'details'\"><a href=\"#\" (click)=\"selectTab('details')\">{{'Details' | translate}}</a></li>\r\n      <li *ngIf=\"stepResult.editable\" [class.active]=\"tab == 'stepEdit'\"><a href=\"#\" (click)=\"selectTab('stepEdit')\">{{'Edit step' | translate}}</a></li>\r\n      <li [class.active]=\"tab == 'requests'\"><a href=\"#\" (click)=\"selectTab('requests')\">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>\r\n      <!--li [class.active]=\"tab == 'json'\"><a href=\"#\" (click)=\"selectTab('json')\">json</a></li-->\r\n    </ul>\r\n    <div class=\"tab-content\" style=\"padding: 10px;\">\r\n      <div *ngIf=\"tab == 'requests' || tab == 'all'\">\r\n        <div class=\"col-sm-12\" style=\"color: gray;\">\r\n          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}\r\n        </div>\r\n        <div class=\"row\" *ngFor=\"let requestData of stepResult.requestDataList; let i = index;\">\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{i + 1}}. {{'Request' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.requestBody}}\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-6\">\r\n            <label>{{'Response' | translate}}</label>\r\n            <div class=\"form-control\"\r\n                 style=\"overflow: scroll; height: 180px; background-color: #eee;\">\r\n              {{requestData.responseBody}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'details' || tab == 'all'\">\r\n        <div class=\"row\">\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <div *ngIf=\"stepResult.pollingRetryCount > 1\">{{'Polling retry count' | translate}}: {{stepResult.pollingRetryCount}}</div>\r\n            {{'Scenario variables' | translate}}: {{stepResult.savedParameters}}<br/>\r\n            {{'Cookies' | translate}}: {{stepResult.cookies}}<br/>\r\n            <div>\r\n              {{'Sql' | translate}}:<br/>\r\n              <ng-container *ngFor=\"let query of stepResult.sqlQueryList\">\r\n                {{query}}<br/>\r\n              </ng-container>\r\n            </div>\r\n            Test id: {{stepResult.testId}}\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"col-sm-12\">\r\n            <label>{{'Request body' | translate}}</label>\r\n            <div class=\"form-control\" style=\"overflow: scroll; height: 180px; white-space: pre; background-color: #eee;\">{{stepResult.requestBody}}</div>\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Actual</label>\r\n              <div class=\"form-control\"\r\n                   #actualResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"expectedResult\" innerHTML=\"<pre class='pretransparent'>{{actualDiff}}</pre>\">\r\n            </div>\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n              <label>Expected</label>\r\n              <div class=\"form-control\"\r\n                   #expectedResult\r\n                   style=\"overflow: scroll; height: 600px; background-color: #eee;\"\r\n                   [appSyncScroll]=\"actualResult\" innerHTML=\"<pre class='pretransparent'>{{expectedDiff}}</pre>\">\r\n            </div>\r\n          </div>\r\n          <div class=\"col-sm-12\" style=\"color: gray;\">\r\n            <label>{{'Details' | translate}}</label>\r\n            <pre>{{stepResult.details}}</pre>\r\n          </div>\r\n        </div>\r\n      </div>\r\n      <div *ngIf=\"tab == 'json' || tab == 'all'\">\r\n        <pre>{{stepResult | json}}</pre>\r\n      </div>\r\n      <div *ngIf=\"stepResult.editable && (tab == 'stepEdit' || tab == 'all')\">\r\n        <app-step-item [step]=\"step\"></app-step-item>\r\n        <div style=\"display: inline-flex\">\r\n        <button class=\"btn btn-xs btn-success\" (click)=\"saveStep()\">{{'Save step' | translate}}</button>\r\n        <div *ngIf=\"changed\">\r\n            <span class=\"form-control\"  style=\"font-weight: bold; border-width: 0; box-shadow: none; color: #ff7018\">{{'Step diff' | translate}}</span>\r\n        </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -3013,27 +2913,10 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
         this.route = route;
         this.stepService = stepService;
         this.customToastyService = customToastyService;
-        this.readonly = true;
-        this.showRestartNotify = false;
         this.tab = 'details';
         this.displayDetails = false;
         this.changed = false;
     }
-    /** оборачиваем строку */
-    StepResultItemComponent.wrapChanged = function (text, classToWrap) {
-        var wrapped;
-        if (text.endsWith('\n')) {
-            wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
-        }
-        else {
-            wrapped = '<span class="' + classToWrap + '">' + text + '</span>';
-        }
-        return wrapped;
-    };
-    /** оборачиваем строку */
-    StepResultItemComponent.wrapToDiv = function (span) {
-        return '<div class="unchanged-row">' + span + '</div>';
-    };
     StepResultItemComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.subscribe(function (params) {
@@ -3042,13 +2925,9 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
         });
         this.step = this.stepResult.step;
         if (this.stepList) {
-            this.showRestartNotify = true;
             var foundStep = this.stepList.find(function (s) { return s.code === _this.step.code; });
-            var diffs = __WEBPACK_IMPORTED_MODULE_2__service_step_service__["a" /* StepService */].differ(foundStep, this.step);
-            console.log('diffs = ', diffs);
-            if (diffs.length === 0) {
+            if (this.stepService.equals(this.step, foundStep)) {
                 this.step = foundStep;
-                this.readonly = false;
             }
         }
     };
@@ -3076,7 +2955,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             switch (op) {
                 case 'INSERT':
                     {
-                        this.actualDiff = this.actualDiff.concat(StepResultItemComponent_1.wrapChanged(text, 'added'));
+                        this.actualDiff = this.actualDiff.concat(StepResultItemComponent_1.wrapChanged(text, "added"));
                         prevOps = prevOps + 'I';
                         insertText = text;
                         break;
@@ -3084,7 +2963,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
                 case 'DELETE':
                     {
                         rowNum = rowNum + text.split('\n').length - 1;
-                        this.expectedDiff = this.expectedDiff.concat(StepResultItemComponent_1.wrapChanged(text, 'removed'));
+                        this.expectedDiff = this.expectedDiff.concat(StepResultItemComponent_1.wrapChanged(text, "removed"));
                         prevOps = '';
                         break;
                     }
@@ -3094,12 +2973,12 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
                         rowNum = rowNum + splitted.length - 1;
                         this.actualDiff = this.actualDiff.concat(text);
                         this.expectedDiff = this.expectedDiff.concat(text);
-                        var iLength = insertText.split('\n').filter(function (v) { return v.trim() !== ''; }).length;
+                        var iLength = insertText.split('\n').filter(function (v) { return v.trim() != ''; }).length;
                         // последняя строка предпоследнего изменения
-                        var lastPrev = prevText.split('\n').pop().trim();
-                        var firstCurrent = text.split('\n')[0];
+                        var lastPrev = prevText.split("\n").pop().trim();
+                        var firstCurrent = text.split("\n")[0];
                         // нам надо выделить строку
-                        if (prevOps === 'EI' && iLength > 1 && !this.actualDiff.includes(lastPrev + firstCurrent)) {
+                        if (prevOps == 'EI' && iLength > 1 && !this.actualDiff.includes(lastPrev + firstCurrent)) {
                             expectedChanges.push(prevRowNum);
                         }
                         insertText = '';
@@ -3110,33 +2989,48 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
                     }
             }
         }
-        this.actualDiff = this.wrapChangedLines(this.actualDiff, 'added', 'added-row', []);
-        this.expectedDiff = this.wrapChangedLines(this.expectedDiff, 'removed', 'removed-row', expectedChanges);
+        this.actualDiff = this.wrapChangedLines(this.actualDiff, "added", "added-row", []);
+        this.expectedDiff = this.wrapChangedLines(this.expectedDiff, "removed", "removed-row", expectedChanges);
+    };
+    /** оборачиваем строку */
+    StepResultItemComponent.wrapChanged = function (text, classToWrap) {
+        var wrapped;
+        if (text.endsWith('\n')) {
+            wrapped = '<span class="' + classToWrap + '">' + text.substr(0, text.length - 1) + '</span>' + '\n';
+        }
+        else {
+            wrapped = '<span class="' + classToWrap + '">' + text + '</span>';
+        }
+        return wrapped;
+    };
+    /** оборачиваем строку */
+    StepResultItemComponent.wrapToDiv = function (span) {
+        return '<div class="unchanged-row">' + span + '</div>';
     };
     /** оборачиваем строку, если в ней есть изменения */
     StepResultItemComponent.prototype.wrapChangedLines = function (text, classToWrap, classWrap, expectedChanges) {
         var beginPattern = '<span class="' + classToWrap + '">';
         var endPattern = '</span>';
-        var lines = text.split('\n');
+        var lines = text.split("\n");
         var results = [];
         var resultsToDiv = [];
         var hasChanges = function (line) {
-            return line.indexOf(beginPattern) !== -1 && line.indexOf(beginPattern) !== -1;
+            return line.indexOf(beginPattern) != -1 && line.indexOf(beginPattern) != -1;
         };
         var hasUnclosedStart = function (line) {
             var index = 0;
             var closed = false;
             var beginPatternIndex = line.indexOf(beginPattern, index);
             var endPatternIndex = line.indexOf(endPattern, index);
-            while (beginPatternIndex !== -1 || endPatternIndex !== -1) {
-                if (beginPatternIndex !== -1) {
+            while (beginPatternIndex != -1 || endPatternIndex != -1) {
+                if (beginPatternIndex != -1) {
                     closed = false;
                     index = beginPatternIndex + beginPattern.length;
                 }
-                if (endPatternIndex === -1 && !closed) {
+                if (endPatternIndex == -1 && !closed) {
                     closed = true;
                 }
-                else if (endPatternIndex !== -1) {
+                else if (endPatternIndex != -1) {
                     index = endPatternIndex + endPattern.length;
                 }
                 beginPatternIndex = line.indexOf(beginPattern, index);
@@ -3149,13 +3043,13 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             var closed = false;
             var beginPatternIndex = line.indexOf(beginPattern, index);
             var endPatternIndex = line.indexOf(endPattern, index);
-            while (beginPatternIndex !== -1 || endPatternIndex !== -1) {
-                if (beginPatternIndex !== -1) {
+            while (beginPatternIndex != -1 || endPatternIndex != -1) {
+                if (beginPatternIndex != -1) {
                     closed = false;
                     index = beginPatternIndex + beginPattern.length;
                 }
                 endPatternIndex = line.indexOf(endPattern, index);
-                if (endPatternIndex !== -1) {
+                if (endPatternIndex != -1) {
                     closed = true;
                     index = endPatternIndex + endPattern.length;
                 }
@@ -3173,7 +3067,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             var oneStringDiff = changed && !unclosedStart && !closedEnd;
             if (changed && !wasChanges) {
                 if (resultsToDiv.length > 0) {
-                    results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), 'diff-content')));
+                    results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), "diff-content")));
                     resultsToDiv = [];
                 }
                 wasChanges = false;
@@ -3183,14 +3077,14 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             }
             if (oneStringDiff) {
                 if (resultsToDiv.length > 0) {
-                    results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : 'diff-content')));
+                    results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
                     resultsToDiv = [];
                 }
                 wasChanges = true;
             }
             //noinspection TypeScriptValidateTypes
-            if (!changed && expectedChanges.find(function (x) { return x === i; })) {
-                resultsToDiv.push(StepResultItemComponent_1.wrapChanged(line, 'removed-row'));
+            if (!changed && expectedChanges.find(function (x) { return x == i; })) {
+                resultsToDiv.push(StepResultItemComponent_1.wrapChanged(line, "removed-row"));
             }
             else {
                 resultsToDiv.push(line);
@@ -3207,7 +3101,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
             _loop_1(i);
         }
         if (resultsToDiv.length > 0) {
-            results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : 'diff-content')));
+            results.push(StepResultItemComponent_1.wrapToDiv(StepResultItemComponent_1.wrapChanged(resultsToDiv.join('\n'), wasChanges ? classWrap : "diff-content")));
         }
         return results.join('\n');
     };
@@ -3218,7 +3112,7 @@ var StepResultItemComponent = StepResultItemComponent_1 = (function () {
     StepResultItemComponent.prototype.saveStep = function () {
         var _this = this;
         var toasty = this.customToastyService.saving();
-        this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.step)
+        this.stepService.saveStep(this.projectCode, this.scenario.scenarioGroup, this.scenario.code, this.stepResult.step)
             .subscribe(function () {
             _this.refreshStepList();
             _this.stepItem.resetChangeState();
