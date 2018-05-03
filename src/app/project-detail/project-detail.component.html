@@ -51,7 +51,7 @@
     </div>
   </div>
   <div style="min-height: 33px;" [style.display]="isDisplayScenario(scenario) ? '' : 'none'" *ngFor="let scenario of scenarioList">
-    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)" (cbStateChange)="onCbStateChange($event, scenario)" [isLinkTitleScenario] = "true"></app-scenario-list-item>
+    <app-scenario-list-item [scenario]="scenario" [projectCode]="project.code" (onStateChange)="onStateChange($event, scenario)" (cbStateChange)="onCbStateChange($event, scenario)"></app-scenario-list-item>
   </div>
 
   <div class="container">
