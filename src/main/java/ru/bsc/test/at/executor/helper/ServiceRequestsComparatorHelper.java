@@ -1,22 +1,21 @@
 package ru.bsc.test.at.executor.helper;
 
+import org.xml.sax.SAXParseException;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
+import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
-import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * Created by sdoroshin on 30.05.2017.
@@ -24,7 +23,21 @@ import java.util.stream.Collectors;
  */
 public class ServiceRequestsComparatorHelper {
 
+    public static final String IGNORE = "\\u002A"+"ignore"+"\\u002A";
+    public static final String CLEAR_STR_PATTERN = "(\r\n|\n\r|\r|\n)";
+
     private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
+        try{
+            compareWSRequestAsXml(expectedRequest, actualRequest, ignoredTags);
+        }catch (XMLUnitException uException){
+            // определяем, что упало при парсинге XML, далее сравниваем как строку
+            if(uException.getCause() instanceof SAXParseException){
+                compareWSRequestAsString(expectedRequest, actualRequest);
+            }
+        }
+    }
+
+    private void compareWSRequestAsXml(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
         Diff diff = DiffBuilder.compare(expectedRequest)
                 .withTest(actualRequest)
                 .checkForIdentical()
@@ -36,6 +49,30 @@ public class ServiceRequestsComparatorHelper {
         if (diff.hasDifferences()) {
             throw new ComparisonException(diff, expectedRequest, actualRequest);
         }
+    }
+
+    private void compareWSRequestAsString(String expectedRequest, String actualRequest) throws ComparisonException {
+        String[] split = expectedRequest.replaceAll(CLEAR_STR_PATTERN, "").split(IGNORE);
+        actualRequest = actualRequest.replaceAll(CLEAR_STR_PATTERN, "");
+
+        if(split.length == 1 && !Objects.equals(defaultIfNull(split[0],""), defaultIfNull(actualRequest,""))){
+            throw new ComparisonException(null, expectedRequest, actualRequest);
+        }
+
+        int i = 0;
+        boolean notEquals = false;
+        for (String s : split){
+            i = actualRequest.indexOf(s, i);
+            if (i < 0) {
+                notEquals = true;
+                break;
+            }
+        }
+
+        if (notEquals) {
+            throw new ComparisonException(null, expectedRequest, actualRequest);
+        }
+
     }
 
     public void assertTestCaseWSRequests(Project project, WireMockAdmin wireMockAdmin, String testId, Step step) throws Exception {
