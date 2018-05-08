@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 public class ServiceRequestsComparatorHelperTest {
 
@@ -15,53 +17,30 @@ public class ServiceRequestsComparatorHelperTest {
 
     @Test
     public void compareWSRequestStringTest() {
-        String s1 = "aaa*ignore*bbb";
-        String s2 = "aaa3434534534534534553bbb";
-        invokeCompareWSRequest(s1,s2, null);
+        invokeCompareWSRequest("aaa*ignore*bbb","aaa3434534534534534553bbb", null);
+        invokeCompareWSRequest("aaa*ignore*bb","aaa3434534534534534553bbb", null);
 
-        s1 = "aaa*ignore*bb";
-        s2 = "aaa3434534534534534553bbb";
-        invokeCompareWSRequest(s1,s2, null);
+        Throwable thrown = catchThrowable(() -> {
+            invokeCompareWSRequest("aaa*ignore*b1b", "aaa3434534534534534553bbb", null);
+        });
+        assertThat(thrown).isInstanceOf(ComparisonException.class);
 
-        s1 = "aaa*ignore*b1b";
-        s2 = "aaa3434534534534534553bbb";
 
-        boolean f = false;
-        try {
-            invokeCompareWSRequest(s1, s2, null);
-        }catch (ComparisonException ce){
-            f = true;
-        }
-        assertTrue(f);
 
-        f = false;
-        s1 = "aaa";
-        s2 = "aaa3434534534534534553bbb";
-
-        try {
-            invokeCompareWSRequest(s1, s2, null);
-        }catch (ComparisonException ce){
-            f = true;
-        }
-        assertTrue(f);
+        thrown = catchThrowable(() -> {
+            invokeCompareWSRequest("aaa", "aaa3434534534534534553bbb", null);
+        });
+        assertThat(thrown).isInstanceOf(ComparisonException.class);
     }
 
     @Test
     public void compareWSRequestXMLTest(){
-        String s1 = "<a><b>3</b></a>";
-        String s2 = "<a><b>3</b></a>";
-        invokeCompareWSRequest(s1,s2, null);
+        invokeCompareWSRequest("<a><b>3</b></a>","<a><b>3</b></a>", null);
 
-        s1 = "<a><b>3</b></a>";
-        s2 = "<a><c>4</c></a>";
-
-        boolean f = false;
-        try {
-            invokeCompareWSRequest(s1, s2, null);
-        }catch (ComparisonException ce){
-            f = true;
-        }
-        assertTrue(f);
+        Throwable thrown = catchThrowable(() -> {
+            invokeCompareWSRequest("<a><b>3</b></a>", "<a><c>4</c></a>", null);
+        });
+        assertThat(thrown).isInstanceOf(ComparisonException.class);
     }
 
     @Test
@@ -180,8 +159,8 @@ public class ServiceRequestsComparatorHelperTest {
 
     @Test
     public void compareWSRequestRealNotEqualTest(){
-        String s1 = "some2";
-        String s2 = "--42b53c87-5e93-40f5-a68f-1959fd6f6c7c\n" +
+        final String s1 = "some2";
+        final String s2 = "--42b53c87-5e93-40f5-a68f-1959fd6f6c7c\n" +
                 "Content-Disposition: form-data; name=\"hashString\"\n" +
                 "Content-Length: 64\n" +
                 "\n" +
@@ -335,6 +314,11 @@ public class ServiceRequestsComparatorHelperTest {
             f = true;
         }
         assertTrue(f);
+
+        Throwable thrown = catchThrowable(() -> {
+            invokeCompareWSRequest(s1, s2, null);
+        });
+        assertThat(thrown).isInstanceOf(ComparisonException.class);
     }
 
     // TODO такой тест не пройдет, надо поправить COM-233
@@ -342,13 +326,10 @@ public class ServiceRequestsComparatorHelperTest {
         String s1 = "<a><b>3</b></a>";
         String s2 = "<a><c>3</c></a>";
 
-        boolean f = false;
-        try {
+        Throwable thrown = catchThrowable(() -> {
             invokeCompareWSRequest(s1, s2, null);
-        }catch (ComparisonException ce){
-            f = true;
-        }
-        assertTrue(f);
+        });
+        assertThat(thrown).isInstanceOf(ComparisonException.class);
     }
 
     private void invokeCompareWSRequest(String s1, String s2, Set s) throws ComparisonException{
