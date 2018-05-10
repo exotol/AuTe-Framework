@@ -10,9 +10,9 @@ export class MqMockerService {
 
   constructor(private http: Http) { }
 
-  getRequestList(): Observable<MqLogItem[]> {
+  getRequestList(limit): Observable<MqLogItem[]> {
     return this.http
-      .get(this.mqMockerAdminUrl + '/request-list')
+      .get(this.mqMockerAdminUrl + '/request-list?limit=' + limit )
       .map(value => value.json() as MqLogItem[])
       .map(value => value.reverse());
   }

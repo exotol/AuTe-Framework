@@ -1,4 +1,12 @@
 <button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="updateList()"><span class="glyphicon glyphicon-refresh"></span> Update request list</button>
+<select style="margin: 10px 0 0 0;" title="Limit" class="btn btn-default" [(ngModel)]="requestLimit">
+  <option [ngValue]="10">10</option>
+  <option [ngValue]="30">30</option>
+  <option [ngValue]="50">50</option>
+  <option [ngValue]="100">100</option>
+  <option [ngValue]="200">200</option>
+  <option [ngValue]="null">All</option>
+</select>
 <button style="margin: 10px 0 0 10px;" class="btn btn-default" (click)="clear()"><span class="glyphicon glyphicon-remove"></span> Clear</button>
 
 <div class="help-block" *ngIf="!selectedRequest && !mqLog">

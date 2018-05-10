@@ -16,6 +16,8 @@ export class MqLogComponent implements OnInit {
   tab = 'summary';
   sourceTextLimit = 1000;
 
+  requestLimit = 30;
+
   constructor(
     public mqMockerService: MqMockerService
   ) { }
@@ -27,7 +29,7 @@ export class MqLogComponent implements OnInit {
   updateList() {
     this.sourceTextLimit = 1000;
     this.selectedRequest = null;
-    this.mqMockerService.getRequestList()
+    this.mqMockerService.getRequestList(this.requestLimit)
       .subscribe(value => {
         this.mqLog = value;
       });
