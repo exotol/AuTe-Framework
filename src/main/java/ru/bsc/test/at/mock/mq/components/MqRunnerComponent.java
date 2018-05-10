@@ -17,11 +17,7 @@ import ru.bsc.test.at.mock.mq.yaml.YamlUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
@@ -52,9 +48,17 @@ public class MqRunnerComponent {
     @Value("${test.id.header.name:testIdHeader}")
     private String testIdHeaderName;
 
+    @Value("${mq.requestBufferSize:1000}")
+    private int requestBufferSize;
+
     private final List<MockMessage> mockMappingList = new LinkedList<>();
-    private Buffer fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer());
+    private Buffer fifo;
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    private void init() {
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(requestBufferSize));
+    }
 
     private static void startListener(AbstractMqWorker mqWorker) {
         Thread brokerThread = new Thread(mqWorker);
