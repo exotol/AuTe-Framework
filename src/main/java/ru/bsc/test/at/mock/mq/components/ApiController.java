@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.at.mock.mq.models.MockMessage;
+import ru.bsc.test.at.mock.mq.models.MockedRequest;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 @RestController
@@ -32,6 +36,12 @@ public class ApiController {
     @Autowired
     public ApiController(MqRunnerComponent mqRunnerComponent) {
         this.mqRunnerComponent = mqRunnerComponent;
+        for(int i = 0; i < 1000; i++) {
+
+            MockedRequest mockedRequest = new MockedRequest();
+            mockedRequest.setMappingGuid(UUID.randomUUID().toString());
+            this.mqRunnerComponent.getFifo().add(mockedRequest);
+        }
     }
 
     @ApiOperation(value = "MQ mapping creation", notes = "Creates new mapping for MQ mock", tags = "MqMock")
@@ -73,8 +83,14 @@ public class ApiController {
     )
     @GetMapping("request-list")
     @ResponseBody
-    public Buffer getRequestList() {
-        return mqRunnerComponent.getFifo();
+    public Collection getRequestList(String limit) {
+        try {
+            Integer lmt = Integer.valueOf(limit);
+            Buffer fifo = mqRunnerComponent.getFifo();
+            return new LinkedList(fifo).subList(0, (lmt > fifo.size() ? fifo.size() : lmt));
+        } catch (NumberFormatException nfe) {
+            return mqRunnerComponent.getFifo();
+        }
     }
 
     @ApiOperation(value = "MQ mapping list clear", notes = "Clear request history", tags = "MqMock")

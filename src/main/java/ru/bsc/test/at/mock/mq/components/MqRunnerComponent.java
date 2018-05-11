@@ -52,9 +52,17 @@ public class MqRunnerComponent {
     @Value("${test.id.header.name:testIdHeader}")
     private String testIdHeaderName;
 
+    @Value("${mq.requestBufferSize:1000}")
+    private int requestBufferSize;
+
     private final List<MockMessage> mockMappingList = new LinkedList<>();
-    private Buffer fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer());
+    private Buffer fifo;
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    private void init() {
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(requestBufferSize));
+    }
 
     private static void startListener(AbstractMqWorker mqWorker) {
         Thread brokerThread = new Thread(mqWorker);
