@@ -69,17 +69,13 @@ public class ApiController {
     @GetMapping("request-list")
     @ResponseBody
     public Collection getRequestList(@RequestParam(required = false, defaultValue = "${mq.requestBufferSize:1000}") Integer limit) {
-        try {
-            Buffer fifo = mqRunnerComponent.getFifo();
-            List result = new LinkedList(fifo);
-            if(limit != null && result.size() > limit){
-                result = result.subList(result.size() - limit, result.size());
-            }
-            Collections.reverse(result);
-            return result;
-        } catch (NumberFormatException nfe) {
-            return mqRunnerComponent.getFifo();
+        Buffer fifo = mqRunnerComponent.getFifo();
+        List result = new LinkedList(fifo);
+        if (limit != null && result.size() > limit) {
+            result = result.subList(result.size() - limit, result.size());
         }
+        Collections.reverse(result);
+        return result;
     }
 
     @ApiOperation(value = "MQ mapping list clear", notes = "Clear request history", tags = "MqMock")
