@@ -17,11 +17,7 @@ import ru.bsc.test.at.mock.mq.yaml.YamlUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
@@ -58,11 +54,6 @@ public class MqRunnerComponent {
     private final List<MockMessage> mockMappingList = new LinkedList<>();
     private Buffer fifo;
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
-
-    @PostConstruct
-    private void init() {
-        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(requestBufferSize));
-    }
 
     private static void startListener(AbstractMqWorker mqWorker) {
         Thread brokerThread = new Thread(mqWorker);
@@ -156,6 +147,7 @@ public class MqRunnerComponent {
 
     @PostConstruct
     public void initMappings() throws IOException {
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(requestBufferSize));
         if (!StringUtils.isEmpty(propertiesYamlFile)) {
             PropertiesYaml properties = YamlUtils.loadAs(new File(propertiesYamlFile), PropertiesYaml.class);
             if (properties != null && properties.getMockMessageList() != null) {
