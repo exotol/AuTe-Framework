@@ -227,7 +227,7 @@ public class AtExecutor {
                         }
 
                         // После выполнения шага необходимо проверить запросы к веб-сервисам
-                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, wireMockAdmin, testId, step);
+                        serviceRequestsComparatorHelper.assertTestCaseWSRequests(project, scenarioVariables, wireMockAdmin, testId, step);
 
                         mqMockHelper.assertMqRequests(wireMockAdmin, testId, step, scenarioVariables, project.getMqCheckCount(), project.getMqCheckInterval());
 
