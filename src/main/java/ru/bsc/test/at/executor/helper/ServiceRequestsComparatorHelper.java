@@ -16,6 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static ru.bsc.test.at.executor.step.executor.AbstractStepExecutor.evaluateExpressions;
+import static ru.bsc.test.at.executor.step.executor.AbstractStepExecutor.insertSavedValues;
 
 /**
  * Created by sdoroshin on 30.05.2017.
@@ -75,7 +77,7 @@ public class ServiceRequestsComparatorHelper {
 
     }
 
-    public void assertTestCaseWSRequests(Project project, WireMockAdmin wireMockAdmin, String testId, Step step) throws Exception {
+    public void assertTestCaseWSRequests(Project project, Map<String, Object> scenarioVariables, WireMockAdmin wireMockAdmin, String testId, Step step) throws Exception {
         if (wireMockAdmin == null) {
             return;
         }
@@ -106,9 +108,10 @@ public class ServiceRequestsComparatorHelper {
                     .findAny().orElse(null);
             if (actualRequest != null) {
                 actualRequestList.remove(actualRequest);
-
+                String expectedServiceRequest = insertSavedValues(expectedRequest.getExpectedServiceRequest(), scenarioVariables);
+                expectedServiceRequest = evaluateExpressions(expectedServiceRequest, scenarioVariables, null);
                 compareWSRequest(
-                        expectedRequest.getExpectedServiceRequest(),
+                        expectedServiceRequest,
                         actualRequest.getBody(),
                         expectedRequest.getIgnoredTags() != null ?
                                 new HashSet<>(Arrays.stream(expectedRequest.getIgnoredTags()
