@@ -845,7 +845,7 @@ var MqMockerService = (function () {
     }
     MqMockerService.prototype.getRequestList = function (limit) {
         return this.http
-            .get(this.mqMockerAdminUrl + '/request-list?limit=' + limit)
+            .get(this.mqMockerAdminUrl + '/request-list' + (limit ? '?limit=' + limit : ''))
             .map(function (value) { return value.json(); })
             .map(function (value) { return value.reverse(); });
     };
@@ -938,7 +938,7 @@ var WireMockService = (function () {
     };
     WireMockService.prototype.getRequestList = function (limit) {
         return this.http
-            .get(this.adminUrl + '/requests?limit=' + (limit ? limit : 50))
+            .get(limit ? this.adminUrl + '/requests?limit=' + (limit ? limit : 50) : this.adminUrl + '/requests')
             .map(function (value) { return value.json(); });
     };
     WireMockService.prototype.clearRequestList = function () {
