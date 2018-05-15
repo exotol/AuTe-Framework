@@ -11,7 +11,6 @@ import ru.bsc.test.at.mock.mq.models.MockMessage;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -74,7 +73,6 @@ public class ApiController {
         if (limit != null && result.size() > limit) {
             result = result.subList(result.size() - limit, result.size());
         }
-        Collections.reverse(result);
         return result;
     }
 
