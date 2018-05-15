@@ -12,7 +12,7 @@ export class MqMockerService {
 
   getRequestList(limit): Observable<MqLogItem[]> {
     return this.http
-      .get(limit ? this.mqMockerAdminUrl + '/request-list?limit=' : this.mqMockerAdminUrl + '/request-list')
+      .get(this.mqMockerAdminUrl + '/request-list' + (limit ? '?limit=' + limit : ''))
       .map(value => value.json() as MqLogItem[])
       .map(value => value.reverse());
   }
