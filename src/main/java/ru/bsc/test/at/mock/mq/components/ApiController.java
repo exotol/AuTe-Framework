@@ -11,6 +11,7 @@ import ru.bsc.test.at.mock.mq.models.MockMessage;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -67,14 +68,14 @@ public class ApiController {
     )
     @GetMapping("request-list")
     @ResponseBody
-    public Collection getRequestList(String limit) {
-        try {
-            Integer lmt = Integer.valueOf(limit);
-            Buffer fifo = mqRunnerComponent.getFifo();
-            return new LinkedList(fifo).subList(0, (lmt > fifo.size() ? fifo.size() : lmt));
-        } catch (NumberFormatException nfe) {
-            return mqRunnerComponent.getFifo();
+    public Collection getRequestList(@RequestParam(required = false, defaultValue = "${mq.requestBufferSize:1000}") Integer limit) {
+        Buffer fifo = mqRunnerComponent.getFifo();
+        List result = new LinkedList(fifo);
+        if (limit != null && result.size() > limit) {
+            result = result.subList(result.size() - limit, result.size());
         }
+        Collections.reverse(result);
+        return result;
     }
 
     @ApiOperation(value = "MQ mapping list clear", notes = "Clear request history", tags = "MqMock")
