@@ -1,5 +1,6 @@
 package ru.bsc.test.at.mock.mq.components;
 
+import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.junit.Assert;
@@ -29,7 +30,7 @@ public class ApiControllerTest {
         for(int i = 0; i < BUFF_SIZE; i++) {
             MockedRequest mockedRequest = new MockedRequest();
             mockedRequest.setDate(Date.from(LocalDateTime.of(2000+i,01,01,6,30).atZone(ZoneId.systemDefault()).toInstant()));
-            CircularFifoBuffer b = (CircularFifoBuffer) mqRunnerComponent.getFifo();
+            Buffer b = mqRunnerComponent.getFifo();
             b.add(mockedRequest);
         }
 
