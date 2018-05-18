@@ -27,6 +27,8 @@ public class ServiceRequestsComparatorHelper {
 
     public static final String IGNORE = "\\u002A"+"ignore"+"\\u002A";
     public static final String CLEAR_STR_PATTERN = "(\r\n|\n\r|\r|\n)";
+    public static final String NBS_PATTERN = "[\\s\\u00A0]";
+
 
     private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
         try{
@@ -54,8 +56,8 @@ public class ServiceRequestsComparatorHelper {
     }
 
     private void compareWSRequestAsString(String expectedRequest, String actualRequest) throws ComparisonException {
-        String[] split = expectedRequest.replaceAll(CLEAR_STR_PATTERN, "").split(IGNORE);
-        actualRequest = actualRequest.replaceAll(CLEAR_STR_PATTERN, "");
+        String[] split = expectedRequest.replaceAll(CLEAR_STR_PATTERN, "").replaceAll(NBS_PATTERN, " ").split(IGNORE);
+        actualRequest = actualRequest.replaceAll(CLEAR_STR_PATTERN, "").replaceAll(NBS_PATTERN, " ");
 
         if(split.length == 1 && !Objects.equals(defaultIfNull(split[0],""), defaultIfNull(actualRequest,""))){
             throw new ComparisonException(null, expectedRequest, actualRequest);
@@ -64,7 +66,7 @@ public class ServiceRequestsComparatorHelper {
         int i = 0;
         boolean notEquals = false;
         for (String s : split){
-            i = actualRequest.indexOf(s, i);
+            i = actualRequest.indexOf(s.trim(), i);
             if (i < 0) {
                 notEquals = true;
                 break;
