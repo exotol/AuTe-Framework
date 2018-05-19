@@ -3,7 +3,7 @@ node() {
 		echo 'Checkout'
 		checkout scm
 		echo 'Build project'
-		env.JAVA_HOME = tool "JDK8"
+		env.JAVA_HOME = tool "ORACLE JDK1.8"
 		def mvnHome = tool 'Maven 3.3.9'
 		try {
 			sh "${mvnHome}/bin/mvn clean package"
