@@ -232,12 +232,12 @@ public class AtExecutor {
                         mqMockHelper.assertMqRequests(wireMockAdmin, testId, step, scenarioVariables, project.getMqCheckCount(), project.getMqCheckInterval());
 
                         stepResult.setSavedParameters(scenarioVariables.toString());
-                        stepResult.setResult(StepResult.RESULT_OK);
+                        stepResult.setResult(StepResult.StepResultType.OK);
                     } catch (Exception e) {
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
 
-                        stepResult.setResult(StepResult.RESULT_FAIL);
+                        stepResult.setResult(StepResult.StepResultType.FAIL);
                         stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                     } finally {
                         stepResult.setStop(new Date().getTime());
@@ -246,7 +246,7 @@ public class AtExecutor {
                     stepResult.setScenarioVariables(new HashMap<>(scenarioVariables));
 
                     if (stopObserver != null && stopObserver.stop()) {
-                        throw new ScenarioStopException();
+                        throw new ScenarioStopException("stop observer is null");
                     }
                 }
             }

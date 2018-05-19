@@ -15,13 +15,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class StepResult {
 
-    public static final String RESULT_OK = "OK";
-    public static final String RESULT_FAIL = "Fail";
-
     private String testId;
     private String projectCode;
     private Step step;
-    private String result;
+    private StepResultType result;
     private String details;
     private String expected;
     private String actual;
@@ -42,4 +39,27 @@ public class StepResult {
         this.projectCode = projectCode;
         this.step = step;
     }
+
+    public enum StepResultType {
+        OK("OK", true),
+        FAIL("Fail", false);
+
+        String text;
+        boolean isPositive;
+
+        StepResultType(String text, boolean isPositive) {
+            this.text = text;
+            this.isPositive = isPositive;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public boolean isPositive() {
+            return isPositive;
+        }
+    }
 }
+
+
