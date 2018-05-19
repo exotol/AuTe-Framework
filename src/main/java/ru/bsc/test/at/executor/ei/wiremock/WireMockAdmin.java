@@ -33,26 +33,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WireMockAdmin implements Closeable {
 
-    private final String wireMockAdminUrl;
+    private final WireMockUrlBuilder wireMockUrlBuilder;
     private final List<String> mockIdList = new LinkedList<>();
     private final List<String> mockGuidList = new LinkedList<>();
 
     public WireMockAdmin(String wireMockAdminUrl) {
-        this.wireMockAdminUrl = wireMockAdminUrl;
+        this.wireMockUrlBuilder = new WireMockUrlBuilder(wireMockAdminUrl);
     }
 
     private void clearRestSavedMappings() {
-        mockIdList.forEach(s -> sendDelete(wireMockAdminUrl + "/__admin/mappings/" + s));
+        mockIdList.forEach(s -> sendDelete(wireMockUrlBuilder.deleteRestMappingUrl() + s));
     }
 
     public void addRestMapping(MockDefinition mockDefinition) throws IOException {
-        String result = sendPost(wireMockAdminUrl + "/__admin/mappings", new ObjectMapper().writeValueAsString(mockDefinition));
+        String result = sendPost(wireMockUrlBuilder.addRestMappingUrl(), new ObjectMapper().writeValueAsString(mockDefinition));
         MockDefinition mockDefinitionResponse = new ObjectMapper().readValue(result, MockDefinition.class);
         mockIdList.add(mockDefinitionResponse.getUuid());
     }
 
     public RequestList findRestRequests(MockRequest mockRequest) throws IOException {
-        String result = sendPost(wireMockAdminUrl + "/__admin/requests/find", new ObjectMapper().writeValueAsString(mockRequest));
+        String result = sendPost(wireMockUrlBuilder.findRestRequestListUrl(), new ObjectMapper().writeValueAsString(mockRequest));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper.readValue(result, RequestList.class);
@@ -86,7 +86,7 @@ public class WireMockAdmin implements Closeable {
     }
 
     private List<MockedRequest> getMqRequestList() throws IOException {
-        try (CloseableHttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(wireMockAdminUrl + "/mq-mock/__admin/request-list"))) {
+        try (CloseableHttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(wireMockUrlBuilder.findMQRequestListUrl()))) {
             String responseBody = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -103,7 +103,7 @@ public class WireMockAdmin implements Closeable {
     }
 
     public void addMqMapping(MqMockDefinition mockMessageDefinition) throws IOException {
-        HttpPost httpPostAddMapping = new HttpPost(wireMockAdminUrl + "/mq-mock/__admin/add-mapping");
+        HttpPost httpPostAddMapping = new HttpPost(wireMockUrlBuilder.addMQMappingUrl());
         httpPostAddMapping.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(mockMessageDefinition), ContentType.APPLICATION_JSON));
         try (CloseableHttpResponse response = HttpClientBuilder.create().build().execute(httpPostAddMapping)) {
             String mockGuid = response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
