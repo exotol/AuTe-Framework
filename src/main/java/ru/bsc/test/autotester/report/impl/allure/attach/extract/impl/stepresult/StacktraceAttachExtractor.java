@@ -20,7 +20,7 @@ public class StacktraceAttachExtractor extends AbstractAttachExtractor<StepResul
 
     @Override
     public List<Attachment> extract(File resultDirectory, StepResult result) {
-        if (StepResult.RESULT_OK.equals(result.getResult())) {
+        if (result.getResult().isPositive()) {
             return null;
         }
         String relativePath = writeDataToFile(resultDirectory, result.getDetails(), FILE_NAME);

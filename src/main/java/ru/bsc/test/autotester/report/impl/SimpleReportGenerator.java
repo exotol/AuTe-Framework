@@ -53,7 +53,7 @@ public class SimpleReportGenerator extends AbstractReportGenerator {
         stepResultList.forEach(stepResult -> stepResultHtml.append(generateStepResultHtml(stepResult)));
         stepResultListWrapper(scenario, stepResultHtml);
 
-        long failCount = stepResultList.stream().filter(stepResult -> !StepResult.RESULT_OK.equals(stepResult.getResult())).count();
+        long failCount = stepResultList.stream().filter(stepResult -> !stepResult.getResult().isPositive()).count();
 
         String script = "var el = document.getElementById('scenario" + scenario.hashCode() + "'); el.style.display = (el.style.display == 'none') ? 'block' : 'none'; return false;";
         return "<tr><td style='background-color: " + (failCount > 0 ? "#FBDCD1" : "#DAF8DA") + "'>" +

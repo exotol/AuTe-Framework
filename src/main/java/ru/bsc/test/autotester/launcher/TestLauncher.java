@@ -69,7 +69,7 @@ public class TestLauncher {
                     Scenario scenario = value.getKey();
                     List<StepResult> stepResultList = value.getValue();
                     reportGenerator.add(scenario, stepResultList);
-                    return stepResultList.stream().mapToInt(stepResult -> (StepResult.RESULT_OK.equals(stepResult.getResult())) ? 0 : 1).sum();
+                    return stepResultList.stream().mapToInt(stepResult -> (stepResult.getResult().isPositive()) ? 0 : 1).sum();
                 }).sum()
         );
         return sum[0];

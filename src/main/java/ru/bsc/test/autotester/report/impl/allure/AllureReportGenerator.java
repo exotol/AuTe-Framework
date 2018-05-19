@@ -256,7 +256,7 @@ public class AllureReportGenerator extends AbstractReportGenerator {
                 .withName(name)
                 .withStart(result.getStart())
                 .withStop(result.getStop())
-                .withStatus(StepResult.RESULT_OK.equals(result.getResult()) ? PASSED : FAILED)
+                .withStatus(result.getResult().isPositive() ? PASSED : FAILED)
                 .withAttachments(stepResultAttachBuilder.build(resultDirectory, result));
         List<RequestData> requestDataList = result.getRequestDataList();
         if (isNotEmpty(requestDataList) && requestDataList.size() > 1) {

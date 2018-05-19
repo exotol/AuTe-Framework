@@ -39,9 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipOutputStream;
 
-import static ru.bsc.test.at.executor.model.StepResult.RESULT_FAIL;
-import static ru.bsc.test.at.executor.model.StepResult.RESULT_OK;
-
 /**
  * Created by sdoroshin on 21.03.2017.
  */
@@ -119,8 +116,8 @@ public class ScenarioServiceImpl implements ScenarioService {
                 String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
 
                 Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                boolean failed = stepResults.stream().filter(stepResult -> RESULT_FAIL.equals(stepResult.getResult())).count() > 0;
-                boolean success = stepResults.stream().filter(stepResult -> RESULT_OK.equals(stepResult.getResult())).count() > 0;
+                boolean failed = stepResults.stream().filter(stepResult -> !stepResult.getResult().isPositive()).count() > 0;
+                boolean success = stepResults.stream().filter(stepResult -> stepResult.getResult().isPositive()).count() > 0;
                 if (failed) {
                     scenarioToUpdate.setFailed(true);
                 } else {
