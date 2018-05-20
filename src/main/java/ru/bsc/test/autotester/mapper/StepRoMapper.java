@@ -88,6 +88,7 @@ public abstract class StepRoMapper {
 
     @Mappings({
             @Mapping(target = "diff", ignore = true),
+            @Mapping(target = "result", source = "result.text")
     })
     abstract StepResultRo stepResultToStepResultRo(StepResult stepResult);
 
