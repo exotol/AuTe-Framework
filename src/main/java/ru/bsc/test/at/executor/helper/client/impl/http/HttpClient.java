@@ -50,10 +50,10 @@ public class HttpClient implements Client<ClientHttpRequest, ClientCommonRespons
 
     @Override
     public ClientCommonResponse request(ClientHttpRequest request) throws Exception {
-        if (request instanceof ClientHttpRequest) {
-            return executeWithoutScenarioVariables(request);
-        } else if (request instanceof ClientHttpRequestWithVariables) {
+        if (request instanceof ClientHttpRequestWithVariables) {
             return executeWithScenarioVariables((ClientHttpRequestWithVariables) request);
+        } else if (request instanceof ClientHttpRequest) {
+            return executeWithoutScenarioVariables(request);
         } else {
             throw new Exception("Unsupported request " + request.getClass());
         }
