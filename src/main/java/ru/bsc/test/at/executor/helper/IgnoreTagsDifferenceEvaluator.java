@@ -93,7 +93,7 @@ class IgnoreTagsDifferenceEvaluator implements DifferenceEvaluator {
         }
 
         // *ignore* check
-        if (MaskComparator.compare(controlNode.getTextContent(), testNode.getTextContent())) {
+        if (testNode != null && MaskComparator.compare(controlNode.getTextContent(), testNode.getTextContent())) {
             return ComparisonResult.EQUAL;
         }
 
