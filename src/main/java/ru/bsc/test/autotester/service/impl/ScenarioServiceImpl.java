@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.ScenarioResult;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.service.AtExecutor;
@@ -89,45 +90,36 @@ public class ScenarioServiceImpl implements ScenarioService {
         AtExecutor atExecutor = new AtExecutor();
         atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
         ExecutionResult executionResult = new ExecutionResult();
-        Map<Scenario, List<StepResult>> resultMap = new HashMap<>();
-        executionResult.setScenarioStepResultListMap(resultMap);
+        final List<ScenarioResult> scenarioResultList = new ArrayList<>();
+        executionResult.setScenarioResults(scenarioResultList);
         final String runningUuid = UUID.randomUUID().toString();
         startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, executionResult);
 
         new Thread(() -> {
             IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
-            IExecutingFinishObserver finishObserver = scenarioResultListMap -> {
+            IExecutingFinishObserver finishObserver = scenarioResults -> {
                 executionResult.setFinished(true);
                 synchronized (projectService) {
-                    processResults(project, scenarioResultListMap);
+                    processResults(project, scenarioResults);
                 }
             };
-            atExecutor.executeScenarioList(project, scenarioList, resultMap, stopObserver, finishObserver);
+            atExecutor.executeScenarioList(project, scenarioList, scenarioResultList, stopObserver, finishObserver);
         }).start();
         return startScenarioInfoRo;
     }
 
-    private void processResults(Project project, Map<Scenario, List<StepResult>> results) {
-        results.forEach((scenario, stepResults) -> {
+    private void processResults(Project project, List<ScenarioResult> scenarioResults) {
+        for (ScenarioResult scenarioResult: scenarioResults) {
             try {
+                Scenario scenario = scenarioResult.getScenario();
                 String scenarioGroup = scenario.getScenarioGroup();
                 String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
                 String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
 
                 Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                boolean failed = stepResults.stream().filter(stepResult -> !stepResult.getResult().isPositive()).count() > 0;
-                boolean success = stepResults.stream().filter(stepResult -> stepResult.getResult().isPositive()).count() > 0;
-                if (failed) {
-                    scenarioToUpdate.setFailed(true);
-                } else {
-                    if (success) {
-                        scenarioToUpdate.setFailed(false);
-                    } else {
-                        scenarioToUpdate.setFailed(null);
-                    }
-                }
-                // scenarioToUpdate.setFailed(failed ? true : (success ? false : null));
+                List<StepResult> stepResultList = scenarioResult.getStepResultList();
+                scenarioToUpdate.setFailed(scenarioResult.isFailed());
                 scenarioToUpdate.setHasResults(true);
                 scenario = scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
 
@@ -137,11 +129,11 @@ public class ScenarioServiceImpl implements ScenarioService {
                 }
                 Path resultFile = path.resolve("results.json");
                 Files.deleteIfExists(resultFile);
-                objectMapper.writeValue(resultFile.toFile(), stepResults);
+                objectMapper.writeValue(resultFile.toFile(), stepResultList);
             } catch (IOException e) {
                 log.error("", e);
             }
-        });
+        }
     }
 
     @Override

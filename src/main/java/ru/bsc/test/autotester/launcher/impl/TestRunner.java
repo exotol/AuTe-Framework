@@ -1,9 +1,13 @@
-package ru.bsc.test.autotester.launcher;
+package ru.bsc.test.autotester.launcher.impl;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import lombok.extern.slf4j.Slf4j;
+import ru.bsc.test.autotester.launcher.api.TestLauncher;
+import ru.bsc.test.autotester.launcher.impl.TestLauncherImpl;
+
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +23,8 @@ import java.util.Set;
 @Slf4j
 public class TestRunner implements CommandLineRunner {
 
-    private final TestLauncher launcher;
-
-    public TestRunner(TestLauncher launcher) {
-        this.launcher = launcher;
-    }
+    @Autowired
+    private TestLauncher launcher;
 
     @Override
     public void run(String... args) {

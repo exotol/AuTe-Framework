@@ -39,14 +39,13 @@ public abstract class ExecutionResultRoMapper {
         }
 
         if (executionResult != null) {
-            List<ScenarioResultRo> scenarioResultList = executionResult.getScenarioStepResultListMap()
-                    .entrySet()
+            List<ScenarioResultRo> scenarioResultList = executionResult.getScenarioResults()
                     .stream()
                     .map(scenarioListEntry -> ScenarioResultRo.builder()
-                            .scenario(projectRoMapper.scenarioToScenarioRo("", scenarioListEntry.getKey()))
-                            .stepResultList(stepRoMapper.convertStepResultListToStepResultRo(scenarioListEntry.getValue()))
+                            .scenario(projectRoMapper.scenarioToScenarioRo("", scenarioListEntry.getScenario()))
+                            .stepResultList(stepRoMapper.convertStepResultListToStepResultRo(scenarioListEntry.getStepResultList()))
                             .totalSteps(scenarioListEntry
-                                    .getKey()
+                                    .getScenario()
                                     .getStepList()
                                     .stream()
                                     .filter(step -> !step.getDisabled())

@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.launcher;
+package ru.bsc.test.autotester.launcher.impl;
 
 /**
  * Created by smakarov
