@@ -106,8 +106,9 @@ public class IbmMQWorker extends AbstractMqWorker {
                         if (StringUtils.isNotEmpty(mockMessage.getResponseBody())) {
                             response = new VelocityTransformer().transform(stringBody, null, mockMessage.getResponseBody()).getBytes();
                         } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
-                            HttpClient httpClient = new HttpClient();
-                            response = httpClient.sendPost(mockMessage.getHttpUrl(), message.getText(), testIdHeaderName, testId).getBytes();
+                            try (HttpClient httpClient = new HttpClient()) {
+                                response = httpClient.sendPost(mockMessage.getHttpUrl(), message.getText(), testIdHeaderName, testId).getBytes();
+                            }
                             mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                         } else {
                             response = stringBody.getBytes();

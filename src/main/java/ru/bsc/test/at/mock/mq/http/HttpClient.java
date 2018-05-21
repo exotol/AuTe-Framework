@@ -11,22 +11,39 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.Closeable;
 import java.io.IOException;
 
-public class HttpClient {
+import lombok.extern.slf4j.Slf4j;
 
-    private CloseableHttpClient buildHttpClient() {
+@Slf4j
+//TODO использовать HTTP Client из at-executor, предварительно создав общий пакет
+public class HttpClient implements Closeable {
+
+    private CloseableHttpClient closeableHttpClient;
+
+    public HttpClient() {
         RequestConfig config = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
         CookieStore cookieStore = new BasicCookieStore();
-        return HttpClients.custom().setDefaultRequestConfig(config).setDefaultCookieStore(cookieStore).build();
+        closeableHttpClient = HttpClients.custom().setDefaultRequestConfig(config).setDefaultCookieStore(cookieStore).build();
     }
 
     public String sendPost(String url, String body, String headerName, String headerValue) throws IOException {
         HttpPost post = new HttpPost(url);
         post.addHeader(headerName, headerValue);
         post.setEntity(new StringEntity(body));
-        try (CloseableHttpResponse response = buildHttpClient().execute(post)) {
+        try (CloseableHttpResponse response = closeableHttpClient.execute(post)) {
             return response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            closeableHttpClient.close();
+        } catch (Exception e) {
+            log.error("Error closing http connection", e);
+            throw new IOException(e);
         }
     }
 }
