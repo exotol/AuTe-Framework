@@ -1,11 +1,10 @@
 package ru.bsc.test.at.executor.service;
 
-import ru.bsc.test.at.executor.model.Scenario;
-import ru.bsc.test.at.executor.model.StepResult;
-
 import java.util.List;
-import java.util.Map;
 
+import ru.bsc.test.at.executor.model.ScenarioResult;
+
+@FunctionalInterface
 public interface IExecutingFinishObserver {
-    void finish(Map<Scenario, List<StepResult>> scenarioResultListMap);
+    void finish(List<ScenarioResult> stepResultList);
 }

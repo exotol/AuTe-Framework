@@ -12,10 +12,12 @@ import ru.bsc.test.at.executor.helper.MqMockHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
+import ru.bsc.test.at.executor.model.ScenarioResult;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepParameterSet;
 import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.at.executor.model.StepResult.StepResultType;
 import ru.bsc.test.at.executor.step.executor.IStepExecutor;
 
 import java.io.PrintWriter;
@@ -53,7 +55,7 @@ public class AtExecutor {
     @Setter
     private String projectPath;
 
-    public void executeScenarioList(Project project, List<Scenario> scenarioExecuteList, Map<Scenario, List<StepResult>> scenarioResultListMap, IStopObserver stopObserver, IExecutingFinishObserver executingFinishObserver) {
+    public void executeScenarioList(Project project, List<Scenario> scenarioExecuteList, List<ScenarioResult> scenarioResultList, IStopObserver stopObserver, IExecutingFinishObserver finishObserver) {
         // Создать подключение к БД, которое будет использоваться сценарием для select-запросов.
         Set<Stand> standSet = new LinkedHashSet<>();
         // Собрать список всех используемых стендов выбранными сценариями
@@ -79,7 +81,7 @@ public class AtExecutor {
         try {
             for (Scenario scenario : scenarioExecuteList) {
                 List<StepResult> stepResultList = new LinkedList<>();
-                scenarioResultListMap.put(scenario, stepResultList);
+                scenarioResultList.add(new ScenarioResult(scenario, stepResultList));
                 executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
             }
         } finally {
@@ -92,7 +94,7 @@ public class AtExecutor {
                 }
             });
         }
-        executingFinishObserver.finish(scenarioResultListMap);
+        finishObserver.finish(scenarioResultList);
     }
 
     private void executeScenario(Project project, Scenario scenario, Stand stand, Connection connection, List<StepResult> stepResultList, IStopObserver stopObserver) {
@@ -106,15 +108,15 @@ public class AtExecutor {
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
             Scenario beforeScenario = scenario.getBeforeScenarioIgnore() ? null : findScenarioByPath(project.getBeforeScenarioPath(), project.getScenarioList());
             if (beforeScenario != null) {
-                executeSteps(connection, stand, beforeScenario.getStepList(), project, httpClient, mqClient, scenarioVariables, stepResultList, false, stopObserver);
+                executeSteps(connection, stand, beforeScenario.getStepList(), project, stepResultList, httpClient, mqClient, scenarioVariables, false, stopObserver);
             }
 
-            executeSteps(connection, stand, scenario.getStepList(), project, httpClient, mqClient, scenarioVariables, stepResultList, true, stopObserver);
+            executeSteps(connection, stand, scenario.getStepList(), project, stepResultList, httpClient, mqClient, scenarioVariables, true, stopObserver);
 
             // После выполнения сценария выполнить сценарий, заданный в проекте или в сценарии
             Scenario afterScenario = scenario.getAfterScenarioIgnore() ? null : findScenarioByPath(project.getAfterScenarioPath(), project.getScenarioList());
             if (afterScenario != null) {
-                executeSteps(connection, stand, afterScenario.getStepList(), project, httpClient, mqClient, scenarioVariables, stepResultList, false, stopObserver);
+                executeSteps(connection, stand, afterScenario.getStepList(), project, stepResultList, httpClient, mqClient, scenarioVariables, false, stopObserver);
             }
 
         } catch (ScenarioStopException | InterruptedException e) {
@@ -172,10 +174,9 @@ public class AtExecutor {
         return result;
     }
 
-    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, HttpClient httpClient, MqClient mqClient,
-                              Map<String, Object> scenarioVariables, List<StepResult> stepResultList,
-                              boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
-        log.debug("executeSteps {}, {}, {}, {}, {}, {}, {}", stand, stepList, project, httpClient, scenarioVariables, stepResultList, stepEditable);
+    private void executeSteps(Connection connection, Stand stand, List<Step> stepList, Project project, List<StepResult> stepResultList, HttpClient httpClient, MqClient mqClient,
+                              Map<String, Object> scenarioVariables, boolean stepEditable, IStopObserver stopObserver) throws ScenarioStopException, InterruptedException {
+        log.debug("executeSteps {}, {}, {}, {}, {}, {}, {}", stand, stepList, project, stepResultList, httpClient, scenarioVariables, stepEditable);
         if (stepList == null) {
             log.warn("executeSteps got empty stepList");
             return;
@@ -231,12 +232,12 @@ public class AtExecutor {
                         mqMockHelper.assertMqRequests(wireMockAdmin, testId, step, scenarioVariables, project.getMqCheckCount(), project.getMqCheckInterval());
 
                         stepResult.setSavedParameters(scenarioVariables.toString());
-                        stepResult.setResult(StepResult.StepResultType.OK);
+                        stepResult.setResult(StepResultType.OK);
                     } catch (Exception e) {
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
 
-                        stepResult.setResult(StepResult.StepResultType.FAIL);
+                        stepResult.setResult(StepResultType.FAIL);
                         stepResult.setDetails(sw.toString().substring(0, Math.min(sw.toString().length(), 10000)));
                     } finally {
                         stepResult.setStop(new Date().getTime());
