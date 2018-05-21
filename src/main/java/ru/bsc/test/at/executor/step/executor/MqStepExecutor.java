@@ -2,8 +2,10 @@ package ru.bsc.test.at.executor.step.executor;
 
 import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.helper.HttpClient;
-import ru.bsc.test.at.executor.helper.MqClient;
+import ru.bsc.test.at.executor.helper.client.api.ClientResponse;
+import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
+import ru.bsc.test.at.executor.helper.client.impl.mq.ClientMQRequest;
+import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
@@ -60,26 +62,17 @@ public class MqStepExecutor extends AbstractStepExecutor {
             // Polling
             int retryCounter = 0;
 
-            String responseContent = null;
+            ClientResponse response = null;
             do {
                 retryCounter++;
 
                 // 3. Выполнить запрос (отправить сообщение в очередь)
-                mqClient.sendMessage(step.getMqOutputQueueName(), requestBody, null, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
+                ClientMQRequest clientMQRequest = new ClientMQRequest(step.getMqOutputQueueName(), requestBody, null, testId, project.getUseRandomTestId() ? project.getTestIdHeaderName() : null);
+                mqClient.request(clientMQRequest);
 
                 if (StringUtils.isNotBlank(step.getMqInputQueueName())) {
                     long calculatedSleep = parseLongOrVariable(scenarioVariables, evaluateExpressions(step.getMqTimeoutMs(), scenarioVariables, null), 1000);
-                    Message message = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
-
-                    if (message == null) {
-                        throw new Exception("No reply message");
-                    }
-
-                    if (message instanceof TextMessage) {
-                        responseContent = ((TextMessage) message).getText();
-                    } else {
-                        throw new Exception("Received message is not TextMessage instance");
-                    }
+                    response = mqClient.waitMessage(step.getMqInputQueueName(), Math.min(calculatedSleep, 60000L), project.getUseRandomTestId() ? project.getTestIdHeaderName() : null, testId);
                 }
 
 
@@ -101,14 +94,15 @@ public class MqStepExecutor extends AbstractStepExecutor {
                     }
                 }
 
-            } while (tryUsePolling(step, responseContent) && retryCounter <= POLLING_RETRY_COUNT);
+            } while (tryUsePolling(step, response) && retryCounter <= POLLING_RETRY_COUNT);
 
+            String content = response.getContent();
             stepResult.setPollingRetryCount(retryCounter);
-            stepResult.setActual(responseContent);
+            stepResult.setActual(content);
             stepResult.setExpected(step.getExpectedResponse());
 
             // 4. Сохранить полученные значения
-            saveValuesByJsonXPath(step, responseContent, scenarioVariables);
+            saveValuesByJsonXPath(step, content, scenarioVariables);
 
             stepResult.setSavedParameters(scenarioVariables.toString());
 
@@ -121,7 +115,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
             expectedResponse = evaluateExpressions(expectedResponse, scenarioVariables, null);
             stepResult.setExpected(expectedResponse);
 
-            checkResponseBody(step, expectedResponse, responseContent);
+            checkResponseBody(step, expectedResponse, content);
         }
 
         // 7. Прочитать, что тестируемый сервис отправлял в заглушку.

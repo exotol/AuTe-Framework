@@ -1,8 +1,8 @@
 package ru.bsc.test.at.executor.step.executor;
 
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.helper.HttpClient;
-import ru.bsc.test.at.executor.helper.MqClient;
+import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
+import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;

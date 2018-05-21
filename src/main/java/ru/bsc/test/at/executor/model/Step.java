@@ -1,6 +1,7 @@
 package ru.bsc.test.at.executor.model;
 
 import lombok.Data;
+import ru.bsc.test.at.executor.helper.client.impl.http.HTTPMethod;
 
 import java.io.Serializable;
 import java.util.*;
@@ -15,7 +16,7 @@ public class Step implements Serializable, AbstractModel {
     private String code;
     private List<ExpectedServiceRequest> expectedServiceRequests = new LinkedList<>();
     private String relativeUrl;
-    private String requestMethod;
+    private HTTPMethod requestMethod;
     private String request;
     private String requestFile;
     private String requestHeaders;

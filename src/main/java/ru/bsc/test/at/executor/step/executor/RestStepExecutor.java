@@ -2,9 +2,11 @@ package ru.bsc.test.at.executor.step.executor;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.helper.HttpClient;
-import ru.bsc.test.at.executor.helper.MqClient;
-import ru.bsc.test.at.executor.helper.ResponseHelper;
+import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequest;
+import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequestWithVariables;
+import ru.bsc.test.at.executor.helper.client.api.ClientCommonResponse;
+import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
+import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.RequestBodyType;
@@ -19,9 +21,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.sql.Connection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.bsc.test.at.executor.service.AtExecutor.parseLongOrVariable;
@@ -62,7 +68,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
         stepResult.setRequestBody(requestBody);
 
         // 2.3 Подстановка переменных сценария в заголовки запроса
-        String requestHeaders = insertSavedValues(step.getRequestHeaders(), scenarioVariables);
+        Map requestHeaders = generateHeaders(step.getRequestHeaders(), scenarioVariables);
 
         // 2.4 Cyclic sending request, COM-84
         long numberRepetitions = parseLongOrVariable(scenarioVariables, step.getNumberRepetitions(), 1);
@@ -76,7 +82,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
             int retryCounter = 0;
             boolean retry = false;
 
-            ResponseHelper responseData;
+            ClientCommonResponse responseData;
             do {
                 RequestData requestData = new RequestData();
                 stepResult.getRequestDataList().add(requestData);
@@ -85,14 +91,10 @@ public class RestStepExecutor extends AbstractStepExecutor {
                 // 3. Выполнить запрос
                 log.debug("Executing http request");
                 if (step.getRequestBodyType() == null || RequestBodyType.JSON.equals(step.getRequestBodyType())) {
-                    responseData = httpClient.request(
-                            step.getRequestMethod(),
-                            requestUrl,
-                            requestBody,
-                            requestHeaders,
-                            project.getTestIdHeaderName(),
-                            testId
-                    );
+                    ClientHttpRequest clientHttpRequest = new ClientHttpRequest(
+                            requestUrl, requestBody, step.getRequestMethod(), requestHeaders,
+                            testId, project.getTestIdHeaderName());
+                    responseData = httpClient.request(clientHttpRequest);
                 } else {
                     if (step.getFormDataList() == null) {
                         step.setFormDataList(Collections.emptyList());
@@ -110,15 +112,10 @@ public class RestStepExecutor extends AbstractStepExecutor {
                                         return result;
                                     })
                                     .collect(Collectors.joining("\r\n")));
-                    responseData = httpClient.request(
-                            projectPath,
-                            step,
-                            requestUrl,
-                            requestHeaders,
-                            project.getTestIdHeaderName(),
-                            testId,
-                            scenarioVariables
-                    );
+                    ClientHttpRequestWithVariables clientHttpRequest = new ClientHttpRequestWithVariables(
+                            requestUrl, requestBody, step.getRequestMethod(), requestHeaders,
+                            testId, project.getTestIdHeaderName(), scenarioVariables, projectPath, step);
+                    responseData = httpClient.request(clientHttpRequest);
                 }
                 requestData.setRequestBody(stepResult.getRequestBody());
                 requestData.setResponseBody(responseData.getContent());
@@ -141,7 +138,7 @@ public class RestStepExecutor extends AbstractStepExecutor {
 
                 // 3.1. Polling
                 if (step.getUsePolling()) {
-                    retry = tryUsePolling(step, responseData.getContent());
+                    retry = tryUsePolling(step, responseData);
                 }
             } while (retry && retryCounter <= POLLING_RETRY_COUNT);
 
@@ -199,6 +196,26 @@ public class RestStepExecutor extends AbstractStepExecutor {
         // 7. Прочитать, что тестируемый сервис отправлял в REST-заглушку.
         log.debug("Read REST mock data");
         parseMockRequests(project, step, wireMockAdmin, scenarioVariables, testId);
+    }
+
+    private Map generateHeaders(String template, Map<String, Object> scenarioVariables) {
+        //TODO fix неоптимальная работа с параметрами
+        String headersStr = insertSavedValues(template, scenarioVariables);
+        if (StringUtils.isEmpty(headersStr)) {
+            //Возвращаем пустые хедеры
+            return new HashMap();
+        }
+        Map<String, String> headers = new HashMap<>();
+        try (Scanner scanner = new Scanner(headersStr)) {
+            while (scanner.hasNextLine()) {
+                String header = scanner.nextLine();
+                String[] headerDetail = header.split(":");
+                if (headerDetail.length >= 2) {
+                    headers.put(headerDetail[0].trim(), headerDetail[1].trim());
+                }
+            }
+        }
+        return headers;
     }
 
     @Override

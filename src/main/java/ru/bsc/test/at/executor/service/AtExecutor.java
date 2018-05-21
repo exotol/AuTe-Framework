@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
 import ru.bsc.test.at.executor.exception.ScenarioStopException;
-import ru.bsc.test.at.executor.helper.HttpClient;
-import ru.bsc.test.at.executor.helper.MqClient;
+import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
+import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.helper.MqMockHelper;
 import ru.bsc.test.at.executor.helper.ServiceRequestsComparatorHelper;
 import ru.bsc.test.at.executor.model.Project;
@@ -96,11 +96,11 @@ public class AtExecutor {
     }
 
     private void executeScenario(Project project, Scenario scenario, Stand stand, Connection connection, List<StepResult> stepResultList, IStopObserver stopObserver) {
-        HttpClient httpClient = new HttpClient();
         Map<String, Object> scenarioVariables = new HashMap<>();
         scenarioVariables.put("__random", RandomStringUtils.randomAlphabetic(40));
 
         try (
+                HttpClient httpClient = new HttpClient();
                 MqClient mqClient = project.getAmqpBroker() != null ? new MqClient(project.getAmqpBroker()) : null
                 ) {
             // перед выполнением каждого сценария выполнять предварительный сценарий, заданный в свойствах проекта (например, сценарий авторизации)
@@ -124,7 +124,6 @@ public class AtExecutor {
             log.error("Error during MqClient get connection", e);
         }
 
-        httpClient.closeHttpConnection();
     }
 
     private Scenario findScenarioByPath(String path, List<Scenario> scenarioList) {

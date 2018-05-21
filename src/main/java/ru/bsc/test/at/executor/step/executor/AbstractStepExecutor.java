@@ -17,9 +17,10 @@ import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
 import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
 import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
 import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
-import ru.bsc.test.at.executor.helper.MqClient;
+import ru.bsc.test.at.executor.helper.client.api.ClientResponse;
+import ru.bsc.test.at.executor.helper.client.impl.mq.ClientMQRequest;
+import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
-import ru.bsc.test.at.executor.helper.ResponseHelper;
 import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,7 +83,8 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                     log.error("Error while evaluate expression", e);
                 }
             });
-            mqClient.sendMessage(message.getQueueName(), messageText, generatedProperties, testIdHeaderName, testId);
+            ClientMQRequest clientMQRequest = new ClientMQRequest(message.getQueueName(), messageText, generatedProperties, testId, testIdHeaderName);
+            mqClient.request(clientMQRequest);
         }
     }
 
@@ -180,14 +183,14 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    boolean tryUsePolling(Step step, String responseContent) throws InterruptedException {
+    boolean tryUsePolling(Step step, ClientResponse responseContent) throws InterruptedException {
         log.debug("trying use polling {} {}", step, responseContent);
         if (!step.getUsePolling()) {
             return false;
         }
         boolean retry = true;
         try {
-            if (JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {
+            if (responseContent != null && JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
@@ -292,7 +295,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         return template;
     }
 
-    public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ResponseHelper responseData) throws ScriptException {
+    public static String evaluateExpressions(String template, Map<String, Object> scenarioVariables, ClientResponse responseData) throws ScriptException {
         log.debug("evaluate expressions {}, {} {}", template, scenarioVariables, responseData);
         String result = template;
         if (result != null) {
@@ -371,7 +374,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void compareResponse(Step step, String expectedResponse, ResponseHelper responseData) throws Exception {
+    void compareResponse(Step step, String expectedResponse, ClientResponse responseData) throws Exception {
         if (step.getExpectedResponseIgnore()) {
             return;
         }
@@ -398,7 +401,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    private void jsonComparing(String expectedResponse, ResponseHelper responseData, String jsonCompareMode) throws Exception {
+    private void jsonComparing(String expectedResponse, ClientResponse responseData, String jsonCompareMode) throws Exception {
         if ((isNotEmpty(expectedResponse) || isNotEmpty(responseData.getContent())) &&
                 (!responseData.getContent().equals(expectedResponse))) {
             try {
