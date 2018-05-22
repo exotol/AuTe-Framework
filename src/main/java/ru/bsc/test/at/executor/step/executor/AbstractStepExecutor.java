@@ -193,11 +193,12 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
         boolean retry = true;
         try {
-            if (content != null && JsonPath.read(content, step.getPollingJsonXPath()) != null) {
-                retry = false;
+            if (StringUtils.isNotEmpty(content) && JsonPath.read(content, step.getPollingJsonXPath()) != null) {
+	            log.info("Required attribute for polling found in path {}. Stop polling", step.getPollingJsonXPath());
+	            retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
-            log.info("", e);
+            log.info("Required attribute for polling not found in path {}. Continue polling", step.getPollingJsonXPath());
             retry = true;
         }
         if (retry) {

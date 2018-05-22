@@ -81,8 +81,8 @@ public class AtExecutor {
         try {
             for (Scenario scenario : scenarioExecuteList) {
                 List<StepResult> stepResultList = new LinkedList<>();
-                executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
                 scenarioResultList.add(new ScenarioResult(scenario, stepResultList));
+                executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
             }
         } finally {
             standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
