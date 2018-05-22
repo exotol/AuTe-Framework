@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -183,14 +184,16 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    boolean tryUsePolling(Step step, ClientResponse responseContent) throws InterruptedException {
-        log.debug("trying use polling {} {}", step, responseContent);
+    boolean tryUsePolling(Step step, ClientResponse clientResponse) throws InterruptedException {
+        Assert.notNull(clientResponse, "client response must not be null");
+        String content = clientResponse.getContent();
+        log.debug("trying use polling {} {}", step, content);
         if (!step.getUsePolling()) {
             return false;
         }
         boolean retry = true;
         try {
-            if (responseContent != null && JsonPath.read(responseContent, step.getPollingJsonXPath()) != null) {
+            if (content != null && JsonPath.read(content, step.getPollingJsonXPath()) != null) {
                 retry = false;
             }
         } catch (PathNotFoundException | IllegalArgumentException e) {
