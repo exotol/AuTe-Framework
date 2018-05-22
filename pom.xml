@@ -5,7 +5,7 @@
 
     <groupId>ru.bsc.test</groupId>
     <artifactId>autotester</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2</version>
 
     <!-- Inherit defaults from Spring Boot -->
     <parent>
@@ -238,7 +238,7 @@
         <dependency>
             <groupId>ru.bsc.test</groupId>
             <artifactId>at-executor</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
