@@ -24,7 +24,6 @@
         </div>
         <div class="input-group-btn" *ngIf="calculateStepMode() == 'REST'">
           <select class="form-control" title="{{'Request method' | translate}}" [(ngModel)]="step.requestMethod">
-            <option [ngValue]="''"></option>
             <option [ngValue]="'POST'">POST</option>
             <option [ngValue]="'GET'">GET</option>
             <option [ngValue]="'PUT'">PUT</option>
