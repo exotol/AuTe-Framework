@@ -6,7 +6,7 @@
 
     <groupId>bsc-at</groupId>
     <artifactId>bsc-wire-mock</artifactId>
-    <version>2.0.0</version>
+    <version>4.0.2</version>
     <packaging>jar</packaging>
 
     <properties>
