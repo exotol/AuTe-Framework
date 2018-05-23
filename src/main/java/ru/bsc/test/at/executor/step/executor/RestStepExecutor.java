@@ -1,10 +1,11 @@
 package ru.bsc.test.at.executor.step.executor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
+import ru.bsc.test.at.executor.helper.client.api.ClientCommonResponse;
 import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequest;
 import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequestWithVariables;
-import ru.bsc.test.at.executor.helper.client.api.ClientCommonResponse;
 import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
 import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.model.FieldType;
@@ -27,10 +28,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static ru.bsc.test.at.executor.service.AtExecutor.parseLongOrVariable;
+import static ru.bsc.test.at.executor.service.AtProjectExecutor.parseLongOrVariable;
 
 @Slf4j
 public class RestStepExecutor extends AbstractStepExecutor {

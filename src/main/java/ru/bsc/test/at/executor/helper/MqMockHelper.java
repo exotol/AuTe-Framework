@@ -11,7 +11,7 @@ import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedMqRequest;
 import ru.bsc.test.at.executor.model.ScenarioVariableFromMqRequest;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.service.AtExecutor;
+import ru.bsc.test.at.executor.service.AtProjectExecutor;
 import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;
 
 import javax.script.ScriptException;
@@ -46,7 +46,7 @@ public class MqMockHelper {
 
             long count = 0;
             try {
-                count = AtExecutor.parseLongOrVariable(scenarioVariables, AbstractStepExecutor.evaluateExpressions(expectedMqRequest.getCount(), scenarioVariables, null), 1);
+                count = AtProjectExecutor.parseLongOrVariable(scenarioVariables, AbstractStepExecutor.evaluateExpressions(expectedMqRequest.getCount(), scenarioVariables, null), 1);
             } catch (ScriptException e) {
                 log.error("{}", e);
             }

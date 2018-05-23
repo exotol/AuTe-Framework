@@ -13,14 +13,12 @@ import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.model.StepStatus;
 
-import javax.jms.Message;
-import javax.jms.TextMessage;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.sql.Connection;
 import java.util.Map;
 
-import static ru.bsc.test.at.executor.service.AtExecutor.parseLongOrVariable;
+import static ru.bsc.test.at.executor.service.AtProjectExecutor.parseLongOrVariable;
 
 public class MqStepExecutor extends AbstractStepExecutor {
 
