@@ -38,16 +38,18 @@ public class TestLauncherImpl implements TestLauncher {
     public void launch() throws Exception {
         log.info("Launch scenarios ...");
         List<Project> projectList = projectRepository.findAllProjectsWithScenarios();
-        List<ScenarioResult> scenarioResults = new ArrayList<>();
+        List<ScenarioResult> allProjectsResult = new ArrayList<>();
 
         for (Project project: projectList) {
             if (properties.getProjectStandMap() == null || !properties.getProjectStandMap().containsKey(project.getCode())) {
                 continue;
             }
             log.info("Launch scenarios for project {}", project.getName());
-            scenarioLauncher.launchScenarioFromCLI(project.getScenarioList(), project, properties, reportGenerator, scenarioResults);
+            List<ScenarioResult> projectResults = scenarioLauncher.launchScenarioFromCLI(project.getScenarioList(), project, properties, reportGenerator);
+            log.debug("Project run results {}", projectResults);
+            allProjectsResult.addAll(projectResults);
         }
-        LaunchResult launchResult = new LaunchResult(scenarioResults);
+        LaunchResult launchResult = new LaunchResult(allProjectsResult);
         log.info("Launch result {}", launchResult);
         reportGenerator.generate(new File("." + File.separator + "report"));
         log.info("Report for test run generated");

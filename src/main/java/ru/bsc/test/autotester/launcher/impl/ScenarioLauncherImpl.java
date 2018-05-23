@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -68,19 +69,21 @@ public class ScenarioLauncherImpl implements ScenarioLauncher {
   }
 
   @Override
-  public void launchScenarioFromCLI(List<Scenario> scenarioToExecute, Project project, EnvironmentProperties properties, AbstractReportGenerator reportGenerator, List<ScenarioResult> scenarioResults) {
+  public List<ScenarioResult> launchScenarioFromCLI(List<Scenario> scenarioToExecute, Project project, EnvironmentProperties properties, AbstractReportGenerator reportGenerator) {
     log.info("Launch scenario from CLI {} {}", scenarioToExecute, project);
     AtExecutor atExecutor = new AtExecutor();
     atExecutor.setProjectPath(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
 
+    List<ScenarioResult> scenarioResultList = new ArrayList<>();
     atExecutor.executeScenarioList(
         project,
         scenarioToExecute,
-        scenarioResults,
+        scenarioResultList,
         () -> false,
         list -> {}
     );
-    addResultsToReport(reportGenerator, scenarioResults);
+    addResultsToReport(reportGenerator, scenarioResultList);
+    return scenarioResultList;
   }
 
   private void addResultsToReport(AbstractReportGenerator reportGenerator, List<ScenarioResult> scenarioResultList) {
