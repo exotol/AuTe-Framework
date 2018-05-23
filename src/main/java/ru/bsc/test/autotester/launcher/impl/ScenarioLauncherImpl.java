@@ -11,9 +11,10 @@ import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ScenarioResult;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.service.AtExecutor;
+import ru.bsc.test.at.executor.service.AtProjectExecutor;
 import ru.bsc.test.at.executor.service.IExecutingFinishObserver;
 import ru.bsc.test.at.executor.service.IStopObserver;
+import ru.bsc.test.at.executor.service.api.ProjectExecutorRequest;
 import ru.bsc.test.autotester.launcher.api.ScenarioLauncher;
 import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
@@ -42,8 +43,12 @@ public class ScenarioLauncherImpl implements ScenarioLauncher {
       JsonAutoDetect.Visibility.ANY
   );
 
+  private final ScenarioRepository scenarioRepository;
+
   @Autowired
-  private ScenarioRepository scenarioRepository;
+  public ScenarioLauncherImpl(ScenarioRepository scenarioRepository) {
+    this.scenarioRepository = scenarioRepository;
+  }
 
   public void launchScenarioFromUI(List<Scenario> scenarioToExecute,
                                    Project project,
@@ -53,8 +58,7 @@ public class ScenarioLauncherImpl implements ScenarioLauncher {
                                    ProjectService projectService,
                                    String runningUuid) {
     log.info("Launch scenario from UI {} {}", scenarioToExecute, project);
-    AtExecutor atExecutor = new AtExecutor();
-    atExecutor.setProjectPath(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
+    AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
 
     new Thread(() -> {
       IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
@@ -64,23 +68,27 @@ public class ScenarioLauncherImpl implements ScenarioLauncher {
           processResults(project, scenarioResults);
         }
       };
-      atExecutor.executeScenarioList(project, scenarioToExecute, executionResult.getScenarioResults(), stopObserver, finishObserver);
+      atExecutor.execute(
+              new ProjectExecutorRequest(project, scenarioToExecute, executionResult.getScenarioResults(),
+                      stopObserver, finishObserver));
     }).start();
   }
 
   @Override
   public List<ScenarioResult> launchScenarioFromCLI(List<Scenario> scenarioToExecute, Project project, EnvironmentProperties properties, AbstractReportGenerator reportGenerator) {
     log.info("Launch scenario from CLI {} {}", scenarioToExecute, project);
-    AtExecutor atExecutor = new AtExecutor();
-    atExecutor.setProjectPath(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
+    AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
 
     List<ScenarioResult> scenarioResultList = new ArrayList<>();
-    atExecutor.executeScenarioList(
-        project,
-        scenarioToExecute,
-        scenarioResultList,
-        () -> false,
-        list -> {}
+    atExecutor.execute(
+            new ProjectExecutorRequest(
+                    project,
+                    scenarioToExecute,
+                    scenarioResultList,
+                    () -> false,
+                    list -> {
+                    }
+            )
     );
     addResultsToReport(reportGenerator, scenarioResultList);
     return scenarioResultList;
