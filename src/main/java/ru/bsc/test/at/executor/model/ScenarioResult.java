@@ -1,10 +1,13 @@
 package ru.bsc.test.at.executor.model;
 
+import lombok.ToString;
+
 import java.util.List;
 
 /**
  * @author Pavel Golovkin
  */
+@ToString
 public class ScenarioResult {
   private Scenario scenario;
   private List<StepResult> stepResultList;
