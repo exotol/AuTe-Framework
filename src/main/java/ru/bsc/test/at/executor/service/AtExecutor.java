@@ -62,37 +62,12 @@ public class AtExecutor {
         if (project.getStand() != null) {
             standSet.add(project.getStand());
         }
-        Map<Stand, Connection> standConnectionMap = new HashMap<>();
-        // Создать подключение для каждого используемого стенда
-        for (Stand stand : standSet) {
-            if (isNotEmpty(stand.getDbUrl())) {
-                try {
-                    Connection connection = DriverManager.getConnection(stand.getDbUrl(), stand.getDbUser(), stand.getDbPassword());
-                    connection.setAutoCommit(false);
-                    connection.setReadOnly(true);
-                    standConnectionMap.put(stand, connection);
-                } catch (SQLException e) {
-                    log.warn("sql exception", e);
-                    standConnectionMap.put(stand, null);
-                }
-            }
-        }
-
-        try {
+        try (ExecutorJdbcConnectionHolder executorJdbcConnectionHolder = new ExecutorJdbcConnectionHolder(standSet)) {
             for (Scenario scenario : scenarioExecuteList) {
                 List<StepResult> stepResultList = new LinkedList<>();
                 scenarioResultList.add(new ScenarioResult(scenario, stepResultList));
-                executeScenario(project, scenario, project.getStand(), standConnectionMap.get(project.getStand()), stepResultList, stopObserver);
+                executeScenario(project, scenario, project.getStand(), executorJdbcConnectionHolder.getConnection(project.getStand()), stepResultList, stopObserver);
             }
-        } finally {
-            standConnectionMap.values().stream().filter(Objects::nonNull).forEach(connection -> {
-                try {
-                    connection.rollback();
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Error while rollback", e);
-                }
-            });
         }
         finishObserver.finish(scenarioResultList);
     }
