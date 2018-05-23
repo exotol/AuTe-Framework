@@ -9,20 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.mock.mq.http.HttpClient;
 import ru.bsc.test.at.mock.mq.models.MockMessage;
+import ru.bsc.test.at.mock.mq.models.MockMessageResponse;
 import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-import java.io.IOException;
+import javax.jms.*;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -77,35 +69,36 @@ public class ActiveMQWorker extends AbstractMqWorker {
                         mockedRequest.setMappingGuid(mockMessage.getGuid());
 
                         // Выполнение инструкции из моков
-                        byte[] response;
+                        for (MockMessageResponse mockResponse : mockMessage.getResponses()) {
+                            byte[] response;
 
-                        if (StringUtils.isNotEmpty(mockMessage.getResponseBody())) {
-                            response = new VelocityTransformer().transform(stringBody, null, mockMessage.getResponseBody()).getBytes();
+                        if (StringUtils.isNotEmpty(mockResponse.getResponseBody())) {
+                            response = new VelocityTransformer().transform(stringBody, null, mockResponse.getResponseBody()).getBytes();
                         } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
                             try (HttpClient httpClient = new HttpClient()) {
-                                response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(message.getContent().getData(), "UTF-8"), testIdHeaderName, testId).getBytes();
-                            }
+                            response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(message.getContent().getData(), "UTF-8"), testIdHeaderName, testId).getBytes();}
                             mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                         } else {
                             response = stringBody.getBytes();
                         }
 
-                        mockedRequest.setDestinationQueue(mockMessage.getDestinationQueueName());
+                            mockedRequest.setDestinationQueue(mockResponse.getDestinationQueueName());
 
-                        if (isNotEmpty(mockMessage.getDestinationQueueName()) && response != null) {
+                            if (isNotEmpty(mockResponse.getDestinationQueueName())) {
 
-                            mockedRequest.setResponseBody(new String(response, "UTF-8"));
+                                mockedRequest.setResponseBody(new String(response, "UTF-8"));
 
-                            Queue destination = session.createQueue(mockMessage.getDestinationQueueName());
-                            MessageProducer producer = session.createProducer(destination);
-                            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                            TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
-                            newMessage.getPropertyNames();
-                            copyMessageProperties(message, newMessage, testId, destination);
-                            // Переслать сообщение в очередь-назначение
-                            producer.send(newMessage);
+                                Queue destination = session.createQueue(mockResponse.getDestinationQueueName());
+                                MessageProducer producer = session.createProducer(destination);
+                                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                                TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
+                                newMessage.getPropertyNames();
+                                copyMessageProperties(message, newMessage, testId, destination);
+                                // Переслать сообщение в очередь-назначение
+                                producer.send(newMessage);
 
-                            producer.close();
+                                producer.close();
+                            }
                         }
                     } else {
                         // Переслать сообщение в очередь "по-умолчанию".
@@ -144,7 +137,7 @@ public class ActiveMQWorker extends AbstractMqWorker {
     }
 
     @Override
-    public void stop() throws IOException, TimeoutException {
+    public void stop() {
         // Do nothing
     }
 }

@@ -1,5 +1,6 @@
 package ru.bsc.test.at.mock.mq.components;
 
+import lombok.Getter;
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import ru.bsc.test.at.mock.mq.models.MockMessage;
 import ru.bsc.test.at.mock.mq.models.PropertiesYaml;
+import ru.bsc.test.at.mock.mq.models.enums.MqBrokerType;
 import ru.bsc.test.at.mock.mq.mq.AbstractMqWorker;
 import ru.bsc.test.at.mock.mq.mq.ActiveMQWorker;
 import ru.bsc.test.at.mock.mq.mq.IbmMQWorker;
@@ -52,6 +54,7 @@ public class MqRunnerComponent {
     private int requestBufferSize;
 
     private final List<MockMessage> mockMappingList = new LinkedList<>();
+    @Getter
     private Buffer fifo;
     private Map<String, AbstractMqWorker> queueListenerMap = new ConcurrentHashMap<>();
 
@@ -62,51 +65,16 @@ public class MqRunnerComponent {
 
     String addMapping(MockMessage mockMessage) {
         synchronized (mockMappingList) {
-            if (StringUtils.isEmpty(mockMessage.getSourceQueueName())) {
+            String sourceQueueName = mockMessage.getSourceQueueName();
+            if (StringUtils.isEmpty(sourceQueueName)) {
                 return null;
             }
             mockMessage.setGuid(UUID.randomUUID().toString());
             mockMappingList.add(mockMessage);
 
-            if (!queueListenerMap.containsKey(mockMessage.getSourceQueueName())) {
-                AbstractMqWorker newMqListener;
-
-                // TODO: Переделать с использованием Enum
-                if ("RABBIT_MQ".equals(mqManager)) {
-                    newMqListener = new RabbitMQWorker(
-                            mockMessage.getSourceQueueName(),
-                            defaultDestinationQueueName,
-                            mockMappingList,
-                            fifo,
-                            mqHost,
-                            mqUsername,
-                            mqPassword,
-                            mqPort,
-                            testIdHeaderName);
-                } else if ("ACTIVE_MQ".equals(mqManager)) {
-                    newMqListener = new ActiveMQWorker(
-                            mockMessage.getSourceQueueName(),
-                            defaultDestinationQueueName,
-                            mockMappingList,
-                            fifo,
-                            mqHost,
-                            mqUsername,
-                            mqPassword,
-                            testIdHeaderName);
-                } else {
-                    newMqListener = new IbmMQWorker(
-                            mockMessage.getSourceQueueName(),
-                            defaultDestinationQueueName,
-                            mockMappingList,
-                            fifo,
-                            mqHost,
-                            mqUsername,
-                            mqPassword,
-                            mqPort,
-                            testIdHeaderName);
-                }
-
-                queueListenerMap.put(mockMessage.getSourceQueueName(), newMqListener);
+            if (!queueListenerMap.containsKey(sourceQueueName)) {
+                AbstractMqWorker newMqListener = createMqBroker(sourceQueueName);
+                queueListenerMap.put(sourceQueueName, newMqListener);
                 startListener(newMqListener);
             }
 
@@ -123,7 +91,12 @@ public class MqRunnerComponent {
             mockMappingList.remove(mapping);
 
             if (mapping != null) {
-                long count = mockMappingList.stream().filter(mockMessage -> Objects.equals(mockMessage.getSourceQueueName(), mapping.getSourceQueueName())).count();
+                long count = mockMappingList.stream()
+                        .filter(mockMessage -> Objects.equals(
+                                mockMessage.getSourceQueueName(),
+                                mapping.getSourceQueueName()
+                        ))
+                        .count();
                 if (count == 0) {
                     AbstractMqWorker mqWorker = queueListenerMap.get(mapping.getSourceQueueName());
                     if (mqWorker != null) {
@@ -133,10 +106,6 @@ public class MqRunnerComponent {
                 }
             }
         }
-    }
-
-    Buffer getFifo() {
-        return fifo;
     }
 
     List<MockMessage> getMockMappingList() {
@@ -153,6 +122,51 @@ public class MqRunnerComponent {
             if (properties != null && properties.getMockMessageList() != null) {
                 properties.getMockMessageList().forEach(this::addMapping);
             }
+        }
+    }
+
+    private MqBrokerType getBrokerType() {
+        return MqBrokerType.valueOf(this.mqManager);
+    }
+
+    private AbstractMqWorker createMqBroker(String sourceQueueName) {
+        switch (getBrokerType()) {
+            case ACTIVE_MQ:
+                return new ActiveMQWorker(
+                        sourceQueueName,
+                        defaultDestinationQueueName,
+                        mockMappingList,
+                        fifo,
+                        mqHost,
+                        mqUsername,
+                        mqPassword,
+                        testIdHeaderName
+                );
+            case RABBIT_MQ:
+                return new RabbitMQWorker(
+                        sourceQueueName,
+                        defaultDestinationQueueName,
+                        mockMappingList,
+                        fifo,
+                        mqHost,
+                        mqUsername,
+                        mqPassword,
+                        mqPort,
+                        testIdHeaderName
+                );
+            case IBM_MQ:
+            default:
+                return new IbmMQWorker(
+                        sourceQueueName,
+                        defaultDestinationQueueName,
+                        mockMappingList,
+                        fifo,
+                        mqHost,
+                        mqUsername,
+                        mqPassword,
+                        mqPort,
+                        testIdHeaderName
+                );
         }
     }
 }

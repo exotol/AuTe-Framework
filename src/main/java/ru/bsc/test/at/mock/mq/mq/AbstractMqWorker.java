@@ -38,7 +38,15 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
 
     String testIdHeaderName;
 
-    AbstractMqWorker(String queueNameFrom, String queueNameTo, List<MockMessage> mockMappingList, String brokerUrl, String username, String password, String testIdHeaderName) {
+    AbstractMqWorker(
+            String queueNameFrom,
+            String queueNameTo,
+            List<MockMessage> mockMappingList,
+            String brokerUrl,
+            String username,
+            String password,
+            String testIdHeaderName
+    ) {
         this.queueNameFrom = queueNameFrom;
         this.queueNameTo = queueNameTo;
         this.mockMappingList = mockMappingList;
@@ -75,12 +83,16 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
         synchronized (mockMappingList) {
             final Document document = parseXmlDocument(stringBody);
 
-            Predicate<MockMessage> documentXpathFilterPredicate = mockMessage1 -> {
-                if (mockMessage1.getXpath() == null) {
+            Predicate<MockMessage> documentXpathFilterPredicate = message -> {
+                if (message.getXpath() == null) {
                     return true;
                 }
                 try {
-                    Object node = XPathFactory.newInstance().newXPath().evaluate(mockMessage1.getXpath(), document, XPathConstants.NODE);
+                    Object node = XPathFactory.newInstance().newXPath().evaluate(
+                            message.getXpath(),
+                            document,
+                            XPathConstants.NODE
+                    );
                     return node != null;
                 } catch (XPathExpressionException e) {
                     return false;
@@ -89,14 +101,14 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
 
             return mockMappingList
                     .stream()
-                    .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
-                    .filter(mockMessage1 -> Objects.equals(testId, mockMessage1.getTestId()))
+                    .filter(message -> Objects.equals(queueNameFrom, message.getSourceQueueName()))
+                    .filter(message -> Objects.equals(testId, message.getTestId()))
                     .filter(documentXpathFilterPredicate)
                     .findAny()
                     .orElse(mockMappingList
                             .stream()
-                            .filter(mockMessage1 -> Objects.equals(queueNameFrom, mockMessage1.getSourceQueueName()))
-                            .filter(mockMessage1 -> mockMessage1.getTestId() == null)
+                            .filter(message -> Objects.equals(queueNameFrom, message.getSourceQueueName()))
+                            .filter(message -> message.getTestId() == null)
                             .filter(documentXpathFilterPredicate)
                             .findAny()
                             .orElse(null)
@@ -104,7 +116,12 @@ abstract public class AbstractMqWorker implements Runnable, ExceptionListener {
         }
     }
 
-    void copyMessageProperties(TextMessage message, TextMessage newMessage, String testId, Queue destination) throws JMSException {
+    void copyMessageProperties(
+            TextMessage message,
+            TextMessage newMessage,
+            String testId,
+            Queue destination
+    ) throws JMSException {
         newMessage.setJMSCorrelationID(message.getJMSMessageID());
 
         newMessage.setStringProperty(testIdHeaderName, testId);
