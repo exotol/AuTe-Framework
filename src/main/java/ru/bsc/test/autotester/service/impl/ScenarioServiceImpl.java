@@ -13,10 +13,8 @@ import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ScenarioResult;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.service.AtExecutor;
-import ru.bsc.test.at.executor.service.IExecutingFinishObserver;
-import ru.bsc.test.at.executor.service.IStopObserver;
 import ru.bsc.test.autotester.exception.ResourceNotFoundException;
+import ru.bsc.test.autotester.launcher.api.ScenarioLauncher;
 import ru.bsc.test.autotester.mapper.ProjectRoMapper;
 import ru.bsc.test.autotester.mapper.ScenarioRoMapper;
 import ru.bsc.test.autotester.mapper.StepRoMapper;
@@ -24,7 +22,11 @@ import ru.bsc.test.autotester.model.ExecutionResult;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.report.AbstractReportGenerator;
 import ru.bsc.test.autotester.repository.ScenarioRepository;
-import ru.bsc.test.autotester.ro.*;
+import ru.bsc.test.autotester.ro.ProjectSearchRo;
+import ru.bsc.test.autotester.ro.ScenarioIdentityRo;
+import ru.bsc.test.autotester.ro.ScenarioRo;
+import ru.bsc.test.autotester.ro.StartScenarioInfoRo;
+import ru.bsc.test.autotester.ro.StepRo;
 import ru.bsc.test.autotester.service.ProjectService;
 import ru.bsc.test.autotester.service.ScenarioService;
 import ru.bsc.test.autotester.utils.ZipUtils;
@@ -35,7 +37,13 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipOutputStream;
@@ -63,6 +71,7 @@ public class ScenarioServiceImpl implements ScenarioService {
     private final ProjectService projectService;
     private final EnvironmentProperties environmentProperties;
     private final AbstractReportGenerator reportGenerator;
+    private final ScenarioLauncher scenarioLauncher;
 
     @Autowired
     public ScenarioServiceImpl(
@@ -72,7 +81,8 @@ public class ScenarioServiceImpl implements ScenarioService {
             ScenarioRepository scenarioRepository,
             ProjectService projectService,
             EnvironmentProperties environmentProperties,
-            AbstractReportGenerator reportGenerator
+            AbstractReportGenerator reportGenerator,
+            ScenarioLauncher scenarioLauncher
     ) {
         this.stepRoMapper = stepRoMapper;
         this.scenarioRoMapper = scenarioRoMapper;
@@ -81,14 +91,14 @@ public class ScenarioServiceImpl implements ScenarioService {
         this.projectService = projectService;
         this.environmentProperties = environmentProperties;
         this.reportGenerator = reportGenerator;
+        this.scenarioLauncher = scenarioLauncher;
     }
 
     @Override
     public StartScenarioInfoRo startScenarioExecutingList(Project project, List<Scenario> scenarioList) {
         loadBeforeAndAfterScenarios(project, scenarioList);
         StartScenarioInfoRo startScenarioInfoRo = new StartScenarioInfoRo();
-        AtExecutor atExecutor = new AtExecutor();
-        atExecutor.setProjectPath(environmentProperties.getProjectsDirectoryPath() + "/" + project.getCode() + "/");
+
         ExecutionResult executionResult = new ExecutionResult();
         final List<ScenarioResult> scenarioResultList = new ArrayList<>();
         executionResult.setScenarioResults(scenarioResultList);
@@ -96,45 +106,11 @@ public class ScenarioServiceImpl implements ScenarioService {
         startScenarioInfoRo.setRunningUuid(runningUuid);
         runningScriptsMap.put(runningUuid, executionResult);
 
-        new Thread(() -> {
-            IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
-            IExecutingFinishObserver finishObserver = scenarioResults -> {
-                executionResult.setFinished(true);
-                synchronized (projectService) {
-                    processResults(project, scenarioResults);
-                }
-            };
-            atExecutor.executeScenarioList(project, scenarioList, scenarioResultList, stopObserver, finishObserver);
-        }).start();
+        scenarioLauncher.launchScenarioFromUI(scenarioList, project, environmentProperties, executionResult, stopExecutingSet, projectService, runningUuid );
         return startScenarioInfoRo;
     }
 
-    private void processResults(Project project, List<ScenarioResult> scenarioResults) {
-        for (ScenarioResult scenarioResult: scenarioResults) {
-            try {
-                Scenario scenario = scenarioResult.getScenario();
-                String scenarioGroup = scenario.getScenarioGroup();
-                String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
-                String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
 
-                Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-                List<StepResult> stepResultList = scenarioResult.getStepResultList();
-                scenarioToUpdate.setFailed(scenarioResult.isFailed());
-                scenarioToUpdate.setHasResults(true);
-                scenario = scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
-
-                Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
-                if (!Files.exists(path)) {
-                    Files.createDirectories(path);
-                }
-                Path resultFile = path.resolve("results.json");
-                Files.deleteIfExists(resultFile);
-                objectMapper.writeValue(resultFile.toFile(), stepResultList);
-            } catch (IOException e) {
-                log.error("", e);
-            }
-        }
-    }
 
     @Override
     public void stopExecuting(String executingUuid) {

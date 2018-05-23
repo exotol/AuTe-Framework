@@ -3,7 +3,6 @@ package ru.bsc.test.autotester.launcher.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.ScenarioResult;
 import ru.bsc.test.autotester.launcher.api.TestLauncher;
 import ru.bsc.test.autotester.launcher.api.ScenarioLauncher;
@@ -44,9 +43,7 @@ public class TestLauncherImpl implements TestLauncher {
             if (properties.getProjectStandMap() == null || !properties.getProjectStandMap().containsKey(project.getCode())) {
                 continue;
             }
-            for (Scenario scenario: project.getScenarioList()) {
-                scenarioLauncher.launchScenario(scenario, project, properties, reportGenerator, scenarioResults, list -> {});
-            }
+            scenarioLauncher.launchScenarioFromCLI(project.getScenarioList(), project, properties, reportGenerator, scenarioResults);
         }
         LaunchResult launchResult = new LaunchResult(scenarioResults);
         reportGenerator.generate(new File("." + File.separator + "report"));
