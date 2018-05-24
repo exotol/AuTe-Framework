@@ -1,0 +1,11 @@
+<div class="search-block" *ngIf="projectCode">
+  <input #queryInput [formControl] ="queryField" placeholder="{{'Search by method name' | translate}}"/>
+  <div class="search-result" #searchResult *ngIf="scenarioList || errorFlag">
+    <ol *ngIf="scenarioList">
+      <li *ngFor="let scenario of scenarioList" [routerLink]="['/project/' + projectCode + '/scenario/' + (scenario.scenarioGroup ? scenario.scenarioGroup + '/' : '') + scenario.code]">{{scenario.name}}</li>
+    </ol>
+    <p class="error" *ngIf="errorFlag">{{'Nothing found' | translate}}</p>
+  </div>
+</div>
+
+

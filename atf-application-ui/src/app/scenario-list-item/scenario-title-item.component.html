@@ -1,0 +1,44 @@
+<div id="scenarioHeader" #scenarioHeader style="padding-bottom: 10px;" class="container-fluid" *ngIf="scenario" [ngClass] = "getMapStyleForScenario()">
+  <div class="row">
+    <div class="col-sm-6">
+      <label><span>{{scenario.name}}</span></label>
+    </div>
+    <div class="col-sm-1">
+      <div *ngIf="state != 'executing' && scenario.failed" style="color: red">{{'Failed' | translate}}</div>
+      <div *ngIf="state == 'executing'" style="color: gray">...</div>
+    </div>
+    <div class="col-sm-5">
+
+      <div class="input-group">
+        <div class="input-group-btn">
+          <button style="padding-bottom: 1px; padding-top: 1px;" class="btn btn-primary" *ngIf="state != 'executing' && state != 'starting'" (click)="runScenario()">{{'Run' | translate}}</button>
+          <button style="padding-bottom: 1px; padding-top: 1px;" class="btn btn-warning" *ngIf="state == 'executing'" (click)="stop()">{{'Stop' | translate}}</button>
+          <button style="padding-bottom: 1px; padding-top: 1px;" class="btn btn-warning" *ngIf="state == 'starting'" disabled>{{'Starting' | translate}}...</button>
+        </div>
+
+        <div class="input-group-btn">
+          <button
+            style="border-radius: 0; padding-bottom: 1px; padding-top: 1px;"
+            class="btn"
+            *ngIf="scenario.hasResults"
+            (click)="getReport()">{{'Get report' | translate}}</button>
+        </div>
+
+        <button
+          style="border-radius: 0 4px 4px 0; padding-bottom: 1px; padding-top: 1px;"
+          class="btn"
+          *ngIf="scenario.hasResults"
+          (click)="resultDetailsToggle()">{{'Results' | translate}} <ng-container *ngIf="executedSteps && totalSteps">({{executedSteps}}/{{totalSteps}})</ng-container></button>
+
+        <div class="input-group-btn">
+          <button style="border-radius: 4px; padding-bottom: 1px; padding-top: 1px;" class="btn btn-success" *ngIf="!showResultDetails" (click)="saveSteps()">{{'Save steps' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row result title-result-container" *ngIf="showResultDetails && stepResultList">
+    <ng-container *ngFor="let stepResult of stepResultList">
+      <app-step-result-item [stepResult]="stepResult" [scenario]="scenario" [stepList]="stepList"></app-step-result-item>
+    </ng-container>
+  </div>
+</div>

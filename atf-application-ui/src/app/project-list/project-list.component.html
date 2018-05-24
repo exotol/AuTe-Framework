@@ -1,0 +1,46 @@
+<h4>{{'Projects' | translate}}</h4>
+<div class="help-block" *ngIf="!projectList">
+  <span class="glyphicon glyphicon-time"></span>
+  {{'Loading' | translate}}
+</div>
+<table class="table table-condensed" *ngIf="projectList">
+  <tbody>
+    <tr *ngFor="let project of projectList">
+      <td>
+        <a [routerLink]="['/project', project.code]">{{project.name}}</a>
+      </td>
+      <td>
+        <ng-container *ngIf="project.stand">
+          {{project.stand.serviceUrl}}
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <label>{{'Create new project' | translate}}</label>
+      <div class="input-group">
+        <input
+          placeholder="{{'Project name' | translate}}"
+          class="form-control"
+          style="width: 50%;"
+          title=""
+          [(ngModel)]="newProjectName"/>
+        <input
+          placeholder="{{'Project code' | translate}}"
+          class="form-control"
+          style="width: 50%;"
+          title=""
+          [(ngModel)]="newProjectCode"/>
+        <div class="input-group-btn">
+          <button class="btn btn-success" (click)="saveNewProject()"><span class="glyphicon glyphicon-plus"></span> {{ 'Create' | translate}}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
