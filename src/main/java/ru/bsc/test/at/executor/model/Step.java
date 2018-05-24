@@ -44,7 +44,7 @@ public class Step implements Serializable, AbstractModel {
     private String parseMockRequestXPath;
     private String parseMockRequestScenarioVariable;
     private String timeoutMs;
-    private List<MqMockResponse> mqMockResponseList;
+    private List<MqMock> mqMockResponseList = new LinkedList<>();
     private List<ExpectedMqRequest> expectedMqRequestList;
     private List<SqlData> sqlDataList = new LinkedList<>();
     private List<ScenarioVariableFromMqRequest> scenarioVariableFromMqRequestList;
@@ -139,13 +139,13 @@ public class Step implements Serializable, AbstractModel {
         step.setTimeoutMs(getTimeoutMs());
         step.setStepMode(getStepMode());
 
-        if (step.getMqMockResponseList() == null) {
+        if (this.getMqMockResponseList() == null) {
             step.setMqMockResponseList(new LinkedList<>());
         }
-        step.getMqMockResponseList().clear();
-        if (getMqMockResponseList() != null) {
-            for (MqMockResponse mqMockResponse : getMqMockResponseList()) {
-                step.getMqMockResponseList().add(mqMockResponse.copy());
+        this.getMqMockResponseList().clear();
+        if (this.getMqMockResponseList() != null) {
+            for (MqMock mqMock : this.getMqMockResponseList()) {
+                this.getMqMockResponseList().add(mqMock.copy());
             }
         }
 

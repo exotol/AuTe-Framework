@@ -10,14 +10,8 @@ import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import ru.bsc.test.at.executor.ei.wiremock.model.MqMockDefinition;
+import ru.bsc.test.at.executor.ei.wiremock.model.*;
 import ru.bsc.test.at.executor.ei.wiremock.WireMockAdmin;
-import ru.bsc.test.at.executor.ei.wiremock.model.BasicAuthCredentials;
-import ru.bsc.test.at.executor.ei.wiremock.model.MatchesXPath;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
-import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
-import ru.bsc.test.at.executor.ei.wiremock.model.WireMockRequest;
 import ru.bsc.test.at.executor.helper.client.api.ClientResponse;
 import ru.bsc.test.at.executor.helper.client.impl.mq.ClientMQRequest;
 import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
@@ -423,19 +417,25 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    void setMqMockResponses(WireMockAdmin wireMockAdmin, String testId, List<MqMockResponse> mqMockResponseList, Map<String, Object> scenarioVariables) throws Exception {
-        log.debug("Setting MQ mock responses {} {} {} {}", wireMockAdmin, testId, mqMockResponseList, scenarioVariables);
-        if (mqMockResponseList != null) {
+    void setMqMockResponses(WireMockAdmin wireMockAdmin, String testId, List<MqMock> mqMockList, Map<String, Object> scenarioVariables) throws Exception {
+        log.debug("Setting MQ mock responses {} {} {} {}", wireMockAdmin, testId, mqMockList, scenarioVariables);
+        if (mqMockList != null) {
             if (wireMockAdmin == null) {
                 throw new Exception("wireMockAdmin is not configured in env.yml");
             }
-            for (MqMockResponse mqMockResponse : mqMockResponseList) {
+            for (MqMock mqMock : mqMockList) {
                 MqMockDefinition mockMessage = new MqMockDefinition();
-                mockMessage.setSourceQueueName(mqMockResponse.getSourceQueueName());
-                mockMessage.setResponseBody(evaluateExpressions(mqMockResponse.getResponseBody(), scenarioVariables, null));
-                mockMessage.setHttpUrl(mqMockResponse.getHttpUrl());
-                mockMessage.setDestinationQueueName(mqMockResponse.getDestinationQueueName());
+                mockMessage.setSourceQueueName(mqMock.getSourceQueueName());
+                mockMessage.setHttpUrl(mqMock.getHttpUrl());
                 mockMessage.setTestId(testId);
+
+                for (MqMockResponse part : mqMock.getResponses()) {
+                    MqMockDefinitionResponse definitionPart = new MqMockDefinitionResponse(
+                            evaluateExpressions(part.getResponseBody(), scenarioVariables, null),
+                            part.getDestinationQueueName()
+                    );
+                    mockMessage.getResponses().add(definitionPart);
+                }
                 wireMockAdmin.addMqMapping(mockMessage);
             }
         }
