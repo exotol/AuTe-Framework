@@ -2,7 +2,7 @@ package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
-import ru.bsc.test.at.executor.model.MqMockResponse;
+import ru.bsc.test.at.executor.model.MqMock;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
@@ -23,7 +23,7 @@ public class MqResponsesAttachExtractor extends AbstractAttachExtractor<StepResu
 
     @Override
     public List<Attachment> extract(File resultDirectory, StepResult result) {
-        List<MqMockResponse> responses = result.getStep().getMqMockResponseList();
+        List<MqMock> responses = result.getStep().getMqMockResponseList();
         if (CollectionUtils.isEmpty(responses)) {
             return null;
         }
@@ -31,28 +31,31 @@ public class MqResponsesAttachExtractor extends AbstractAttachExtractor<StepResu
         String responsesData = getMqResponsesData(responses);
         String relativePath = writeDataToFile(resultDirectory, responsesData, FILE_NAME);
         if (relativePath != null) {
-            return Collections.singletonList(new Attachment()
-                    .withTitle(FILE_NAME)
+            return Collections.singletonList(new Attachment().withTitle(FILE_NAME)
                     .withSource(relativePath)
                     .withType(TEXT_PLAIN));
         }
         return null;
     }
 
-    private String getMqResponsesData(List<MqMockResponse> responses) {
-        return responses.stream()
-                .map(response ->
-                        "Source queue name: " +
-                        response.getSourceQueueName() +
-                        "\nDestination queue name: " +
-                        response.getDestinationQueueName() +
-                        "\nXPath: " +
-                        response.getXpath() +
-                        "\nHTTP URL: " +
-                        response.getHttpUrl() +
-                        "\nRequest body:\n" +
-                        response.getResponseBody()
-                )
-                .collect(Collectors.joining("\n\n"));
+    private String getMqResponsesData(List<MqMock> mocks) {
+        return mocks.stream().map(this::mockToString).collect(Collectors.joining("\n\n"));
+    }
+
+    private String mockToString(MqMock mock) {
+        return "Source queue name: " +
+               mock.getSourceQueueName() +
+               "\nXPath: " +
+               mock.getXpath() +
+               "\nHTTP URL: " +
+               mock.getHttpUrl() +
+               "\nMQ mock responses:" +
+               mock.getResponses()
+                       .stream()
+                       .map(response -> "\nResponse body:\n" +
+                                        response.getResponseBody() +
+                                        "\nDestination queue name: " +
+                                        response.getDestinationQueueName())
+                       .collect(Collectors.joining());
     }
 }

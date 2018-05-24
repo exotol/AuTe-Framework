@@ -136,4 +136,9 @@ public abstract class StepRoMapper {
             @Mapping(target = "messageFile", ignore = true)
     })
     abstract MqMessageRo convertMqMessageToRo(MqMessage ro);
+
+    @Mappings({
+            @Mapping(target = "responseFile", ignore = true)
+    })
+    abstract MqMockResponseRo convertMqMockResponsePartToRo(MqMockResponse response);
 }
