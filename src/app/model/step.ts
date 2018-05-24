@@ -2,7 +2,7 @@ import {ExpectedServiceRequest} from './expected-service-request';
 import {MockServiceResponse} from './mock-service-response';
 import {StepParameterSet} from './step-parameter-set';
 import {FormData} from './form-data';
-import {MqMockResponse} from './mq-mock-response';
+import {MqMock} from './mq-mock';
 import {ExpectedMqRequest} from './expected-mq-request';
 import {SqlData} from './sql-data';
 import {ScenarioVariableFromMqRequest} from './scenario-variable-from-mq-request';
@@ -38,7 +38,7 @@ export class Step {
   parseMockRequestXPath: string;
   parseMockRequestScenarioVariable: string;
   timeoutMs: string;
-  mqMockResponseList: MqMockResponse[];
+  mqMockResponseList: MqMock[];
   expectedMqRequestList: ExpectedMqRequest[];
   sqlDataList: SqlData[];
   scenarioVariableFromMqRequestList: ScenarioVariableFromMqRequest[];

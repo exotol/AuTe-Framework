@@ -4,13 +4,14 @@ import {MockServiceResponse} from '../model/mock-service-response';
 import {ToastOptions, ToastyService} from 'ng2-toasty';
 import {ExpectedServiceRequest} from '../model/expected-service-request';
 import {FormData} from '../model/form-data';
-import {MqMockResponse} from '../model/mq-mock-response';
+import {MqMock} from '../model/mq-mock';
 import {ExpectedMqRequest} from '../model/expected-mq-request';
 import {SqlData} from '../model/sql-data';
 import {ScenarioVariableFromMqRequest} from '../model/scenario-variable-from-mq-request';
 import {NameValueProperty} from '../model/name-value-property';
 import {StepService} from '../service/step.service';
 import {MqMessage} from "../model/mq-message";
+import {MqMockResponse} from "../model/mq-mock-response";
 
 @Component({
   selector: 'app-step-item',
@@ -121,7 +122,9 @@ export class StepItemComponent implements OnInit , DoCheck {
     if (!this.step.mqMockResponseList) {
       this.step.mqMockResponseList = [];
     }
-    this.step.mqMockResponseList.push(new MqMockResponse());
+    const mqMockResponse = new MqMock();
+    mqMockResponse.responses.push(new MqMockResponse());
+    this.step.mqMockResponseList.push(mqMockResponse);
   }
 
   removeMockServiceResponse(mockServiceResponse: MockServiceResponse) {
@@ -251,7 +254,7 @@ export class StepItemComponent implements OnInit , DoCheck {
     this.step.formDataList.push(new FormData());
   }
 
-  removeMqMockResponse(mqMockResponse: MqMockResponse) {
+  removeMqMockResponse(mqMockResponse: MqMock) {
     if (confirm('Confirm: remove MQ mock response')) {
       const indexToRemove = this.step.mqMockResponseList.indexOf(mqMockResponse);
       if (indexToRemove > -1) {

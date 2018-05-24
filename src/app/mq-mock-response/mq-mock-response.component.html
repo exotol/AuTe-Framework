@@ -1,6 +1,6 @@
 <div>
   <div class="row" style="margin-bottom: 5px">
-    <div class="col-sm-12">
+    <div class="col-sm-10">
       <div class="input-group">
         <input class="form-control" placeholder="{{'Source queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.sourceQueueName"/>
         <span class="input-group-btn">
@@ -8,20 +8,45 @@
         </span>
       </div>
     </div>
+    <div class="col-sm-2">
+      <label>
+        <input type="checkbox" (change)="onToggleSeveralResponses()" [(ngModel)]="severalResponses">
+        {{'Several responses' | translate}}
+      </label>
+    </div>
+  </div>
+  <ng-container *ngFor="let part of mqMockResponse.responses; let i = index">
+    <div class="row" style="margin-bottom: 5px">
+      <div class="col-sm-12">
+        <input class="form-control" placeholder="{{'Destination queue name' | translate}} {{i + 1}}" title="" [(ngModel)]="part.destinationQueueName" *ngIf="i === 0"/>
+        <div class="input-group" *ngIf="i > 0">
+          <input class="form-control" placeholder="{{'Destination queue name' | translate}} {{i + 1}}" title="" [(ngModel)]="part.destinationQueueName"/>
+          <span class="input-group-btn">
+          <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="deleteDestinationQueue(i)"><span class="glyphicon glyphicon-minus"></span> {{'Remove' | translate}}</button>
+        </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 5px">
+      <div class="col-sm-12">
+        <label>{{'Response body' | translate}}</label>
+        <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="part.responseBody"></textarea>
+      </div>
+    </div>
+  </ng-container>
+  <div class="row" style="margin-bottom: 5px" *ngIf="severalResponses">
+    <div class="col-sm-12">
+      <button class="btn btn-sm btn-default" style="line-height: 1.9;" (click)="addDestinationQueue()">
+        <span class="glyphicon glyphicon-plus"></span> {{'Add' | translate}}
+      </button>
+    </div>
   </div>
   <div class="row" style="margin-bottom: 5px">
-    <div class="col-sm-6">
-      <input class="form-control" placeholder="{{'Destination queue name' | translate}}" title="" [(ngModel)]="mqMockResponse.destinationQueueName"/>
-    </div>
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <input class="form-control" placeholder="{{'XPath message filter' | translate}}" title="" [(ngModel)]="mqMockResponse.xpath"/>
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-12">
-      <label>{{'Response body' | translate}}</label>
-      <textarea class="form-control" placeholder="{{'Response body' | translate}}" title="" rows="7" [(ngModel)]="mqMockResponse.responseBody"></textarea>
-    </div>
     <div class="col-sm-12">
       <label>{{'Http URL' | translate}}</label>
       <input class="form-control" placeholder="{{'Http url' | translate}}" title="" [(ngModel)]="mqMockResponse.httpUrl"/>
