@@ -492,6 +492,22 @@ var MqMockResponse = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/model/mq-mock.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MqMock; });
+var MqMock = (function () {
+    function MqMock() {
+        this.responses = [];
+    }
+    return MqMock;
+}());
+
+//# sourceMappingURL=mq-mock.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/model/name-value-property.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -658,7 +674,7 @@ var Step = (function () {
 /***/ "../../../../../src/app/mq-mock-response/mq-mock-response.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-12\">\r\n      <div class=\"input-group\">\r\n        <input class=\"form-control\" placeholder=\"{{'Source queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.sourceQueueName\"/>\r\n        <span class=\"input-group-btn\">\r\n          <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"deleteMqMockResponse()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n        </span>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'Destination queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.destinationQueueName\"/>\r\n    </div>\r\n    <div class=\"col-sm-6\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath message filter' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.xpath\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Response body' | translate}}</label>\r\n      <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"mqMockResponse.responseBody\"></textarea>\r\n    </div>\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Http URL' | translate}}</label>\r\n      <input class=\"form-control\" placeholder=\"{{'Http url' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.httpUrl\"/>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-10\">\r\n      <div class=\"input-group\">\r\n        <input class=\"form-control\" placeholder=\"{{'Source queue name' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.sourceQueueName\"/>\r\n        <span class=\"input-group-btn\">\r\n          <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"deleteMqMockResponse()\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n        </span>\r\n      </div>\r\n    </div>\r\n    <div class=\"col-sm-2\">\r\n      <label>\r\n        <input type=\"checkbox\" (change)=\"onToggleSeveralResponses()\" [(ngModel)]=\"severalResponses\">\r\n        {{'Several responses' | translate}}\r\n      </label>\r\n    </div>\r\n  </div>\r\n  <ng-container *ngFor=\"let part of mqMockResponse.responses; let i = index\">\r\n    <div class=\"row\" style=\"margin-bottom: 5px\">\r\n      <div class=\"col-sm-12\">\r\n        <input class=\"form-control\" placeholder=\"{{'Destination queue name' | translate}} {{i + 1}}\" title=\"\" [(ngModel)]=\"part.destinationQueueName\" *ngIf=\"i === 0\"/>\r\n        <div class=\"input-group\" *ngIf=\"i > 0\">\r\n          <input class=\"form-control\" placeholder=\"{{'Destination queue name' | translate}} {{i + 1}}\" title=\"\" [(ngModel)]=\"part.destinationQueueName\"/>\r\n          <span class=\"input-group-btn\">\r\n          <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"deleteDestinationQueue(i)\"><span class=\"glyphicon glyphicon-minus\"></span> {{'Remove' | translate}}</button>\r\n        </span>\r\n        </div>\r\n      </div>\r\n    </div>\r\n    <div class=\"row\" style=\"margin-bottom: 5px\">\r\n      <div class=\"col-sm-12\">\r\n        <label>{{'Response body' | translate}}</label>\r\n        <textarea class=\"form-control\" placeholder=\"{{'Response body' | translate}}\" title=\"\" rows=\"7\" [(ngModel)]=\"part.responseBody\"></textarea>\r\n      </div>\r\n    </div>\r\n  </ng-container>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\" *ngIf=\"severalResponses\">\r\n    <div class=\"col-sm-12\">\r\n      <button class=\"btn btn-sm btn-default\" style=\"line-height: 1.9;\" (click)=\"addDestinationQueue()\">\r\n        <span class=\"glyphicon glyphicon-plus\"></span> {{'Add' | translate}}\r\n      </button>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\n    <div class=\"col-sm-12\">\r\n      <input class=\"form-control\" placeholder=\"{{'XPath message filter' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.xpath\"/>\r\n    </div>\r\n  </div>\r\n  <div class=\"row\">\r\n    <div class=\"col-sm-12\">\r\n      <label>{{'Http URL' | translate}}</label>\r\n      <input class=\"form-control\" placeholder=\"{{'Http url' | translate}}\" title=\"\" [(ngModel)]=\"mqMockResponse.httpUrl\"/>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -667,7 +683,8 @@ module.exports = "<div>\r\n  <div class=\"row\" style=\"margin-bottom: 5px\">\r\
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_mq_mock_response__ = __webpack_require__("../../../../../src/app/model/mq-mock-response.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_mq_mock__ = __webpack_require__("../../../../../src/app/model/mq-mock.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__model_mq_mock_response__ = __webpack_require__("../../../../../src/app/model/mq-mock-response.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MqMockResponseComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -680,18 +697,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var MqMockResponseComponent = (function () {
     function MqMockResponseComponent() {
         this.onDelete = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["F" /* EventEmitter */]();
     }
+    MqMockResponseComponent.prototype.ngOnInit = function () {
+        this.severalResponses = this.mqMockResponse.responses.length > 1;
+    };
     MqMockResponseComponent.prototype.deleteMqMockResponse = function () {
         this.onDelete.emit();
+    };
+    MqMockResponseComponent.prototype.addDestinationQueue = function () {
+        this.mqMockResponse.responses.push(new __WEBPACK_IMPORTED_MODULE_2__model_mq_mock_response__["a" /* MqMockResponse */]());
+    };
+    MqMockResponseComponent.prototype.deleteDestinationQueue = function (index) {
+        this.mqMockResponse.responses.splice(index, 1);
+    };
+    MqMockResponseComponent.prototype.onToggleSeveralResponses = function () {
+        if (!this.severalResponses) {
+            this.mqMockResponse.responses.splice(1, this.mqMockResponse.responses.length - 1);
+        }
     };
     return MqMockResponseComponent;
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["O" /* Input */])(),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mq_mock_response__["a" /* MqMockResponse */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mq_mock_response__["a" /* MqMockResponse */]) === "function" && _a || Object)
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__model_mq_mock__["a" /* MqMock */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__model_mq_mock__["a" /* MqMock */]) === "function" && _a || Object)
 ], MqMockResponseComponent.prototype, "mqMockResponse", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_1" /* Output */])(),
@@ -2643,13 +2675,14 @@ module.exports = "<div class=\"container-fluid\" style=\"padding-bottom: 30px;\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_toasty__ = __webpack_require__("../../../../ng2-toasty/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__model_expected_service_request__ = __webpack_require__("../../../../../src/app/model/expected-service-request.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__model_form_data__ = __webpack_require__("../../../../../src/app/model/form-data.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__model_mq_mock_response__ = __webpack_require__("../../../../../src/app/model/mq-mock-response.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__model_mq_mock__ = __webpack_require__("../../../../../src/app/model/mq-mock.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__model_expected_mq_request__ = __webpack_require__("../../../../../src/app/model/expected-mq-request.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__model_sql_data__ = __webpack_require__("../../../../../src/app/model/sql-data.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__model_scenario_variable_from_mq_request__ = __webpack_require__("../../../../../src/app/model/scenario-variable-from-mq-request.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__model_name_value_property__ = __webpack_require__("../../../../../src/app/model/name-value-property.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__service_step_service__ = __webpack_require__("../../../../../src/app/service/step.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__model_mq_message__ = __webpack_require__("../../../../../src/app/model/mq-message.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__model_mq_mock_response__ = __webpack_require__("../../../../../src/app/model/mq-mock-response.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StepItemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2660,6 +2693,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -2748,7 +2782,9 @@ var StepItemComponent = (function () {
         if (!this.step.mqMockResponseList) {
             this.step.mqMockResponseList = [];
         }
-        this.step.mqMockResponseList.push(new __WEBPACK_IMPORTED_MODULE_6__model_mq_mock_response__["a" /* MqMockResponse */]());
+        var mqMockResponse = new __WEBPACK_IMPORTED_MODULE_6__model_mq_mock__["a" /* MqMock */]();
+        mqMockResponse.responses.push(new __WEBPACK_IMPORTED_MODULE_13__model_mq_mock_response__["a" /* MqMockResponse */]());
+        this.step.mqMockResponseList.push(mqMockResponse);
     };
     StepItemComponent.prototype.removeMockServiceResponse = function (mockServiceResponse) {
         if (confirm('Confirm: remove mock response')) {

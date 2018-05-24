@@ -137,6 +137,8 @@
   "XPath message filter": "XPath message filter",
   "Expected MQ requests": "Expected MQ requests",
   "MQ mock responses": "MQ mock responses",
+  "Destination queue name": "Destination queue name",
+  "Several responses": "Several responses",
   "Request": "Request",
   "Requests": "Requests",
   "Response": "Response",

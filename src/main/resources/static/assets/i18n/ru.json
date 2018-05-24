@@ -137,6 +137,8 @@
   "XPath message filter": "XPath фильтр сообщений",
   "Expected MQ requests": "Ожидаемые запросы MQ",
   "MQ mock responses": "Ответы MQ-заглушек",
+  "Destination queue name": "Очередь назначения",
+  "Several responses": "Несколько ответов",
   "Request": "Запрос",
   "Requests": "Запросы",
   "Response": "Ответ",
