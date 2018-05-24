@@ -1,0 +1,8 @@
+.idea
+*.iml
+*.log
+env.yaml
+target
+pom.xml.versionsBackup
+out
+update-front.ps1
