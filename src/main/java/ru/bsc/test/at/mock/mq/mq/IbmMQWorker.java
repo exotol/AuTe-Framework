@@ -7,25 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 import ru.bsc.test.at.mock.mq.http.HttpClient;
 import ru.bsc.test.at.mock.mq.models.MockMessage;
+import ru.bsc.test.at.mock.mq.models.MockMessageResponse;
 import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.DeliveryMode;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-import java.io.IOException;
+import javax.jms.*;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -72,13 +60,6 @@ public class IbmMQWorker extends AbstractMqWorker {
                     Message receivedMessage = consumer.receive();
                     logger.info("Received message, JMSMessageID: {}", receivedMessage.getJMSMessageID());
 
-                    Enumeration names = receivedMessage.getPropertyNames();
-                    List<Object> list = new LinkedList<>();
-                    while (names.hasMoreElements()) {
-                        Object name = names.nextElement();
-                        list.add(name);
-                    }
-
                     MockedRequest mockedRequest = new MockedRequest();
                     //noinspection unchecked
                     fifo.add(mockedRequest);
@@ -101,37 +82,38 @@ public class IbmMQWorker extends AbstractMqWorker {
                         mockedRequest.setMappingGuid(mockMessage.getGuid());
 
                         // Выполнение инструкции из моков
-                        byte[] response;
+                        for (MockMessageResponse mockResponse : mockMessage.getResponses()) {
+                            byte[] response;
 
-                        if (StringUtils.isNotEmpty(mockMessage.getResponseBody())) {
-                            response = new VelocityTransformer().transform(stringBody, null, mockMessage.getResponseBody()).getBytes();
+                        if (StringUtils.isNotEmpty(mockResponse.getResponseBody())) {
+                            response = new VelocityTransformer().transform(stringBody, null, mockResponse.getResponseBody()).getBytes();
                         } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
                             try (HttpClient httpClient = new HttpClient()) {
-                                response = httpClient.sendPost(mockMessage.getHttpUrl(), message.getText(), testIdHeaderName, testId).getBytes();
-                            }
+                            response = httpClient.sendPost(mockMessage.getHttpUrl(), message.getText(), testIdHeaderName, testId).getBytes();}
                             mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                         } else {
                             response = stringBody.getBytes();
                         }
 
-                        mockedRequest.setDestinationQueue(mockMessage.getDestinationQueueName());
+                            mockedRequest.setDestinationQueue(mockResponse.getDestinationQueueName());
 
-                        if (isNotEmpty(mockMessage.getDestinationQueueName()) && response != null) {
+                            if (isNotEmpty(mockResponse.getDestinationQueueName())) {
 
-                            mockedRequest.setResponseBody(new String(response, "UTF-8"));
+                                mockedRequest.setResponseBody(new String(response, "UTF-8"));
 
-                            Queue destination = session.createQueue(mockMessage.getDestinationQueueName());
-                            MessageProducer producer = session.createProducer(destination);
-                            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                                Queue destination = session.createQueue(mockResponse.getDestinationQueueName());
+                                MessageProducer producer = session.createProducer(destination);
+                                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-                            TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
-                            copyMessageProperties(message, newMessage, testId, destination);
+                                TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
+                                copyMessageProperties(message, newMessage, testId, destination);
 
-                            // Переслать сообщение в очередь-назначение
-                            producer.send(newMessage);
+                                // Переслать сообщение в очередь-назначение
+                                producer.send(newMessage);
 
-                            producer.close();
-                            logger.info(" [x] Send >>> {} '{}'", mockMessage.getDestinationQueueName(), message.getText(), "UTF-8");
+                                producer.close();
+                                logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), message.getText(), "UTF-8");
+                            }
                         }
                     } else {
                         // Переслать сообщение в очередь "по-умолчанию".
@@ -167,7 +149,7 @@ public class IbmMQWorker extends AbstractMqWorker {
     }
 
     @Override
-    public void stop() throws IOException, TimeoutException {
+    public void stop() {
         // Do nothing
     }
 

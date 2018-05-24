@@ -1,20 +1,16 @@
 package ru.bsc.test.at.mock.mq.mq;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.*;
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bsc.test.at.mock.mq.http.HttpClient;
 import ru.bsc.test.at.mock.mq.models.MockMessage;
+import ru.bsc.test.at.mock.mq.models.MockMessageResponse;
 import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
-import javax.jms.JMSException;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -72,7 +68,7 @@ public class RabbitMQWorker extends AbstractMqWorker {
         connection.close();
     }
 
-    private void waitMessage() throws JMSException, IOException {
+    private void waitMessage() throws IOException {
         channelFrom.basicConsume(queueNameFrom, true, new DefaultConsumer(channelFrom) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -92,32 +88,33 @@ public class RabbitMQWorker extends AbstractMqWorker {
                 MockMessage mockMessage = findMockMessage(testId, stringBody);
                 if (mockMessage != null) {
                     mockedRequest.setMappingGuid(mockMessage.getGuid());
-                    byte[] response;
+                    for (MockMessageResponse mockResponse : mockMessage.getResponses()) {
+                        byte[] response;
 
-                    if (StringUtils.isNotEmpty(mockMessage.getResponseBody())) {
-                        response = new VelocityTransformer().transform(stringBody, null, mockMessage.getResponseBody()).getBytes();
+                    if (StringUtils.isNotEmpty(mockResponse.getResponseBody())) {
+                        response = new VelocityTransformer().transform(stringBody, null, mockResponse.getResponseBody()).getBytes();
                     } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
                         try (HttpClient httpClient = new HttpClient()) {
-                            response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(body, "UTF-8"), testIdHeaderName, testId).getBytes();
-                        }
+                        response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(body, "UTF-8"), testIdHeaderName, testId).getBytes();}
                         mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                     } else {
                         response = body;
                     }
 
-                    mockedRequest.setDestinationQueue(mockMessage.getDestinationQueueName());
+                        mockedRequest.setDestinationQueue(mockResponse.getDestinationQueueName());
 
-                    //noinspection ConstantConditions
-                    if (isNotEmpty(mockMessage.getDestinationQueueName()) && response != null) {
-                        mockedRequest.setResponseBody(new String(response, "UTF-8"));
+                        //noinspection ConstantConditions
+                        if (isNotEmpty(mockResponse.getDestinationQueueName()) && response != null) {
+                            mockedRequest.setResponseBody(new String(response, "UTF-8"));
 
-                        Channel channel = connection.createChannel();
-                        channel.basicPublish("", mockMessage.getDestinationQueueName(), properties, response);
-                        logger.info(" [x] Send >>> {} '{}'", mockMessage.getDestinationQueueName(), new String(response, "UTF-8"));
-                        try {
-                            channel.close();
-                        } catch (TimeoutException e) {
-                            logger.error("Caught: {}", e);
+                            Channel channel = connection.createChannel();
+                            channel.basicPublish("", mockResponse.getDestinationQueueName(), properties, response);
+                            logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), new String(response, "UTF-8"));
+                            try {
+                                channel.close();
+                            } catch (TimeoutException e) {
+                                logger.error("Caught: {}", e);
+                            }
                         }
                     }
                 } else {
