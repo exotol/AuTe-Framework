@@ -8,8 +8,10 @@ node() {
 		try {
 			sh "${mvnHome}/bin/mvn clean package -P npm-install"
 		} finally {
-			junit 'target/surefire-reports/**/*.xml'
+			junit '**/target/surefire-reports/**/*.xml'
 		}
-		archiveArtifacts artifacts: 'target/*.jar'
+	}
+	stage('Архивирование артефактов') {
+		archiveArtifacts artifacts: '**/target/*.jar'
 	}
 }
