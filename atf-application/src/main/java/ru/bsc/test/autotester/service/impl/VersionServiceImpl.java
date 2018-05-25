@@ -24,7 +24,7 @@ public class VersionServiceImpl implements VersionService {
     private static final String BUILD_IMPL_VERSION = "buildnumber";
     private static final String BUILD_DATE = "builddate";
     private static final String MANAGER_VERSION_PROPERTIES = "version.properties";
-    private static final String EXECUTOR_VERSION_PROPERTIES = "at-executor.version.properties";
+    private static final String EXECUTOR_VERSION_PROPERTIES = "atf-executor.version.properties";
     private static final String WIREMOCK_VERSION_PATH = "__version";
 
     private final List<WiremockVersion> wiremockVersions = new ArrayList<>();
