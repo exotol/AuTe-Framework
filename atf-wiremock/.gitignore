@@ -1,5 +1,0 @@
-.idea
-*.iml
-target
-src/main/resources/velocity.properties
-*.log
