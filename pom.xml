@@ -14,7 +14,7 @@
             <dependency>
                 <groupId>ru.bsc.test</groupId>
                 <artifactId>atf-executor</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
