@@ -43,3 +43,5 @@ Thumbs.db
 
 *.iml
 package-lock.json
+
+node
