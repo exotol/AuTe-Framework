@@ -12,6 +12,6 @@ node() {
 		}
 	}
 	stage('Архивирование артефактов') {
-		archiveArtifacts artifacts: '**/target/*.jar'
+		archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
 	}
 }
