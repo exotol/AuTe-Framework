@@ -7,6 +7,13 @@ node() {
 		def mvnHome = tool 'Maven 3.3.9'
 		try {
 			sh "${mvnHome}/bin/mvn clean package -P npm-install"
+		} catch (exception) {
+			emailext(
+					attachLog: true,
+					body: 'Сборка ATF нестабильна.\n Проверьте лог сборки ${BUILD_URL}" \n Состав сборки:\n' + getChangeLog(),
+					recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider']],
+					subject: "Сборка ATF ${BUILD_NUMBER} нестабильна"
+			)
 		} finally {
 			junit '**/target/surefire-reports/**/*.xml'
 		}
@@ -14,4 +21,26 @@ node() {
 	stage('Архивирование артефактов') {
 		archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
 	}
+	stage('Отправка e-mail уведомлений') {
+		def sendToList = 'pavel.golovkin@bsc-ideas.com'
+		emailext(
+				attachLog: true,
+				body: 'Доступна новая сборка ATF ${BUILD_URL}\nСостав сборки:\n' + getChangeLog(),
+				to: sendToList,
+				subject: "Новая версия ATF ${BUILD_NUMBER}"
+		)
+	}
+}
+
+@NonCPS
+String getChangeLog() {
+	def changeLogSets = currentBuild.changeSets
+	def changelogText = ""
+	for (changeSet in changeLogSets) {
+		def entries = changeSet.items
+		for (entry in entries) {
+			changelogText += "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg} \n"
+		}
+	}
+	changelogText
 }
