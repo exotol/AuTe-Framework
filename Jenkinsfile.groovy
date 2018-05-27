@@ -1,4 +1,10 @@
 node() {
+	if (env.BRANCH_NAME=='master'){
+		echo 'master branch - disable build discarding'
+		properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: ''))])
+	} else {
+		properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5']]]);
+	}
 	stage('Сборка') {
 		echo 'Checkout'
 		checkout scm
