@@ -28,7 +28,7 @@
             <fileset>
               <directory>dist</directory>
               <includes>
-                <include>*</include>
+                <include>**</include>
               </includes>
             </fileset>
           </filesets>
