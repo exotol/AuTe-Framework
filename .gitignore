@@ -1,7 +1,8 @@
-/dist
 /tmp
 /out-tsc
-/node_modules
+*/node_modules
+*/dist
+*/target
 /.idea
 *.iml
 .project
@@ -27,4 +28,4 @@ testem.log
 .DS_Store
 Thumbs.db
 package-lock.json
-atf-wiremock-ui/node/
+*.log

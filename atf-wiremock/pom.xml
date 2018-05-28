@@ -63,7 +63,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${build.directory}/classes/front/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/front/</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>../atf-wiremock-ui/dist</directory>
