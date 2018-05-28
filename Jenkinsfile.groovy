@@ -31,7 +31,7 @@ node() {
 		archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
 	}
 	stage('Отправка e-mail уведомлений') {
-		def sendToList = 'pavel.golovkin@bsc-ideas.com'
+		def sendToList = getMailingList()
 		emailext(
 				attachLog: true,
 				body: 'Доступна новая сборка ATF ${BUILD_URL}\nСостав сборки:\n' + getChangeLog(),
@@ -52,4 +52,8 @@ String getChangeLog() {
 		}
 	}
 	changelogText
+}
+
+String getMailingList() {
+	"pavel.golovkin@bsc-ideas.com,Olga.Slyunkova@bsc-ideas.com,denis.egorov@bsc-ideas.com,Lyudmila.Mikheytseva@bsc-ideas.com"
 }
