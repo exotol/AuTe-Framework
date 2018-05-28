@@ -39,16 +39,16 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>${exec-maven-plugin.version}</version>
-        <configuration>
-          <executable>npm</executable>
-          <arguments>
-            <argument>run</argument>
-            <argument>build</argument>
-          </arguments>
-        </configuration>
         <executions>
           <execution>
             <id>npm run build</id>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>run</argument>
+                <argument>build</argument>
+              </arguments>
+            </configuration>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -77,15 +77,15 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>${exec-maven-plugin.version}</version>
-            <configuration>
-              <executable>npm</executable>
-              <arguments>
-                <argument>install</argument>
-              </arguments>
-            </configuration>
             <executions>
               <execution>
                 <id>npm install</id>
+                <configuration>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>install</argument>
+                  </arguments>
+                </configuration>
                 <goals>
                   <goal>exec</goal>
                 </goals>

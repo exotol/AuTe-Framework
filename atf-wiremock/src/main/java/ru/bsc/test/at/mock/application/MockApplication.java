@@ -57,13 +57,13 @@ public class MockApplication {
         this.context = context;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(new Class[]{MockApplication.class, SpringWebConfig.class}, args);
     }
 
     @Bean
     public FilterRegistrationBean corsFilter() {
-        FilterRegistrationBean filter = new FilterRegistrationBean<>(new CorsFilter());
+        FilterRegistrationBean filter = new FilterRegistrationBean(new CorsFilter());
         filter.addUrlPatterns("/*");
         return filter;
     }
@@ -82,7 +82,7 @@ public class MockApplication {
 
     @Bean
     public ServletRegistrationBean wiremockAdminHandlerBean() {
-        ServletRegistrationBean bean = new ServletRegistrationBean<>(new WireMockHandlerDispatchingServlet(),"/__admin/*");
+        ServletRegistrationBean bean = new ServletRegistrationBean(new WireMockHandlerDispatchingServlet(),"/__admin/*");
         bean.addInitParameter("RequestHandlerClass", AdminRequestHandler.class.getName());
         bean.setLoadOnStartup(1);
         bean.setName("wiremockAdmin");
@@ -92,7 +92,7 @@ public class MockApplication {
     @Bean
     public ServletRegistrationBean wiremockMockHandlerBean() {
         Servlet servlet = new WireMockHandlerDispatchingServlet();
-        ServletRegistrationBean bean = new ServletRegistrationBean<>(servlet, "/bsc-wire-mock/*");
+        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/bsc-wire-mock/*");
         bean.addInitParameter("RequestHandlerClass", StubRequestHandler.class.getName());
         bean.addInitParameter(WireMockHandlerDispatchingServlet.MAPPED_UNDER_KEY, "/bsc-wire-mock/");
         bean.setLoadOnStartup(1);

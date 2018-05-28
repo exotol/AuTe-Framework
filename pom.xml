@@ -13,8 +13,23 @@
         <start-class/>
     </properties>
 
+    <modules>
+        <module>atf-wiremock-ui</module>
+        <module>atf-wiremock</module>
+        <module>atf-application-ui</module>
+        <module>atf-executor</module>
+        <module>atf-application</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>1.5.8.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>ru.bsc.test</groupId>
                 <artifactId>atf-executor</artifactId>
@@ -26,6 +41,20 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>ru.concerteza.buildnumber</groupId>
+                    <artifactId>maven-jgit-buildnumber-plugin</artifactId>
+                    <version>1.2.9</version>
+                    <executions>
+                        <execution>
+                            <id>jgit-buildnumber</id>
+                            <goals>
+                                <goal>extract-buildnumber</goal>
+                            </goals>
+                            <phase>validate</phase>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
@@ -45,12 +74,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <modules>
-        <module>atf-wiremock-ui</module>
-        <module>atf-wiremock</module>
-        <module>atf-application-ui</module>
-        <module>atf-executor</module>
-        <module>atf-application</module>
-    </modules>
 </project>

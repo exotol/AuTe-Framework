@@ -31,7 +31,7 @@ public class VersionController {
     }
 
     @GetMapping("/__version")
-    public Version version() throws IOException {
+    public Version version() {
         return version;
     }
 }
