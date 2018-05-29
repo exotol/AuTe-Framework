@@ -19,7 +19,6 @@ node() {
 			echo 'pom read'
 			echo pom.version
 			currentBuild.description = "${pom.version}.${commitCount}.${shortCommit}"
-			sh "${mvnHome}/bin/mvn -N jgit-buildnumber:extract-buildnumber"
 			sh "${mvnHome}/bin/mvn clean package -P npm-install"
 		} catch (exception) {
 			emailext(
