@@ -16,10 +16,10 @@ import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.model.StepStatus;
+import ru.bsc.test.at.executor.step.executor.scriptengine.JSScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngineProcedureResult;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,16 +122,10 @@ public class RestStepExecutor extends AbstractStepExecutor {
                 // Выполнить скрипт
                 log.debug("Executing script {}", step.getScript());
                 if (isNotEmpty(step.getScript())) {
-                    ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
-                    scriptEngine.put("stepStatus", new StepStatus());
-                    scriptEngine.put("scenarioVariables", scenarioVariables);
-                    scriptEngine.put("response", responseData);
-
-                    scriptEngine.eval(step.getScript());
-
-                    StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
-                    if (isNotEmpty(stepStatus.getException())) {
-                        throw new Exception(stepStatus.getException());
+                    ScriptEngine scriptEngine = new JSScriptEngine();
+                    ScriptEngineProcedureResult scriptEngineExecutionResult = scriptEngine.executeProcedure(step.getScript(), scenarioVariables);
+                    if (!scriptEngineExecutionResult.isOk()) {
+                        throw new Exception(scriptEngineExecutionResult.getException());
                     }
                 }
 

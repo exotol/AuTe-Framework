@@ -17,11 +17,12 @@ import ru.bsc.test.at.executor.helper.client.impl.mq.ClientMQRequest;
 import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
 import ru.bsc.test.at.executor.helper.NamedParameterStatement;
 import ru.bsc.test.at.executor.model.*;
+import ru.bsc.test.at.executor.step.executor.scriptengine.JSScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngineFunctionResult;
 import ru.bsc.test.at.executor.validation.IgnoringComparator;
 import ru.bsc.test.at.executor.validation.MaskComparator;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -301,14 +301,11 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
             Matcher m = p.matcher(result);
             while (m.find()) {
                 log.debug("regexp matches {}", p.pattern());
-                ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine scriptEngine = manager.getEngineByName("js");
-                scriptEngine.put("scenarioVariables", scenarioVariables);
-                scriptEngine.put("response", responseData);
-                Object evalResult = scriptEngine.eval(m.group(1));
+                ScriptEngine engine = new JSScriptEngine();
+                ScriptEngineFunctionResult evalResult = engine.executeFunction(m.group(1), scenarioVariables);
                 result = result.replace(
                         "<f>" + m.group(1) + "</f>",
-                        Matcher.quoteReplacement(String.valueOf(evalResult))
+                        Matcher.quoteReplacement(evalResult.getResult())
                 );
                 log.debug("evaluating result {}", result);
             }

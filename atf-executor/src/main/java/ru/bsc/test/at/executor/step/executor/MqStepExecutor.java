@@ -11,10 +11,10 @@ import ru.bsc.test.at.executor.model.Stand;
 import ru.bsc.test.at.executor.model.Step;
 import ru.bsc.test.at.executor.model.StepMode;
 import ru.bsc.test.at.executor.model.StepResult;
-import ru.bsc.test.at.executor.model.StepStatus;
+import ru.bsc.test.at.executor.step.executor.scriptengine.JSScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngine;
+import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngineProcedureResult;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.sql.Connection;
 import java.util.Map;
 
@@ -76,19 +76,14 @@ public class MqStepExecutor extends AbstractStepExecutor {
 
                 // Выполнить скрипт
                 if (StringUtils.isNotEmpty(step.getScript())) {
-                    ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
-                    scriptEngine.put("stepStatus", new StepStatus());
-                    scriptEngine.put("scenarioVariables", scenarioVariables);
-                    scriptEngine.put("response", null);
-
-                    scriptEngine.eval(step.getScript());
-
+                    ScriptEngine scriptEngine = new JSScriptEngine();
+                    ScriptEngineProcedureResult scriptEngineExecutionResult = scriptEngine.executeProcedure(step.getScript(), scenarioVariables);
                     // Привести все переменные сценария к строковому типу
+                    //TODO разобраться, зачем этот код
                     scenarioVariables.forEach((s, s2) -> scenarioVariables.replace(s , s2 != null ? String.valueOf((Object)s2) : null));
 
-                    StepStatus stepStatus = (StepStatus) scriptEngine.get("stepStatus");
-                    if (StringUtils.isNotEmpty(stepStatus.getException())) {
-                        throw new Exception(stepStatus.getException());
+                    if (!scriptEngineExecutionResult.isOk()) {
+                        throw new Exception(scriptEngineExecutionResult.getException());
                     }
                 }
 
