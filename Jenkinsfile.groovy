@@ -14,7 +14,12 @@ node() {
 		try {
 			def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 			def commitCount = sh(returnStdout: true, script: "git rev-list HEAD --count").trim()
-			currentBuild.description = "${BRANCH_NAME}.${commitCount}.${shortCommit}"
+			echo 'reading pom'
+			def pom = readMavenPom file : 'pom.xml'
+			echo 'pom read'
+			echo pom.version
+			currentBuild.description = "${pom.version}.${commitCount}.${shortCommit}"
+			sh "${mvnHome}/bin/mvn -N jgit-buildnumber:extract-buildnumber"
 			sh "${mvnHome}/bin/mvn clean package -P npm-install"
 		} catch (exception) {
 			emailext(
@@ -28,16 +33,24 @@ node() {
 		}
 	}
 	stage('Архивирование артефактов') {
-		archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
+		if (env.BRANCH_NAME=='master') {
+			archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
+		} else {
+			echo 'Не архивируем артефакты'
+		}
 	}
 	stage('Отправка e-mail уведомлений') {
-		def sendToList = getMailingList()
-		emailext(
-				attachLog: true,
-				body: 'Доступна новая сборка ATF ${BUILD_URL}\nСостав сборки:\n' + getChangeLog(),
-				to: sendToList,
-				subject: "Новая версия ATF ${BUILD_NUMBER}"
-		)
+		if (env.BRANCH_NAME=='master') {
+			def sendToList = getMailingList();
+			emailext(
+					attachLog: true,
+					body: 'Доступна новая сборка ATF ${BUILD_URL}\nСостав сборки:\n' + getChangeLog(),
+					to: sendToList,
+					subject: "Новая версия ATF ${currentBuild.description}"
+			)
+		} else {
+			echo 'Не рассылаем e-mail'
+		}
 	}
 }
 
