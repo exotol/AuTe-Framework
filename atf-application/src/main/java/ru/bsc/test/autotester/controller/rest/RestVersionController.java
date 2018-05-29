@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bsc.test.autotester.service.VersionService;
-import ru.bsc.test.autotester.service.impl.Version;
+import ru.bsc.test.autotester.model.Version;
 import ru.bsc.test.autotester.service.impl.WiremockVersion;
 
 import java.util.List;
@@ -26,14 +26,9 @@ public class RestVersionController {
         this.versionService = versionService;
     }
 
-    @RequestMapping(value = "/manager", method = RequestMethod.GET)
+    @RequestMapping(value = "/application", method = RequestMethod.GET)
     public Version managerVersion() {
-        return versionService.getManagerVersion();
-    }
-
-    @RequestMapping(value = "/executor", method = RequestMethod.GET)
-    public Version executorVersion() {
-        return versionService.getExecutorVersion();
+        return versionService.getApplicationVersion();
     }
 
     @RequestMapping(value = "/wiremock", method = RequestMethod.GET)

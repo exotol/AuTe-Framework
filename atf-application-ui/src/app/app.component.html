@@ -28,17 +28,13 @@
   {{'Versions' | translate}}
 </a>
 <div class="collapse " id="versions">
-  <div class="help-block" *ngIf="managerVersion">
+  <div class="help-block" *ngIf="applicationVersion">
     <b>ui: </b>
     {{uiVersion}}
   </div>
-  <div class="help-block" *ngIf="managerVersion">
-    <b>manager: </b>
-    {{managerVersion.implementationVersion}} {{managerVersion.implementationDate}}
-  </div>
-  <div class="help-block" *ngIf="executorVersion">
-    <b>executor: </b>
-    {{executorVersion.implementationVersion}} {{executorVersion.implementationDate}}
+  <div class="help-block" *ngIf="applicationVersion">
+    <b>application: </b>
+    {{applicationVersion.implementationVersion}} {{applicationVersion.implementationDate}}
   </div>
   <div class="help-block" *ngFor="let version of projectsWiremockVersions">
     <b>{{version.projectCode}} wiremock: </b>

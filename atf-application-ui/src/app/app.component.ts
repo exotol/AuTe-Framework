@@ -16,8 +16,7 @@ declare let require: any;
 
 export class AppComponent implements OnInit {
 
-  public managerVersion: Version;
-  public executorVersion: Version;
+  public applicationVersion: Version;
   public projectsWiremockVersions: Array<WiremockVersion>;
   langs: string[] = ['en', 'ru'];
   locale: string;
@@ -30,8 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.versionService.getManagerVersion().subscribe(version => this.managerVersion = version);
-    this.versionService.getExecutorVersion().subscribe(version => this.executorVersion = version);
+    this.versionService.getApplicationVersion().subscribe(version => this.applicationVersion = version);
     this.versionService.getProjectsWiremockVersions().subscribe(version => this.projectsWiremockVersions = version);
   }
 

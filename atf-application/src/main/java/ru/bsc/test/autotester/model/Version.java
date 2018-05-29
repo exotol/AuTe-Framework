@@ -1,4 +1,4 @@
-package ru.bsc.test.at.mock.model;
+package ru.bsc.test.autotester.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

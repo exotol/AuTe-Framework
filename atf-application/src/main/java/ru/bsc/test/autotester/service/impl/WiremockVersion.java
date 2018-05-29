@@ -1,6 +1,7 @@
 package ru.bsc.test.autotester.service.impl;
 
 import lombok.Getter;
+import ru.bsc.test.autotester.model.Version;
 
 /**
  * Created by smakarov

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Globals} from '../globals';
 import {Observable} from 'rxjs/Observable';
@@ -8,25 +8,20 @@ import {WiremockVersion} from "../model/wiremock-version";
 @Injectable()
 export class VersionService {
 
-  public managerServiceUrl = '/rest/version/manager';
-  public executorServiceUrl = '/rest/version/executor';
-  public wiremockServiceUrl = '/rest/version/wiremock';
+  public applicationVersionUrl = '/rest/version/application';
+  public wiremockVersionUrl = '/rest/version/wiremock';
 
   constructor(
     private globals: Globals,
     private http: Http
   ) { }
 
-  getManagerVersion(): Observable<Version> {
-    return this.getVersion(this.managerServiceUrl);
-  }
-
-  getExecutorVersion(): Observable<Version> {
-    return this.getVersion(this.executorServiceUrl);
+  getApplicationVersion(): Observable<Version> {
+    return this.getVersion(this.applicationVersionUrl);
   }
 
   getProjectsWiremockVersions(): Observable<Array<WiremockVersion>> {
-    return this.http.get(this.globals.serviceBaseUrl + this.wiremockServiceUrl)
+    return this.http.get(this.globals.serviceBaseUrl + this.wiremockVersionUrl)
       .map(value => value.json() as Array<WiremockVersion>);
   }
 

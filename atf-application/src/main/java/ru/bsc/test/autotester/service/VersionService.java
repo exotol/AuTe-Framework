@@ -1,7 +1,7 @@
 package ru.bsc.test.autotester.service;
 
 import ru.bsc.test.autotester.service.impl.WiremockVersion;
-import ru.bsc.test.autotester.service.impl.Version;
+import ru.bsc.test.autotester.model.Version;
 
 import java.util.List;
 
@@ -10,9 +10,7 @@ import java.util.List;
  */
 public interface VersionService {
 
-    Version getManagerVersion();
-
-    Version getExecutorVersion();
+    Version getApplicationVersion();
 
     List<WiremockVersion> getWiremockVersions();
 }
