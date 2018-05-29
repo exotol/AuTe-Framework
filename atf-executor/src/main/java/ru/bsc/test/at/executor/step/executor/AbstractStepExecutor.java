@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -415,8 +416,8 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     }
 
     void setMqMockResponses(WireMockAdmin wireMockAdmin, String testId, List<MqMock> mqMockList, Map<String, Object> scenarioVariables) throws Exception {
-        log.debug("Setting MQ mock responses {} {} {} {}", wireMockAdmin, testId, mqMockList, scenarioVariables);
-        if (mqMockList != null) {
+        if (mqMockList != null && mqMockList.size() > 0) {
+            log.debug("Setting MQ mock responses {} {} {} {}", wireMockAdmin, testId, mqMockList, scenarioVariables);
             if (wireMockAdmin == null) {
                 throw new Exception("wireMockAdmin is not configured in env.yml");
             }
