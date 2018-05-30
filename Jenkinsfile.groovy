@@ -60,7 +60,7 @@ String getChangeLog() {
 	for (changeSet in changeLogSets) {
 		def entries = changeSet.items
 		for (entry in entries) {
-			changelogText += "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg} \n"
+			changelogText += "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg} \n\n"
 		}
 	}
 	changelogText
