@@ -33,7 +33,7 @@ node() {
 	}
 	stage('Архивирование артефактов') {
 		if (env.BRANCH_NAME=='master') {
-			archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml'
+			archiveArtifacts artifacts: '**/target/*.jar,**/target/**/run.bat,**/target/**/env.yml.sample,**/target/**/logback-spring.xml,**/swagger/index.html'
 		} else {
 			echo 'Не архивируем артефакты'
 		}
