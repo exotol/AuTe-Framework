@@ -7,9 +7,7 @@ import ru.bsc.test.at.mock.model.Version;
 @RestController
 public class VersionController {
 
-    private static final String WIREMOCK_VERSION = "atf-wiremock";
-
-    private final Version version = Version.load(WIREMOCK_VERSION);
+    private final Version version = Version.load();
 
     @GetMapping("/__version")
     public Version version() {

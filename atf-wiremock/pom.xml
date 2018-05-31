@@ -213,8 +213,24 @@
             </plugin>
 
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
+                <groupId>ru.concerteza.buildnumber</groupId>
+                <artifactId>maven-jgit-buildnumber-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Project-Version>${project.version}</Project-Version>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                            <Git-Commits-Count>${git.commitsCount}</Git-Commits-Count>
+                            <Git-Short-Revision>${git.shortRevision}</Git-Short-Revision>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
 
             <plugin>

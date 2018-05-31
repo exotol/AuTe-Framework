@@ -8,43 +8,51 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.jar.JarFile;
 
 import static java.lang.Thread.currentThread;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * Created by smakarov
  * 26.02.2018 15:26
  */
+
+//TODO: вынести этот класс в общий модуль
+
 @Getter
 @ToString
 @AllArgsConstructor
 @Slf4j
+@SuppressWarnings("Duplicates")
 public class Version {
     private final String implementationVersion;
     private final String implementationDate;
 
-    private static final String VERSION_FILE_SUFFIX = ".version.properties";
-
-    public static Version load(String versionFileName) {
-        Version version;
-        String versionFile = versionFileName + VERSION_FILE_SUFFIX;
-        try (InputStream resource = currentThread().getContextClassLoader().getResourceAsStream(versionFile)) {
+    public static Version load() {
+        ClassLoader classLoader = currentThread().getContextClassLoader();
+        try (InputStream manifest = classLoader.getResourceAsStream(JarFile.MANIFEST_NAME)) {
             Properties properties = new Properties();
-            properties.load(resource);
-            String implementationVersion = String.format(
-                    "%s.%s.%s.%s",
-                    properties.getProperty("git.build.version"),
-                    properties.getProperty("git.branch"),
-                    properties.getProperty("git.closest.tag.commit.count"),
-                    properties.getProperty("git.commit.id.abbrev")
-            );
-            String implementationDate = properties.getProperty("git.build.time");
-            version = new Version(implementationVersion, implementationDate);
-            log.info("Version loaded from file: {}", version);
+            properties.load(manifest);
+            return buildVersionFromProperties(properties);
         } catch (IOException e) {
-            version = Version.unknown();
-            log.error("Error while loading '{}' properties", versionFile, e);
+            log.error("Error while reading MANIFEST.MF", e);
+            return Version.unknown();
         }
+    }
+
+    private static Version buildVersionFromProperties(Properties properties) {
+        String projectVersion = properties.getProperty("Project-Version");
+        String commitsCount = properties.getProperty("Git-Commits-Count");
+        String shortRevision = properties.getProperty("Git-Short-Revision");
+        if (isEmpty(projectVersion) || isEmpty(commitsCount) || isEmpty(shortRevision)) {
+            log.warn("Version information is not available. Build the project using maven.");
+            return Version.unknown();
+        }
+        String implementationVersion = String.format("%s.%s.%s", projectVersion, commitsCount, shortRevision);
+        String implementationDate = properties.getProperty("Build-Time");
+        Version version = new Version(implementationVersion, implementationDate);
+        log.info("Version loaded from MANIFEST.MF: {}", version);
         return version;
     }
 
@@ -53,6 +61,6 @@ public class Version {
     }
 
     public Version() {
-        this("UNKNOWN", "UNKNOWN");
+        this("unknown", "");
     }
 }

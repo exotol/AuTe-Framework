@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class VersionServiceImpl implements VersionService {
-    private static final String APPLICATION_VERSION_PROPERTIES = "atf-application";
     private static final String WIREMOCK_VERSION_PATH = "__version";
 
     private final List<WiremockVersion> wiremockVersions = new ArrayList<>();
@@ -36,7 +35,7 @@ public class VersionServiceImpl implements VersionService {
     @Override
     public Version getApplicationVersion() {
         if (applicationVersion == null) {
-            applicationVersion = Version.load(APPLICATION_VERSION_PROPERTIES);
+            applicationVersion = Version.load();
         }
         return applicationVersion;
     }
