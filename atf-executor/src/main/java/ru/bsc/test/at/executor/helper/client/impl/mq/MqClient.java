@@ -1,6 +1,5 @@
 package ru.bsc.test.at.executor.helper.client.impl.mq;
 
-import javax.jms.TextMessage;
 import lombok.extern.slf4j.Slf4j;
 import ru.bsc.test.at.executor.helper.client.api.Client;
 import ru.bsc.test.at.executor.helper.client.api.ClientCommonResponse;
@@ -10,7 +9,7 @@ import ru.bsc.test.at.executor.mq.AbstractMqManager;
 import ru.bsc.test.at.executor.mq.MqManagerFactory;
 
 import javax.jms.Message;
-
+import javax.jms.TextMessage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package ru.bsc.test.at.executor.service;
 
-import java.util.List;
-
 import ru.bsc.test.at.executor.model.ScenarioResult;
+
+import java.util.List;
 
 @FunctionalInterface
 public interface IExecutingFinishObserver {

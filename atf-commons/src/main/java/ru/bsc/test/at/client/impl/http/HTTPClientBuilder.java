@@ -1,10 +1,6 @@
-package ru.bsc.test.at.executor.helper.client.impl.http;
+package ru.bsc.test.at.client.impl.http;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -15,19 +11,22 @@ import org.apache.http.impl.client.HttpClients;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import lombok.extern.slf4j.Slf4j;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 /**
  * @author Pavel Golovkin
  */
 @Slf4j
-class HTTPClientBuilder {
+public class HTTPClientBuilder {
 
   private SSLContext sslContext;
   private CookieStore cookieStore;
-  RequestConfig globalConfig;
+  private RequestConfig globalConfig;
 
-  HTTPClientBuilder withSllContext() {
+  public HTTPClientBuilder withSllContext() {
     try {
       sslContext = SSLContext.getInstance("SSL");
 
@@ -57,17 +56,17 @@ class HTTPClientBuilder {
     return this;
   }
 
-  HTTPClientBuilder withCookiesStore() {
+  public HTTPClientBuilder withCookiesStore() {
     cookieStore = new BasicCookieStore();
     return this;
   }
 
-  HTTPClientBuilder withGlobalConfig() {
+  public HTTPClientBuilder withGlobalConfig() {
     globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
     return this;
   }
 
-  CloseableHttpClient build() {
+  public CloseableHttpClient build() {
     org.apache.http.impl.client.HttpClientBuilder clientBuilder = HttpClients.custom();
     if (cookieStore != null) {
       clientBuilder.setDefaultCookieStore(cookieStore);

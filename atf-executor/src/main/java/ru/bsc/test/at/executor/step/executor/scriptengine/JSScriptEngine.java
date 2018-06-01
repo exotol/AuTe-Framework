@@ -2,9 +2,9 @@ package ru.bsc.test.at.executor.step.executor.scriptengine;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.Map;
 
 /**
  * @author Pavel Golovkin

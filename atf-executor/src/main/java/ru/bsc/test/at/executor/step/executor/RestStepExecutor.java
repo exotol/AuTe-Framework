@@ -8,24 +8,13 @@ import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequest;
 import ru.bsc.test.at.executor.helper.client.impl.http.ClientHttpRequestWithVariables;
 import ru.bsc.test.at.executor.helper.client.impl.http.HttpClient;
 import ru.bsc.test.at.executor.helper.client.impl.mq.MqClient;
-import ru.bsc.test.at.executor.model.FieldType;
-import ru.bsc.test.at.executor.model.Project;
-import ru.bsc.test.at.executor.model.RequestBodyType;
-import ru.bsc.test.at.executor.model.RequestData;
-import ru.bsc.test.at.executor.model.Stand;
-import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.model.StepMode;
-import ru.bsc.test.at.executor.model.StepResult;
+import ru.bsc.test.at.executor.model.*;
 import ru.bsc.test.at.executor.step.executor.scriptengine.JSScriptEngine;
 import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngine;
 import ru.bsc.test.at.executor.step.executor.scriptengine.ScriptEngineProcedureResult;
 
 import java.sql.Connection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;

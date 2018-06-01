@@ -6,7 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.cookie.Cookie;
@@ -17,13 +19,14 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.tika.Tika;
-
+import ru.bsc.test.at.client.impl.http.HTTPClientBuilder;
 import ru.bsc.test.at.executor.helper.client.api.Client;
 import ru.bsc.test.at.executor.helper.client.api.ClientCommonResponse;
 import ru.bsc.test.at.executor.model.FieldType;
 import ru.bsc.test.at.executor.model.FormData;
 import ru.bsc.test.at.executor.model.Step;
-import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;;
+import ru.bsc.test.at.executor.step.executor.AbstractStepExecutor;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

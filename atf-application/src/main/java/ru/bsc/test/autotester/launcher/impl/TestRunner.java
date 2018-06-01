@@ -3,13 +3,11 @@ package ru.bsc.test.autotester.launcher.impl;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import lombok.extern.slf4j.Slf4j;
-import ru.bsc.test.autotester.launcher.api.TestLauncher;
-import ru.bsc.test.autotester.launcher.impl.TestLauncherImpl;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import ru.bsc.test.autotester.launcher.api.TestLauncher;
 
 import java.util.Arrays;
 import java.util.HashSet;

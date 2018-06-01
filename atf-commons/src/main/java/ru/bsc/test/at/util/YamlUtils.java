@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.yaml;
+package ru.bsc.test.at.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.DumperOptions;
@@ -15,7 +15,8 @@ import java.io.IOException;
  */
 @Slf4j
 public final class YamlUtils {
-    private YamlUtils() { }
+    private YamlUtils() {
+    }
 
     public static void dumpToFile(Object data, String fileName) throws IOException {
         DumperOptions dumperOptions = new DumperOptions();
@@ -34,16 +35,14 @@ public final class YamlUtils {
     public static <T> T loadAsFromString(String yamlContent, Class<T> type) {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
-        return new Yaml(representer)
-                .loadAs(yamlContent, type);
+        return new Yaml(representer).loadAs(yamlContent, type);
     }
 
     public static <T> T loadAs(File fileName, Class<T> type) throws IOException {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
         try (FileReader fileReader = new FileReader(fileName)) {
-            return new Yaml(representer)
-                    .loadAs(fileReader, type);
+            return new Yaml(representer).loadAs(fileReader, type);
         }
     }
 }

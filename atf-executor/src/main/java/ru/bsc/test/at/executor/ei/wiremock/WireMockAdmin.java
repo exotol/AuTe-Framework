@@ -12,11 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockedRequest;
-import ru.bsc.test.at.executor.ei.wiremock.model.MqMockDefinition;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockDefinition;
-import ru.bsc.test.at.executor.ei.wiremock.model.MockRequest;
-import ru.bsc.test.at.executor.ei.wiremock.model.RequestList;
+import ru.bsc.test.at.executor.ei.wiremock.model.*;
 
 import java.io.Closeable;
 import java.io.IOException;

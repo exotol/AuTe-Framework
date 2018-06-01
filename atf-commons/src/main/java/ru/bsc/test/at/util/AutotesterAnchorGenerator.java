@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.yaml;
+package ru.bsc.test.at.util;
 
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.serializer.AnchorGenerator;
  * Created by sdoroshin on 02.11.2017.
  *
  */
-class AutotesterAnchorGenerator implements AnchorGenerator {
+public class AutotesterAnchorGenerator implements AnchorGenerator {
 
     private long lastAnchorId;
 

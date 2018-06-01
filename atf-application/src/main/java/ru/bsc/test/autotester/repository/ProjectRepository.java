@@ -2,7 +2,6 @@ package ru.bsc.test.autotester.repository;
 
 import ru.bsc.test.at.executor.model.Project;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

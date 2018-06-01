@@ -1,31 +1,23 @@
 package ru.bsc.test.at.mock.mq.http;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import ru.bsc.test.at.client.impl.http.HTTPClientBuilder;
 
 import java.io.Closeable;
 import java.io.IOException;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
-//TODO использовать HTTP Client из at-executor, предварительно создав общий пакет
 public class HttpClient implements Closeable {
 
     private CloseableHttpClient closeableHttpClient;
 
     public HttpClient() {
-        RequestConfig config = RequestConfig.custom().setCookieSpec(CookieSpecs.NETSCAPE).build();
-        CookieStore cookieStore = new BasicCookieStore();
-        closeableHttpClient = HttpClients.custom().setDefaultRequestConfig(config).setDefaultCookieStore(cookieStore).build();
+        closeableHttpClient = new HTTPClientBuilder().withGlobalConfig().withCookiesStore().build();
     }
 
     public String sendPost(String url, String body, String headerName, String headerValue) throws IOException {
@@ -33,8 +25,15 @@ public class HttpClient implements Closeable {
         post.addHeader(headerName, headerValue);
         post.setEntity(new StringEntity(body));
         try (CloseableHttpResponse response = closeableHttpClient.execute(post)) {
-            return response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+            return extractResult(response);
         }
+    }
+
+    private String extractResult(CloseableHttpResponse response) throws IOException {
+        return response.getEntity() == null || response.getEntity().getContent() == null ? "" : IOUtils.toString(
+                response.getEntity().getContent(),
+                "UTF-8"
+        );
     }
 
     @Override

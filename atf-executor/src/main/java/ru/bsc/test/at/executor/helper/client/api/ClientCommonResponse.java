@@ -1,9 +1,9 @@
 package ru.bsc.test.at.executor.helper.client.api;
 
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
-
-import lombok.AllArgsConstructor;
 
 /**
  * @author Pavel Golovkin

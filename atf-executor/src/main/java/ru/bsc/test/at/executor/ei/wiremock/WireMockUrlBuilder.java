@@ -2,11 +2,7 @@ package ru.bsc.test.at.executor.ei.wiremock;
 
 import org.springframework.util.Assert;
 
-import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.ADD_REST_MAPPING_URL;
-import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.ADD_MQ_MAPPING_URL;
-import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.DELETE_REST_MAPPING_URL;
-import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.FIND_REST_REQUEST_URL;
-import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.FIND_MQ_REQUEST_LIST_URL;
+import static ru.bsc.test.at.executor.ei.wiremock.WireMockUrl.*;
 
 /**
  * @author Pavel Golovkin

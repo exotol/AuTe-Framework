@@ -2,7 +2,7 @@ package ru.bsc.test.at.mock.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bsc.test.at.mock.model.Version;
+import ru.bsc.test.at.model.Version;
 
 @RestController
 public class VersionController {

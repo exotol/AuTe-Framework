@@ -1,13 +1,9 @@
 package ru.bsc.test.at.executor.helper.client.impl.http;
 
-import java.net.URI;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
+
+import java.net.URI;
 
 /**
  * @author Pavel Golovkin

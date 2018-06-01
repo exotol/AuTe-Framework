@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.autotester.component.JsonDiffCalculator;
 import ru.bsc.test.autotester.diff.Diff;
-import ru.bsc.test.autotester.diff.Operation;
 import ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.AbstractAttachExtractor;
 import ru.yandex.qatools.allure.model.Attachment;
 

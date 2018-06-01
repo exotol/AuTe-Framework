@@ -1,6 +1,5 @@
 package ru.bsc.test.at.executor.service;
 
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import ru.bsc.test.at.executor.model.Stand;
 

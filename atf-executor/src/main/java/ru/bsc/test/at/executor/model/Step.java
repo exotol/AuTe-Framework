@@ -4,7 +4,10 @@ import lombok.Data;
 import ru.bsc.test.at.executor.helper.client.impl.http.HTTPMethod;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sdoroshin on 10.05.2017.

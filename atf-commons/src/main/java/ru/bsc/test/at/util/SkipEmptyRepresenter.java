@@ -1,4 +1,4 @@
-package ru.bsc.test.autotester.yaml;
+package ru.bsc.test.at.util;
 
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;

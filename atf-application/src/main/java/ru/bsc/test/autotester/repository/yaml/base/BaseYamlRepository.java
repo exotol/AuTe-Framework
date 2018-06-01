@@ -5,9 +5,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.bsc.test.at.executor.model.*;
+import ru.bsc.test.at.util.YamlUtils;
 import ru.bsc.test.autotester.component.Translator;
 import ru.bsc.test.autotester.utils.FileExtensionsUtils;
-import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;

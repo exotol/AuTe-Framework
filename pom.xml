@@ -14,6 +14,7 @@
     </properties>
 
     <modules>
+        <module>atf-commons</module>
         <module>atf-wiremock-ui</module>
         <module>atf-wiremock</module>
         <module>atf-application-ui</module>
@@ -29,6 +30,11 @@
                 <version>1.5.8.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>ru.bsc.test</groupId>
+                <artifactId>atf-commons</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>ru.bsc.test</groupId>

@@ -9,12 +9,12 @@ import ru.bsc.test.at.executor.model.AmqpBroker;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.at.executor.model.Stand;
+import ru.bsc.test.at.util.YamlUtils;
 import ru.bsc.test.autotester.component.Translator;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.repository.ProjectRepository;
 import ru.bsc.test.autotester.repository.yaml.base.BaseYamlRepository;
-import ru.bsc.test.autotester.yaml.YamlUtils;
 
 import java.io.File;
 import java.io.IOException;

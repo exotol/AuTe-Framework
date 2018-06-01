@@ -7,7 +7,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.bsc.test.autotester.model.Version;
+import ru.bsc.test.at.model.Version;
 import ru.bsc.test.autotester.properties.EnvironmentProperties;
 import ru.bsc.test.autotester.properties.StandProperties;
 import ru.bsc.test.autotester.service.VersionService;

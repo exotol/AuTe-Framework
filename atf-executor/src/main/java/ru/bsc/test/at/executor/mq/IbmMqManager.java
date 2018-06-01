@@ -3,11 +3,7 @@ package ru.bsc.test.at.executor.mq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
+import javax.jms.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 

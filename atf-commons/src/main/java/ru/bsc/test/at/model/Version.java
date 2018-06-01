@@ -1,4 +1,4 @@
-package ru.bsc.test.at.mock.model;
+package ru.bsc.test.at.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,13 +18,10 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
  * 26.02.2018 15:26
  */
 
-//TODO: вынести этот класс в общий модуль
-
 @Getter
 @ToString
 @AllArgsConstructor
 @Slf4j
-@SuppressWarnings("Duplicates")
 public class Version {
     private final String implementationVersion;
     private final String implementationDate;

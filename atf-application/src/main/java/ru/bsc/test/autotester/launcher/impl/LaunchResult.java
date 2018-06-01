@@ -1,10 +1,9 @@
 package ru.bsc.test.autotester.launcher.impl;
 
-import java.util.List;
-
 import lombok.ToString;
-import ru.bsc.test.at.executor.model.StepResult;
 import ru.bsc.test.at.executor.model.ScenarioResult;
+
+import java.util.List;
 
 /**
  * @author Pavel Golovkin

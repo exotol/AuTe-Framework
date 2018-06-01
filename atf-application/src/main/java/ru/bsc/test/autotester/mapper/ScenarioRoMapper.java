@@ -1,6 +1,9 @@
 package ru.bsc.test.autotester.mapper;
 
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import ru.bsc.test.at.executor.model.Scenario;
 import ru.bsc.test.autotester.ro.ScenarioRo;
 

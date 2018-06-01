@@ -1,9 +1,8 @@
 package ru.bsc.test.at.executor.helper.client.impl.http;
 
-import java.util.Map;
-
-import lombok.AllArgsConstructor;
 import ru.bsc.test.at.executor.model.Step;
+
+import java.util.Map;
 
 /**
  * @author Pavel Golovkin

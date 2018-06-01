@@ -14,7 +14,7 @@ import ru.bsc.test.at.mock.mq.mq.AbstractMqWorker;
 import ru.bsc.test.at.mock.mq.mq.ActiveMQWorker;
 import ru.bsc.test.at.mock.mq.mq.IbmMQWorker;
 import ru.bsc.test.at.mock.mq.mq.RabbitMQWorker;
-import ru.bsc.test.at.mock.mq.yaml.YamlUtils;
+import ru.bsc.test.at.util.YamlUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
