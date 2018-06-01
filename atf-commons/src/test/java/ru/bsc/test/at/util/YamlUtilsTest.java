@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class YamlUtilsTest {
 
-    private static final String TEST_DATA_FILE = "tmp\\yaml-test.yml";
+    private static final String TEST_DATA_FILE = "tmp" + File.separator + "yaml-test.yml";
 
     private Yaml yaml = new Yaml();
 
