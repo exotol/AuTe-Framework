@@ -79,8 +79,6 @@ public abstract class StepRoMapper {
         if (stepResultRos != null) {
             stepResultRos.stream()
                     .filter(Objects::nonNull)
-                    .filter(s -> StringUtils.isNotEmpty(s.getActual()))
-                    .filter(s -> StringUtils.isNotEmpty(s.getExpected()))
                     .forEach(s -> s.setDiff(diffCalculator.calculate(s.getActual(), s.getExpected())));
         }
         return stepResultRos;

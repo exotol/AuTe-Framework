@@ -30,31 +30,28 @@ public class JsonDiffCalculator {
     }
 
     private String format(String str){
-
-        if(isJson(str)){
+        String value = str != null ? str : "";
+        if(isJson(value)){
             try {
-                JsonElement jsonElement = parser.parse(str);
+                JsonElement jsonElement = parser.parse(value);
                 return gson.toJson(jsonElement);
             } catch (Exception e) {
-                return str;
+                return value;
             }
         }
 
-        if (isXml(str)) {
+        if (isXml(value)) {
             try {
-                Document doc = Jsoup.parse(str);
+                Document doc = Jsoup.parse(value);
                 return doc.outerHtml();
             } catch (Exception e) {
-                return str;
+                return value;
             }
         }
-        return str;
+        return value;
     }
 
     private boolean isJson(String str){
-        if(str == null){
-            return false;
-        }
         String trimmed = str.trim();
         return trimmed.startsWith("{") && trimmed.endsWith("}") ||
                trimmed.startsWith("[") && trimmed.endsWith("]");
@@ -62,9 +59,6 @@ public class JsonDiffCalculator {
     }
 
     private boolean isXml(String str){
-        if(str == null){
-            return false;
-        }
         String trimmed = str.trim();
         return trimmed.startsWith("<") && trimmed.endsWith(">");
 
