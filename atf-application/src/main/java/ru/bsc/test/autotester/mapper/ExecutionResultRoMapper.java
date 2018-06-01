@@ -69,7 +69,6 @@ public abstract class ExecutionResultRoMapper {
         executionResultRo.getScenarioResultList().stream()
                 .map(ScenarioResultRo::getStepResultList)
                 .flatMap(List::stream)
-                .filter(result -> isNotEmpty(result.getActual()) && isNotEmpty(result.getExpected()))
                 .forEach(result -> result.setDiff(diffCalculator.calculate(result.getActual(), result.getExpected())));
     }
 }
