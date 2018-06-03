@@ -32,7 +32,7 @@ public class ApiController {
     @ApiResponses(
         value = {
             @ApiResponse(code = 200, message = "OK", response = String.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Void.class)
+            @ApiResponse(code = 500, message = "Internal Server Error", response = String.class)
         }
     )
     @PostMapping("add-mapping")
@@ -41,6 +41,13 @@ public class ApiController {
         return mqRunnerComponent.addMapping(mockMessage);
     }
 
+    @ApiOperation(value = "MQ mapping removing", notes = "Deletes mapping by mapping guid", tags = "MqMock")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "OK", response = Void.class),
+                    @ApiResponse(code = 500, message = "Internal Server Error", response = Void.class)
+            }
+    )
     @DeleteMapping("mappings/{mappingGuid}")
     public void deleteMapping(@PathVariable String mappingGuid) throws IOException, TimeoutException {
         mqRunnerComponent.deleteMapping(mappingGuid);
