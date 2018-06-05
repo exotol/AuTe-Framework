@@ -1,6 +1,5 @@
 package ru.bsc.test.autotester.report.impl.allure.attach.extract.impl.stepresult;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,6 @@ public class DiffAttachExtractor extends AbstractAttachExtractor<StepResult> {
 
     @Override
     public List<Attachment> extract(File resultDirectory, StepResult result) {
-        if (StringUtils.isEmpty(result.getActual()) || StringUtils.isEmpty(result.getExpected())) {
-            return null;
-        }
         List<Diff> diffs = diffCalculator.calculate(result.getActual(), result.getExpected());
         JtwigModel model = JtwigModel.newModel().with("diffs", diffs);
         String data = template.render(model);
