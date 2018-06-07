@@ -11,11 +11,13 @@ import ru.bsc.test.at.executor.exception.ComparisonException;
 import ru.bsc.test.at.executor.model.ExpectedServiceRequest;
 import ru.bsc.test.at.executor.model.Project;
 import ru.bsc.test.at.executor.model.Step;
+import ru.bsc.test.at.executor.service.AtProjectExecutor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static ru.bsc.test.at.executor.step.executor.AbstractStepExecutor.evaluateExpressions;
 import static ru.bsc.test.at.executor.step.executor.AbstractStepExecutor.insertSavedValues;
 
@@ -25,9 +27,9 @@ import static ru.bsc.test.at.executor.step.executor.AbstractStepExecutor.insertS
  */
 public class ServiceRequestsComparatorHelper {
 
-    public static final String IGNORE = "\\u002A"+"ignore"+"\\u002A";
-    public static final String CLEAR_STR_PATTERN = "(\r\n|\n\r|\r|\n)";
-    public static final String NBS_PATTERN = "[\\s\\u00A0]";
+    private static final String IGNORE = "\\u002A" + "ignore" + "\\u002A";
+    private static final String CLEAR_STR_PATTERN = "(\r\n|\n\r|\r|\n)";
+    private static final String NBS_PATTERN = "[\\s\\u00A0]";
 
 
     private void compareWSRequest(String expectedRequest, String actualRequest, Set<String> ignoredTags) throws ComparisonException {
@@ -79,51 +81,59 @@ public class ServiceRequestsComparatorHelper {
 
     }
 
-    public void assertTestCaseWSRequests(Project project, Map<String, Object> scenarioVariables, WireMockAdmin wireMockAdmin, String testId, Step step) throws Exception {
+    public void assertTestCaseWSRequests(
+            Project project,
+            Map<String, Object> variables,
+            WireMockAdmin wireMockAdmin,
+            String testId,
+            Step step
+    ) throws Exception {
         if (wireMockAdmin == null) {
             return;
         }
-        // Список ожидаемых запросов к сервисам
-        List<ExpectedServiceRequest> expectedRequestList = step.getExpectedServiceRequests();
-        if (expectedRequestList.isEmpty()) {
+
+        if (step.getExpectedServiceRequests().isEmpty()) {
             return;
         }
 
-        // Список актуальных запросов к сервисам
+        for (ExpectedServiceRequest request : step.getExpectedServiceRequests()) {
+            checkExpectedServiceRequest(project, variables, wireMockAdmin, testId, request);
+        }
+    }
+
+    private void checkExpectedServiceRequest(
+            Project project,
+            Map<String, Object> variables,
+            WireMockAdmin wireMockAdmin,
+            String testId,
+            ExpectedServiceRequest request
+    ) throws Exception {
         MockRequest mockRequest = new MockRequest();
         mockRequest.getHeaders().put(project.getTestIdHeaderName(), createEqualToHeader(testId));
-        List<WireMockRequest> actualRequestList = wireMockAdmin.findRestRequests(mockRequest).getRequests();
+        mockRequest.setUrl(request.getServiceName());
+        List<WireMockRequest> actualRequests = wireMockAdmin.findRestRequests(mockRequest).getRequests();
+        if (actualRequests == null) {
+            actualRequests = new ArrayList<>();
+        }
 
-        // compare request size
-        if (expectedRequestList.size() != actualRequestList.size()) {
-            // Вызвать ошибку: не совпадает количество вызовов сервисов
+        long repeatCount = AtProjectExecutor.parseLongOrVariable(variables, request.getCount(), 1);
+        if (actualRequests.size() != repeatCount) {
             throw new Exception(String.format(
                     "Invalid number of service requests: expected: %d, actual: %d",
-                    expectedRequestList.size(),
-                    actualRequestList.size()
+                    repeatCount,
+                    actualRequests.size()
             ));
         }
 
-        for (ExpectedServiceRequest expectedRequest: expectedRequestList) {
-            WireMockRequest actualRequest = actualRequestList.stream()
-                    .filter(wireMockRequest -> wireMockRequest.getUrl().equals(expectedRequest.getServiceName()))
-                    .findAny().orElse(null);
-            if (actualRequest != null) {
-                actualRequestList.remove(actualRequest);
-                String expectedServiceRequest = insertSavedValues(expectedRequest.getExpectedServiceRequest(), scenarioVariables);
-                expectedServiceRequest = evaluateExpressions(expectedServiceRequest, scenarioVariables, null);
-                compareWSRequest(
-                        expectedServiceRequest,
-                        actualRequest.getBody(),
-                        expectedRequest.getIgnoredTags() != null ?
-                                new HashSet<>(Arrays.stream(expectedRequest.getIgnoredTags()
-                                        .split(","))
-                                        .map(String::trim)
-                                        .collect(Collectors.toList())) : null
-                );
-            } else {
-                throw new Exception(String.format("Service %s is not called", expectedRequest.getServiceName()));
-            }
+        String requestExpression = insertSavedValues(request.getExpectedServiceRequest(), variables);
+        String requestText = evaluateExpressions(requestExpression, variables, null);
+        Set<String> ignoredTags = isNotEmpty(request.getIgnoredTags()) ?
+                                  Arrays.stream(request.getIgnoredTags().split(","))
+                                          .map(String::trim)
+                                          .collect(Collectors.toSet()) :
+                                  null;
+        for (WireMockRequest actualRequest : actualRequests) {
+            compareWSRequest(requestText, actualRequest.getBody(), ignoredTags);
         }
     }
 
