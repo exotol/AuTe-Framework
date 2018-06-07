@@ -37,8 +37,13 @@
     </div>
   </div>
   <div class="row result title-result-container" *ngIf="showResultDetails && stepResultList">
-    <ng-container *ngFor="let stepResult of stepResultList">
-      <app-step-result-item [stepResult]="stepResult" [scenario]="scenario" [stepList]="stepList"></app-step-result-item>
-    </ng-container>
+    <div class="row well" *ngIf="stepResultList?.length > 0">
+      <ng-container *ngFor="let stepResult of stepResultList">
+        <app-step-result-item [stepResult]="stepResult" [scenario]="scenario" [stepList]="stepList"></app-step-result-item>
+      </ng-container>
+    </div>
+    <div style="color: red; padding: 10px" *ngIf="stepResultList?.length == 0">
+      <p>{{'Results not found' | translate}}</p>
+    </div>
   </div>
 </div>
