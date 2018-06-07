@@ -14,6 +14,7 @@ import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
 import javax.jms.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -76,7 +77,7 @@ public class ActiveMQWorker extends AbstractMqWorker {
                             response = new VelocityTransformer().transform(stringBody, null, mockResponse.getResponseBody()).getBytes();
                         } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
                             try (HttpClient httpClient = new HttpClient()) {
-                            response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(message.getContent().getData(), "UTF-8"), testIdHeaderName, testId).getBytes();}
+                            response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(message.getContent().getData(), StandardCharsets.UTF_8), testIdHeaderName, testId).getBytes();}
                             mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                         } else {
                             response = stringBody.getBytes();
@@ -86,12 +87,12 @@ public class ActiveMQWorker extends AbstractMqWorker {
 
                             if (isNotEmpty(mockResponse.getDestinationQueueName())) {
 
-                                mockedRequest.setResponseBody(new String(response, "UTF-8"));
+                                mockedRequest.setResponseBody(new String(response, StandardCharsets.UTF_8));
 
                                 Queue destination = session.createQueue(mockResponse.getDestinationQueueName());
                                 MessageProducer producer = session.createProducer(destination);
                                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                                TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
+                                TextMessage newMessage = session.createTextMessage(new String(response, StandardCharsets.UTF_8));
                                 newMessage.getPropertyNames();
                                 copyMessageProperties(message, newMessage, testId, destination);
                                 // Переслать сообщение в очередь-назначение

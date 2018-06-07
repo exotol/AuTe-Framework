@@ -103,7 +103,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         }
     }
 
-    private void JSONComparing(String expectedResponse, String responseContent, String jsonCompareMode) throws Exception {
+    private void jsonComparing(String expectedResponse, String responseContent, String jsonCompareMode) throws Exception {
         log.debug("Json comparing {} {} {}", expectedResponse, responseContent, jsonCompareMode);
         if ((StringUtils.isNotEmpty(expectedResponse) || StringUtils.isNotEmpty(responseContent)) &&
                 (!responseContent.equals(expectedResponse))) {
@@ -343,7 +343,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
     void checkResponseBody(Step step, String expectedResponse, String actualResponse) throws Exception {
         if (!step.getExpectedResponseIgnore()) {
             if (step.getResponseCompareMode() == null) {
-                JSONComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
+                jsonComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
             } else {
                 switch (step.getResponseCompareMode()) {
                     case FULL_MATCH:
@@ -357,7 +357,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                         }
                         break;
                     default:
-                        JSONComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
+                        jsonComparing(expectedResponse, actualResponse, step.getJsonCompareMode());
                         break;
                 }
             }

@@ -11,8 +11,8 @@ import java.util.List;
 @ToString
 public class LaunchResult {
 
-  private int failedTestsCount = 0;
-  private int passedTestsCount = 0;
+  private int failedTestsCount;
+  private int passedTestsCount;
 
   public boolean isFailed() {
     return failedTestsCount > 0;

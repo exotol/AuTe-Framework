@@ -36,6 +36,7 @@ public class JsonDiffCalculator {
                 JsonElement jsonElement = parser.parse(value);
                 return gson.toJson(jsonElement);
             } catch (Exception e) {
+                log.error("Error formatting string", e);
                 return value;
             }
         }
@@ -45,6 +46,7 @@ public class JsonDiffCalculator {
                 Document doc = Jsoup.parse(value);
                 return doc.outerHtml();
             } catch (Exception e) {
+                log.error("Error formatting string", e);
                 return value;
             }
         }
