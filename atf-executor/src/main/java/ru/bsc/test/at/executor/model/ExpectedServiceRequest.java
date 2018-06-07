@@ -20,12 +20,14 @@ public class ExpectedServiceRequest implements Serializable, AbstractModel {
     private String expectedServiceRequest;
     private String expectedServiceRequestFile;
     private String ignoredTags;
+    private String count;
 
     protected ExpectedServiceRequest copy() {
         ExpectedServiceRequest request = new ExpectedServiceRequest();
         request.setServiceName(getServiceName());
         request.setExpectedServiceRequest(getExpectedServiceRequest());
         request.setIgnoredTags(getIgnoredTags());
+        request.setCount(getCount());
         return request;
     }
 }

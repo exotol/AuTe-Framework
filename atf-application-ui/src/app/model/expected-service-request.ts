@@ -3,4 +3,5 @@ export class ExpectedServiceRequest {
   serviceName: string;
   expectedServiceRequest: string;
   ignoredTags: string;
+  count: string;
 }

@@ -20,12 +20,13 @@
       <li [class.active]="tab == 'details'"><a href="#" (click)="selectTab('details')">{{'Details' | translate}}</a></li>
       <li *ngIf="stepResult.editable" [class.active]="tab == 'stepEdit'"><a href="#" (click)="selectTab('stepEdit')">{{'Step' | translate}}</a></li>
       <li [class.active]="tab == 'requests'"><a href="#" (click)="selectTab('requests')">{{'Requests' | translate}} ({{stepResult.requestDataList?.length}})</a></li>
-      <!--li [class.active]="tab == 'json'"><a href="#" (click)="selectTab('json')">json</a></li-->
     </ul>
     <div class="tab-content" style="padding: 10px;">
       <div *ngIf="tab == 'requests' || tab == 'all'">
-        <div class="col-sm-12" style="color: gray;">
-          {{'Total' | translate}}: {{stepResult.requestDataList?.length}}
+        <div class="row">
+          <div class="col-sm-12" style="color: gray;">
+            {{'Total' | translate}}: {{stepResult.requestDataList?.length}}
+          </div>
         </div>
         <div class="row" *ngFor="let requestData of stepResult.requestDataList; let i = index;">
           <div class="clearfix"></div>
