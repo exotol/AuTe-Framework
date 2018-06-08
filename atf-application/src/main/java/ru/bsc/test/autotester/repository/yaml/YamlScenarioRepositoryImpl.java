@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
@@ -129,10 +130,12 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
         Path scenarioDirectory = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
-        Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)
+        try (Stream<Path> paths = Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)) {
+            paths
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
+        }
     }
 
     private List<Scenario> findScenarios(String projectCode, boolean fetchSteps) {

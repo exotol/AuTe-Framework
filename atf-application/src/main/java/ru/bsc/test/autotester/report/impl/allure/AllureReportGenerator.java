@@ -53,6 +53,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -155,10 +156,10 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         log.info("Loading allure plugins");
         Path pluginsPath = Paths.get(PLUGINS_DIRECTORY);
         if (Files.exists(pluginsPath) && Files.isDirectory(pluginsPath)) {
-            try {
+            try (Stream<Path> files = Files.list(pluginsPath)) {
                 final DefaultPluginLoader pluginLoader = new DefaultPluginLoader();
                 final ClassLoader classLoader = getClass().getClassLoader();
-                List<Plugin> plugins = Files.list(pluginsPath)
+                List<Plugin> plugins = files
                         .filter(Files::isDirectory)
                         .map(pluginDirectory -> pluginLoader.loadPlugin(classLoader, pluginDirectory))
                         .filter(Optional::isPresent)

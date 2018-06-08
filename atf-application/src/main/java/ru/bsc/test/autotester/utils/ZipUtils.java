@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -14,17 +15,19 @@ public class ZipUtils {
 
     public static void pack(File sourceDirectory, ZipOutputStream zipOutputStream) throws IOException {
         Path pp = sourceDirectory.toPath();
-        Files.walk(pp)
-                .filter(path -> !Files.isDirectory(path))
-                .forEach(path -> {
-                    ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
-                    try {
-                        zipOutputStream.putNextEntry(zipEntry);
-                        Files.copy(path, zipOutputStream);
-                        zipOutputStream.closeEntry();
-                    } catch (IOException e) {
-                        log.error("Error while copying zipEntry", e);
-                    }
-                });
+        try (Stream<Path> paths = Files.walk(pp)) {
+          paths
+              .filter(path -> !Files.isDirectory(path))
+              .forEach(path -> {
+                ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                try {
+                  zipOutputStream.putNextEntry(zipEntry);
+                  Files.copy(path, zipOutputStream);
+                  zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                  log.error("Error while copying zipEntry", e);
+                }
+              });
+        }
     }
 }
