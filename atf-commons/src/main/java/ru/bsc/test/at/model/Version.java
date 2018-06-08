@@ -28,6 +28,7 @@ public class Version {
 
     public static Version load() {
         ClassLoader classLoader = currentThread().getContextClassLoader();
+        logManifestPaths();
         try (InputStream manifest = classLoader.getResourceAsStream(JarFile.MANIFEST_NAME)) {
             Properties properties = new Properties();
             properties.load(manifest);
@@ -38,7 +39,30 @@ public class Version {
         }
     }
 
+    public static Version unknown() {
+        return new Version();
+    }
+
+    /**
+     * @see "COM-270"
+     */
+    private static void logManifestPaths() {
+        String path = JarFile.MANIFEST_NAME;
+        String absolutePath = "/" + path;
+        ClassLoader classLoader = Version.class.getClassLoader();
+        ClassLoader contextClassLoader = currentThread().getContextClassLoader();
+        log.debug("MANIFEST paths check:");
+        log.debug("  Class, relative: '{}'", Version.class.getResource(path));
+        log.debug("  Class, absolute: '{}'", Version.class.getResource(absolutePath));
+        log.debug("  Class loader, relative: '{}'", classLoader.getResource(path));
+        log.debug("  Class loader, absolute: '{}'", classLoader.getResource(absolutePath));
+        log.debug("  Context class loader, relative: '{}'", contextClassLoader.getResource(path));
+        log.debug("  Context class loader, absolute: '{}'", contextClassLoader.getResource(absolutePath));
+    }
+
     private static Version buildVersionFromProperties(Properties properties) {
+        log.debug("MANIFEST.MF properties");
+        properties.forEach((k, v) -> log.debug("{}: {}", k, v));
         String projectVersion = properties.getProperty("Project-Version");
         String commitsCount = properties.getProperty("Git-Commits-Count");
         String shortRevision = properties.getProperty("Git-Short-Revision");
@@ -51,10 +75,6 @@ public class Version {
         Version version = new Version(implementationVersion, implementationDate);
         log.info("Version loaded from MANIFEST.MF: {}", version);
         return version;
-    }
-
-    public static Version unknown() {
-        return new Version();
     }
 
     public Version() {
