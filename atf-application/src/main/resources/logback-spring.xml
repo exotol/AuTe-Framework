@@ -21,4 +21,8 @@
 	<logger name="ru.bsc.test.at.executor.helper.HttpClient" level="DEBUG">
 		<appender-ref ref="FILE" />
 	</logger>
+
+	<logger name="ru.bsc.test.at.model.Version" level="DEBUG">
+		<appender-ref ref="FILE" />
+	</logger>
 </configuration>
