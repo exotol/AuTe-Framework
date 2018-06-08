@@ -82,9 +82,7 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
         log.debug("Parse mock requests {} {} {} {}", project, step, scenarioVariables, testId);
         if (step.getParseMockRequestUrl() != null) {
             MockRequest mockRequest = new MockRequest();
-            mockRequest.getHeaders().put(project.getTestIdHeaderName(), new HashMap<String, String>() {{
-                put("equalTo", testId);
-            }});
+            mockRequest.getHeaders().put(project.getTestIdHeaderName(), createEqualsToHeader(testId));
             mockRequest.setUrl(step.getParseMockRequestUrl());
             RequestList list = wireMockAdmin.findRestRequests(mockRequest);
             if (list.getRequests() != null && !list.getRequests().isEmpty()) {
@@ -431,5 +429,11 @@ public abstract class AbstractStepExecutor implements IStepExecutor {
                 wireMockAdmin.addMqMapping(mockMessage);
             }
         }
+    }
+
+    private HashMap<String, String> createEqualsToHeader(String testId) {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("equalTo", testId);
+        return headers;
     }
 }

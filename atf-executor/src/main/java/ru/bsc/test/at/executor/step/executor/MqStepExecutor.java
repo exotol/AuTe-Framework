@@ -85,7 +85,7 @@ public class MqStepExecutor extends AbstractStepExecutor {
 
             } while (tryUsePolling(step, response) && retryCounter <= POLLING_RETRY_COUNT);
 
-            String content = response.getContent();
+            String content = response != null ? response.getContent() : "";
             stepResult.setPollingRetryCount(retryCounter);
             stepResult.setActual(content);
             stepResult.setExpected(step.getExpectedResponse());

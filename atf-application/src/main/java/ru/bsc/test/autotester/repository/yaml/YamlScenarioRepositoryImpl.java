@@ -130,11 +130,8 @@ public class YamlScenarioRepositoryImpl extends BaseYamlRepository implements Sc
     @Override
     public void delete(String projectCode, String scenarioPath) throws IOException {
         Path scenarioDirectory = Paths.get(projectsPath, projectCode, "scenarios", scenarioPath);
-        try (Stream<Path> paths = Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)) {
-            paths
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        try (Stream<Path> filesStream = Files.walk(scenarioDirectory, FileVisitOption.FOLLOW_LINKS)) {
+            filesStream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         }
     }
 

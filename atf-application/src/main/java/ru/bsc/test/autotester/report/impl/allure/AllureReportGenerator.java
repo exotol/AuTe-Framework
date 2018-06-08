@@ -156,10 +156,10 @@ public class AllureReportGenerator extends AbstractReportGenerator {
         log.info("Loading allure plugins");
         Path pluginsPath = Paths.get(PLUGINS_DIRECTORY);
         if (Files.exists(pluginsPath) && Files.isDirectory(pluginsPath)) {
-            try (Stream<Path> files = Files.list(pluginsPath)) {
-                final DefaultPluginLoader pluginLoader = new DefaultPluginLoader();
-                final ClassLoader classLoader = getClass().getClassLoader();
-                List<Plugin> plugins = files
+            final DefaultPluginLoader pluginLoader = new DefaultPluginLoader();
+            final ClassLoader classLoader = getClass().getClassLoader();
+            try (Stream<Path> filesStream = Files.list(pluginsPath);) {
+                List<Plugin> plugins = filesStream
                         .filter(Files::isDirectory)
                         .map(pluginDirectory -> pluginLoader.loadPlugin(classLoader, pluginDirectory))
                         .filter(Optional::isPresent)

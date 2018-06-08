@@ -37,93 +37,90 @@ import java.util.Set;
 @Slf4j
 public class ScenarioLauncherImpl implements ScenarioLauncher {
 
-  private static final String DEFAULT_GROUP = "__default";
-  private static final ObjectMapper objectMapper = new ObjectMapper().setVisibility(
-      PropertyAccessor.FIELD,
-      JsonAutoDetect.Visibility.ANY
-  );
+    private static final String DEFAULT_GROUP = "__default";
+    private static final ObjectMapper objectMapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-  private final ScenarioRepository scenarioRepository;
+    private final ScenarioRepository scenarioRepository;
 
-  @Autowired
-  public ScenarioLauncherImpl(ScenarioRepository scenarioRepository) {
-    this.scenarioRepository = scenarioRepository;
-  }
-
-  public void launchScenarioFromUI(List<Scenario> scenarioToExecute,
-                                   Project project,
-                                   EnvironmentProperties properties,
-                                   ExecutionResult executionResult,
-                                   Set<String> stopExecutingSet,
-                                   ProjectService projectService,
-                                   String runningUuid) {
-    log.info("Launch scenario from UI {} {}", scenarioToExecute, project);
-    AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
-
-    new Thread(() -> {
-      IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
-      IExecutingFinishObserver finishObserver = scenarioResults -> {
-        executionResult.setFinished(true);
-        synchronized (projectService) {
-          processResults(project, scenarioResults);
-        }
-      };
-      atExecutor.execute(
-              new ProjectExecutorRequest(project, scenarioToExecute, executionResult.getScenarioResults(),
-                      stopObserver, finishObserver));
-    }).start();
-  }
-
-  @Override
-  public List<ScenarioResult> launchScenarioFromCLI(List<Scenario> scenarioToExecute, Project project, EnvironmentProperties properties, AbstractReportGenerator reportGenerator) {
-    log.info("Launch scenario from CLI {} {}", scenarioToExecute, project);
-    AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode()).toString());
-
-    List<ScenarioResult> scenarioResultList = new ArrayList<>();
-    atExecutor.execute(
-            new ProjectExecutorRequest(
-                    project,
-                    scenarioToExecute,
-                    scenarioResultList,
-                    () -> false,
-                    list -> {
-                    }
-            )
-    );
-    addResultsToReport(reportGenerator, scenarioResultList);
-    return scenarioResultList;
-  }
-
-  private void addResultsToReport(AbstractReportGenerator reportGenerator, List<ScenarioResult> scenarioResultList) {
-    for (ScenarioResult scenarioResult : scenarioResultList) {
-      reportGenerator.add(scenarioResult.getScenario(), scenarioResult.getStepResultList());
+    @Autowired
+    public ScenarioLauncherImpl(ScenarioRepository scenarioRepository) {
+        this.scenarioRepository = scenarioRepository;
     }
-  }
 
-  private void processResults(Project project, List<ScenarioResult> scenarioResults) {
-    for (ScenarioResult scenarioResult: scenarioResults) {
-      try {
-        Scenario scenario = scenarioResult.getScenario();
-        String scenarioGroup = scenario.getScenarioGroup();
-        String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") + scenario.getCode();
-        String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
+    public void launchScenarioFromUI(
+            List<Scenario> scenarioToExecute,
+            Project project,
+            EnvironmentProperties properties,
+            ExecutionResult executionResult,
+            Set<String> stopExecutingSet,
+            ProjectService projectService,
+            String runningUuid
+    ) {
+        log.info("Launch scenario from UI {} {}", scenarioToExecute, project);
+        AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode())
+                .toString());
 
-        Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
-        List<StepResult> stepResultList = scenarioResult.getStepResultList();
-        scenarioToUpdate.setFailed(scenarioResult.isFailed());
-        scenarioToUpdate.setHasResults(true);
-        scenario = scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
-
-        Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
-        if (!Files.exists(path)) {
-          Files.createDirectories(path);
-        }
-        Path resultFile = path.resolve("results.json");
-        Files.deleteIfExists(resultFile);
-        objectMapper.writeValue(resultFile.toFile(), stepResultList);
-      } catch (IOException e) {
-        log.error("", e);
-      }
+        new Thread(() -> {
+            IStopObserver stopObserver = () -> stopExecutingSet.remove(runningUuid);
+            IExecutingFinishObserver finishObserver = scenarioResults -> {
+                executionResult.setFinished(true);
+                synchronized (scenarioRepository) {
+                    processResults(project, scenarioResults);
+                }
+            };
+            atExecutor.execute(new ProjectExecutorRequest(project, scenarioToExecute, executionResult.getScenarioResults(), stopObserver, finishObserver));
+        }).start();
     }
-  }
+
+    @Override
+    public List<ScenarioResult> launchScenarioFromCLI(
+            List<Scenario> scenarioToExecute,
+            Project project,
+            EnvironmentProperties properties,
+            AbstractReportGenerator reportGenerator
+    ) {
+        log.info("Launch scenario from CLI {} {}", scenarioToExecute, project);
+        AtProjectExecutor atExecutor = new AtProjectExecutor(Paths.get(properties.getProjectsDirectoryPath(), project.getCode())
+                .toString());
+
+        List<ScenarioResult> scenarioResultList = new ArrayList<>();
+        atExecutor.execute(new ProjectExecutorRequest(project, scenarioToExecute, scenarioResultList, () -> false, list -> {
+        }));
+        addResultsToReport(reportGenerator, scenarioResultList);
+        return scenarioResultList;
+    }
+
+    private void addResultsToReport(AbstractReportGenerator reportGenerator, List<ScenarioResult> scenarioResultList) {
+        for (ScenarioResult scenarioResult : scenarioResultList) {
+            reportGenerator.add(scenarioResult.getScenario(), scenarioResult.getStepResultList());
+        }
+    }
+
+    private void processResults(Project project, List<ScenarioResult> scenarioResults) {
+        for (ScenarioResult scenarioResult : scenarioResults) {
+            try {
+                Scenario scenario = scenarioResult.getScenario();
+                String scenarioGroup = scenario.getScenarioGroup();
+                String scenarioPath = (StringUtils.isEmpty(scenarioGroup) ? "" : scenarioGroup + "/") +
+                                      scenario.getCode();
+                String groupDir = scenarioGroup != null ? scenarioGroup : DEFAULT_GROUP;
+
+                Scenario scenarioToUpdate = scenarioRepository.findScenario(project.getCode(), scenarioPath);
+                List<StepResult> stepResultList = scenarioResult.getStepResultList();
+                scenarioToUpdate.setFailed(scenarioResult.isFailed());
+                scenarioToUpdate.setHasResults(true);
+                scenario = scenarioRepository.saveScenario(project.getCode(), scenarioPath, scenarioToUpdate, false);
+
+                Path path = Paths.get("tmp", "results", project.getCode(), groupDir, scenario.getCode());
+                if (!Files.exists(path)) {
+                    Files.createDirectories(path);
+                }
+                Path resultFile = path.resolve("results.json");
+                Files.deleteIfExists(resultFile);
+                objectMapper.writeValue(resultFile.toFile(), stepResultList);
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        }
+    }
 }

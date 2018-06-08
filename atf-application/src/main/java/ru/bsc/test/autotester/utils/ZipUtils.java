@@ -15,19 +15,17 @@ public class ZipUtils {
 
     public static void pack(File sourceDirectory, ZipOutputStream zipOutputStream) throws IOException {
         Path pp = sourceDirectory.toPath();
-        try (Stream<Path> paths = Files.walk(pp)) {
-          paths
-              .filter(path -> !Files.isDirectory(path))
-              .forEach(path -> {
+        try (Stream<Path> filesStream = Files.walk(pp)) {
+            filesStream.filter(path -> !Files.isDirectory(path)).forEach(path -> {
                 ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
                 try {
-                  zipOutputStream.putNextEntry(zipEntry);
-                  Files.copy(path, zipOutputStream);
-                  zipOutputStream.closeEntry();
+                    zipOutputStream.putNextEntry(zipEntry);
+                    Files.copy(path, zipOutputStream);
+                    zipOutputStream.closeEntry();
                 } catch (IOException e) {
-                  log.error("Error while copying zipEntry", e);
+                    log.error("Error while copying zipEntry", e);
                 }
-              });
+            });
         }
     }
 }

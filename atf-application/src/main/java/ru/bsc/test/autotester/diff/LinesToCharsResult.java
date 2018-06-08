@@ -6,6 +6,7 @@ import java.util.List;
  * Internal class for returning results from diffLinesToChars().
  * Other less paranoid languages just use a three-element array.
  */
+@SuppressWarnings("all")
 public class LinesToCharsResult {
 
     protected String chars1;

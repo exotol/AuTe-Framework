@@ -7,6 +7,7 @@ import java.util.LinkedList;
 /**
  * Class representing one patch operation.
  */
+@SuppressWarnings("all")
 public class Patch {
     public LinkedList<Diff> diffs;
     public int start1;

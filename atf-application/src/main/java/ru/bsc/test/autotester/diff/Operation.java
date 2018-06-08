@@ -6,6 +6,7 @@ package ru.bsc.test.autotester.diff;
  *  Diff(Operation.EQUAL, " world.")}
  * which means: delete "Hello", add "Goodbye" and keep " world."
  */
+@SuppressWarnings("all")
 public enum Operation {
     DELETE, INSERT, EQUAL
 }

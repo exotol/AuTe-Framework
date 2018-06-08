@@ -3,6 +3,7 @@ package ru.bsc.test.autotester.diff;
 /**
  * Class representing one diff operation.
  */
+@SuppressWarnings("all")
 public class Diff {
     /**
      * One of: INSERT, DELETE or EQUAL.
