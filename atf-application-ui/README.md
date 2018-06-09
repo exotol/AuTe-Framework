@@ -1,23 +1,16 @@
-# AutotesterUI
+# ATF-application UI
+UI for atf-application
 
-Фронт для менеджера автотестов
+## Run and install
+Install Node.js: https://nodejs.org
+Run `npm install`
 
-## Установка
+## Settings
+Proxy settings configuration `proxy.conf.json`
 
-Установить Node.js: https://nodejs.org
+## Run
+Run `npm start`. Open in browser `http://localhost:4200/`.
 
-В корне проекта выполнить команду `npm install`
-
-## Настройка
-
-Прокси на бэкэнд настраивается в файле `proxy.conf.json`
-
-## Запуск
-
-В корне проекта выполнить `npm start` После запуска открыть в браузере `http://localhost:4200/`.
-
-## Ссылки
-
+## Links
 https://nodejs.org
-
 https://www.npmjs.com/get-npm

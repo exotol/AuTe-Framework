@@ -1,25 +1,24 @@
-# BscWireMockUi
+# ATF-wiremock UI
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
+UI for ATF-wiremock
 
+## Settings
 
-## Настройка
-
-Настроить URL к серверу WireMock необходимо в файле src/service/wire-mock.service.ts:
+Set up Wiremock's URL in file `src/service/wire-mock.service.ts`:
 
 ```
 public serviceUrl = 'http://piphagor.bscmsc.ru/bsc-wire-mock';
 ```
 
-В файле index.html необходимо настроить URL к корню приложения:
+Set up base path URL in `index.html`:
 
 ```
 <base href="/">
 ```
 
-## Работа
+## Running application
 
-При запуске сервера WireMock применяются все маппинги, которые настроены с помощью файлов на сервере. Новый маппинг будет работать сразу после его создания. Для сохранения всех созданных маппингов в файловой системе необходимо нажать кнопку "Save to back storage".
+When WireMock is started all mapping stored on server would be applied. New mapping applies after it's creation. To save mapping on disk click "Save to back storage".
 
 ## Development server
 
