@@ -19,6 +19,7 @@
 package ru.bsc.test.at.mock.mq.mq;
 
 import org.apache.commons.collections.Buffer;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,18 +30,10 @@ import ru.bsc.test.at.mock.mq.models.MockMessageResponse;
 import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
+import javax.jms.*;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.DeliveryMode;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -126,20 +119,20 @@ public class IbmMQWorker extends AbstractMqWorker {
 
                             if (isNotEmpty(mockResponse.getDestinationQueueName())) {
 
-                                mockedRequest.setResponseBody(new String(response, "UTF-8"));
+                                mockedRequest.setResponseBody(new String(response, StandardCharsets.UTF_8));
 
                                 Queue destination = session.createQueue(mockResponse.getDestinationQueueName());
                                 MessageProducer producer = session.createProducer(destination);
                                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-                                TextMessage newMessage = session.createTextMessage(new String(response, "UTF-8"));
+                                TextMessage newMessage = session.createTextMessage(new String(response, StandardCharsets.UTF_8));
                                 copyMessageProperties(message, newMessage, testId, destination);
 
                                 // Переслать сообщение в очередь-назначение
                                 producer.send(newMessage);
 
                                 producer.close();
-                                logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), message.getText(), "UTF-8");
+                                logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), message.getText(), StandardCharsets.UTF_8);
                             }
                         }
                     } else {
