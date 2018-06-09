@@ -74,9 +74,21 @@ properties.yaml.file | Wiremock mappings configuration file name
 test.id.header.name |
 
 ### Wiremock mappings configuration file description ###
-```
-TODO: описание структуры файла с маппингами
-``` 
+Wiremock mapping configuration file has json format.
+
+Property | Description
+:---:|:---:
+id | mock's id
+request | mock's request patter
+request.url | JMS provider name
+request.method | JMS host
+request.headers | JMS port
+request.bodyPatterns | JMS username
+response | mock's response
+response.status | response status
+response.body | response body
+response.headers | response headers
+uuid | mock's uuid
 
 ## IBM MQ mocking ##
 For mocking IBM MQ you have to find and download
@@ -85,3 +97,5 @@ For mocking IBM MQ you have to find and download
 and put it in `/lib` folder or another.
 
 You can find ibm libs in fix pack [Fix Pack 8.0.0.5 for WebSphere MQ v8](http://www-01.ibm.com/support/docview.wss?uid=swg21982686) or copy it from installed IBM product.
+
+You have to put these libs in application classpath for atf-application and for atf-wiremock.
