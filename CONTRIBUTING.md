@@ -1,7 +1,7 @@
-#Contributing to ATF
+#Contributing to AuTe Framework
 
 ## Issues and Bugs
-If you find a bug in the source code or a mistake in the documentation, you can help us by [submitting a ticket](https://opensource.guide/how-to-contribute/#opening-an-issue) to our GitHub issues. Even better, you can submit a Pull Request to our ATF project.
+If you find a bug in the source code or a mistake in the documentation, you can help us by [submitting a ticket](https://opensource.guide/how-to-contribute/#opening-an-issue) to our GitHub issues. Even better, you can submit a Pull Request to our AuTe Framework project.
 
 **Please see the Submission Guidelines below**.
 ## Feature Requests
@@ -21,7 +21,7 @@ chances of your issue being dealt with quickly:
 * **Reproduce the error** - an unambiguous set of steps to reproduce the error
 * **Related issues** - has a similar issue been reported before?
 * **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit)
-* **ATF Version(s)** - is it a regression?
-* **ATF configuration, a `evn.yml` file in the root folder** - this will help us to find out configuration problems (you can remove logins and passwords).
-* **ATF scenarios(s) folder `scenarios folder`** - if the error is during scenario execution it can help us to identify problem
+* **AuTe Framework Version(s)** - is it a regression?
+* **AuTe Framework configuration, a `evn.yml` file in the root folder** - this will help us to find out configuration problems (you can remove logins and passwords).
+* **AuTe Framework scenarios(s) folder `scenarios folder`** - if the error is during scenario execution it can help us to identify problem
 * **Browsers and Operating System** - is this a problem with all browsers?

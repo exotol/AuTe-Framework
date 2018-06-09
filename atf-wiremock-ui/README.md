@@ -1,6 +1,6 @@
-# ATF-wiremock UI
+# AuTe Framework-wiremock UI
 
-UI for ATF-wiremock
+UI for AuTe Framework-wiremock
 
 ## Settings
 

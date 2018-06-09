@@ -1,4 +1,4 @@
-# ATF-application #
+# AuTe Framework-application #
 Application for creating test-cases, running tests, generating reports.
 
 ### Project settings ###

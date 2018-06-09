@@ -1,4 +1,4 @@
-# ATF-wiremock #
+# AuTe Framework-wiremock #
 
 ## Links ##
 

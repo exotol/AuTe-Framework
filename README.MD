@@ -1,13 +1,13 @@
-# ATF - Auto Test Framework #
+# AuTe Framework - Auto Test Framework #
 
 ## Projects ##
 Name | Description
 :---:|:---:
-[atf-application](atf-application) | ATF application
+[atf-application](atf-application) | AuTe Framework application
 [atf-wiremock](atf-wiremock) | Wiremock application
 [atf-executor](atf-executor) | Test execution logic
 [atf-commons](atf-commons) | Common components for all projects
-[atf-application-ui](atf-application-ui) | Frontend for ATF
+[atf-application-ui](atf-application-ui) | Frontend for AuTe Framework
 [atf-wiremock-ui](atf-wiremock-ui) | Frontend for Wiremock
 
 ## GIT configuration ##
@@ -26,7 +26,7 @@ Check configuration with `git config -l`
  * NodeJS
  * npm
 
-## Build and run ATF ##
+## Build and run AuTe Framework ##
 1. Clone project
 1. Build project with install nodeJS packages `mvn clean package -P npm-install`
 1. Create working directory for application

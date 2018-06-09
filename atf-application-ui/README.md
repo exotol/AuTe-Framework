@@ -1,4 +1,4 @@
-# ATF-application UI
+# AuTe Framework-application UI
 UI for atf-application
 
 ## Run and install
