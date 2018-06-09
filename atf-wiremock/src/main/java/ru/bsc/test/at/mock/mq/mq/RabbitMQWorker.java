@@ -18,7 +18,11 @@
 
 package ru.bsc.test.at.mock.mq.mq;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +34,6 @@ import ru.bsc.test.at.mock.mq.models.MockedRequest;
 import ru.bsc.velocity.transformer.VelocityTransformer;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -91,7 +94,7 @@ public class RabbitMQWorker extends AbstractMqWorker {
         channelFrom.basicConsume(queueNameFrom, true, new DefaultConsumer(channelFrom) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                String stringBody = new String(body, StandardCharsets.UTF_8);
+                String stringBody = new String(body, "UTF-8");
                 logger.info(" [x] Received '{}'", stringBody);
 
                 MockedRequest mockedRequest = new MockedRequest();
@@ -114,7 +117,7 @@ public class RabbitMQWorker extends AbstractMqWorker {
                         response = new VelocityTransformer().transform(stringBody, null, mockResponse.getResponseBody()).getBytes();
                     } else if (StringUtils.isNotEmpty(mockMessage.getHttpUrl())) {
                         try (HttpClient httpClient = new HttpClient()) {
-                        response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(body, StandardCharsets.UTF_8), testIdHeaderName, testId).getBytes();}
+                        response = httpClient.sendPost(mockMessage.getHttpUrl(), new String(body, "UTF-8"), testIdHeaderName, testId).getBytes();}
                         mockedRequest.setHttpRequestUrl(mockMessage.getHttpUrl());
                     } else {
                         response = body;
@@ -124,11 +127,11 @@ public class RabbitMQWorker extends AbstractMqWorker {
 
                         //noinspection ConstantConditions
                         if (isNotEmpty(mockResponse.getDestinationQueueName()) && response != null) {
-                            mockedRequest.setResponseBody(new String(response, StandardCharsets.UTF_8));
+                            mockedRequest.setResponseBody(new String(response, "UTF-8"));
 
                             try (Channel channel = connection.createChannel()) {
                                 channel.basicPublish("", mockResponse.getDestinationQueueName(), properties, response);
-                                logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), new String(response, StandardCharsets.UTF_8));
+                                logger.info(" [x] Send >>> {} '{}'", mockResponse.getDestinationQueueName(), new String(response, "UTF-8"));
                             } catch (TimeoutException e) {
                                 logger.error("Caught: {}", e);
                             }
@@ -140,7 +143,7 @@ public class RabbitMQWorker extends AbstractMqWorker {
                     if (isNotEmpty(queueNameTo)) {
                         mockedRequest.setResponseBody(stringBody);
                         channelTo.basicPublish("", queueNameTo, properties, body);
-                        logger.info(" [x] Send >>> {} '{}'", queueNameTo, new String(body, StandardCharsets.UTF_8));
+                        logger.info(" [x] Send >>> {} '{}'", queueNameTo, new String(body, "UTF-8"));
                     } else {
                         logger.info(" [x] Send >>> ***black hole***");
                     }
