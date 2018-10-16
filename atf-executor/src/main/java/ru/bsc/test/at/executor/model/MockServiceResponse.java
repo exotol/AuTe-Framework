@@ -21,6 +21,7 @@ package ru.bsc.test.at.executor.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import ru.bsc.test.at.executor.helper.client.impl.http.HTTPMethod;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,8 +34,11 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(exclude = "code")
 public class MockServiceResponse implements AbstractModel {
 
+    private static final HTTPMethod DEFAULT_HTTP_METHOD = HTTPMethod.POST;
+
     private String code;
     private String serviceUrl;
+    private HTTPMethod httpMethod;
     private String responseBody;
     private String responseBodyFile;
     private Integer httpStatus;
@@ -47,6 +51,7 @@ public class MockServiceResponse implements AbstractModel {
     protected MockServiceResponse copy() {
         MockServiceResponse response = new MockServiceResponse();
         response.setServiceUrl(getServiceUrl());
+        response.setHttpMethod(getHttpMethod());
         response.setResponseBody(getResponseBody());
         // TODO: cloned.setResponseBodyFile(getResponseBodyFile());
         response.setHttpStatus(getHttpStatus());
@@ -54,9 +59,13 @@ public class MockServiceResponse implements AbstractModel {
         response.setUserName(getUserName());
         response.setPassword(getPassword());
         response.setPathFilter(getPathFilter());
-        if(headers != null) {
+        if (headers != null) {
             response.setHeaders(headers.stream().map(HeaderItem::copy).collect(Collectors.toList()));
         }
         return response;
+    }
+
+    public String getHttpMethodOrDefault() {
+        return httpMethod != null ? httpMethod.name() : DEFAULT_HTTP_METHOD.name();
     }
 }
