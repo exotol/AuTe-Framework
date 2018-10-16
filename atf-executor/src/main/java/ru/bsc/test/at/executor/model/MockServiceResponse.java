@@ -18,6 +18,7 @@
 
 package ru.bsc.test.at.executor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -65,6 +66,7 @@ public class MockServiceResponse implements AbstractModel {
         return response;
     }
 
+    @JsonIgnore
     public String getHttpMethodOrDefault() {
         return httpMethod != null ? httpMethod.name() : DEFAULT_HTTP_METHOD.name();
     }
